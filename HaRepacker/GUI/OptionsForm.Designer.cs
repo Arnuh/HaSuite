@@ -36,6 +36,7 @@ namespace HaRepacker.GUI
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.indentBox = new IntegerInput();
             this.lineBreakBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.apngIncompEnable = new System.Windows.Forms.CheckBox();
@@ -86,6 +87,13 @@ namespace HaRepacker.GUI
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            //
+            // indentBox
+            // 
+            resources.ApplyResources(this.indentBox, "indentBox");
+            this.indentBox.Name = "indentBox";
+            this.indentBox.Value = 0;
+            // 
             // 
             // lineBreakBox
             // 
@@ -154,6 +162,7 @@ namespace HaRepacker.GUI
             this.panel1.Controls.Add(this.sortBox);
             this.panel1.Controls.Add(this.themeColor__comboBox);
             this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.indentBox);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.lineBreakBox);
             this.panel1.Controls.Add(this.loadRelated);
@@ -226,8 +235,8 @@ namespace HaRepacker.GUI
         private System.Windows.Forms.CheckBox loadRelated;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
-        private IntegerInput indentBox = new IntegerInput();
         private System.Windows.Forms.Label label1;
+        private IntegerInput indentBox;
         private System.Windows.Forms.ComboBox lineBreakBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox apngIncompEnable;

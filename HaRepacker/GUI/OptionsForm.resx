@@ -256,6 +256,33 @@
     <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+    <data name="indentBox.Location" type="System.Drawing.Point, System.Drawing">
+        <value>97, 175</value>
+    </data>
+    <data name="indentBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+        <value>4, 4, 4, 4</value>
+    </data>
+    <data name="indentBox.Size" type="System.Drawing.Size, System.Drawing">
+        <value>214, 22</value>
+    </data>
+    <data name="indentBox.TabIndex" type="System.Int32, mscorlib">
+        <value>5</value>
+    </data>
+    <data name="indentBox.Text" xml:space="preserve">
+    <value>4</value>
+  </data>
+    <data name="&gt;&gt;indentBox.Name" xml:space="preserve">
+    <value>indentBox</value>
+  </data>
+    <data name="&gt;&gt;indentBox.Type" xml:space="preserve">
+    <value>HaRepackerLib.Controls.IntegerInput, HaRepackerLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+    <data name="&gt;&gt;indentBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+    <data name="&gt;&gt;indentBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
     <data name="lineBreakBox.Items" xml:space="preserve">
     <value>None</value>
   </data>
