@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,27 +16,23 @@
 
 using System;
 
-namespace MapleLib.PacketLib
-{
+namespace MapleLib.PacketLib {
 	/// <summary>
 	/// Class to handle Hex Encoding and Hex Conversions
 	/// </summary>
-	public class HexEncoding
-	{
-
+	public class HexEncoding {
 		/// <summary>
 		/// Checks if a character is a hex digit
 		/// </summary>
 		/// <param name="c">Char to check</param>
 		/// <returns>Char is a hex digit</returns>
-		public static bool IsHexDigit(Char c)
-		{
-			int numA = Convert.ToInt32('A');
-			int num1 = Convert.ToInt32('0');
-			c = Char.ToUpper(c);
-			int numChar = Convert.ToInt32(c);
+		public static bool IsHexDigit(char c) {
+			var numA = Convert.ToInt32('A');
+			var num1 = Convert.ToInt32('0');
+			c = char.ToUpper(c);
+			var numChar = Convert.ToInt32(c);
 
-			return (numChar >= numA && numChar < (numA + 6)) || (numChar >= num1 && numChar < (num1 + 10));
+			return (numChar >= numA && numChar < numA + 6) || (numChar >= num1 && numChar < num1 + 10);
 		}
 
 		/// <summary>
@@ -44,11 +40,10 @@ namespace MapleLib.PacketLib
 		/// </summary>
 		/// <param name="hex">Byte as a hex string</param>
 		/// <returns>Byte representation of the string</returns>
-		private static byte HexToByte(string hex)
-		{
+		private static byte HexToByte(string hex) {
 			if (hex.Length > 2 || hex.Length <= 0)
 				throw new ArgumentException("hex must be 1 or 2 characters in length");
-			byte newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+			var newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
 			return newByte;
 		}
 
@@ -57,33 +52,29 @@ namespace MapleLib.PacketLib
 		/// </summary>
 		/// <param name="hex">byte array as a hex string</param>
 		/// <returns>Byte array representation of the string</returns>
-		public static byte[] GetBytes(string hexString)
-		{
-			string newString = string.Empty;
+		public static byte[] GetBytes(string hexString) {
+			var newString = string.Empty;
 			char c;
 			// remove all none A-F, 0-9, characters
-			for (int i = 0; i < hexString.Length; i++)
-			{
+			for (var i = 0; i < hexString.Length; i++) {
 				c = hexString[i];
 				if (IsHexDigit(c))
 					newString += c;
 			}
-			// if odd number of characters, discard last character
-			if (newString.Length % 2 != 0)
-			{
-				newString = newString.Substring(0, newString.Length - 1);
-			}
 
-			int byteLength = newString.Length / 2;
-			byte[] bytes = new byte[byteLength];
+			// if odd number of characters, discard last character
+			if (newString.Length % 2 != 0) newString = newString.Substring(0, newString.Length - 1);
+
+			var byteLength = newString.Length / 2;
+			var bytes = new byte[byteLength];
 			string hex;
-			int j = 0;
-			for (int i = 0; i < bytes.Length; i++)
-			{
-				hex = new string(new Char[] { newString[j], newString[j + 1] });
+			var j = 0;
+			for (var i = 0; i < bytes.Length; i++) {
+				hex = new string(new char[] {newString[j], newString[j + 1]});
 				bytes[i] = HexToByte(hex);
 				j += 2;
 			}
+
 			return bytes;
 		}
 
@@ -92,15 +83,13 @@ namespace MapleLib.PacketLib
 		/// </summary>
 		/// <param name="bytes">Bytes to convert to ASCII</param>
 		/// <returns>The byte array as an ASCII string</returns>
-        public static string ToStringFromAscii(byte[] bytes)
-        {
-            char[] ret = new char[bytes.Length];
-            for (int x = 0; x < bytes.Length; x++)
-            {
-                // Use a ternary operator to avoid an if statement
-                ret[x] = (bytes[x] < 32 && bytes[x] >= 0) ? '.' : (char)((short)bytes[x] & 0xFF);
-            }
-            return new string(ret);
-        }
-    }
+		public static string ToStringFromAscii(byte[] bytes) {
+			var ret = new char[bytes.Length];
+			for (var x = 0; x < bytes.Length; x++)
+				// Use a ternary operator to avoid an if statement
+				ret[x] = bytes[x] < 32 && bytes[x] >= 0 ? '.' : (char) ((short) bytes[x] & 0xFF);
+
+			return new string(ret);
+		}
+	}
 }

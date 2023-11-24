@@ -19,173 +19,157 @@ using HaSharedLibrary;
 using System.Runtime.CompilerServices;
 using MapleLib;
 
-namespace HaRepacker
-{
-    public static class Program
-    {
-        private static WzFileManager _wzFileManager;
-        public static WzFileManager WzFileManager
-        {
-            get { return _wzFileManager; }
-            set { _wzFileManager = value; }
-        }
+namespace HaRepacker {
+	public static class Program {
+		private static WzFileManager _wzFileManager;
 
-        public static NamedPipeServerStream pipe;
-        public static Thread pipeThread;
+		public static WzFileManager WzFileManager {
+			get => _wzFileManager;
+			set => _wzFileManager = value;
+		}
 
-        private static ConfigurationManager _ConfigurationManager; // default for VS UI designer
-        public static ConfigurationManager ConfigurationManager
-        {
-            get { return _ConfigurationManager; }
-            private set { }
-        }
+		public static NamedPipeServerStream pipe;
+		public static Thread pipeThread;
 
-        public const string pipeName = "HaRepacker";
+		private static ConfigurationManager _ConfigurationManager; // default for VS UI designer
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main(string[] args)
-        {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+		public static ConfigurationManager ConfigurationManager {
+			get => _ConfigurationManager;
+			private set { }
+		}
 
-            // Localisation
-            CultureInfo ci = GetMainCulture(CultureInfo.CurrentCulture);
-            Properties.Resources.Culture = ci;
+		public const string pipeName = "HaRepacker";
 
-            Thread.CurrentThread.CurrentCulture = ci;
-            Thread.CurrentThread.CurrentUICulture = ci;
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		private static void Main(string[] args) {
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            CultureInfo.CurrentCulture = ci;
-            CultureInfo.CurrentUICulture = ci;
-            CultureInfo.DefaultThreadCurrentCulture = ci;
-            CultureInfo.DefaultThreadCurrentUICulture = ci;
+			// Localisation
+			var ci = GetMainCulture(CultureInfo.CurrentCulture);
+			Properties.Resources.Culture = ci;
 
-            // Threads
-            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 3, Environment.ProcessorCount * 3); // This includes hyper-threading(Intel)/SMT (AMD) count.
+			Thread.CurrentThread.CurrentCulture = ci;
+			Thread.CurrentThread.CurrentUICulture = ci;
 
-            // App
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+			CultureInfo.CurrentCulture = ci;
+			CultureInfo.CurrentUICulture = ci;
+			CultureInfo.DefaultThreadCurrentCulture = ci;
+			CultureInfo.DefaultThreadCurrentUICulture = ci;
 
-            // Load WZFileManager
-            _wzFileManager = new WzFileManager();
+			// Threads
+			ThreadPool.SetMaxThreads(Environment.ProcessorCount * 3,
+				Environment.ProcessorCount * 3); // This includes hyper-threading(Intel)/SMT (AMD) count.
 
-            // Parameters
-            bool firstRun = PrepareApplication(true);
-            string wzToLoad = null;
-            if (args.Length > 0)
-                wzToLoad = args[0];
-            Application.Run(new MainForm(wzToLoad, true, firstRun));
-            EndApplication(true, true);
-        }
+			// App
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
-        /// <summary>
-        /// Allows customisation of display text during runtime..
-        /// </summary>
-        /// <param name="ci"></param>
-        /// <returns></returns>
-        private static CultureInfo GetMainCulture(CultureInfo ci)
-        {
-            if (!ci.Name.Contains("-"))
-                return ci;
-            switch (ci.Name.Split("-".ToCharArray())[0])
-            {
-                case "ko":
-                    return new CultureInfo("ko");
-                case "ja":
-                    return new CultureInfo("ja");
-                case "en":
-                    return new CultureInfo("en");
-                case "zh":
-                    if (ci.EnglishName.Contains("Simplified"))
-                        return new CultureInfo("zh-CHS");
-                    else
-                        return new CultureInfo("zh-CHT");
-                default:
-                    return ci;
-            }
-        }
+			// Load WZFileManager
+			_wzFileManager = new WzFileManager();
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            new ThreadExceptionDialog((Exception)e.ExceptionObject).ShowDialog();
-            Environment.Exit(-1);
-        }
+			// Parameters
+			var firstRun = PrepareApplication(true);
+			string wzToLoad = null;
+			if (args.Length > 0)
+				wzToLoad = args[0];
+			Application.Run(new MainForm(wzToLoad, true, firstRun));
+			EndApplication(true, true);
+		}
 
-        /// <summary>
-        /// Gets the local folder path
-        /// </summary>
-        /// <returns></returns>
-        public static string GetLocalFolderPath()
-        {
-            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string our_folder = Path.Combine(appdata, pipeName);
-            if (!Directory.Exists(our_folder))
-                Directory.CreateDirectory(our_folder);
-            return our_folder;
-        }
+		/// <summary>
+		/// Allows customisation of display text during runtime..
+		/// </summary>
+		/// <param name="ci"></param>
+		/// <returns></returns>
+		private static CultureInfo GetMainCulture(CultureInfo ci) {
+			if (!ci.Name.Contains("-"))
+				return ci;
+			switch (ci.Name.Split("-".ToCharArray())[0]) {
+				case "ko":
+					return new CultureInfo("ko");
+				case "ja":
+					return new CultureInfo("ja");
+				case "en":
+					return new CultureInfo("en");
+				case "zh":
+					if (ci.EnglishName.Contains("Simplified"))
+						return new CultureInfo("zh-CHS");
+					else
+						return new CultureInfo("zh-CHT");
+				default:
+					return ci;
+			}
+		}
+
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			new ThreadExceptionDialog((Exception) e.ExceptionObject).ShowDialog();
+			Environment.Exit(-1);
+		}
+
+		/// <summary>
+		/// Gets the local folder path
+		/// </summary>
+		/// <returns></returns>
+		public static string GetLocalFolderPath() {
+			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var our_folder = Path.Combine(appdata, pipeName);
+			if (!Directory.Exists(our_folder))
+				Directory.CreateDirectory(our_folder);
+			return our_folder;
+		}
 
 
-        public static bool IsUserAdministrator()
-        {
-            //bool value to hold our return value
-            bool isAdmin;
-            try
-            {
-                //get the currently logged in user
-                WindowsIdentity user = WindowsIdentity.GetCurrent();
-                WindowsPrincipal principal = new WindowsPrincipal(user);
-                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
-            catch (Exception)
-            {
-                isAdmin = false;
-            }
-            return isAdmin;
-        }
+		public static bool IsUserAdministrator() {
+			//bool value to hold our return value
+			bool isAdmin;
+			try {
+				//get the currently logged in user
+				var user = WindowsIdentity.GetCurrent();
+				var principal = new WindowsPrincipal(user);
+				isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+			}
+			catch (Exception) {
+				isAdmin = false;
+			}
 
-        public static bool PrepareApplication(bool from_internal)
-        {
-            _ConfigurationManager = new ConfigurationManager();
+			return isAdmin;
+		}
 
-            bool loaded = _ConfigurationManager.Load();
-            if (!loaded)
-            {
-                return true;
-            }
-            bool firstRun = Program.ConfigurationManager.ApplicationSettings.FirstRun;
-            if (Program.ConfigurationManager.ApplicationSettings.FirstRun)
-            {
-                //new FirstRunForm().ShowDialog();
-                Program.ConfigurationManager.ApplicationSettings.FirstRun = false;
-                _ConfigurationManager.Save();
-            }
-            if (Program.ConfigurationManager.UserSettings.AutoAssociate && from_internal && IsUserAdministrator())
-            {
-                string path = Application.ExecutablePath;
-                Registry.ClassesRoot.CreateSubKey(".wz").SetValue("", "WzFile");
-                RegistryKey wzKey = Registry.ClassesRoot.CreateSubKey("WzFile");
-                wzKey.SetValue("", "Wz File");
-                wzKey.CreateSubKey("DefaultIcon").SetValue("", path + ",1");
-                wzKey.CreateSubKey("shell\\open\\command").SetValue("", "\"" + path + "\" \"%1\"");
-            }
-            return firstRun;
-        }
+		public static bool PrepareApplication(bool from_internal) {
+			_ConfigurationManager = new ConfigurationManager();
 
-        public static void EndApplication(bool usingPipes, bool disposeFiles)
-        {
-            if (pipe != null && usingPipes)
-            {
-                pipe.Close();
-            }
-            if (disposeFiles)
-            {
-                WzFileManager.Dispose();
-            }
-            _ConfigurationManager.Save();
-        }
-    }
+			var loaded = _ConfigurationManager.Load();
+			if (!loaded) return true;
+
+			var firstRun = ConfigurationManager.ApplicationSettings.FirstRun;
+			if (ConfigurationManager.ApplicationSettings.FirstRun) {
+				//new FirstRunForm().ShowDialog();
+				ConfigurationManager.ApplicationSettings.FirstRun = false;
+				_ConfigurationManager.Save();
+			}
+
+			if (ConfigurationManager.UserSettings.AutoAssociate && from_internal && IsUserAdministrator()) {
+				var path = Application.ExecutablePath;
+				Registry.ClassesRoot.CreateSubKey(".wz").SetValue("", "WzFile");
+				var wzKey = Registry.ClassesRoot.CreateSubKey("WzFile");
+				wzKey.SetValue("", "Wz File");
+				wzKey.CreateSubKey("DefaultIcon").SetValue("", path + ",1");
+				wzKey.CreateSubKey("shell\\open\\command").SetValue("", "\"" + path + "\" \"%1\"");
+			}
+
+			return firstRun;
+		}
+
+		public static void EndApplication(bool usingPipes, bool disposeFiles) {
+			if (pipe != null && usingPipes) pipe.Close();
+
+			if (disposeFiles) WzFileManager.Dispose();
+
+			_ConfigurationManager.Save();
+		}
+	}
 }

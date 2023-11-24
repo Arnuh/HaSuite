@@ -21,189 +21,136 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HaCreator.CustomControls
-{
-    public abstract class PropertyChangeNotifierBase : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetField<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-    }
+namespace HaCreator.CustomControls {
+	public abstract class PropertyChangeNotifierBase : INotifyPropertyChanged {
+		public event PropertyChangedEventHandler PropertyChanged;
 
-    public class HaListItem : PropertyChangeNotifierBase
-    {
-        private string caption;
-        private object data;
-        private bool selected;
+		protected virtual void OnPropertyChanged(string propertyName) {
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-        public HaListItem(string text, object data)
-        {
-            this.caption = text;
-            this.data = data;
-            this.selected = false;
-        }
+		protected bool SetField<T>(ref T field, T value, string propertyName) {
+			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+	}
 
-        public string Text
-        {
-            get { return caption; }
-            set { SetField(ref caption, value, "Text"); }
-        }
+	public class HaListItem : PropertyChangeNotifierBase {
+		private string caption;
+		private object data;
+		private bool selected;
 
-        public Brush Background
-        {
-            get { return selected ? Brushes.LightBlue : Brushes.White; }
-        }
+		public HaListItem(string text, object data) {
+			caption = text;
+			this.data = data;
+			selected = false;
+		}
 
-        public object Tag
-        {
-            get
-            {
-                return data;
-            }
-        }
+		public string Text {
+			get => caption;
+			set => SetField(ref caption, value, "Text");
+		}
 
-        public bool Selected
-        {
-            get { return selected; }
-            set { SetField(ref selected, value, "Background"); }
-        }
-    }
+		public Brush Background => selected ? Brushes.LightBlue : Brushes.White;
 
-    public class HaListItemCollection : PropertyChangeNotifierBase
-    {
-        ObservableCollection<HaListItem> items = new ObservableCollection<HaListItem>();
-        public HaListItemCollection()
-        {
-        }
+		public object Tag => data;
 
-        public ObservableCollection<HaListItem> Items
-        {
-            get { return items; }
-        }
-    }
+		public bool Selected {
+			get => selected;
+			set => SetField(ref selected, value, "Background");
+		}
+	}
 
-    /// <summary>
-    /// Interaction logic for HaList.xaml
-    /// </summary>
-    public partial class HaList : UserControl
-    {
-        int selectedIndex = -1;
-        private HaListItemCollection dataContext = new HaListItemCollection();
+	public class HaListItemCollection : PropertyChangeNotifierBase {
+		private ObservableCollection<HaListItem> items = new ObservableCollection<HaListItem>();
 
-        public HaList()
-        {
-            InitializeComponent();
-            this.DataContext = dataContext;
-            this.PreviewKeyDown += HaList_PreviewKeyDown;
-        }
+		public HaListItemCollection() {
+		}
 
-        void HaList_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Up)
-            {
-                if (IsEnabled && SelectedIndex != 0)
-                {
-                    SelectedIndex--;
-                }
-                e.Handled = true;
-            }
-            else if (e.Key == Key.Down)
-            {
-                if (IsEnabled && SelectedIndex != (Items.Count - 1))
-                {
-                    SelectedIndex++;
-                }
-                e.Handled = true;
-            }
-        }
+		public ObservableCollection<HaListItem> Items => items;
+	}
 
-        public ObservableCollection<HaListItem> Items
-        {
-            get
-            {
-                return dataContext.Items;
-            }
-        }
+	/// <summary>
+	/// Interaction logic for HaList.xaml
+	/// </summary>
+	public partial class HaList : UserControl {
+		private int selectedIndex = -1;
+		private HaListItemCollection dataContext = new HaListItemCollection();
 
-        public void ClearItems()
-        {
-            Items.Clear();
-            selectedIndex = -1;
-            ((ScrollViewer)FindName("scrollView")).ScrollToVerticalOffset(0);
-        }
+		public HaList() {
+			InitializeComponent();
+			DataContext = dataContext;
+			PreviewKeyDown += HaList_PreviewKeyDown;
+		}
 
-        public int SelectedIndex
-        {
-            get
-            {
-                return selectedIndex;
-            }
-            set
-            {
-                if (value < 0 || value >= Items.Count)
-                    return;
+		private void HaList_PreviewKeyDown(object sender, KeyEventArgs e) {
+			if (e.Key == Key.Up) {
+				if (IsEnabled && SelectedIndex != 0) SelectedIndex--;
 
-                if (selectedIndex != -1)
-                    Items[selectedIndex].Selected = false;
-                selectedIndex = value;
-                Items[selectedIndex].Selected = true;
+				e.Handled = true;
+			}
+			else if (e.Key == Key.Down) {
+				if (IsEnabled && SelectedIndex != Items.Count - 1) SelectedIndex++;
 
-                // Make sure item is visible
-                ScrollViewer sv = (ScrollViewer)FindName("scrollView");
-                ItemsControl ic = (ItemsControl)FindName("itemsCtrl");
+				e.Handled = true;
+			}
+		}
 
-                double h = 16;
-                if (h * selectedIndex < sv.VerticalOffset)
-                {
-                    // Item is invisible above us
-                    sv.ScrollToVerticalOffset(h * selectedIndex);
-                }
-                else if (h * (selectedIndex + 1) > sv.VerticalOffset + Height)
-                {
-                    // Item is invisible below us
-                    sv.ScrollToVerticalOffset(h * (selectedIndex + 1) - Height);
-                }
+		public ObservableCollection<HaListItem> Items => dataContext.Items;
 
-                if (SelectionChanged != null)
-                    SelectionChanged.Invoke(Items[selectedIndex], null);
-            }
-        }
+		public void ClearItems() {
+			Items.Clear();
+			selectedIndex = -1;
+			((ScrollViewer) FindName("scrollView")).ScrollToVerticalOffset(0);
+		}
 
-        public object SelectedItem
-        {
-            get
-            {
-                return selectedIndex == -1 ? null : Items[selectedIndex].Tag;
-            }
-            set
-            {
-                SelectedIndex = Items.Select(x => x.Tag).ToList().IndexOf(value);
-            }
-        }
+		public int SelectedIndex {
+			get => selectedIndex;
+			set {
+				if (value < 0 || value >= Items.Count)
+					return;
 
-        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            TextBlock tb = (TextBlock)sender;
-            HaListItem item = (HaListItem)tb.DataContext;
-            SelectedIndex = Items.IndexOf(item);
-        }
+				if (selectedIndex != -1)
+					Items[selectedIndex].Selected = false;
+				selectedIndex = value;
+				Items[selectedIndex].Selected = true;
 
-        public void Scroll(int delta)
-        {
-            ScrollViewer sv = (ScrollViewer)FindName("scrollView");
-            sv.ScrollToVerticalOffset(sv.VerticalOffset - delta);
-        }
+				// Make sure item is visible
+				var sv = (ScrollViewer) FindName("scrollView");
+				var ic = (ItemsControl) FindName("itemsCtrl");
 
-        public event SelectionChangedEventHandler SelectionChanged;
-    }
+				double h = 16;
+				if (h * selectedIndex < sv.VerticalOffset)
+					// Item is invisible above us
+					sv.ScrollToVerticalOffset(h * selectedIndex);
+				else if (h * (selectedIndex + 1) > sv.VerticalOffset + Height)
+					// Item is invisible below us
+					sv.ScrollToVerticalOffset(h * (selectedIndex + 1) - Height);
+
+				if (SelectionChanged != null)
+					SelectionChanged.Invoke(Items[selectedIndex], null);
+			}
+		}
+
+		public object SelectedItem {
+			get => selectedIndex == -1 ? null : Items[selectedIndex].Tag;
+			set { SelectedIndex = Items.Select(x => x.Tag).ToList().IndexOf(value); }
+		}
+
+		private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			var tb = (TextBlock) sender;
+			var item = (HaListItem) tb.DataContext;
+			SelectedIndex = Items.IndexOf(item);
+		}
+
+		public void Scroll(int delta) {
+			var sv = (ScrollViewer) FindName("scrollView");
+			sv.ScrollToVerticalOffset(sv.VerticalOffset - delta);
+		}
+
+		public event SelectionChangedEventHandler SelectionChanged;
+	}
 }

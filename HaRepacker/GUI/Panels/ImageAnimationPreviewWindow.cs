@@ -14,10 +14,8 @@ using Spine;
 using System.Runtime.CompilerServices;
 using HaRepacker.Utils;
 
-namespace HaRepacker.GUI.Panels
-{
-    public class ImageAnimationPreviewWindow : Microsoft.Xna.Framework.Game
-	{
+namespace HaRepacker.GUI.Panels {
+	public class ImageAnimationPreviewWindow : Game {
 		// Engine
 		private GraphicsDeviceManager graphicsDeviceMgr;
 
@@ -51,8 +49,7 @@ namespace HaRepacker.GUI.Panels
 		/// Constructor
 		/// </summary>
 		/// <param name="selectedAnimationNodes"></param>
-		public ImageAnimationPreviewWindow(List<WzNode> selectedAnimationNodes, string title_path)
-        {
+		public ImageAnimationPreviewWindow(List<WzNode> selectedAnimationNodes, string title_path) {
 			this.selectedAnimationNodes = selectedAnimationNodes;
 
 			IsMouseVisible = true;
@@ -65,12 +62,11 @@ namespace HaRepacker.GUI.Panels
 			Content.RootDirectory = "Content";
 
 			// Res
-			this.UserScreenScaleFactor = (float)ScreenDPIUtil.GetScreenScaleFactor();
-			this.renderAnimationScaling *= this.UserScreenScaleFactor;
-			this.renderTextScaling *= this.UserScreenScaleFactor;
+			UserScreenScaleFactor = (float) ScreenDPIUtil.GetScreenScaleFactor();
+			renderAnimationScaling *= UserScreenScaleFactor;
+			renderTextScaling *= UserScreenScaleFactor;
 
-			graphicsDeviceMgr = new GraphicsDeviceManager(this)
-			{
+			graphicsDeviceMgr = new GraphicsDeviceManager(this) {
 				SynchronizeWithVerticalRetrace = true,
 				HardwareModeSwitch = true,
 				GraphicsProfile = GraphicsProfile.HiDef,
@@ -80,13 +76,12 @@ namespace HaRepacker.GUI.Panels
 				PreferredBackBufferWidth = (int) (RENDER_WIDTH * UserScreenScaleFactor), // XNA isnt DPI aware.
 				PreferredBackBufferHeight = (int) (RENDER_HEIGHT * UserScreenScaleFactor), // XNA isnt DPI aware.
 				PreferredBackBufferFormat = SurfaceFormat.Color,
-				PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
+				PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
 			};
 			graphicsDeviceMgr.ApplyChanges();
 		}
 
-		protected override void Initialize()
-		{
+		protected override void Initialize() {
 			// TODO: Add your initialization logic here
 
 			// https://stackoverflow.com/questions/55045066/how-do-i-convert-a-ttf-or-other-font-to-a-xnb-xna-game-studio-font
@@ -103,72 +98,64 @@ namespace HaRepacker.GUI.Panels
 		/// <summary>
 		/// Load spine related assets and contents
 		/// </summary>
-		protected override void LoadContent()
-		{
+		protected override void LoadContent() {
 			// Font
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
 			// Animation frames
-			List<IDXObject> animationFrames = new List<IDXObject>();
+			var animationFrames = new List<IDXObject>();
 			// WzNodes to DXObject
-			foreach (WzNode selNode in selectedAnimationNodes)
-			{
-				WzObject obj = (WzObject)selNode.Tag;
-				bool isUOLProperty = obj is WzUOLProperty;
+			foreach (var selNode in selectedAnimationNodes) {
+				var obj = (WzObject) selNode.Tag;
+				var isUOLProperty = obj is WzUOLProperty;
 
-				if (obj is WzCanvasProperty || isUOLProperty)
-				{
+				if (obj is WzCanvasProperty || isUOLProperty) {
 					WzCanvasProperty canvasProperty;
 
 					// Get image property
 					System.Drawing.Bitmap image;
-					if (!isUOLProperty)
-					{
-						canvasProperty = ((WzCanvasProperty)obj);
+					if (!isUOLProperty) {
+						canvasProperty = (WzCanvasProperty) obj;
 						image = canvasProperty.GetLinkedWzCanvasBitmap();
 					}
-					else
-					{
-						WzObject linkVal = ((WzUOLProperty)obj).LinkValue;
-						if (linkVal is WzCanvasProperty property)
-						{
+					else {
+						var linkVal = ((WzUOLProperty) obj).LinkValue;
+						if (linkVal is WzCanvasProperty property) {
 							canvasProperty = property;
 							image = canvasProperty.GetLinkedWzCanvasBitmap();
-                        }
-                        else
-                        {
+						}
+						else {
 							break;
-                        }
+						}
 					}
 
 					// Get delay property
-					int? delay = canvasProperty[WzCanvasProperty.AnimationDelayPropertyName]?.GetInt();
+					var delay = canvasProperty[WzCanvasProperty.AnimationDelayPropertyName]?.GetInt();
 					if (delay == null)
 						delay = 0;
 
 					// Add to the list of images to render
-					System.Drawing.PointF origin = canvasProperty.GetCanvasOriginPosition();
-					DXObject dxObject = new DXObject((int)-origin.X, (int)-origin.Y, image.ToTexture2D(graphicsDeviceMgr.GraphicsDevice), (int)delay)
-					{
+					var origin = canvasProperty.GetCanvasOriginPosition();
+					var dxObject = new DXObject((int) -origin.X, (int) -origin.Y,
+						image.ToTexture2D(graphicsDeviceMgr.GraphicsDevice), (int) delay) {
 						Tag = obj.FullPath
 					};
 
 					animationFrames.Add(dxObject);
 				}
 			}
-			
+
 			dxDrawableItem = new BaseDXDrawableItem(animationFrames, false);
 
 
 			// Debug items
-			System.Drawing.Bitmap bitmap_debug = new System.Drawing.Bitmap(1, 1);
+			var bitmap_debug = new System.Drawing.Bitmap(1, 1);
 			bitmap_debug.SetPixel(0, 0, System.Drawing.Color.White);
 			texture_debugBoundaryRect = bitmap_debug.ToTexture2D(graphicsDeviceMgr.GraphicsDevice);
 		}
 
-		protected override void UnloadContent()
-		{
+		protected override void UnloadContent() {
 			// TODO: Unload any non ContentManager content here
 			graphicsDeviceMgr.EndDraw();
 			graphicsDeviceMgr.Dispose();
@@ -178,31 +165,31 @@ namespace HaRepacker.GUI.Panels
 		}
 
 		private KeyboardState oldKeyboardState = Keyboard.GetState();
-		protected override void Update(GameTime gameTime)
-		{
-			float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-			int TickCount = Environment.TickCount;
-			float delta = gameTime.ElapsedGameTime.Milliseconds / 1000f;
-			KeyboardState newKeyboardState = Keyboard.GetState();  // get the newest state
-			
+
+		protected override void Update(GameTime gameTime) {
+			var frameRate = 1 / (float) gameTime.ElapsedGameTime.TotalSeconds;
+			var TickCount = Environment.TickCount;
+			var delta = gameTime.ElapsedGameTime.Milliseconds / 1000f;
+			var newKeyboardState = Keyboard.GetState(); // get the newest state
+
 			// Allows the game to exit
 #if !WINDOWS_STOREAPP
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-				|| Keyboard.GetState().IsKeyDown(Keys.Escape))
-				this.Exit();
+			    || Keyboard.GetState().IsKeyDown(Keys.Escape))
+				Exit();
 #endif
 			// Handle full screen
-			bool bIsAltEnterPressed = Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Enter);
-			if (bIsAltEnterPressed)
-			{
+			var bIsAltEnterPressed =
+				Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Enter);
+			if (bIsAltEnterPressed) {
 				graphicsDeviceMgr.IsFullScreen = !graphicsDeviceMgr.IsFullScreen;
 				graphicsDeviceMgr.ApplyChanges();
 			}
 
 			// Zoom
-			bool bIsPlusKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemPlus);
-			bool bIsMinusKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemMinus);
-			float zoomOffset = (1.5f / frameRate); // move a fixed amount a second, not dependent on GPU speed
+			var bIsPlusKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemPlus);
+			var bIsMinusKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemMinus);
+			var zoomOffset = 1.5f / frameRate; // move a fixed amount a second, not dependent on GPU speed
 
 			if (bIsPlusKeyPressed)
 				renderAnimationScaling += zoomOffset;
@@ -210,42 +197,40 @@ namespace HaRepacker.GUI.Panels
 				renderAnimationScaling -= zoomOffset;
 
 			// Navigate around the rendered object
-			bool bIsUpKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Up);
-			bool bIsDownKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Down);
-			bool bIsLeftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Left);
-			bool bIsRightKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Right);
+			var bIsUpKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Up);
+			var bIsDownKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Down);
+			var bIsLeftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Left);
+			var bIsRightKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Right);
 
-			int moveOffset = (int)(500f / frameRate); // move a fixed amount a second, not dependent on GPU speed
-			if (bIsLeftKeyPressed || bIsRightKeyPressed)
-			{
+			var moveOffset = (int) (500f / frameRate); // move a fixed amount a second, not dependent on GPU speed
+			if (bIsLeftKeyPressed || bIsRightKeyPressed) {
 				if (bIsLeftKeyPressed)
-					mapShiftX += (int)(moveOffset / renderAnimationScaling);
+					mapShiftX += (int) (moveOffset / renderAnimationScaling);
 
 				else if (bIsRightKeyPressed)
-					mapShiftX -= (int)(moveOffset / renderAnimationScaling);
+					mapShiftX -= (int) (moveOffset / renderAnimationScaling);
 			}
-			if (bIsUpKeyPressed || bIsDownKeyPressed)
-			{
+
+			if (bIsUpKeyPressed || bIsDownKeyPressed) {
 				if (bIsUpKeyPressed)
-					mapShiftY += (int)(moveOffset / renderAnimationScaling);
+					mapShiftY += (int) (moveOffset / renderAnimationScaling);
 
 				else if (bIsDownKeyPressed)
 					mapShiftY -= (int) (moveOffset / renderAnimationScaling);
 			}
 
-			oldKeyboardState = Keyboard.GetState();  // set the new state as the old state for next time
+			oldKeyboardState = Keyboard.GetState(); // set the new state as the old state for next time
 			base.Update(gameTime);
 		}
 
-		protected override void Draw(GameTime gameTime)
-		{
-			float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-			int TickCount = Environment.TickCount;
-			float delta = gameTime.ElapsedGameTime.Milliseconds / 1000f;
+		protected override void Draw(GameTime gameTime) {
+			var frameRate = 1 / (float) gameTime.ElapsedGameTime.TotalSeconds;
+			var TickCount = Environment.TickCount;
+			var delta = gameTime.ElapsedGameTime.Milliseconds / 1000f;
 
-			MouseState mouseState = Mouse.GetState();
-			int mouseXRelativeToMap = mouseState.X - mapShiftX;
-			int mouseYRelativeToMap = mouseState.Y - mapShiftY;
+			var mouseState = Mouse.GetState();
+			var mouseXRelativeToMap = mouseState.X - mapShiftX;
+			var mouseYRelativeToMap = mouseState.Y - mapShiftY;
 
 			// Clear prior drawings
 			GraphicsDevice.Clear(Color.Black);
@@ -253,28 +238,27 @@ namespace HaRepacker.GUI.Panels
 
 			/////////////////////// DRAW ANIMATION ///////////////////////
 			spriteBatch.Begin(
-			   SpriteSortMode.Deferred,
-			   BlendState.NonPremultiplied, null, null, null, null, Matrix.CreateScale(renderAnimationScaling));
+				SpriteSortMode.Deferred,
+				BlendState.NonPremultiplied, null, null, null, null, Matrix.CreateScale(renderAnimationScaling));
 
 			// Animation
 			dxDrawableItem.Draw(spriteBatch, null, gameTime,
-						mapShiftX, mapShiftY, 0, 0,
-						null,
-						RENDER_WIDTH, RENDER_HEIGHT, renderAnimationScaling, RenderResolution.Res_All,
-						TickCount);
-			if (dxDrawableItem.LastFrameDrawn != null)
-			{
-				IDXObject lastFrameDrawn = dxDrawableItem.LastFrameDrawn;
+				mapShiftX, mapShiftY, 0, 0,
+				null,
+				RENDER_WIDTH, RENDER_HEIGHT, renderAnimationScaling, RenderResolution.Res_All,
+				TickCount);
+			if (dxDrawableItem.LastFrameDrawn != null) {
+				var lastFrameDrawn = dxDrawableItem.LastFrameDrawn;
 
 				// Boundary box
-				Rectangle rectBox = new Rectangle(
-					lastFrameDrawn.X - mapShiftX, 
-					lastFrameDrawn.Y - mapShiftY, 
-					lastFrameDrawn.Width, 
+				var rectBox = new Rectangle(
+					lastFrameDrawn.X - mapShiftX,
+					lastFrameDrawn.Y - mapShiftY,
+					lastFrameDrawn.Width,
 					lastFrameDrawn.Height);
 				DrawBorder(spriteBatch, rectBox, 1, Color.White);
 			}
-			
+
 			spriteBatch.End();
 			/////////////////////// ///////////////////////
 
@@ -284,28 +268,32 @@ namespace HaRepacker.GUI.Panels
 				BlendState.NonPremultiplied, null, null, null, null, Matrix.CreateScale(renderTextScaling));
 
 			// Debug at the top right corner
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			sb.Append("FPS: ").Append(frameRate).Append(Environment.NewLine);
-			sb.Append("Mouse : X ").Append(mouseXRelativeToMap).Append(", Y ").Append(mouseYRelativeToMap).Append(Environment.NewLine);
+			sb.Append("Mouse : X ").Append(mouseXRelativeToMap).Append(", Y ").Append(mouseYRelativeToMap)
+				.Append(Environment.NewLine);
 			sb.Append("RMouse: X ").Append(mouseState.X).Append(", Y ").Append(mouseState.Y);
 			spriteBatch.DrawString(font_DebugValues, sb.ToString(), new Vector2(RENDER_WIDTH - 170, 10), Color.White);
 
 			// Current image render information
-			if (dxDrawableItem.LastFrameDrawn != null)
-			{
-				IDXObject lastFrameDrawn = dxDrawableItem.LastFrameDrawn;
-				string imageRenderInfoText = string.Format("[Path: {0}]{7}[Origin: x = {1}, y = {2}]{8}[Dimension: W = {3}, H = {4}]{9}[Delay: {5}]{10}[Scale: {6}x]",
+			if (dxDrawableItem.LastFrameDrawn != null) {
+				var lastFrameDrawn = dxDrawableItem.LastFrameDrawn;
+				var imageRenderInfoText = string.Format(
+					"[Path: {0}]{7}[Origin: x = {1}, y = {2}]{8}[Dimension: W = {3}, H = {4}]{9}[Delay: {5}]{10}[Scale: {6}x]",
 					dxDrawableItem.LastFrameDrawn.Tag as string,
-					lastFrameDrawn.X, lastFrameDrawn.Y, lastFrameDrawn.Width, lastFrameDrawn.Height, lastFrameDrawn.Delay, Math.Round(renderAnimationScaling, 2),
+					lastFrameDrawn.X, lastFrameDrawn.Y, lastFrameDrawn.Width, lastFrameDrawn.Height,
+					lastFrameDrawn.Delay, Math.Round(renderAnimationScaling, 2),
 					Environment.NewLine, Environment.NewLine, Environment.NewLine, Environment.NewLine);
 
-				spriteBatch.DrawString(font_DebugValues, imageRenderInfoText, new Vector2((RENDER_WIDTH /2) - 100, RENDER_HEIGHT - 100), Color.White);
+				spriteBatch.DrawString(font_DebugValues, imageRenderInfoText,
+					new Vector2(RENDER_WIDTH / 2 - 100, RENDER_HEIGHT - 100), Color.White);
 			}
 
 			// Keyboard navigation info
 			if (gameTime.TotalGameTime.TotalSeconds < 3)
 				spriteBatch.DrawString(font,
-					string.Format("Press [Left] [Right] [Up] [Down] for navigation.{0}   [+ -] for zoom", Environment.NewLine),
+					string.Format("Press [Left] [Right] [Up] [Down] for navigation.{0}   [+ -] for zoom",
+						Environment.NewLine),
 					new Vector2(20, 10), Color.White);
 
 			spriteBatch.End();
@@ -323,24 +311,29 @@ namespace HaRepacker.GUI.Panels
 		/// <param name="thicknessOfBorder"></param>
 		/// <param name="borderColor"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void DrawBorder(SpriteBatch sprite, Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
-		{
+		private void DrawBorder(SpriteBatch sprite, Rectangle rectangleToDraw, int thicknessOfBorder,
+			Color borderColor) {
 			// Draw top line
-			sprite.Draw(texture_debugBoundaryRect, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+			sprite.Draw(texture_debugBoundaryRect,
+				new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder),
+				borderColor);
 
 			// Draw left line
-			sprite.Draw(texture_debugBoundaryRect, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
+			sprite.Draw(texture_debugBoundaryRect,
+				new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height),
+				borderColor);
 
 			// Draw right line
-			sprite.Draw(texture_debugBoundaryRect, new Rectangle((rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder),
-											rectangleToDraw.Y,
-											thicknessOfBorder,
-											rectangleToDraw.Height), borderColor);
+			sprite.Draw(texture_debugBoundaryRect, new Rectangle(
+				rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
+				rectangleToDraw.Y,
+				thicknessOfBorder,
+				rectangleToDraw.Height), borderColor);
 			// Draw bottom line
 			sprite.Draw(texture_debugBoundaryRect, new Rectangle(rectangleToDraw.X,
-											rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder,
-											rectangleToDraw.Width,
-											thicknessOfBorder), borderColor);
+				rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder,
+				rectangleToDraw.Width,
+				thicknessOfBorder), borderColor);
 		}
 	}
 }

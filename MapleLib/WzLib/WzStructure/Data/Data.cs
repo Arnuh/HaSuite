@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,37 +17,35 @@
 using System;
 using System.Collections.Generic;
 
-namespace MapleLib.WzLib.WzStructure.Data
-{
+namespace MapleLib.WzLib.WzStructure.Data {
+	public static class Tables {
+		public static Dictionary<string, string> PortalTypeNames = new Dictionary<string, string>() {
+			{"sp", "Start Point"},
+			{"pi", "Invisible"},
+			{"pv", "Visible"},
+			{"pc", "Collision"},
+			{"pg", "Changable"},
+			{"pgi", "Changable Invisible"},
+			{"tp", "Town Portal"},
+			{"ps", "Script"},
+			{"psi", "Script Invisible"},
+			{"pcs", "Script Collision"},
+			{"ph", "Hidden"},
+			{"psh", "Script Hidden"},
+			{"pcj", "Vertical Spring"},
+			{"pci", "Custom Impact Spring"},
+			{"pcig", "Unknown (PCIG)"}
+		};
 
-    public static class Tables
-    {
-        public static Dictionary<string, string> PortalTypeNames = new Dictionary<string, string>() { 
-            { "sp", "Start Point"},
-            { "pi", "Invisible" },
-            { "pv", "Visible" },
-            { "pc", "Collision" },
-            { "pg", "Changable" },
-            { "pgi", "Changable Invisible" },
-            { "tp", "Town Portal" },
-            { "ps", "Script" },
-            { "psi", "Script Invisible" },
-            { "pcs", "Script Collision" },
-            { "ph", "Hidden" },
-            { "psh", "Script Hidden" },
-            { "pcj", "Vertical Spring" },
-            { "pci", "Custom Impact Spring" },
-            { "pcig", "Unknown (PCIG)" }};
-
-        public static string[] BackgroundTypeNames = new string[] {
-            "Regular",
-            "Horizontal Copies",
-            "Vertical Copies",
-            "H+V Copies",
-            "Horizontal Moving+Copies",
-            "Vertical Moving+Copies",
-            "H+V Copies, Horizontal Moving",
-            "H+V Copies, Vertical Moving"
-        };
-    }
+		public static string[] BackgroundTypeNames = new string[] {
+			"Regular",
+			"Horizontal Copies",
+			"Vertical Copies",
+			"H+V Copies",
+			"Horizontal Moving+Copies",
+			"Vertical Moving+Copies",
+			"H+V Copies, Horizontal Moving",
+			"H+V Copies, Vertical Moving"
+		};
+	}
 }

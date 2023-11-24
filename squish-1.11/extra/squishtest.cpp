@@ -22,7 +22,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
    -------------------------------------------------------------------------- */
-   
+
 /*! @file
 
 	@brief	This program tests the error for 1 and 2-colour DXT compression.
@@ -38,168 +38,154 @@
 
 using namespace squish;
 
-double GetColourError( u8 const* a, u8 const* b )
-{
+double GetColourError(const u8* a, const u8* b) {
 	double error = 0.0;
-	for( int i = 0; i < 16; ++i )
-	{
-		for( int j = 0; j < 3; ++j )
-		{
-			int index = 4*i + j;
-			int diff = ( int )a[index] - ( int )b[index];
-			error += ( double )( diff*diff );
+	for (int i = 0; i < 16; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			int index = 4 * i + j;
+			int diff = (int)a[index] - (int)b[index];
+			error += (double)(diff * diff);
 		}
 	}
 	return error / 16.0;
 }
 
-void TestOneColour( int flags )
-{
-	u8 input[4*16];
-	u8 output[4*16];
+void TestOneColour(int flags) {
+	u8 input[4 * 16];
+	u8 output[4 * 16];
 	u8 block[16];
-	
+
 	double avg = 0.0, min = DBL_MAX, max = -DBL_MAX;
 	int counter = 0;
-	
+
 	// test all single-channel colours
-	for( int i = 0; i < 16*4; ++i )
-		input[i] = ( ( i % 4 ) == 3 ) ? 255 : 0;
-	for( int channel = 0; channel < 3; ++channel )
-	{
-		for( int value = 0; value < 255; ++value )
-		{
+	for (int i = 0; i < 16 * 4; ++i)
+		input[i] = ((i % 4) == 3) ? 255 : 0;
+	for (int channel = 0; channel < 3; ++channel) {
+		for (int value = 0; value < 255; ++value) {
 			// set the channnel value
-			for( int i = 0; i < 16; ++i )
-				input[4*i + channel] = ( u8 )value;
-			
+			for (int i = 0; i < 16; ++i)
+				input[4 * i + channel] = (u8)value;
+
 			// compress and decompress
-			Compress( input, block, flags );
-			Decompress( output, block, flags );
-			
+			Compress(input, block, flags);
+			Decompress(output, block, flags);
+
 			// test the results
-			double rm = GetColourError( input, output );
-			double rms = std::sqrt( rm );
-			
+			double rm = GetColourError(input, output);
+			double rms = std::sqrt(rm);
+
 			// accumulate stats
-			min = std::min( min, rms );
-			max = std::max( max, rms );
+			min = std::min(min, rms);
+			max = std::max(max, rms);
 			avg += rm;
 			++counter;
 		}
-		
+
 		// reset the channel value
-		for( int i = 0; i < 16; ++i )
-			input[4*i + channel] = 0;
+		for (int i = 0; i < 16; ++i)
+			input[4 * i + channel] = 0;
 	}
-	
+
 	// finish stats
-	avg = std::sqrt( avg/counter );
-	
+	avg = std::sqrt(avg / counter);
+
 	// show stats
-	std::cout << "one colour error (min, max, avg): " 
+	std::cout << "one colour error (min, max, avg): "
 		<< min << ", " << max << ", " << avg << std::endl;
 }
 
-void TestOneColourRandom( int flags )
-{
-	u8 input[4*16];
-	u8 output[4*16];
+void TestOneColourRandom(int flags) {
+	u8 input[4 * 16];
+	u8 output[4 * 16];
 	u8 block[16];
-	
+
 	double avg = 0.0, min = DBL_MAX, max = -DBL_MAX;
 	int counter = 0;
-	
+
 	// test all single-channel colours
-	for( int test = 0; test < 1000; ++test )
-	{
+	for (int test = 0; test < 1000; ++test) {
 		// set a constant random colour
-		for( int channel = 0; channel < 3; ++channel )
-		{
-			u8 value = ( u8 )( rand() & 0xff );
-			for( int i = 0; i < 16; ++i )
-				input[4*i + channel] = value;
+		for (int channel = 0; channel < 3; ++channel) {
+			u8 value = (u8)(rand() & 0xff);
+			for (int i = 0; i < 16; ++i)
+				input[4 * i + channel] = value;
 		}
-		for( int i = 0; i < 16; ++i )
-			input[4*i + 3] = 255;
-		
+		for (int i = 0; i < 16; ++i)
+			input[4 * i + 3] = 255;
+
 		// compress and decompress
-		Compress( input, block, flags );
-		Decompress( output, block, flags );
-		
+		Compress(input, block, flags);
+		Decompress(output, block, flags);
+
 		// test the results
-		double rm = GetColourError( input, output );
-		double rms = std::sqrt( rm );
-		
+		double rm = GetColourError(input, output);
+		double rms = std::sqrt(rm);
+
 		// accumulate stats
-		min = std::min( min, rms );
-		max = std::max( max, rms );
+		min = std::min(min, rms);
+		max = std::max(max, rms);
 		avg += rm;
 		++counter;
 	}
-	
+
 	// finish stats
-	avg = std::sqrt( avg/counter );
-	
+	avg = std::sqrt(avg / counter);
+
 	// show stats
-	std::cout << "random one colour error (min, max, avg): " 
+	std::cout << "random one colour error (min, max, avg): "
 		<< min << ", " << max << ", " << avg << std::endl;
 }
 
-void TestTwoColour( int flags )
-{
-	u8 input[4*16];
-	u8 output[4*16];
+void TestTwoColour(int flags) {
+	u8 input[4 * 16];
+	u8 output[4 * 16];
 	u8 block[16];
-	
+
 	double avg = 0.0, min = DBL_MAX, max = -DBL_MAX;
 	int counter = 0;
-	
+
 	// test all single-channel colours
-	for( int i = 0; i < 16*4; ++i )
-		input[i] = ( ( i % 4 ) == 3 ) ? 255 : 0;
-	for( int channel = 0; channel < 3; ++channel )
-	{
-		for( int value1 = 0; value1 < 255; ++value1 )
-		{
-			for( int value2 = value1 + 1; value2 < 255; ++value2 )
-			{
+	for (int i = 0; i < 16 * 4; ++i)
+		input[i] = ((i % 4) == 3) ? 255 : 0;
+	for (int channel = 0; channel < 3; ++channel) {
+		for (int value1 = 0; value1 < 255; ++value1) {
+			for (int value2 = value1 + 1; value2 < 255; ++value2) {
 				// set the channnel value
-				for( int i = 0; i < 16; ++i )
-					input[4*i + channel] = ( u8 )( ( i < 8 ) ? value1 : value2 );
-				
+				for (int i = 0; i < 16; ++i)
+					input[4 * i + channel] = (u8)((i < 8) ? value1 : value2);
+
 				// compress and decompress
-				Compress( input, block, flags );
-				Decompress( output, block, flags );
-				
+				Compress(input, block, flags);
+				Decompress(output, block, flags);
+
 				// test the results
-				double rm = GetColourError( input, output );
-				double rms = std::sqrt( rm );
-				
+				double rm = GetColourError(input, output);
+				double rms = std::sqrt(rm);
+
 				// accumulate stats
-				min = std::min( min, rms );
-				max = std::max( max, rms );
+				min = std::min(min, rms);
+				max = std::max(max, rms);
 				avg += rm;
 				++counter;
 			}
 		}
-				
+
 		// reset the channel value
-		for( int i = 0; i < 16; ++i )
-			input[4*i + channel] = 0;
+		for (int i = 0; i < 16; ++i)
+			input[4 * i + channel] = 0;
 	}
-	
+
 	// finish stats
-	avg = std::sqrt( avg/counter );
-	
+	avg = std::sqrt(avg / counter);
+
 	// show stats
-	std::cout << "two colour error (min, max, avg): " 
+	std::cout << "two colour error (min, max, avg): "
 		<< min << ", " << max << ", " << avg << std::endl;
 }
 
-int main()
-{
-	TestOneColourRandom( kDxt1 | kColourRangeFit );
-	TestOneColour( kDxt1 );
-	TestTwoColour( kDxt1 );
+int main() {
+	TestOneColourRandom(kDxt1 | kColourRangeFit);
+	TestOneColour(kDxt1);
+	TestTwoColour(kDxt1);
 }

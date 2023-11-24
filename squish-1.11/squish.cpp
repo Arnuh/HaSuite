@@ -33,9 +33,7 @@
 #include "singlecolourfit.h"
 
 namespace squish {
-
-	static int FixFlags(int flags)
-	{
+	static int FixFlags(int flags) {
 		// grab the flag bits
 		int method = flags & (kDxt1 | kDxt3 | kDxt5);
 		int fit = flags & (kColourIterativeClusterFit | kColourClusterFit | kColourRangeFit);
@@ -54,14 +52,12 @@ namespace squish {
 		return method | fit | metric | extra;
 	}
 
-	void Compress(u8 const* rgba, void* block, int flags)
-	{
+	void Compress(const u8* rgba, void* block, int flags) {
 		// compress with full mask
 		CompressMasked(rgba, 0xffff, block, flags);
 	}
 
-	void CompressMasked(u8 const* rgba, int mask, void* block, int flags)
-	{
+	void CompressMasked(const u8* rgba, int mask, void* block, int flags) {
 		// fix any bad flags
 		flags = FixFlags(flags);
 
@@ -75,20 +71,17 @@ namespace squish {
 		ColourSet colours(rgba, mask, flags);
 
 		// check the compression type and compress colour
-		if (colours.GetCount() == 1)
-		{
+		if (colours.GetCount() == 1) {
 			// always do a single colour fit
 			SingleColourFit fit(&colours, flags);
 			fit.Compress(colourBlock);
 		}
-		else if ((flags & kColourRangeFit) != 0 || colours.GetCount() == 0)
-		{
+		else if ((flags & kColourRangeFit) != 0 || colours.GetCount() == 0) {
 			// do a range fit
 			RangeFit fit(&colours, flags);
 			fit.Compress(colourBlock);
 		}
-		else
-		{
+		else {
 			// default to a cluster fit (could be iterative or not)
 			ClusterFit fit(&colours, flags);
 			fit.Compress(colourBlock);
@@ -101,16 +94,15 @@ namespace squish {
 			CompressAlphaDxt5(rgba, mask, alphaBock);
 	}
 
-	void Decompress(u8* rgba, void const* block_source, int flags)
-	{
+	void Decompress(u8* rgba, const void* block_source, int flags) {
 		// fix any bad flags
 		flags = FixFlags(flags);
 
 		// get the block locations
-		void const* colourBlock = block_source;
-		void const* alphaBock = block_source;
+		const void* colourBlock = block_source;
+		const void* alphaBock = block_source;
 		if ((flags & (kDxt3 | kDxt5)) != 0)
-			colourBlock = reinterpret_cast<u8 const*>(block_source) + 8;
+			colourBlock = reinterpret_cast<const u8*>(block_source) + 8;
 
 		// decompress colour
 		DecompressColour(rgba, colourBlock, (flags & kDxt1) != 0);
@@ -122,8 +114,7 @@ namespace squish {
 			DecompressAlphaDxt5(rgba, alphaBock);
 	}
 
-	int GetStorageRequirements(int width, int height, int flags)
-	{
+	int GetStorageRequirements(int width, int height, int flags) {
 		// fix any bad flags
 		flags = FixFlags(flags);
 
@@ -133,45 +124,38 @@ namespace squish {
 		return blockcount * blocksize;
 	}
 
-	void CompressImage(u8 const* rgba, int width, int height, void* blocks, int flags)
-	{
+	void CompressImage(const u8* rgba, int width, int height, void* blocks, int flags) {
 		// fix any bad flags
 		flags = FixFlags(flags);
 
 		// initialise the block output
-		u8* targetBlock = reinterpret_cast<u8*>(blocks);
+		auto targetBlock = reinterpret_cast<u8*>(blocks);
 		int bytesPerBlock = ((flags & kDxt1) != 0) ? 8 : 16;
 
 		// loop over blocks
-		for (int y = 0; y < height; y += 4)
-		{
-			for (int x = 0; x < width; x += 4)
-			{
+		for (int y = 0; y < height; y += 4) {
+			for (int x = 0; x < width; x += 4) {
 				// build the 4x4 block of pixels
 				u8 sourceRgba[16 * 4];
 				u8* targetPixel = sourceRgba;
 				int mask = 0;
-				for (int py = 0; py < 4; ++py)
-				{
-					for (int px = 0; px < 4; ++px)
-					{
+				for (int py = 0; py < 4; ++py) {
+					for (int px = 0; px < 4; ++px) {
 						// get the source pixel in the image
 						int sx = x + px;
 						int sy = y + py;
 
 						// enable if we're in the image
-						if (sx < width && sy < height)
-						{
+						if (sx < width && sy < height) {
 							// copy the rgba value
-							u8 const* sourcePixel = rgba + 4 * (width * sy + sx);
+							const u8* sourcePixel = rgba + 4 * (width * sy + sx);
 							for (int i = 0; i < 4; ++i)
 								*targetPixel++ = *sourcePixel++;
 
 							// enable this pixel
 							mask |= (1 << (4 * py + px));
 						}
-						else
-						{
+						else {
 							// skip this pixel as its outside the image
 							targetPixel += 4;
 						}
@@ -187,43 +171,36 @@ namespace squish {
 		}
 	}
 
-	void DecompressImage(u8* rgba, int width, int height, void const* blocks, int flags)
-	{
+	void DecompressImage(u8* rgba, int width, int height, const void* blocks, int flags) {
 		// fix any bad flags
 		flags = FixFlags(flags);
 
 		// initialise the block input
-		u8 const* sourceBlock = reinterpret_cast<u8 const*>(blocks);
+		auto sourceBlock = reinterpret_cast<const u8*>(blocks);
 		int bytesPerBlock = ((flags & kDxt1) != 0) ? 8 : 16;
 
 		// loop over blocks
-		for (int y = 0; y < height; y += 4)
-		{
-			for (int x = 0; x < width; x += 4)
-			{
+		for (int y = 0; y < height; y += 4) {
+			for (int x = 0; x < width; x += 4) {
 				// decompress the block
 				u8 targetRgba[4 * 16];
 				Decompress(targetRgba, sourceBlock, flags);
 
 				// write the decompressed pixels to the correct image locations
-				u8 const* sourcePixel = targetRgba;
-				for (int py = 0; py < 4; ++py)
-				{
-					for (int px = 0; px < 4; ++px)
-					{
+				const u8* sourcePixel = targetRgba;
+				for (int py = 0; py < 4; ++py) {
+					for (int px = 0; px < 4; ++px) {
 						// get the target location
 						int sx = x + px;
 						int sy = y + py;
-						if (sx < width && sy < height)
-						{
+						if (sx < width && sy < height) {
 							u8* targetPixel = rgba + 4 * (width * sy + sx);
 
 							// copy the rgba value
 							for (int i = 0; i < 4; ++i)
 								*targetPixel++ = *sourcePixel++;
 						}
-						else
-						{
+						else {
 							// skip this pixel as its outside the image
 							sourcePixel += 4;
 						}
@@ -237,40 +214,36 @@ namespace squish {
 	}
 
 
-
 	// DLL EXPORTS
-	extern "C"
-	{
-		__declspec(dllexport) int _DLLEXPORT_FixFlags(int flags)
-		{
-			return FixFlags(flags);
-		}
-		__declspec(dllexport) void  _DLLEXPORT_Compress(u8 const* rgba, void* block, int flags)
-		{
-			Compress(rgba, block, flags);
-		}
-		__declspec(dllexport) void _DLLEXPORT_CompressMasked(u8 const* rgba, int mask, void* block, int flags)
-		{
-			CompressMasked(rgba, mask, block, flags);
-		}
-		__declspec(dllexport) void _DLLEXPORT_Decompress(u8* rgba, void const* block_source, int flags)
-		{
-			Decompress(rgba, block_source, flags);
-		}
-		__declspec(dllexport) int _DLLEXPORT_GetStorageRequirements(int width, int height, int flags)
-		{
-			return GetStorageRequirements(width, height, flags);
-		}
-		__declspec(dllexport) void _DLLEXPORT_CompressImage(u8 const* rgba, int width, int height, void* blocks_dest, int flags)
-		{
-			CompressImage(rgba, width, height, blocks_dest, flags);
-		}
-		__declspec(dllexport) void _DLLEXPORT_DecompressImage(u8* rgba, int width, int height, void const* blocks_source, int flags)
-		{
-			DecompressImage(rgba, width, height, blocks_source, flags);
-		}
+	extern "C" {
+	__declspec(dllexport) int _DLLEXPORT_FixFlags(int flags) {
+		return FixFlags(flags);
 	}
-} 
+
+	__declspec(dllexport) void _DLLEXPORT_Compress(const u8* rgba, void* block, int flags) {
+		Compress(rgba, block, flags);
+	}
+
+	__declspec(dllexport) void _DLLEXPORT_CompressMasked(const u8* rgba, int mask, void* block, int flags) {
+		CompressMasked(rgba, mask, block, flags);
+	}
+
+	__declspec(dllexport) void _DLLEXPORT_Decompress(u8* rgba, const void* block_source, int flags) {
+		Decompress(rgba, block_source, flags);
+	}
+
+	__declspec(dllexport) int _DLLEXPORT_GetStorageRequirements(int width, int height, int flags) {
+		return GetStorageRequirements(width, height, flags);
+	}
+
+	__declspec(dllexport) void _DLLEXPORT_CompressImage(const u8* rgba, int width, int height, void* blocks_dest, int flags) {
+		CompressImage(rgba, width, height, blocks_dest, flags);
+	}
+
+	__declspec(dllexport) void _DLLEXPORT_DecompressImage(u8* rgba, int width, int height, const void* blocks_source, int flags) {
+		DecompressImage(rgba, width, height, blocks_source, flags);
+	}
+	}
+}
 
 // namespace squish
-

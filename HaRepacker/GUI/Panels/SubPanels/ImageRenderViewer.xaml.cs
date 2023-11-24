@@ -18,426 +18,391 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static MapleLib.Configuration.UserSettings;
 
-namespace HaRepacker.GUI.Panels.SubPanels
-{
-    /// <summary>
-    /// Interaction logic for ImageRenderViewer.xaml
-    /// </summary>
-    public partial class ImageRenderViewer : UserControl,  INotifyPropertyChanged
-    {
-        private bool isLoading = false;
+namespace HaRepacker.GUI.Panels.SubPanels {
+	/// <summary>
+	/// Interaction logic for ImageRenderViewer.xaml
+	/// </summary>
+	public partial class ImageRenderViewer : UserControl, INotifyPropertyChanged {
+		private bool isLoading = false;
 
-        public ImageRenderViewer()
-        {
-            isLoading = true; // set isloading 
+		public ImageRenderViewer() {
+			isLoading = true; // set isloading 
 
-            InitializeComponent();
+			InitializeComponent();
 
-            // Set theme color
-            if (Program.ConfigurationManager.UserSettings.ThemeColor == (int)UserSettingsThemeColor.Dark)
-            {
-                VisualStateManager.GoToState(this, "BlackTheme", false);
-            }
+			// Set theme color
+			if (Program.ConfigurationManager.UserSettings.ThemeColor == (int) UserSettingsThemeColor.Dark)
+				VisualStateManager.GoToState(this, "BlackTheme", false);
 
-            this.DataContext = this; // set data binding to self.
+			DataContext = this; // set data binding to self.
 
-            Loaded += ImageRenderViewer_Loaded;
-        }
+			Loaded += ImageRenderViewer_Loaded;
+		}
 
-        /// <summary>
-        /// When the page loads
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ImageRenderViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Set via app settings
-                checkbox_crosshair.IsChecked = Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation;
-                checkbox_border.IsChecked = Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation;
+		/// <summary>
+		/// When the page loads
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void ImageRenderViewer_Loaded(object sender, RoutedEventArgs e) {
+			try {
+				// Set via app settings
+				checkbox_crosshair.IsChecked =
+					Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation;
+				checkbox_border.IsChecked = Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation;
 
-                ZoomSlider.Value = Program.ConfigurationManager.UserSettings.ImageZoomLevel;
-            } finally
-            {
-                isLoading = false;
-            }
-        }
+				ZoomSlider.Value = Program.ConfigurationManager.UserSettings.ImageZoomLevel;
+			}
+			finally {
+				isLoading = false;
+			}
+		}
 
-        #region Exported Fields
-        private WzCanvasProperty _ParentWzCanvasProperty = null;
-        /// <summary>
-        /// The parent WZCanvasProperty to display from
-        /// </summary>
-        public WzCanvasProperty ParentWzCanvasProperty
-        {
-            get { return _ParentWzCanvasProperty; }
-            set
-            {
-                _ParentWzCanvasProperty = value;
-            }
-        }
+		#region Exported Fields
 
-        private ImageSource _Image = null;
-        /// <summary>
-        /// The image to display on the canvas
-        /// </summary>
-        public ImageSource Image
-        {
-            get { return _Image; }
-            set
-            {
-                _Image = value;
-                OnPropertyChanged("Image");
+		private WzCanvasProperty _ParentWzCanvasProperty = null;
 
-                // Update image width and height too.
-                ImageWidth = _Image.Width;
-                ImageHeight = _Image.Height;
-            }
-        }
+		/// <summary>
+		/// The parent WZCanvasProperty to display from
+		/// </summary>
+		public WzCanvasProperty ParentWzCanvasProperty {
+			get => _ParentWzCanvasProperty;
+			set => _ParentWzCanvasProperty = value;
+		}
 
-        private int _Delay = 0;
-        /// <summary>
-        /// Delay of the image
-        /// </summary>
-        public int Delay
-        {
-            get { return _Delay; }
-            set
-            {
-                _Delay = value;
-                OnPropertyChanged("Delay");
+		private ImageSource _Image = null;
 
-                textbox_delay.Text = _Delay.ToString();
-            }
-        }
+		/// <summary>
+		/// The image to display on the canvas
+		/// </summary>
+		public ImageSource Image {
+			get => _Image;
+			set {
+				_Image = value;
+				OnPropertyChanged("Image");
 
-        private PointF _CanvasVectorOrigin = new PointF(0, 0);
-        /// <summary>
-        /// Origin to center the crosshair
-        /// </summary>
-        public PointF CanvasVectorOrigin
-        {
-            get { return _CanvasVectorOrigin; }
-            set
-            {
-                _CanvasVectorOrigin = value;
-                OnPropertyChanged("CanvasVectorOrigin");
+				// Update image width and height too.
+				ImageWidth = _Image.Width;
+				ImageHeight = _Image.Height;
+			}
+		}
 
-                textbox_originX.Text = _CanvasVectorOrigin.X.ToString();
-                textbox_originY.Text = _CanvasVectorOrigin.Y.ToString();
-            }
-        }
+		private int _Delay = 0;
 
-        private PointF _CanvasVectorHead = new PointF(0, 0);
-        /// <summary>
-        /// Head vector (Hit positioning for mobs?)
-        /// </summary>
-        public PointF CanvasVectorHead
-        {
-            get { return _CanvasVectorHead; }
-            set
-            {
-                _CanvasVectorHead = value;
-                OnPropertyChanged("CanvasVectorHead");
+		/// <summary>
+		/// Delay of the image
+		/// </summary>
+		public int Delay {
+			get => _Delay;
+			set {
+				_Delay = value;
+				OnPropertyChanged("Delay");
 
-                textbox_headX.Text = _CanvasVectorHead.X.ToString();
-                textbox_headY.Text = _CanvasVectorHead.Y.ToString();
-            }
-        }
+				textbox_delay.Text = _Delay.ToString();
+			}
+		}
 
-        private PointF _CanvasVectorLt = new PointF(0, 0);
-        /// <summary>
-        /// lt vector
-        /// </summary>
-        public PointF CanvasVectorLt
-        {
-            get { return _CanvasVectorLt; }
-            set
-            {
-                _CanvasVectorLt = value;
-                OnPropertyChanged("CanvasVectorLt");
+		private PointF _CanvasVectorOrigin = new PointF(0, 0);
 
-                textbox_ltX.Text = _CanvasVectorLt.X.ToString();
-                textbox_ltY.Text = _CanvasVectorLt.Y.ToString();
-            }
-        }
+		/// <summary>
+		/// Origin to center the crosshair
+		/// </summary>
+		public PointF CanvasVectorOrigin {
+			get => _CanvasVectorOrigin;
+			set {
+				_CanvasVectorOrigin = value;
+				OnPropertyChanged("CanvasVectorOrigin");
 
-        private double _ImageWidth = 0;
-        /// <summary>
-        /// The width of the image currently displayed on the canvas
-        /// </summary>
-        public double ImageWidth
-        {
-            get { return _ImageWidth; }
-            set { 
-                this._ImageWidth = value;
-                OnPropertyChanged("ImageWidth");
-            }
-        }
+				textbox_originX.Text = _CanvasVectorOrigin.X.ToString();
+				textbox_originY.Text = _CanvasVectorOrigin.Y.ToString();
+			}
+		}
 
-        private double _ImageHeight = 0;
-        /// <summary>
-        /// The Height of the image currently displayed on the canvas
-        /// </summary>
-        public double ImageHeight
-        {
-            get { return _ImageHeight; }
-            set {
-                this._ImageHeight = value;
-                OnPropertyChanged("ImageHeight");
-            }
-        }
-        #endregion
+		private PointF _CanvasVectorHead = new PointF(0, 0);
 
-        #region Property Changed
-        /// <summary>
-        /// Property changed event handler to trigger update UI
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
+		/// <summary>
+		/// Head vector (Hit positioning for mobs?)
+		/// </summary>
+		public PointF CanvasVectorHead {
+			get => _CanvasVectorHead;
+			set {
+				_CanvasVectorHead = value;
+				OnPropertyChanged("CanvasVectorHead");
 
-        #region UI Events
-        /// <summary>
-        /// Checkbox for crosshair
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkbox_crosshair_Checked(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+				textbox_headX.Text = _CanvasVectorHead.X.ToString();
+				textbox_headY.Text = _CanvasVectorHead.Y.ToString();
+			}
+		}
 
-            CheckBox checkbox = (CheckBox)sender;
-            if (checkbox.IsChecked == true)
-            {
-                Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = true;
-            } else
-            {
-                Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = false;
-            }
-        }
+		private PointF _CanvasVectorLt = new PointF(0, 0);
 
-        /// <summary>
-        /// Checkbox for Border
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkbox_border_Checked(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		/// <summary>
+		/// lt vector
+		/// </summary>
+		public PointF CanvasVectorLt {
+			get => _CanvasVectorLt;
+			set {
+				_CanvasVectorLt = value;
+				OnPropertyChanged("CanvasVectorLt");
 
-            CheckBox checkbox = (CheckBox)sender;
-            if (checkbox.IsChecked == true)
-            {
-                Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = true;
-            }
-            else
-            {
-                Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = false;
-            }
-        }
+				textbox_ltX.Text = _CanvasVectorLt.X.ToString();
+				textbox_ltY.Text = _CanvasVectorLt.Y.ToString();
+			}
+		}
 
-        /// <summary>
-        /// 'lt' value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textbox_lt_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		private double _ImageWidth = 0;
 
-            button_ltEdit.IsEnabled = true;
-        }
+		/// <summary>
+		/// The width of the image currently displayed on the canvas
+		/// </summary>
+		public double ImageWidth {
+			get => _ImageWidth;
+			set {
+				_ImageWidth = value;
+				OnPropertyChanged("ImageWidth");
+			}
+		}
 
-        /// <summary>
-        /// 'head' value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textbox_head_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		private double _ImageHeight = 0;
 
-            button_headEdit.IsEnabled = true;
-        }
+		/// <summary>
+		/// The Height of the image currently displayed on the canvas
+		/// </summary>
+		public double ImageHeight {
+			get => _ImageHeight;
+			set {
+				_ImageHeight = value;
+				OnPropertyChanged("ImageHeight");
+			}
+		}
 
-        /// <summary>
-        ///  'vector' value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textbox_origin_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		#endregion
 
-            button_originEdit.IsEnabled = true;
-        }
+		#region Property Changed
 
-        /// <summary>
-        /// 'delay' valeu changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textbox_delay_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		/// <summary>
+		/// Property changed event handler to trigger update UI
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
 
-            button_delayEdit.IsEnabled = true;
-        }
+		protected virtual void OnPropertyChanged(string propertyName) {
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-        /// <summary>
-        /// Easy access to editing image 'lt' properties 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_ltEdit_Click(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		#endregion
 
-            if (int.TryParse(textbox_ltX.Text, out int newX) && int.TryParse(textbox_ltY.Text, out int newY))
-            {
-                WzVectorProperty vectorProp = _ParentWzCanvasProperty[WzCanvasProperty.LtPropertyName] as WzVectorProperty;
-                if (vectorProp != null)
-                {
-                    vectorProp.X.Value = newX;
-                    vectorProp.Y.Value = newY;
+		#region UI Events
 
-                    // Update local UI
-                    CanvasVectorLt = new PointF(newX, newY);
+		/// <summary>
+		/// Checkbox for crosshair
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void checkbox_crosshair_Checked(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
 
-                    button_ltEdit.IsEnabled = false;
-                }
-            }
-        }
+			var checkbox = (CheckBox) sender;
+			if (checkbox.IsChecked == true)
+				Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = true;
+			else
+				Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = false;
+		}
 
-        /// <summary>
-        /// Easy access to editing image 'head' properties 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_headEdit_Click(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		/// <summary>
+		/// Checkbox for Border
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void checkbox_border_Checked(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
 
-            if (int.TryParse(textbox_headX.Text, out int newX) && int.TryParse(textbox_headY.Text, out int newY))
-            {
-                WzVectorProperty vectorProp = _ParentWzCanvasProperty[WzCanvasProperty.HeadPropertyName] as WzVectorProperty;
-                if (vectorProp != null)
-                {
-                    vectorProp.X.Value = newX;
-                    vectorProp.Y.Value = newY;
+			var checkbox = (CheckBox) sender;
+			if (checkbox.IsChecked == true)
+				Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = true;
+			else
+				Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = false;
+		}
 
-                    // Update local UI
-                    CanvasVectorHead = new PointF(newX, newY);
+		/// <summary>
+		/// 'lt' value changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textbox_lt_TextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading)
+				return;
 
-                    button_headEdit.IsEnabled = false;
-                }
-            }
-        }
+			button_ltEdit.IsEnabled = true;
+		}
 
-        /// <summary>
-        /// Easy access to editing image 'delay' properties 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_delayEdit_Click(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		/// <summary>
+		/// 'head' value changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textbox_head_TextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading)
+				return;
 
-            if (int.TryParse(textbox_delay.Text, out int newdelay))
-            {
-                WzIntProperty intProperty = _ParentWzCanvasProperty[WzCanvasProperty.AnimationDelayPropertyName] as WzIntProperty;
-                if (intProperty != null)
-                {
-                    intProperty.Value = newdelay;
+			button_headEdit.IsEnabled = true;
+		}
 
-                    // Update local UI
-                    Delay = newdelay;
+		/// <summary>
+		///  'vector' value changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textbox_origin_TextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading)
+				return;
 
-                    button_delayEdit.IsEnabled = false;
-                }
-            }
-        }
+			button_originEdit.IsEnabled = true;
+		}
 
-        /// <summary>
-        /// Easy access to editing image 'origin' properties 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_originEdit_Click(object sender, RoutedEventArgs e)
-        {
-            if (isLoading)
-                return;
+		/// <summary>
+		/// 'delay' valeu changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textbox_delay_TextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading)
+				return;
 
-            if (int.TryParse(textbox_originX.Text, out int newX) && int.TryParse(textbox_originY.Text, out int newY))
-            {
-                WzVectorProperty vectorProp = _ParentWzCanvasProperty[WzCanvasProperty.OriginPropertyName] as WzVectorProperty;
-                if (vectorProp != null)
-                {
-                    vectorProp.X.Value = newX;
-                    vectorProp.Y.Value = newY;
+			button_delayEdit.IsEnabled = true;
+		}
 
-                    // Update local UI
-                    CanvasVectorOrigin = new PointF(newX, newY);
+		/// <summary>
+		/// Easy access to editing image 'lt' properties 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button_ltEdit_Click(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
 
-                    button_originEdit.IsEnabled = false;
-                }
-            }
-        }
+			if (int.TryParse(textbox_ltX.Text, out var newX) && int.TryParse(textbox_ltY.Text, out var newY)) {
+				var vectorProp =
+					_ParentWzCanvasProperty[WzCanvasProperty.LtPropertyName] as WzVectorProperty;
+				if (vectorProp != null) {
+					vectorProp.X.Value = newX;
+					vectorProp.Y.Value = newY;
 
-        /// <summary>
-        /// Image zoom level on value changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (isLoading)
-                return;
+					// Update local UI
+					CanvasVectorLt = new PointF(newX, newY);
 
-            Slider zoomSlider = (Slider)sender;
-            Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;
-        }
+					button_ltEdit.IsEnabled = false;
+				}
+			}
+		}
 
-        private bool bBorderDragging = false;
+		/// <summary>
+		/// Easy access to editing image 'head' properties 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button_headEdit_Click(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
 
-        private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            bBorderDragging = true;
-            Rectangle_MouseMove(sender, e);
+			if (int.TryParse(textbox_headX.Text, out var newX) && int.TryParse(textbox_headY.Text, out var newY)) {
+				var vectorProp =
+					_ParentWzCanvasProperty[WzCanvasProperty.HeadPropertyName] as WzVectorProperty;
+				if (vectorProp != null) {
+					vectorProp.X.Value = newX;
+					vectorProp.Y.Value = newY;
 
-            System.Diagnostics.Debug.WriteLine("Mouse left button down");
-        }
+					// Update local UI
+					CanvasVectorHead = new PointF(newX, newY);
 
-        private void Rectangle_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (bBorderDragging)
-            {
-                // dragMove
-                System.Diagnostics.Debug.WriteLine("Mouse drag move");
-            }
-        }
+					button_headEdit.IsEnabled = false;
+				}
+			}
+		}
 
-        private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            bBorderDragging = false;
+		/// <summary>
+		/// Easy access to editing image 'delay' properties 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button_delayEdit_Click(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
 
-            System.Diagnostics.Debug.WriteLine("Mouse left button up");
-        }
-        #endregion
-    }
+			if (int.TryParse(textbox_delay.Text, out var newdelay)) {
+				var intProperty =
+					_ParentWzCanvasProperty[WzCanvasProperty.AnimationDelayPropertyName] as WzIntProperty;
+				if (intProperty != null) {
+					intProperty.Value = newdelay;
+
+					// Update local UI
+					Delay = newdelay;
+
+					button_delayEdit.IsEnabled = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Easy access to editing image 'origin' properties 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button_originEdit_Click(object sender, RoutedEventArgs e) {
+			if (isLoading)
+				return;
+
+			if (int.TryParse(textbox_originX.Text, out var newX) && int.TryParse(textbox_originY.Text, out var newY)) {
+				var vectorProp =
+					_ParentWzCanvasProperty[WzCanvasProperty.OriginPropertyName] as WzVectorProperty;
+				if (vectorProp != null) {
+					vectorProp.X.Value = newX;
+					vectorProp.Y.Value = newY;
+
+					// Update local UI
+					CanvasVectorOrigin = new PointF(newX, newY);
+
+					button_originEdit.IsEnabled = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Image zoom level on value changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			if (isLoading)
+				return;
+
+			var zoomSlider = (Slider) sender;
+			Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;
+		}
+
+		private bool bBorderDragging = false;
+
+		private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			bBorderDragging = true;
+			Rectangle_MouseMove(sender, e);
+
+			System.Diagnostics.Debug.WriteLine("Mouse left button down");
+		}
+
+		private void Rectangle_MouseMove(object sender, MouseEventArgs e) {
+			if (bBorderDragging)
+				// dragMove
+				System.Diagnostics.Debug.WriteLine("Mouse drag move");
+		}
+
+		private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+			bBorderDragging = false;
+
+			System.Diagnostics.Debug.WriteLine("Mouse left button up");
+		}
+
+		#endregion
+	}
 }

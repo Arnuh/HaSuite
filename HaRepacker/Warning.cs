@@ -6,18 +6,15 @@
 
 using System.Windows.Forms;
 
-namespace HaRepacker
-{
-    public static class Warning
-    {
-        public static bool Warn(string text)
-        {
-            return Program.ConfigurationManager.UserSettings.SuppressWarnings || MessageBox.Show(text, Properties.Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
-        }
+namespace HaRepacker {
+	public static class Warning {
+		public static bool Warn(string text) {
+			return Program.ConfigurationManager.UserSettings.SuppressWarnings || MessageBox.Show(text,
+				Properties.Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+		}
 
-        public static void Error(string text)
-        {
-            MessageBox.Show(text, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
+		public static void Error(string text) {
+			MessageBox.Show(text, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+	}
 }

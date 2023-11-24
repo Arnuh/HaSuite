@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- * 
+ *
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- * 
+ *
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -33,33 +33,74 @@ using System;
 namespace Spine {
 	public class BoneData {
 		internal BoneData parent;
-		internal String name;
+		internal string name;
 		internal float length, x, y, rotation, scaleX = 1, scaleY = 1;
 		internal bool flipX, flipY;
 		internal bool inheritScale = true, inheritRotation = true;
 
 		/// <summary>May be null.</summary>
-		public BoneData Parent { get { return parent; } }
-		public String Name { get { return name; } }
-		public float Length { get { return length; } set { length = value; } }
-		public float X { get { return x; } set { x = value; } }
-		public float Y { get { return y; } set { y = value; } }
-		public float Rotation { get { return rotation; } set { rotation = value; } }
-		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
-		public float ScaleY { get { return scaleY; } set { scaleY = value; } }
-		public bool FlipX { get { return flipX; } set { flipX = value; } }
-		public bool FlipY { get { return flipY; } set { flipY = value; } }
-		public bool InheritScale { get { return inheritScale; } set { inheritScale = value; } }
-		public bool InheritRotation { get { return inheritRotation; } set { inheritRotation = value; } }
+		public BoneData Parent => parent;
+
+		public string Name => name;
+
+		public float Length {
+			get => length;
+			set => length = value;
+		}
+
+		public float X {
+			get => x;
+			set => x = value;
+		}
+
+		public float Y {
+			get => y;
+			set => y = value;
+		}
+
+		public float Rotation {
+			get => rotation;
+			set => rotation = value;
+		}
+
+		public float ScaleX {
+			get => scaleX;
+			set => scaleX = value;
+		}
+
+		public float ScaleY {
+			get => scaleY;
+			set => scaleY = value;
+		}
+
+		public bool FlipX {
+			get => flipX;
+			set => flipX = value;
+		}
+
+		public bool FlipY {
+			get => flipY;
+			set => flipY = value;
+		}
+
+		public bool InheritScale {
+			get => inheritScale;
+			set => inheritScale = value;
+		}
+
+		public bool InheritRotation {
+			get => inheritRotation;
+			set => inheritRotation = value;
+		}
 
 		/// <param name="parent">May be null.</param>
-		public BoneData (String name, BoneData parent) {
+		public BoneData(string name, BoneData parent) {
 			if (name == null) throw new ArgumentNullException("name cannot be null.");
 			this.name = name;
 			this.parent = parent;
 		}
 
-		override public String ToString () {
+		public override string ToString() {
 			return name;
 		}
 	}

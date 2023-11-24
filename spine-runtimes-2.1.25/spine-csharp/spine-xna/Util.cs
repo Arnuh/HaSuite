@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- * 
+ *
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- * 
+ *
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,8 +39,7 @@ using Windows.Storage;
 #endif
 
 namespace Spine {
-
-	static public class Util {
+	public static class Util {
 #if WINDOWS_STOREAPP
 		private static async Task<Texture2D> LoadFile(GraphicsDevice device, String path) {
 			var folder = Windows.ApplicationModel.Package.Current.InstalledLocation;
@@ -56,25 +55,25 @@ namespace Spine {
 			return LoadFile(device, path).Result;
 		}
 #else
-		static public Texture2D LoadTexture (GraphicsDevice device, String path) {
-
+		public static Texture2D LoadTexture(GraphicsDevice device, string path) {
 #if WINDOWS_PHONE
             Stream stream = Microsoft.Xna.Framework.TitleContainer.OpenStream(path);
             using (Stream input = stream)
             {
 #else
-            using (Stream input = new FileStream(path, FileMode.Open, FileAccess.Read)) {
+			using (Stream input = new FileStream(path, FileMode.Open, FileAccess.Read)) {
 #endif
 				try {
-					return Util.LoadTexture(device, input);
-				} catch (Exception ex) {
+					return LoadTexture(device, input);
+				}
+				catch (Exception ex) {
 					throw new Exception("Error reading texture file: " + path, ex);
 				}
 			}
 		}
 #endif
 
-		static public Texture2D LoadTexture (GraphicsDevice device, Stream input) {
+		public static Texture2D LoadTexture(GraphicsDevice device, Stream input) {
 			return Texture2D.FromStream(device, input);
 		}
 	}

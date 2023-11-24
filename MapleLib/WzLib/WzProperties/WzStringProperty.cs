@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,36 +17,41 @@
 using System.IO;
 using MapleLib.WzLib.Util;
 
-namespace MapleLib.WzLib.WzProperties
-{
+namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
 	/// A property with a string as a value
 	/// </summary>
-	public class WzStringProperty : WzImageProperty
-	{
+	public class WzStringProperty : WzImageProperty {
 		#region Fields
+
 		internal string name, val;
+
 		internal WzObject parent;
 		//internal WzImage imgParent;
+
 		#endregion
 
 		#region Inherited Members
-        public override void SetValue(object value)
-        {
-            val = (string)value;
-        }
 
-        public override WzImageProperty DeepClone()
-        {
-            WzStringProperty clone = new WzStringProperty(name, val);
-            return clone;
-        }
+		public override void SetValue(object value) {
+			val = (string) value;
+		}
 
-		public override object WzValue { get { return Value; } }
+		public override WzImageProperty DeepClone() {
+			var clone = new WzStringProperty(name, val);
+			return clone;
+		}
+
+		public override object WzValue => Value;
+
 		/// <summary>
 		/// The parent of the object
 		/// </summary>
-		public override WzObject Parent { get { return parent; } internal set { parent = value; } }
+		public override WzObject Parent {
+			get => parent;
+			internal set => parent = value;
+		}
+
 		/*/// <summary>
 		/// The image that this property is contained in
 		/// </summary>
@@ -54,107 +59,112 @@ namespace MapleLib.WzLib.WzProperties
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
-		public override WzPropertyType PropertyType { get { return WzPropertyType.String; } }
+		public override WzPropertyType PropertyType => WzPropertyType.String;
+
 		/// <summary>
 		/// The name of the property
 		/// </summary>
-		public override string Name { get { return name; } set { name = value; } }
-		public override void WriteValue(WzBinaryWriter writer)
-		{
-			writer.Write((byte)8);
+		public override string Name {
+			get => name;
+			set => name = value;
+		}
+
+		public override void WriteValue(WzBinaryWriter writer) {
+			writer.Write((byte) 8);
 			writer.WriteStringValue(Value, 0, 1);
 		}
-		public override void ExportXml(StreamWriter writer, int level)
-		{
-			writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.EmptyNamedValuePair("WzString", this.Name, this.Value));
+
+		public override void ExportXml(StreamWriter writer, int level) {
+			writer.WriteLine(
+				XmlUtil.Indentation(level) + XmlUtil.EmptyNamedValuePair("WzString", Name, Value));
 		}
+
 		/// <summary>
 		/// Disposes the object
 		/// </summary>
-		public override void Dispose()
-		{
+		public override void Dispose() {
 			name = null;
 			val = null;
 		}
+
 		#endregion
 
 		#region Custom Members
+
 		/// <summary>
 		/// The value of the property
 		/// </summary>
-		public string Value { get { return val; } set { val = value; } }
+		public string Value {
+			get => val;
+			set => val = value;
+		}
+
 		/// <summary>
 		/// Creates a blank WzStringProperty
 		/// </summary>
-		public WzStringProperty() { }
+		public WzStringProperty() {
+		}
+
 		/// <summary>
 		/// Creates a WzStringProperty with the specified name
 		/// </summary>
 		/// <param name="name">The name of the property</param>
-		public WzStringProperty(string name)
-		{
+		public WzStringProperty(string name) {
 			this.name = name;
 		}
+
 		/// <summary>
 		/// Creates a WzStringProperty with the specified name and value
 		/// </summary>
 		/// <param name="name">The name of the property</param>
 		/// <param name="value">The value of the property</param>
-		public WzStringProperty(string name, string value)
-		{
+		public WzStringProperty(string name, string value) {
 			this.name = name;
-			this.val = value;
+			val = value;
 		}
 
 		/// <summary>
 		/// Spine runtime related resources
 		/// p.s just assuming it should be, if its a WzStingProperty and .atlas, .skel or .json until there is a better way to detect it
 		/// </summary>
-		public bool IsSpineRelatedResources
-		{
-			get { return (name.EndsWith(".atlas") || name.EndsWith(".json") || name.EndsWith(".skel")); }
-		}
+		public bool IsSpineRelatedResources =>
+			name.EndsWith(".atlas") || name.EndsWith(".json") || name.EndsWith(".skel");
 
-		public bool IsSpineAtlasResources
-		{
-			get { return (name.EndsWith(".atlas")); }
-		}
+		public bool IsSpineAtlasResources => name.EndsWith(".atlas");
+
 		#endregion
 
 		#region Cast Values
-		public override int GetInt()
-		{
-			int outvalue = 0;
+
+		public override int GetInt() {
+			var outvalue = 0;
 			int.TryParse(val, out outvalue);
 
 			return outvalue; // stupid nexon . fu, some shit that should be WzIntProperty
 		}
 
-		public override short GetShort()
-		{
+		public override short GetShort() {
 			short outvalue = 0;
 			short.TryParse(val, out outvalue);
 
 			return outvalue; // stupid nexon . fu, some shit that should be WzIntProperty
 		}
 
-		public override long GetLong()
-		{
+		public override long GetLong() {
 			long outvalue = 0;
 			long.TryParse(val, out outvalue);
 
 			return outvalue; // stupid nexon . fu, some shit that should be WzIntProperty
 		}
 
-		public override string GetString()
-        {
-            return val;
-        }
+		public override string GetString() {
+			return val;
+		}
 
-        public override string ToString()
-        {
-            return val;
-        }
-        #endregion
+		public override string ToString() {
+			return val;
+		}
+
+		#endregion
 	}
 }

@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,10 +19,8 @@ using System.Net;
 using System.Net.Sockets;
 using MapleLib.MapleCryptoLib;
 
-namespace MapleLib.PacketLib
-{
-	public class Monitor
-	{
+namespace MapleLib.PacketLib {
+	public class Monitor {
 		/// <summary>
 		/// The Monitor socket
 		/// </summary>
@@ -61,34 +59,28 @@ namespace MapleLib.PacketLib
 		/// <summary>
 		/// The Recieved packet crypto manager
 		/// </summary>
-		public MapleCrypto RIV
-		{
-			get { return _RIV; }
-			set { _RIV = value; }
+		public MapleCrypto RIV {
+			get => _RIV;
+			set => _RIV = value;
 		}
 
 		/// <summary>
 		/// The Sent packet crypto manager
 		/// </summary>
-		public MapleCrypto SIV
-		{
-			get { return _SIV; }
-			set { _SIV = value; }
+		public MapleCrypto SIV {
+			get => _SIV;
+			set => _SIV = value;
 		}
 
 		/// <summary>
 		/// The Monitor's socket
 		/// </summary>
-		public Socket Socket
-		{
-			get { return _socket; }
-		}
+		public Socket Socket => _socket;
 
 		/// <summary>
 		/// Creates a new instance of Monitor
 		/// </summary>
-		public Monitor()
-		{
+		public Monitor() {
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP);
 		}
 
@@ -96,14 +88,12 @@ namespace MapleLib.PacketLib
 		/// Starts listening and accepting connections
 		/// </summary>
 		/// <param name="port">Port to listen to</param>
-		public void StartMonitoring(IPAddress IP)
-		{
-
+		public void StartMonitoring(IPAddress IP) {
 			_socket.Bind(new IPEndPoint(IP, 0));
 
-			_socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.HeaderIncluded, true);//??
+			_socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.HeaderIncluded, true); //??
 
-			byte[] byIn = new byte[4] { 1, 0, 0, 0 };
+			var byIn = new byte[4] {1, 0, 0, 0};
 			byte[] byOut = null;
 
 			_socket.IOControl(IOControlCode.ReceiveAll, byIn, byOut);
@@ -114,8 +104,7 @@ namespace MapleLib.PacketLib
 		/// <summary>
 		/// Waits for more data to arrive
 		/// </summary>
-		public void WaitForData()
-		{
+		public void WaitForData() {
 			WaitForData(new SocketInfo(_socket, short.MaxValue));
 		}
 
@@ -123,10 +112,8 @@ namespace MapleLib.PacketLib
 		/// Waits for more data to arrive
 		/// </summary>
 		/// <param name="socketInfo">Info about data to be received</param>
-		private void WaitForData(SocketInfo socketInfo)
-		{
-			try
-			{
+		private void WaitForData(SocketInfo socketInfo) {
+			try {
 				_socket.BeginReceive(socketInfo.DataBuffer,
 					socketInfo.Index,
 					socketInfo.DataBuffer.Length - socketInfo.Index,
@@ -134,35 +121,29 @@ namespace MapleLib.PacketLib
 					new AsyncCallback(OnDataReceived),
 					socketInfo);
 			}
-			catch (Exception se)
-			{
-                Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.WaitForData: " + se);
+			catch (Exception se) {
+				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.WaitForData: " + se);
 				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.WaitForData: " + se);
 			}
 		}
 
-		private void OnDataReceived(IAsyncResult iar)
-		{
-			SocketInfo socketInfo = (SocketInfo)iar.AsyncState;
-			try
-			{
-				int received = socketInfo.Socket.EndReceive(iar);
-				if (received == 0)
-				{
-					if (OnClientDisconnected != null)
-					{
-						OnClientDisconnected(this);
-					}
+		private void OnDataReceived(IAsyncResult iar) {
+			var socketInfo = (SocketInfo) iar.AsyncState;
+			try {
+				var received = socketInfo.Socket.EndReceive(iar);
+				if (received == 0) {
+					if (OnClientDisconnected != null) OnClientDisconnected(this);
+
 					return;
 				}
 
 				socketInfo.Index += received;
 
 
-				byte[] dataa = new byte[received];
+				var dataa = new byte[received];
 				Buffer.BlockCopy(socketInfo.DataBuffer, 0, dataa, 0, received);
-                if (OnPacketReceived != null)
-                    OnPacketReceived.Invoke(new PacketReader(dataa));
+				if (OnPacketReceived != null)
+					OnPacketReceived.Invoke(new PacketReader(dataa));
 				//Console.WriteLine(BitConverter.ToString(dataa));
 				//Console.WriteLine(HexEncoding.ToStringFromAscii(dataa));
 				WaitForData();
@@ -199,25 +180,20 @@ namespace MapleLib.PacketLib
 					WaitForData(socketInfo);
 					}*/
 			}
-			catch (ObjectDisposedException)
-			{
-                Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: Socket has been closed");
-                //Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: Socket has been closed");
+			catch (ObjectDisposedException) {
+				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical,
+					"[Error] Session.OnDataReceived: Socket has been closed");
+				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: Socket has been closed");
 			}
-			catch (SocketException se)
-			{
+			catch (SocketException se) {
 				if (se.ErrorCode != 10054)
-				{
-                    Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + se);
-					//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + se);
-				}
+					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + se);
+				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + se);
 			}
-			catch (Exception e)
-			{
-                Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + e);
+			catch (Exception e) {
+				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + e);
 				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + e);
 			}
 		}
-
 	}
 }

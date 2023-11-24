@@ -22,7 +22,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
    -------------------------------------------------------------------------- */
-   
+
 #ifndef SQUISH_COLOURSET_H
 #define SQUISH_COLOURSET_H
 
@@ -30,29 +30,26 @@
 #include "maths.h"
 
 namespace squish {
+	/*! @brief Represents a set of block colours
+	*/
+	class ColourSet {
+		public:
+			ColourSet(const u8* rgba, int mask, int flags);
 
-/*! @brief Represents a set of block colours
-*/
-class ColourSet
-{
-public:
-	ColourSet( u8 const* rgba, int mask, int flags );
+			int GetCount() const { return m_count; }
+			const Vec3* GetPoints() const { return m_points; }
+			const float* GetWeights() const { return m_weights; }
+			bool IsTransparent() const { return m_transparent; }
 
-	int GetCount() const { return m_count; }
-	Vec3 const* GetPoints() const { return m_points; }
-	float const* GetWeights() const { return m_weights; }
-	bool IsTransparent() const { return m_transparent; }
+			void RemapIndices(const u8* source, u8* target) const;
 
-	void RemapIndices( u8 const* source, u8* target ) const;
-
-private:
-	int m_count;
-	Vec3 m_points[16];
-	float m_weights[16];
-	int m_remap[16];
-	bool m_transparent;
-};
-
+		private:
+			int m_count;
+			Vec3 m_points[16];
+			float m_weights[16];
+			int m_remap[16];
+			bool m_transparent;
+	};
 } // namespace sqish
 
 #endif // ndef SQUISH_COLOURSET_H

@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- * 
+ *
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- * 
+ *
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -40,19 +40,35 @@ namespace Spine {
 		internal float[] attachmentVertices = new float[0];
 		internal int attachmentVerticesCount;
 
-		public SlotData Data { get { return data; } }
-		public Bone Bone { get { return bone; } }
-		public Skeleton Skeleton { get { return bone.skeleton; } }
-		public float R { get { return r; } set { r = value; } }
-		public float G { get { return g; } set { g = value; } }
-		public float B { get { return b; } set { b = value; } }
-		public float A { get { return a; } set { a = value; } }
+		public SlotData Data => data;
+
+		public Bone Bone => bone;
+
+		public Skeleton Skeleton => bone.skeleton;
+
+		public float R {
+			get => r;
+			set => r = value;
+		}
+
+		public float G {
+			get => g;
+			set => g = value;
+		}
+
+		public float B {
+			get => b;
+			set => b = value;
+		}
+
+		public float A {
+			get => a;
+			set => a = value;
+		}
 
 		/// <summary>May be null.</summary>
 		public Attachment Attachment {
-			get {
-				return attachment;
-			}
+			get => attachment;
 			set {
 				attachment = value;
 				attachmentTime = bone.skeleton.time;
@@ -61,18 +77,21 @@ namespace Spine {
 		}
 
 		public float AttachmentTime {
-			get {
-				return bone.skeleton.time - attachmentTime;
-			}
-			set {
-				attachmentTime = bone.skeleton.time - value;
-			}
+			get => bone.skeleton.time - attachmentTime;
+			set => attachmentTime = bone.skeleton.time - value;
 		}
 
-		public float[] AttachmentVertices { get { return attachmentVertices; } set { attachmentVertices = value; } }
-		public int AttachmentVerticesCount { get { return attachmentVerticesCount; } set { attachmentVerticesCount = value; } }
+		public float[] AttachmentVertices {
+			get => attachmentVertices;
+			set => attachmentVertices = value;
+		}
 
-		public Slot (SlotData data, Bone bone) {
+		public int AttachmentVerticesCount {
+			get => attachmentVerticesCount;
+			set => attachmentVerticesCount = value;
+		}
+
+		public Slot(SlotData data, Bone bone) {
 			if (data == null) throw new ArgumentNullException("data cannot be null.");
 			if (bone == null) throw new ArgumentNullException("bone cannot be null.");
 			this.data = data;
@@ -80,19 +99,21 @@ namespace Spine {
 			SetToSetupPose();
 		}
 
-		internal void SetToSetupPose (int slotIndex) {
+		internal void SetToSetupPose(int slotIndex) {
 			r = data.r;
 			g = data.g;
 			b = data.b;
 			a = data.a;
-			Attachment = data.attachmentName == null ? null : bone.skeleton.GetAttachment(slotIndex, data.attachmentName);
+			Attachment = data.attachmentName == null
+				? null
+				: bone.skeleton.GetAttachment(slotIndex, data.attachmentName);
 		}
 
-		public void SetToSetupPose () {
+		public void SetToSetupPose() {
 			SetToSetupPose(bone.skeleton.data.slots.IndexOf(data));
 		}
 
-		override public String ToString () {
+		public override string ToString() {
 			return data.name;
 		}
 	}

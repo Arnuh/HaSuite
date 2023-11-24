@@ -10,111 +10,102 @@ using MapleLib.WzLib.Serialization;
 using HaRepacker.GUI.Panels;
 using System.Diagnostics;
 
-namespace HaRepacker.GUI
-{
-    public partial class OptionsForm : Form
-    {
-        public OptionsForm()
-        {
-            InitializeComponent();
+namespace HaRepacker.GUI {
+	public partial class OptionsForm : Form {
+		public OptionsForm() {
+			InitializeComponent();
 
-            sortBox.Checked = Program.ConfigurationManager.UserSettings.Sort;
-            loadRelated.Checked = Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles;
-            apngIncompEnable.Checked = Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame;
-            autoAssociateBox.Checked = Program.ConfigurationManager.UserSettings.AutoAssociate;
-            if (Program.ConfigurationManager.UserSettings.DefaultXmlFolder != "") 
-            { 
-                defXmlFolderEnable.Checked = true; 
-                defXmlFolderBox.Text = Program.ConfigurationManager.UserSettings.DefaultXmlFolder; 
-            }
-            indentBox.Value = Program.ConfigurationManager.UserSettings.Indentation;
-            lineBreakBox.SelectedIndex = (int)Program.ConfigurationManager.UserSettings.LineBreakType;
+			sortBox.Checked = Program.ConfigurationManager.UserSettings.Sort;
+			loadRelated.Checked = Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles;
+			apngIncompEnable.Checked = Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame;
+			autoAssociateBox.Checked = Program.ConfigurationManager.UserSettings.AutoAssociate;
+			if (Program.ConfigurationManager.UserSettings.DefaultXmlFolder != "") {
+				defXmlFolderEnable.Checked = true;
+				defXmlFolderBox.Text = Program.ConfigurationManager.UserSettings.DefaultXmlFolder;
+			}
 
-            // Theme color
-            themeColor__comboBox.SelectedIndex = Program.ConfigurationManager.UserSettings.ThemeColor;
+			indentBox.Value = Program.ConfigurationManager.UserSettings.Indentation;
+			lineBreakBox.SelectedIndex = (int) Program.ConfigurationManager.UserSettings.LineBreakType;
 
-            // API Key
-            openAI_apiKey_textBox.Text = Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey;
-        }
+			// Theme color
+			themeColor__comboBox.SelectedIndex = Program.ConfigurationManager.UserSettings.ThemeColor;
+
+			// API Key
+			openAI_apiKey_textBox.Text = Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey;
+		}
 
 
-        /// <summary>
-        /// Process command key on the form
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="keyData"></param>
-        /// <returns></returns>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            // ...
-            if (keyData == (Keys.Escape))
-            {
-                Close(); // exit window
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
+		/// <summary>
+		/// Process command key on the form
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <param name="keyData"></param>
+		/// <returns></returns>
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+			// ...
+			if (keyData == Keys.Escape) {
+				Close(); // exit window
+				return true;
+			}
 
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
 
-        private void okButton_Click(object sender, EventArgs e)
-        {
-            if (indentBox.Value < 0)
-            {
-                Warning.Error(HaRepacker.Properties.Resources.OptionsIndentError);
-                return;
-            }
-            
-            Program.ConfigurationManager.UserSettings.Sort = sortBox.Checked;
-            Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles = loadRelated.Checked;
-            Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
-            Program.ConfigurationManager.UserSettings.AutoAssociate = autoAssociateBox.Checked;
-            if (defXmlFolderEnable.Checked)
-                Program.ConfigurationManager.UserSettings.DefaultXmlFolder = defXmlFolderBox.Text;
-            else
-                Program.ConfigurationManager.UserSettings.DefaultXmlFolder = "";
-            Program.ConfigurationManager.UserSettings.Indentation = indentBox.Value;
-            Program.ConfigurationManager.UserSettings.LineBreakType = (LineBreak)lineBreakBox.SelectedIndex;
-            Program.ConfigurationManager.UserSettings.ThemeColor = themeColor__comboBox.SelectedIndex;
+		private void cancelButton_Click(object sender, EventArgs e) {
+			Close();
+		}
 
-            // APi key
-            Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey = openAI_apiKey_textBox.Text;
+		private void okButton_Click(object sender, EventArgs e) {
+			if (indentBox.Value < 0) {
+				Warning.Error(Properties.Resources.OptionsIndentError);
+				return;
+			}
 
-            Program.ConfigurationManager.Save();
-            Close();
-        }
+			Program.ConfigurationManager.UserSettings.Sort = sortBox.Checked;
+			Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles = loadRelated.Checked;
+			Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
+			Program.ConfigurationManager.UserSettings.AutoAssociate = autoAssociateBox.Checked;
+			if (defXmlFolderEnable.Checked)
+				Program.ConfigurationManager.UserSettings.DefaultXmlFolder = defXmlFolderBox.Text;
+			else
+				Program.ConfigurationManager.UserSettings.DefaultXmlFolder = "";
+			Program.ConfigurationManager.UserSettings.Indentation = indentBox.Value;
+			Program.ConfigurationManager.UserSettings.LineBreakType = (LineBreak) lineBreakBox.SelectedIndex;
+			Program.ConfigurationManager.UserSettings.ThemeColor = themeColor__comboBox.SelectedIndex;
 
-        private void browse_Click(object sender, EventArgs e)
-        {
-            defXmlFolderBox.Text = SavedFolderBrowser.Show(HaRepacker.Properties.Resources.SelectDefaultXmlFolder);
-        }
+			// APi key
+			Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey = openAI_apiKey_textBox.Text;
 
-        private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e)
-        {
-            browse.Enabled = defXmlFolderEnable.Checked;
-            defXmlFolderBox.Enabled = defXmlFolderEnable.Checked;
-        }
+			Program.ConfigurationManager.Save();
+			Close();
+		}
 
-        /// <summary>
-        /// OpenAI API hyperlink url
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Process myProcess = new Process();
+		private void browse_Click(object sender, EventArgs e) {
+			defXmlFolderBox.Text = SavedFolderBrowser.Show(Properties.Resources.SelectDefaultXmlFolder);
+		}
 
-            try {
-                // true is the default, but it is important not to set it to false
-                myProcess.StartInfo.UseShellExecute = true;
-                myProcess.StartInfo.FileName = ((LinkLabel)sender).Text;
-                myProcess.Start();
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-            }
-        }
-    }
+		private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e) {
+			browse.Enabled = defXmlFolderEnable.Checked;
+			defXmlFolderBox.Enabled = defXmlFolderEnable.Checked;
+		}
+
+		/// <summary>
+		/// OpenAI API hyperlink url
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+			var myProcess = new Process();
+
+			try {
+				// true is the default, but it is important not to set it to false
+				myProcess.StartInfo.UseShellExecute = true;
+				myProcess.StartInfo.FileName = ((LinkLabel) sender).Text;
+				myProcess.Start();
+			}
+			catch (Exception ex) {
+				Console.WriteLine(ex.Message);
+			}
+		}
+	}
 }

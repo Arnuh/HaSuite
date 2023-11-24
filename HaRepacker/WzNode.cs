@@ -12,275 +12,230 @@ using System.Collections;
 using System.Drawing;
 using HaRepacker.Comparer;
 
-namespace HaRepacker
-{
-    public class WzNode : TreeNode
-    {
-        public delegate ContextMenuStrip ContextMenuBuilderDelegate(WzNode node, WzObject obj);
-        public static ContextMenuBuilderDelegate ContextMenuBuilder = null;
+namespace HaRepacker {
+	public class WzNode : TreeNode {
+		public delegate ContextMenuStrip ContextMenuBuilderDelegate(WzNode node, WzObject obj);
 
-        private bool isWzObjectAddedManually = false;
-        public static Color NewObjectForeColor = Color.Red;
+		public static ContextMenuBuilderDelegate ContextMenuBuilder = null;
 
-        public WzNode(WzObject SourceObject, bool isWzObjectAddedManually = false)
-            : base(SourceObject.Name)
-        {
-            this.isWzObjectAddedManually = isWzObjectAddedManually;
-            if (isWzObjectAddedManually)
-            {
-                ForeColor = NewObjectForeColor;
-            }
-            // Childs
-            ParseChilds(SourceObject);
-        }
+		private bool isWzObjectAddedManually = false;
+		public static Color NewObjectForeColor = Color.Red;
 
-        private void ParseChilds(WzObject SourceObject)
-        {
-            Tag = SourceObject ?? throw new NullReferenceException("Cannot create a null WzNode");
-            SourceObject.HRTag = this;
+		public WzNode(WzObject SourceObject, bool isWzObjectAddedManually = false)
+			: base(SourceObject.Name) {
+			this.isWzObjectAddedManually = isWzObjectAddedManually;
+			if (isWzObjectAddedManually) ForeColor = NewObjectForeColor;
 
-            if (SourceObject is WzFile) 
-                SourceObject = ((WzFile)SourceObject).WzDirectory;
-            if (SourceObject is WzDirectory)
-            {
-                foreach (WzDirectory dir in ((WzDirectory)SourceObject).WzDirectories)
-                    Nodes.Add(new WzNode(dir));
-                foreach (WzImage img in ((WzDirectory)SourceObject).WzImages)
-                    Nodes.Add(new WzNode(img));
-            }
-            else if (SourceObject is WzImage image)
-            {
-                if (image.Parsed)
-                    foreach (WzImageProperty prop in image.WzProperties)
-                        Nodes.Add(new WzNode(prop));
-            }
-            else if (SourceObject is IPropertyContainer container)
-            {
-                foreach (WzImageProperty prop in container.WzProperties)
-                    Nodes.Add(new WzNode(prop));
-            }
-        }
+			// Childs
+			ParseChilds(SourceObject);
+		}
 
-        public void DeleteWzNode()
-        {
-            Remove();
+		private void ParseChilds(WzObject SourceObject) {
+			Tag = SourceObject ?? throw new NullReferenceException("Cannot create a null WzNode");
+			SourceObject.HRTag = this;
 
-            if (Tag is WzImageProperty property)
-            {
-                if (property.ParentImage == null) // _inlink WzNode doesnt have a parent
-                    return;
-                property.ParentImage.Changed = true;
-            }
-            ((WzObject)Tag).Remove();
-        }
+			if (SourceObject is WzFile)
+				SourceObject = ((WzFile) SourceObject).WzDirectory;
+			if (SourceObject is WzDirectory) {
+				foreach (var dir in ((WzDirectory) SourceObject).WzDirectories)
+					Nodes.Add(new WzNode(dir));
+				foreach (var img in ((WzDirectory) SourceObject).WzImages)
+					Nodes.Add(new WzNode(img));
+			}
+			else if (SourceObject is WzImage image) {
+				if (image.Parsed)
+					foreach (var prop in image.WzProperties)
+						Nodes.Add(new WzNode(prop));
+			}
+			else if (SourceObject is IPropertyContainer container) {
+				foreach (var prop in container.WzProperties)
+					Nodes.Add(new WzNode(prop));
+			}
+		}
 
-        public bool IsWzObjectAddedManually
-        {
-            get
-            {
-                return isWzObjectAddedManually;
-            }
-            private set { }
-        }
+		public void DeleteWzNode() {
+			Remove();
 
-        public bool CanHaveChilds
-        {
-            get
-            {
-                return (Tag is WzFile ||
-                    Tag is WzDirectory ||
-                    Tag is WzImage ||
-                    Tag is IPropertyContainer);
-            }
-        }
+			if (Tag is WzImageProperty property) {
+				if (property.ParentImage == null) // _inlink WzNode doesnt have a parent
+					return;
+				property.ParentImage.Changed = true;
+			}
 
-        public static WzNode GetChildNode(WzNode parentNode, string name)
-        {
-            foreach (WzNode node in parentNode.Nodes)
-                if (node.Text == name)
-                    return node;
-            return null;
-        }
+			((WzObject) Tag).Remove();
+		}
 
-        public static bool CanNodeBeInserted(WzNode parentNode, string name)
-        {
-            WzObject obj = (WzObject)parentNode.Tag;
-            if (obj is IPropertyContainer container) 
-                return container[name] == null;
-            else if (obj is WzDirectory directory) 
-                return directory[name] == null;
-            else if (obj is WzFile file) 
-                return file.WzDirectory?[name] == null;
-            else 
-                return false;
-        }
+		public bool IsWzObjectAddedManually {
+			get => isWzObjectAddedManually;
+			private set { }
+		}
 
-        private bool AddObjInternal(WzObject obj)
-        {
-            WzObject TaggedObject = (WzObject)Tag;
-            if (TaggedObject is WzFile file) 
-                TaggedObject = file.WzDirectory;
-            
-            if (TaggedObject is WzDirectory directory)
-            {
-                if (obj is WzDirectory wzDirectory)
-                    directory.AddDirectory(wzDirectory);
-                else if (obj is WzImage wzImgProperty)
-                    directory.AddImage(wzImgProperty);
-                else
-                    return false;
-            }
-            else if (TaggedObject is WzImage wzImageProperty)
-            {
-                if (!wzImageProperty.Parsed) 
-                    wzImageProperty.ParseImage();
-                if (obj is WzImageProperty imgProperty)
-                {
-                    wzImageProperty.AddProperty(imgProperty);
-                    wzImageProperty.Changed = true;
-                }
-                else 
-                    return false;
-            }
-            else if (TaggedObject is IPropertyContainer container)
-            {
-                if (obj is WzImageProperty property)
-                {
-                    container.AddProperty(property);
-                    if (TaggedObject is WzImageProperty imgProperty)
-                        imgProperty.ParentImage.Changed = true;
-                }
-                else 
-                    return false;
-            }
-            else 
-                return false;
+		public bool CanHaveChilds =>
+			Tag is WzFile ||
+			Tag is WzDirectory ||
+			Tag is WzImage ||
+			Tag is IPropertyContainer;
 
-            return true;
-        }
+		public static WzNode GetChildNode(WzNode parentNode, string name) {
+			foreach (WzNode node in parentNode.Nodes)
+				if (node.Text == name)
+					return node;
+			return null;
+		}
 
-        /// <summary>
-        /// Adds a node
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public bool AddNode(WzNode node, bool reparseImage)
-        {
-            if (CanNodeBeInserted(this, node.Text))
-            {
-                TryParseImage(reparseImage);
-                this.Nodes.Add(node);
-                AddObjInternal((WzObject)node.Tag);
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Cannot insert node \"" + node.Text + "\" because a node with the same name already exists. Skipping.", "Skipping Node", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
-        }
+		public static bool CanNodeBeInserted(WzNode parentNode, string name) {
+			var obj = (WzObject) parentNode.Tag;
+			if (obj is IPropertyContainer container)
+				return container[name] == null;
+			else if (obj is WzDirectory directory)
+				return directory[name] == null;
+			else if (obj is WzFile file)
+				return file.WzDirectory?[name] == null;
+			else
+				return false;
+		}
 
-        /// <summary>
-        /// Try parsing the WzImage if it have not been loaded
-        /// </summary>
-        private void TryParseImage(bool reparseImage = true)
-        {
-            if (Tag is WzImage)
-            {
-                ((WzImage)Tag).ParseImage();
-                if (reparseImage)
-                {
-                    Reparse();
-                }
-            }
-        }
+		private bool AddObjInternal(WzObject obj) {
+			var TaggedObject = (WzObject) Tag;
+			if (TaggedObject is WzFile file)
+				TaggedObject = file.WzDirectory;
 
-        /// <summary>
-        /// Adds a WzObject to the WzNode and returns the newly created WzNode
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="undoRedoMan"></param>
-        /// <returns></returns>
-        public WzNode AddObject(WzObject obj, UndoRedoManager undoRedoMan)
-        {
-            if (CanNodeBeInserted(this, obj.Name))
-            {
-                TryParseImage();
-                if (AddObjInternal(obj))
-                {
-                    WzNode node = new WzNode(obj, true);
-                    Nodes.Add(node);
+			if (TaggedObject is WzDirectory directory) {
+				if (obj is WzDirectory wzDirectory)
+					directory.AddDirectory(wzDirectory);
+				else if (obj is WzImage wzImgProperty)
+					directory.AddImage(wzImgProperty);
+				else
+					return false;
+			}
+			else if (TaggedObject is WzImage wzImageProperty) {
+				if (!wzImageProperty.Parsed)
+					wzImageProperty.ParseImage();
+				if (obj is WzImageProperty imgProperty) {
+					wzImageProperty.AddProperty(imgProperty);
+					wzImageProperty.Changed = true;
+				}
+				else {
+					return false;
+				}
+			}
+			else if (TaggedObject is IPropertyContainer container) {
+				if (obj is WzImageProperty property) {
+					container.AddProperty(property);
+					if (TaggedObject is WzImageProperty imgProperty)
+						imgProperty.ParentImage.Changed = true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
 
-                    if (node.Tag is WzImageProperty property)
-                    {
-                        property.ParentImage.Changed = true;
-                    }
-                    undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction> { UndoRedoManager.ObjectAdded(this, node) });
-                    node.EnsureVisible();
-                    return node;
-                }
-                else
-                {
-                    Warning.Error("Could not insert property, make sure all types are correct");
-                    return null;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Cannot insert object \"" + obj.Name + "\" because an object with the same name already exists. Skipping.", "Skipping Object", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return null;
-            }
-        }
+			return true;
+		}
 
-        public void Reparse()
-        {
-            Nodes.Clear();
-            ParseChilds((WzObject)Tag);
-        }
+		/// <summary>
+		/// Adds a node
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		public bool AddNode(WzNode node, bool reparseImage) {
+			if (CanNodeBeInserted(this, node.Text)) {
+				TryParseImage(reparseImage);
+				Nodes.Add(node);
+				AddObjInternal((WzObject) node.Tag);
+				return true;
+			}
+			else {
+				MessageBox.Show(
+					"Cannot insert node \"" + node.Text +
+					"\" because a node with the same name already exists. Skipping.", "Skipping Node",
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return false;
+			}
+		}
 
-        public string GetTypeName()
-        {
-            return Tag.GetType().Name;
-        }
+		/// <summary>
+		/// Try parsing the WzImage if it have not been loaded
+		/// </summary>
+		private void TryParseImage(bool reparseImage = true) {
+			if (Tag is WzImage) {
+				((WzImage) Tag).ParseImage();
+				if (reparseImage) Reparse();
+			}
+		}
 
-        /// <summary>
-        /// Change the name of the WzNode
-        /// </summary>
-        /// <param name="name"></param>
-        public void ChangeName(string name)
-        {
-            Text = name;
-            ((WzObject)Tag).Name = name;
-            if (Tag is WzImageProperty property)
-                property.ParentImage.Changed = true;
+		/// <summary>
+		/// Adds a WzObject to the WzNode and returns the newly created WzNode
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="undoRedoMan"></param>
+		/// <returns></returns>
+		public WzNode AddObject(WzObject obj, UndoRedoManager undoRedoMan) {
+			if (CanNodeBeInserted(this, obj.Name)) {
+				TryParseImage();
+				if (AddObjInternal(obj)) {
+					var node = new WzNode(obj, true);
+					Nodes.Add(node);
 
-            isWzObjectAddedManually = true;
-            ForeColor = NewObjectForeColor;
-        }
+					if (node.Tag is WzImageProperty property) property.ParentImage.Changed = true;
 
-        public WzNode TopLevelNode
-        {
-            get
-            {
-                WzNode parent = this;
-                while (parent.Level > 0)
-                {
-                    parent = (WzNode)parent.Parent;
-                }
-                return parent;
-            }
-        }
+					undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction>
+						{UndoRedoManager.ObjectAdded(this, node)});
+					node.EnsureVisible();
+					return node;
+				}
+				else {
+					Warning.Error("Could not insert property, make sure all types are correct");
+					return null;
+				}
+			}
+			else {
+				MessageBox.Show(
+					"Cannot insert object \"" + obj.Name +
+					"\" because an object with the same name already exists. Skipping.", "Skipping Object",
+					MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return null;
+			}
+		}
 
-        public override ContextMenuStrip ContextMenuStrip
-        {
-            get
-            {
-                return ContextMenuBuilder == null ? null : ContextMenuBuilder(this, (WzObject)Tag);
-            }
-            set
-            {
-                base.ContextMenuStrip = value;
-            }
-        }
-    }
+		public void Reparse() {
+			Nodes.Clear();
+			ParseChilds((WzObject) Tag);
+		}
+
+		public string GetTypeName() {
+			return Tag.GetType().Name;
+		}
+
+		/// <summary>
+		/// Change the name of the WzNode
+		/// </summary>
+		/// <param name="name"></param>
+		public void ChangeName(string name) {
+			Text = name;
+			((WzObject) Tag).Name = name;
+			if (Tag is WzImageProperty property)
+				property.ParentImage.Changed = true;
+
+			isWzObjectAddedManually = true;
+			ForeColor = NewObjectForeColor;
+		}
+
+		public WzNode TopLevelNode {
+			get {
+				var parent = this;
+				while (parent.Level > 0) parent = (WzNode) parent.Parent;
+
+				return parent;
+			}
+		}
+
+		public override ContextMenuStrip ContextMenuStrip {
+			get => ContextMenuBuilder == null ? null : ContextMenuBuilder(this, (WzObject) Tag);
+			set => base.ContextMenuStrip = value;
+		}
+	}
 }

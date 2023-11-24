@@ -1,6 +1,6 @@
-﻿/* 
+﻿/*
   koolk's Map Editor
- 
+
   Copyright (c) 2009-2013 koolk
 
   This software is provided 'as-is', without any express or implied
@@ -28,31 +28,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HaCreator.MapEditor.TilesDesign
-{
-    class slRD : MapTileDesign
-    {
-        public slRD()
-        {
-            type = "slRD";
+namespace HaCreator.MapEditor.TilesDesign {
+	internal class slRD : MapTileDesign {
+		public slRD() {
+			type = "slRD";
 
-            potentials.Add(new MapTileDesignPotential("bsc", -90, 0));
-            potentials.Add(new MapTileDesignPotential("bsc", 0, -60));
-            potentials.Add(new MapTileDesignPotential("enH0", 0, 0));
-            potentials.Add(new MapTileDesignPotential("enH1", -90, 60));
-            potentials.Add(new MapTileDesignPotential("enH1", 90, 0));
-            potentials.Add(new MapTileDesignPotential("enV0", 0, 0));
-            potentials.Add(new MapTileDesignPotential("edD", 90, 0));
-            potentials.Add(new MapTileDesignPotential("edD", 0, 60));
-            potentials.Add(new MapTileDesignPotential("slLU", 0, 0));
-            potentials.Add(new MapTileDesignPotential("slLU", 0, 60));
-            potentials.Add(new MapTileDesignPotential("slLU", 90, 0));
-            potentials.Add(new MapTileDesignPotential("slRU", 0, 0));
-            potentials.Add(new MapTileDesignPotential("slLD", 0, 0));
-            potentials.Add(new MapTileDesignPotential("slLD", 180, 0));
-            potentials.Add(new MapTileDesignPotential("slRD", 90, -60));
-            potentials.Add(new MapTileDesignPotential("slRD", -90, 60));
-        }
-
-    }
+			potentials.Add(new MapTileDesignPotential("bsc", -90, 0));
+			potentials.Add(new MapTileDesignPotential("bsc", 0, -60));
+			potentials.Add(new MapTileDesignPotential("enH0", 0, 0));
+			potentials.Add(new MapTileDesignPotential("enH1", -90, 60));
+			potentials.Add(new MapTileDesignPotential("enH1", 90, 0));
+			potentials.Add(new MapTileDesignPotential("enV0", 0, 0));
+			potentials.Add(new MapTileDesignPotential("edD", 90, 0));
+			potentials.Add(new MapTileDesignPotential("edD", 0, 60));
+			potentials.Add(new MapTileDesignPotential("slLU", 0, 0));
+			potentials.Add(new MapTileDesignPotential("slLU", 0, 60));
+			potentials.Add(new MapTileDesignPotential("slLU", 90, 0));
+			potentials.Add(new MapTileDesignPotential("slRU", 0, 0));
+			potentials.Add(new MapTileDesignPotential("slLD", 0, 0));
+			potentials.Add(new MapTileDesignPotential("slLD", 180, 0));
+			potentials.Add(new MapTileDesignPotential("slRD", 90, -60));
+			potentials.Add(new MapTileDesignPotential("slRD", -90, 60));
+		}
+	}
 }

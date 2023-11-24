@@ -11,44 +11,33 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapEditor
-{
-    public class FPSCounter : IDisposable
-    {
-        private Thread resetThread;
-        private int frames = 0;
-        private int frames_next = 0;
-        
-        public FPSCounter()
-        {
-            resetThread = new Thread(new ThreadStart(delegate 
-            {
-                while (!Program.AbortThreads)
-                {
-                    frames = Interlocked.Exchange(ref frames_next, 0);
-                    Thread.Sleep(1000);
-                }
-            }));
-            resetThread.Start();
-        }
+namespace HaCreator.MapEditor {
+	public class FPSCounter : IDisposable {
+		private Thread resetThread;
+		private int frames = 0;
+		private int frames_next = 0;
 
-        public void Tick()
-        {
-            Interlocked.Increment(ref frames_next);
-        }
+		public FPSCounter() {
+			resetThread = new Thread(new ThreadStart(delegate {
+				while (!Program.AbortThreads) {
+					frames = Interlocked.Exchange(ref frames_next, 0);
+					Thread.Sleep(1000);
+				}
+			}));
+			resetThread.Start();
+		}
 
-        public int Frames
-        {
-            get { return frames; }
-        }
+		public void Tick() {
+			Interlocked.Increment(ref frames_next);
+		}
 
-        public void Dispose()
-        {
-            if (resetThread != null)
-            {
-                resetThread.Join();
-                resetThread = null;
-            }
-        }
-    }
+		public int Frames => frames;
+
+		public void Dispose() {
+			if (resetThread != null) {
+				resetThread.Join();
+				resetThread = null;
+			}
+		}
+	}
 }

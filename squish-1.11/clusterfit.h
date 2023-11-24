@@ -23,7 +23,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
    -------------------------------------------------------------------------- */
-   
+
 #ifndef SQUISH_CLUSTERFIT_H
 #define SQUISH_CLUSTERFIT_H
 
@@ -33,29 +33,26 @@
 #include "colourfit.h"
 
 namespace squish {
+	class ClusterFit : public ColourFit {
+		public:
+			ClusterFit(const ColourSet* colours, int flags);
 
-class ClusterFit : public ColourFit
-{
-public:
-	ClusterFit( ColourSet const* colours, int flags );
-	
-private:
-	bool ConstructOrdering( Vec3 const& axis, int iteration );
+		private:
+			bool ConstructOrdering(const Vec3& axis, int iteration);
 
-	virtual void Compress3( void* block );
-	virtual void Compress4( void* block );
+			void Compress3(void* block) override;
+			void Compress4(void* block) override;
 
-	enum { kMaxIterations = 8 };
+			enum { kMaxIterations = 8 };
 
-	int m_iterationCount;
-	Vec3 m_principle;
-	u8 m_order[16*kMaxIterations];
-	Vec4 m_points_weights[16];
-	Vec4 m_xsum_wsum;
-	Vec4 m_metric;
-	Vec4 m_besterror;
-};
-
+			int m_iterationCount;
+			Vec3 m_principle;
+			u8 m_order[16 * kMaxIterations];
+			Vec4 m_points_weights[16];
+			Vec4 m_xsum_wsum;
+			Vec4 m_metric;
+			Vec4 m_besterror;
+	};
 } // namespace squish
 
 #endif // ndef SQUISH_CLUSTERFIT_H

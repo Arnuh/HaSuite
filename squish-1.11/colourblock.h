@@ -22,7 +22,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
    -------------------------------------------------------------------------- */
-   
+
 #ifndef SQUISH_COLOURBLOCK_H
 #define SQUISH_COLOURBLOCK_H
 
@@ -30,12 +30,10 @@
 #include "maths.h"
 
 namespace squish {
+	void WriteColourBlock3(Vec3::Arg start, Vec3::Arg end, const u8* indices, void* block);
+	void WriteColourBlock4(Vec3::Arg start, Vec3::Arg end, const u8* indices, void* block);
 
-void WriteColourBlock3( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
-void WriteColourBlock4( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
-
-void DecompressColour( u8* rgba, void const* block, bool isDxt1 );
-
+	void DecompressColour(u8* rgba, const void* block, bool isDxt1);
 } // namespace squish
 
 #endif // ndef SQUISH_COLOURBLOCK_H

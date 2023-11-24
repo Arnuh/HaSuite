@@ -1,400 +1,405 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+    <!-- 
+      Microsoft ResX Schema 
+      
+      Version 2.0
+      
+      The primary goals of this format is to allow a simple XML format 
+      that is mostly human readable. The generation and parsing of the 
+      various data types are done through the TypeConverter classes 
+      associated with the data types.
+      
+      Example:
+      
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+                  
+      There are any number of "resheader" rows that contain simple 
+      name/value pairs.
+      
+      Each data row contains a name, and value. The row also contains a 
+      type or mimetype. Type corresponds to a .NET class that support 
+      text/value conversion through the TypeConverter architecture. 
+      Classes that don't support this are serialized and stored with the 
+      mimetype set.
+      
+      The mimetype is used for serialized objects, and tells the 
+      ResXResourceReader how to depersist the object. This is currently not 
+      extensible. For a given mimetype the value must be set accordingly:
+      
+      Note - application/x-microsoft.net.object.binary.base64 is the format 
+      that the ResXResourceWriter will generate, however the reader can 
+      read any of the formats listed below.
+      
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+      
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with 
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array 
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AnimCompatMessage" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="AnimCompatMessage" xml:space="preserve">
     <value>你的瀏覽器或相片檢視器不支援此格式的動畫, 請下載更新的瀏覽器比如火狐</value>
   </data>
-  <data name="AnimError" xml:space="preserve">
+    <data name="AnimError" xml:space="preserve">
     <value>Error at animation builder, frame {0}</value>
   </data>
-  <data name="EditFoothold" xml:space="preserve">
+    <data name="EditFoothold" xml:space="preserve">
     <value>立足處</value>
   </data>
-  <data name="EditPortal" xml:space="preserve">
+    <data name="EditPortal" xml:space="preserve">
     <value>傳送點</value>
   </data>
-  <data name="EditSP" xml:space="preserve">
+    <data name="EditSP" xml:space="preserve">
     <value>怪物召喚點</value>
   </data>
-  <data name="EncTypeGMS" xml:space="preserve">
+    <data name="EncTypeGMS" xml:space="preserve">
     <value>Global MapleStory (舊)</value>
   </data>
-  <data name="EncTypeMSEA" xml:space="preserve">
+    <data name="EncTypeMSEA" xml:space="preserve">
     <value>新楓之谷 / 冒险岛Online / 메이플스토리 / MapleSEA/ EMS(舊)</value>
   </data>
-  <data name="EncTypeNone" xml:space="preserve">
+    <data name="EncTypeNone" xml:space="preserve">
     <value>BMS / GMS / MapleSEA / メイプルストーリー / 메이플스토리</value>
   </data>
-  <data name="EnterValidInput" xml:space="preserve">
+    <data name="EnterValidInput" xml:space="preserve">
     <value>請輸入有效的內容</value>
   </data>
-  <data name="Error" xml:space="preserve">
+    <data name="Error" xml:space="preserve">
     <value>錯誤</value>
   </data>
-  <data name="FHMapperInvalidInput" xml:space="preserve">
+    <data name="FHMapperInvalidInput" xml:space="preserve">
     <value>輸入無效.
 確認前請提供有效的值.</value>
   </data>
-  <data name="FHSettingsForceValue" xml:space="preserve">
+    <data name="FHSettingsForceValue" xml:space="preserve">
     <value>force值</value>
   </data>
-  <data name="FHSettingsInvalidMessage" xml:space="preserve">
+    <data name="FHSettingsInvalidMessage" xml:space="preserve">
     <value>{0}無效.
 請在確認前確定所有的值都有效.</value>
   </data>
-  <data name="FHSettingsNextValue" xml:space="preserve">
+    <data name="FHSettingsNextValue" xml:space="preserve">
     <value>next值</value>
   </data>
-  <data name="FHSettingsPortalValue" xml:space="preserve">
+    <data name="FHSettingsPortalValue" xml:space="preserve">
     <value>傳送點類型值</value>
   </data>
-  <data name="FHSettingsPrevValue" xml:space="preserve">
+    <data name="FHSettingsPrevValue" xml:space="preserve">
     <value>prev值</value>
   </data>
-  <data name="FHSettingsXValue" xml:space="preserve">
+    <data name="FHSettingsXValue" xml:space="preserve">
     <value>X值</value>
   </data>
-  <data name="FHSettingsYValue" xml:space="preserve">
+    <data name="FHSettingsYValue" xml:space="preserve">
     <value>Y值</value>
   </data>
-  <data name="ImagesFilter" xml:space="preserve">
+    <data name="ImagesFilter" xml:space="preserve">
     <value>圖片 (*.jpg;*.bmp;*.png;*.gif;*.tiff)</value>
   </data>
-  <data name="InteractionWzMapleVersionInfo" xml:space="preserve">
+    <data name="InteractionWzMapleVersionInfo" xml:space="preserve">
     <value>Select the WZ encryption used:</value>
   </data>
-  <data name="InteractionWzMapleVersionTitle" xml:space="preserve">
+    <data name="InteractionWzMapleVersionTitle" xml:space="preserve">
     <value>WZ Encryption</value>
   </data>
-  <data name="MainAddCanvas" xml:space="preserve">
+    <data name="MainAddCanvas" xml:space="preserve">
     <value>新增圖片</value>
   </data>
-  <data name="MainAddConvex" xml:space="preserve">
+    <data name="MainAddConvex" xml:space="preserve">
     <value>新增convex</value>
   </data>
-  <data name="MainAddDir" xml:space="preserve">
+    <data name="MainAddDir" xml:space="preserve">
     <value>新增目錄</value>
   </data>
-  <data name="MainAddDouble" xml:space="preserve">
+    <data name="MainAddDouble" xml:space="preserve">
     <value>新增雙精度浮點數</value>
   </data>
-  <data name="MainAddFloat" xml:space="preserve">
+    <data name="MainAddFloat" xml:space="preserve">
     <value>新增浮點數</value>
   </data>
-  <data name="MainAddImg" xml:space="preserve">
+    <data name="MainAddImg" xml:space="preserve">
     <value>新增IMG</value>
   </data>
-  <data name="MainAddInt" xml:space="preserve">
+    <data name="MainAddInt" xml:space="preserve">
     <value>新增整數</value>
   </data>
-  <data name="MainAdditionalInfo_PortalType" xml:space="preserve">
+    <data name="MainAdditionalInfo_PortalType" xml:space="preserve">
     <value>門戶類型：{0}</value>
   </data>
-  <data name="MainAddLink" xml:space="preserve">
+    <data name="MainAddLink" xml:space="preserve">
     <value>新增連結路徑</value>
   </data>
-  <data name="MainAddNull" xml:space="preserve">
+    <data name="MainAddNull" xml:space="preserve">
     <value>新增空值</value>
   </data>
-  <data name="MainAddShort" xml:space="preserve">
+    <data name="MainAddShort" xml:space="preserve">
     <value>新增無符號短整數</value>
   </data>
-  <data name="MainAddSound" xml:space="preserve">
+    <data name="MainAddSound" xml:space="preserve">
     <value>新增音樂</value>
   </data>
-  <data name="MainAddString" xml:space="preserve">
+    <data name="MainAddString" xml:space="preserve">
     <value>新增文本</value>
   </data>
-  <data name="MainAddSub" xml:space="preserve">
+    <data name="MainAddSub" xml:space="preserve">
     <value>新增子目錄</value>
   </data>
-  <data name="MainAddTabTitle" xml:space="preserve">
+    <data name="MainAddTabTitle" xml:space="preserve">
     <value>Add tab</value>
   </data>
-  <data name="MainAddVec" xml:space="preserve">
+    <data name="MainAddVec" xml:space="preserve">
     <value>新增坐標</value>
   </data>
-  <data name="MainCannotInsertToNode" xml:space="preserve">
+    <data name="MainCannotInsertToNode" xml:space="preserve">
     <value>無法插入這個類型到選中的wz節點</value>
   </data>
-  <data name="MainConfirmAbort" xml:space="preserve">
+    <data name="MainConfirmAbort" xml:space="preserve">
     <value>你確定你想終止當前操作?</value>
   </data>
-  <data name="MainConfirmCopy" xml:space="preserve">
+    <data name="MainConfirmCopy" xml:space="preserve">
     <value>要將WZ節點複製到剪切板嗎? (警告 - 如果選擇的節點較多會花比較多時間)</value>
   </data>
-  <data name="MainConfirmExit" xml:space="preserve">
+    <data name="MainConfirmExit" xml:space="preserve">
     <value>你確定要離開嗎?</value>
   </data>
-  <data name="MainConfirmPaste" xml:space="preserve">
+    <data name="MainConfirmPaste" xml:space="preserve">
     <value>要從剪切板貼上WZ節點嗎? (警告 - 如果選擇的節點較多會花比較多時間)</value>
   </data>
-  <data name="MainConfirmRemove" xml:space="preserve">
+    <data name="MainConfirmRemove" xml:space="preserve">
     <value>你確定要移除這個節點嗎?</value>
   </data>
-  <data name="MainConfirmRemoveNode" xml:space="preserve">
+    <data name="MainConfirmRemoveNode" xml:space="preserve">
     <value>你確定你要移除當前節點嗎?</value>
   </data>
-  <data name="MainConfirmRename" xml:space="preserve">
+    <data name="MainConfirmRename" xml:space="preserve">
     <value>改名</value>
   </data>
-  <data name="MainConversionError" xml:space="preserve">
+    <data name="MainConversionError" xml:space="preserve">
     <value>無法將"{0}"轉換成需要的類型</value>
   </data>
-  <data name="MainCopyDirError" xml:space="preserve">
+    <data name="MainCopyDirError" xml:space="preserve">
     <value>無法複製目錄因為需要太多記憶體了</value>
   </data>
-  <data name="MainCouldntOpenWZ" xml:space="preserve">
+    <data name="MainCouldntOpenWZ" xml:space="preserve">
     <value>無法打開WZ檔案 "{0}"</value>
   </data>
-  <data name="MainErrorImportingWzImageFile" xml:space="preserve">
+    <data name="MainErrorImportingWzImageFile" xml:space="preserve">
     <value>導入{0} .img文件時出錯。 你確定你選擇了正確的WZ加密嗎？</value>
   </data>
-  <data name="MainFileOpenFail" xml:space="preserve">
+    <data name="MainFileOpenFail" xml:space="preserve">
     <value>Unable to open/save to the specified file path. Please run as an Administrator instead.</value>
   </data>
-  <data name="MainHelpOpenFail" xml:space="preserve">
+    <data name="MainHelpOpenFail" xml:space="preserve">
     <value>無法顯示幫助, 因為找不到幫助檔案({0})</value>
   </data>
-  <data name="MainImageLoadError" xml:space="preserve">
+    <data name="MainImageLoadError" xml:space="preserve">
     <value>無法讀取圖片</value>
   </data>
-  <data name="MainInvalidFileError" xml:space="preserve">
+    <data name="MainInvalidFileError" xml:space="preserve">
     <value>檔案"{0}""無效, 將跳過。 錯誤: {1}</value>
   </data>
-  <data name="MainListWzDetected" xml:space="preserve">
+    <data name="MainListWzDetected" xml:space="preserve">
     <value>這個檔案(路徑: {0}) 是List.wz檔案, 將會被跳過</value>
   </data>
-  <data name="MainNodeExists" xml:space="preserve">
+    <data name="MainNodeExists" xml:space="preserve">
     <value>這個名稱的節點已存在, 請輸入一個不同的節點名稱</value>
   </data>
-  <data name="MainReloadAll" xml:space="preserve">
+    <data name="MainReloadAll" xml:space="preserve">
     <value>你確定要重載所有檔案嗎?</value>
   </data>
-  <data name="MainSelectWzFolder" xml:space="preserve">
+    <data name="MainSelectWzFolder" xml:space="preserve">
     <value>請選擇WZ檔案來保存</value>
   </data>
-  <data name="MainTreeAddDirError" xml:space="preserve">
+    <data name="MainTreeAddDirError" xml:space="preserve">
     <value>Couldn't find a parent WzFile to add this WzDirectoryProperty.</value>
   </data>
-  <data name="MainTreeEnd" xml:space="preserve">
+    <data name="MainTreeEnd" xml:space="preserve">
     <value>已經到達結尾了</value>
   </data>
-  <data name="MainUnloadAll" xml:space="preserve">
+    <data name="MainUnloadAll" xml:space="preserve">
     <value>你確定要關閉所有檔案嗎?</value>
   </data>
-  <data name="MainUpdateAvailable" xml:space="preserve">
+    <data name="MainUpdateAvailable" xml:space="preserve">
     <value>{0}
 
 點選 \"確認\" 下載新版本.</value>
   </data>
-  <data name="MainUpdateTitle" xml:space="preserve">
+    <data name="MainUpdateTitle" xml:space="preserve">
     <value>新版本</value>
   </data>
-  <data name="MainWzExportError" xml:space="preserve">
+    <data name="MainWzExportError" xml:space="preserve">
     <value>導出目錄未找到。 請在工具 - &gt;選項下指定它</value>
   </data>
-  <data name="Mp3Filter" xml:space="preserve">
+    <data name="Mp3Filter" xml:space="preserve">
     <value>MPEG-1 Audio Layer 3 (*.mp3)</value>
   </data>
-  <data name="OptionsIndentError" xml:space="preserve">
+    <data name="OptionsIndentError" xml:space="preserve">
     <value>縮進必須大於或等於0</value>
   </data>
-  <data name="ReplaceConfirm" xml:space="preserve">
+    <data name="ReplaceConfirm" xml:space="preserve">
     <value>節點"{0}"已存在, 你想取代它嗎?</value>
   </data>
-  <data name="SaveVersionError" xml:space="preserve">
+    <data name="SaveVersionError" xml:space="preserve">
     <value>版本必須大於或等於0</value>
   </data>
-  <data name="SelectDefaultXmlFolder" xml:space="preserve">
+    <data name="SelectDefaultXmlFolder" xml:space="preserve">
     <value>選擇默認XML資料夾</value>
   </data>
-  <data name="SelectionType" xml:space="preserve">
+    <data name="SelectionType" xml:space="preserve">
     <value>選中類型: {0}</value>
   </data>
-  <data name="SelectOutApng" xml:space="preserve">
+    <data name="SelectOutApng" xml:space="preserve">
     <value>選擇動畫路徑</value>
   </data>
-  <data name="SelectOutDir" xml:space="preserve">
+    <data name="SelectOutDir" xml:space="preserve">
     <value>選擇輸出目錄</value>
   </data>
-  <data name="SelectOutWz" xml:space="preserve">
+    <data name="SelectOutWz" xml:space="preserve">
     <value>選擇要儲存的檔案</value>
   </data>
-  <data name="SelectOutXml" xml:space="preserve">
+    <data name="SelectOutXml" xml:space="preserve">
     <value>選擇XML路徑</value>
   </data>
-  <data name="SelectWz" xml:space="preserve">
+    <data name="SelectWz" xml:space="preserve">
     <value>選擇WZ檔案</value>
   </data>
-  <data name="SelectWzImg" xml:space="preserve">
+    <data name="SelectWzImg" xml:space="preserve">
     <value>選擇IMG檔案</value>
   </data>
-  <data name="SelectXml" xml:space="preserve">
+    <data name="SelectXml" xml:space="preserve">
     <value>選擇XML檔案</value>
   </data>
-  <data name="Warning" xml:space="preserve">
+    <data name="Warning" xml:space="preserve">
     <value>警告</value>
   </data>
-  <data name="WzFilter" xml:space="preserve">
+    <data name="WzFilter" xml:space="preserve">
     <value>WZ檔案 (*.wz)</value>
   </data>
-  <data name="WzImgFilter" xml:space="preserve">
+    <data name="WzImgFilter" xml:space="preserve">
     <value>WZ 圖像文件 (*.img)</value>
   </data>
-  <data name="XmlFilter" xml:space="preserve">
+    <data name="XmlFilter" xml:space="preserve">
     <value>eXtended Markup Language (*.xml)</value>
   </data>
-  <data name="Subpanel_Loading" xml:space="preserve">
+    <data name="Subpanel_Loading" xml:space="preserve">
     <value>請稍等</value>
   </data>
-  <data name="ExecutingAssemblyError" xml:space="preserve">
+    <data name="ExecutingAssemblyError" xml:space="preserve">
     <value>This is only available under the x86 version of HaRepacker, please get the alternative version.</value>
   </data>
-  <data name="EncTypeCustom" xml:space="preserve">
+    <data name="EncTypeCustom" xml:space="preserve">
     <value>使用自定義編碼</value>
   </data>
-  <data name="EncTypeGenerate" xml:space="preserve">
+    <data name="EncTypeGenerate" xml:space="preserve">
     <value>Bruteforce AES密鑰（生成）</value>
   </data>
-  <data name="RelativeTime_DaysAgo" xml:space="preserve">
+    <data name="RelativeTime_DaysAgo" xml:space="preserve">
     <value>{0} 天前</value>
   </data>
-  <data name="RelativeTime_HoursAgo" xml:space="preserve">
+    <data name="RelativeTime_HoursAgo" xml:space="preserve">
     <value>{0} 小時前</value>
   </data>
-  <data name="RelativeTime_MinutesAgo" xml:space="preserve">
+    <data name="RelativeTime_MinutesAgo" xml:space="preserve">
     <value>{0} 分鐘前</value>
   </data>
-  <data name="RelativeTime_MonthsAgo" xml:space="preserve">
+    <data name="RelativeTime_MonthsAgo" xml:space="preserve">
     <value>{0} 月前</value>
   </data>
-  <data name="RelativeTime_SecondsAgo" xml:space="preserve">
+    <data name="RelativeTime_SecondsAgo" xml:space="preserve">
     <value>{0} 秒前</value>
   </data>
-  <data name="RelativeTime_YearsAgo" xml:space="preserve">
+    <data name="RelativeTime_YearsAgo" xml:space="preserve">
     <value>{0} 年前</value>
   </data>
-  <data name="MainWzExportJson_IncludeBase64" xml:space="preserve">
+    <data name="MainWzExportJson_IncludeBase64" xml:space="preserve">
     <value>Would you like to include the base64 data of image, mp3 &amp; other binary data in the json?</value>
   </data>
-  <data name="MainWzExportJson_IncludeBase64_Title" xml:space="preserve">
+    <data name="MainWzExportJson_IncludeBase64_Title" xml:space="preserve">
     <value>Data</value>
   </data>
 </root>

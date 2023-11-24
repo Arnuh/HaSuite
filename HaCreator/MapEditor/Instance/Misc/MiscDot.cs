@@ -13,38 +13,26 @@ using XNA = Microsoft.Xna.Framework;
 using MapleLib.WzLib.WzStructure.Data;
 using HaCreator.MapEditor.Instance.Shapes;
 
-namespace HaCreator.MapEditor.Instance.Misc
-{
-    public class MiscDot : MapleDot
-    {
-        private MiscRectangle parentItem;
+namespace HaCreator.MapEditor.Instance.Misc {
+	public class MiscDot : MapleDot {
+		private MiscRectangle parentItem;
 
-        public MiscDot(MiscRectangle parentItem, Board board, int x, int y)
-            : base(board, x, y)
-        {
-            this.parentItem = parentItem;
-        }
+		public MiscDot(MiscRectangle parentItem, Board board, int x, int y)
+			: base(board, x, y) {
+			this.parentItem = parentItem;
+		}
 
-        public override XNA.Color Color
-        {
-            get { return UserSettings.MiscColor; }
-        }
+		public override XNA.Color Color => UserSettings.MiscColor;
 
-        public override XNA.Color InactiveColor
-        {
-            get { return MultiBoard.MiscInactiveColor; }
-        }
+		public override XNA.Color InactiveColor => MultiBoard.MiscInactiveColor;
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Misc; }
-        }
+		public override ItemTypes Type => ItemTypes.Misc;
 
-        protected override bool RemoveConnectedLines
-        {
-            get { return false; }
-        }
+		protected override bool RemoveConnectedLines => false;
 
-        public MiscRectangle ParentRectangle { get { return parentItem; } set { parentItem = value; } }
-    }
+		public MiscRectangle ParentRectangle {
+			get => parentItem;
+			set => parentItem = value;
+		}
+	}
 }

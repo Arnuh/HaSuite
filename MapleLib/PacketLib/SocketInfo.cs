@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,23 +17,20 @@
 using System;
 using System.Net.Sockets;
 
-namespace MapleLib.PacketLib
-{
+namespace MapleLib.PacketLib {
 	/// <summary>
 	/// Class to manage Socket and data to receive
 	/// </summary>
-	public class SocketInfo
-	{
+	public class SocketInfo {
 		/// <summary>
 		/// Creates a new instance of a SocketInfo
 		/// </summary>
 		/// <param name="socket">Socket connection of the session</param>
 		/// <param name="headerLength">Length of the main packet's header (Usually 4)</param>
-		public SocketInfo(Socket socket, short headerLength) : this (socket, headerLength, false) {
+		public SocketInfo(Socket socket, short headerLength) : this(socket, headerLength, false) {
 		}
 
-		public SocketInfo(Socket socket, short headerLength, bool noEncryption)
-		{
+		public SocketInfo(Socket socket, short headerLength, bool noEncryption) {
 			Socket = socket;
 			State = StateEnum.Header;
 			NoEncryption = noEncryption;
@@ -66,6 +63,9 @@ namespace MapleLib.PacketLib
 		/// <summary>
 		/// The SocketInfo's state of data
 		/// </summary>
-		public enum StateEnum { Header, Content }
+		public enum StateEnum {
+			Header,
+			Content
+		}
 	}
 }

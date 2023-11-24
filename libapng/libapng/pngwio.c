@@ -1,4 +1,3 @@
-
 /* pngwio.c - functions for data output
  *
  * Last changed in libpng 1.5.0 [January 6, 2011]
@@ -30,14 +29,13 @@
  */
 
 void /* PRIVATE */
-png_write_data(png_structp png_ptr, png_const_bytep data, png_size_t length)
-{
-   /* NOTE: write_data_fn must not change the buffer! */
-   if (png_ptr->write_data_fn != NULL )
-      (*(png_ptr->write_data_fn))(png_ptr, (png_bytep)data, length);
+png_write_data(png_structp png_ptr, png_const_bytep data, png_size_t length) {
+	/* NOTE: write_data_fn must not change the buffer! */
+	if (png_ptr->write_data_fn != NULL)
+		(*(png_ptr->write_data_fn))(png_ptr, (png_bytep)data, length);
 
-   else
-      png_error(png_ptr, "Call to NULL write function");
+	else
+		png_error(png_ptr, "Call to NULL write function");
 }
 
 #ifdef PNG_STDIO_SUPPORTED
@@ -48,17 +46,16 @@ png_write_data(png_structp png_ptr, png_const_bytep data, png_size_t length)
  */
 #ifndef USE_FAR_KEYWORD
 void PNGCBAPI
-png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
-{
-   png_size_t check;
+png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length) {
+	png_size_t check;
 
-   if (png_ptr == NULL)
-      return;
+	if (png_ptr == NULL)
+		return;
 
-   check = fwrite(data, 1, length, (png_FILE_p)(png_ptr->io_ptr));
+	check = fwrite(data, 1, length, (png_FILE_p)(png_ptr->io_ptr));
 
-   if (check != length)
-      png_error(png_ptr, "Write Error");
+	if (check != length)
+		png_error(png_ptr, "Write Error");
 }
 #else
 /* This is the model-independent version. Since the standard I/O library
@@ -126,23 +123,21 @@ png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
  */
 #ifdef PNG_WRITE_FLUSH_SUPPORTED
 void /* PRIVATE */
-png_flush(png_structp png_ptr)
-{
-   if (png_ptr->output_flush_fn != NULL)
-      (*(png_ptr->output_flush_fn))(png_ptr);
+png_flush(png_structp png_ptr) {
+	if (png_ptr->output_flush_fn != NULL)
+		(*(png_ptr->output_flush_fn))(png_ptr);
 }
 
 #  ifdef PNG_STDIO_SUPPORTED
 void PNGCBAPI
-png_default_flush(png_structp png_ptr)
-{
-   png_FILE_p io_ptr;
+png_default_flush(png_structp png_ptr) {
+	png_FILE_p io_ptr;
 
-   if (png_ptr == NULL)
-      return;
+	if (png_ptr == NULL)
+		return;
 
-   io_ptr = (png_FILE_p)CVT_PTR((png_ptr->io_ptr));
-   fflush(io_ptr);
+	io_ptr = (png_FILE_p)CVT_PTR((png_ptr->io_ptr));
+	fflush(io_ptr);
 }
 #  endif
 #endif
@@ -178,19 +173,18 @@ png_default_flush(png_structp png_ptr)
  */
 void PNGAPI
 png_set_write_fn(png_structp png_ptr, png_voidp io_ptr,
-    png_rw_ptr write_data_fn, png_flush_ptr output_flush_fn)
-{
-   if (png_ptr == NULL)
-      return;
+                 png_rw_ptr write_data_fn, png_flush_ptr output_flush_fn) {
+	if (png_ptr == NULL)
+		return;
 
-   png_ptr->io_ptr = io_ptr;
+	png_ptr->io_ptr = io_ptr;
 
 #ifdef PNG_STDIO_SUPPORTED
-   if (write_data_fn != NULL)
-      png_ptr->write_data_fn = write_data_fn;
+	if (write_data_fn != NULL)
+		png_ptr->write_data_fn = write_data_fn;
 
-   else
-      png_ptr->write_data_fn = png_default_write_data;
+	else
+		png_ptr->write_data_fn = png_default_write_data;
 #else
    png_ptr->write_data_fn = write_data_fn;
 #endif
@@ -198,26 +192,25 @@ png_set_write_fn(png_structp png_ptr, png_voidp io_ptr,
 #ifdef PNG_WRITE_FLUSH_SUPPORTED
 #  ifdef PNG_STDIO_SUPPORTED
 
-   if (output_flush_fn != NULL)
-      png_ptr->output_flush_fn = output_flush_fn;
+	if (output_flush_fn != NULL)
+		png_ptr->output_flush_fn = output_flush_fn;
 
-   else
-      png_ptr->output_flush_fn = png_default_flush;
+	else
+		png_ptr->output_flush_fn = png_default_flush;
 
 #  else
    png_ptr->output_flush_fn = output_flush_fn;
 #  endif
 #endif /* PNG_WRITE_FLUSH_SUPPORTED */
 
-   /* It is an error to read while writing a png file */
-   if (png_ptr->read_data_fn != NULL)
-   {
-      png_ptr->read_data_fn = NULL;
+	/* It is an error to read while writing a png file */
+	if (png_ptr->read_data_fn != NULL) {
+		png_ptr->read_data_fn = NULL;
 
-      png_warning(png_ptr,
-          "Can't set both read_data_fn and write_data_fn in the"
-          " same structure");
-   }
+		png_warning(png_ptr,
+		            "Can't set both read_data_fn and write_data_fn in the"
+		            " same structure");
+	}
 }
 
 #ifdef USE_FAR_KEYWORD

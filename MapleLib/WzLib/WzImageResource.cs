@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,28 +19,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MapleLib.WzLib
-{
-    public class WzImageResource : IDisposable
-    {
-        bool parsed;
-        WzImage img;
-        public WzImageResource(WzImage img)
-        {
-            this.img = img;
-            this.parsed = img.Parsed;
-            if (!parsed)
-            {
-                img.ParseImage();
-            }
-        }
+namespace MapleLib.WzLib {
+	public class WzImageResource : IDisposable {
+		private bool parsed;
+		private WzImage img;
 
-        public void Dispose()
-        {
-            if (!parsed)
-            {
-                img.UnparseImage();
-            }
-        }
-    }
+		public WzImageResource(WzImage img) {
+			this.img = img;
+			parsed = img.Parsed;
+			if (!parsed) img.ParseImage();
+		}
+
+		public void Dispose() {
+			if (!parsed) img.UnparseImage();
+		}
+	}
 }

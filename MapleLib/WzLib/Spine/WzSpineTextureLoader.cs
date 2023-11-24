@@ -30,74 +30,65 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace MapleLib.WzLib.Spine
-{
-    public class WzSpineTextureLoader : TextureLoader
-    {
-        public WzObject ParentNode { get; private set; }
-        private readonly GraphicsDevice graphicsDevice;
+namespace MapleLib.WzLib.Spine {
+	public class WzSpineTextureLoader : TextureLoader {
+		public WzObject ParentNode { get; private set; }
+		private readonly GraphicsDevice graphicsDevice;
 
 
-        public WzSpineTextureLoader(WzObject ParentNode, GraphicsDevice graphicsDevice)
-        {
-            this.ParentNode = ParentNode;
-            this.graphicsDevice = graphicsDevice;
-        }
+		public WzSpineTextureLoader(WzObject ParentNode, GraphicsDevice graphicsDevice) {
+			this.ParentNode = ParentNode;
+			this.graphicsDevice = graphicsDevice;
+		}
 
-        /// <summary>
-        /// Loads spine texture from the specified WZ path
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="path"></param>
-        public void Load(AtlasPage page, string path)
-        {
-            WzObject frameNode = this.ParentNode[path];
-            if (frameNode == null)
-                return;
+		/// <summary>
+		/// Loads spine texture from the specified WZ path
+		/// </summary>
+		/// <param name="page"></param>
+		/// <param name="path"></param>
+		public void Load(AtlasPage page, string path) {
+			var frameNode = ParentNode[path];
+			if (frameNode == null)
+				return;
 
-            WzCanvasProperty canvasProperty = null;
+			WzCanvasProperty canvasProperty = null;
 
-            WzImageProperty imageChild = (WzImageProperty)ParentNode[path];
-            if (imageChild is WzUOLProperty uolProperty)
-            {
-                WzObject uolLink = uolProperty.LinkValue;
+			var imageChild = (WzImageProperty) ParentNode[path];
+			if (imageChild is WzUOLProperty uolProperty) {
+				var uolLink = uolProperty.LinkValue;
 
-                if (uolLink is WzCanvasProperty uolPropertyLink)
-                {
-                    canvasProperty = uolPropertyLink;
-                }
-                else
-                {
-                    // other unimplemented prop?
-                }
-            }
-            else if (imageChild is WzCanvasProperty property)
-            {
-                canvasProperty = property;
-            }
+				if (uolLink is WzCanvasProperty uolPropertyLink) {
+					canvasProperty = uolPropertyLink;
+				}
+				else {
+					// other unimplemented prop?
+				}
+			}
+			else if (imageChild is WzCanvasProperty property) {
+				canvasProperty = property;
+			}
 
-            if (canvasProperty != null && graphicsDevice != null)
-            {
-                WzCanvasProperty linkImgProperty = (WzCanvasProperty)canvasProperty.GetLinkedWzImageProperty();
-                WzPngProperty pngProperty = linkImgProperty.PngProperty;
+			if (canvasProperty != null && graphicsDevice != null) {
+				var linkImgProperty = (WzCanvasProperty) canvasProperty.GetLinkedWzImageProperty();
+				var pngProperty = linkImgProperty.PngProperty;
 
-                Texture2D tex = new Texture2D(graphicsDevice, pngProperty.Width, pngProperty.Height, false, linkImgProperty.PngProperty.GetXNASurfaceFormat());
+				var tex = new Texture2D(graphicsDevice, pngProperty.Width, pngProperty.Height, false,
+					linkImgProperty.PngProperty.GetXNASurfaceFormat());
 
-                pngProperty.ParsePng(true, tex);
+				pngProperty.ParsePng(true, tex);
 
-                page.rendererObject = tex;
-                page.width = pngProperty.Width;
-                page.height = pngProperty.Height;
-            }
-        }
+				page.rendererObject = tex;
+				page.width = pngProperty.Width;
+				page.height = pngProperty.Height;
+			}
+		}
 
-        /// <summary>
-        /// Unload texture
-        /// </summary>
-        /// <param name="texture"></param>
-        public void Unload(object texture)
-        {
-            (texture as Texture2D)?.Dispose();
-        }
-    }
+		/// <summary>
+		/// Unload texture
+		/// </summary>
+		/// <param name="texture"></param>
+		public void Unload(object texture) {
+			(texture as Texture2D)?.Dispose();
+		}
+	}
 }

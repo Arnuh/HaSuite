@@ -7,72 +7,68 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapleLib.Configuration
-{
-    public class UserSettings
-    {
-        public enum UserSettingsThemeColor
-        {
-            Dark = 0,
-            Light = 1
-        }
+namespace MapleLib.Configuration {
+	public class UserSettings {
+		public enum UserSettingsThemeColor {
+			Dark = 0,
+			Light = 1
+		}
 
-        [JsonProperty(PropertyName = "Indentation")]
-        public int Indentation = 0;
+		[JsonProperty(PropertyName = "Indentation")]
+		public int Indentation = 0;
 
-        [JsonProperty(PropertyName = "LineBreakType")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public LineBreak LineBreakType = LineBreak.None;
+		[JsonProperty(PropertyName = "LineBreakType")] [JsonConverter(typeof(StringEnumConverter))]
+		public LineBreak LineBreakType = LineBreak.None;
 
-        [JsonProperty(PropertyName = "DefaultXmlFolder")]
-        public string DefaultXmlFolder = "";
+		[JsonProperty(PropertyName = "DefaultXmlFolder")]
+		public string DefaultXmlFolder = "";
 
-        [JsonProperty(PropertyName = "UseApngIncompatibilityFrame")]
-        public bool UseApngIncompatibilityFrame = true;
+		[JsonProperty(PropertyName = "UseApngIncompatibilityFrame")]
+		public bool UseApngIncompatibilityFrame = true;
 
-        [JsonProperty(PropertyName = "AutoAssociate")]
-        public bool AutoAssociate = true;
+		[JsonProperty(PropertyName = "AutoAssociate")]
+		public bool AutoAssociate = true;
 
-        [JsonProperty(PropertyName = "Sort")]
-        public bool Sort = false;
+		[JsonProperty(PropertyName = "Sort")] public bool Sort = false;
 
-        [JsonProperty(PropertyName = "SuppressWarnings")]
-        public bool SuppressWarnings = false;
+		[JsonProperty(PropertyName = "SuppressWarnings")]
+		public bool SuppressWarnings = false;
 
-        [JsonProperty(PropertyName = "ParseImagesInSearch")]
-        public bool ParseImagesInSearch = false;
+		[JsonProperty(PropertyName = "ParseImagesInSearch")]
+		public bool ParseImagesInSearch = false;
 
-        [JsonProperty(PropertyName = "SearchStringValues")]
-        public bool SearchStringValues = true;
+		[JsonProperty(PropertyName = "SearchStringValues")]
+		public bool SearchStringValues = true;
 
-        // Animate
-        [JsonProperty(PropertyName = "DevImgSequences")]
-        public bool DevImgSequences = false;
+		// Animate
+		[JsonProperty(PropertyName = "DevImgSequences")]
+		public bool DevImgSequences = false;
 
-        [JsonProperty(PropertyName = "CartesianPlane")]
-        public bool CartesianPlane = true;
+		[JsonProperty(PropertyName = "CartesianPlane")]
+		public bool CartesianPlane = true;
 
-        [JsonProperty(PropertyName = "DelayNextLoop")]
-        public int DelayNextLoop = 60;
+		[JsonProperty(PropertyName = "DelayNextLoop")]
+		public int DelayNextLoop = 60;
 
-        [JsonProperty(PropertyName = "PlanePosition")]
-        public string PlanePosition = "Center";
+		[JsonProperty(PropertyName = "PlanePosition")]
+		public string PlanePosition = "Center";
 
-        // Themes
-        [JsonProperty(PropertyName = "ThemeColor")]
-        public int ThemeColor = (int) UserSettingsThemeColor.Light;//white = 1, black = 0
+		// Themes
+		[JsonProperty(PropertyName = "ThemeColor")]
+		public int ThemeColor = (int) UserSettingsThemeColor.Light; //white = 1, black = 0
 
 
-        // Settings not shown on the settings page
-        [JsonProperty(PropertyName = "EnableCrossHairDebugInformation")]
-        public bool EnableCrossHairDebugInformation = true;
-        [JsonProperty(PropertyName = "EnableBorderDebugInformation")]
-        public bool EnableBorderDebugInformation = true;
+		// Settings not shown on the settings page
+		[JsonProperty(PropertyName = "EnableCrossHairDebugInformation")]
+		public bool EnableCrossHairDebugInformation = true;
 
-        [JsonProperty(PropertyName = "ImageZoomLevel")]
-        public double ImageZoomLevel = 3.0f;
+		[JsonProperty(PropertyName = "EnableBorderDebugInformation")]
+		public bool EnableBorderDebugInformation = true;
 
-        [JsonProperty(PropertyName = "AutoloadRelatedWzFiles")]
-        public bool AutoloadRelatedWzFiles = false;
-    }
+		[JsonProperty(PropertyName = "ImageZoomLevel")]
+		public double ImageZoomLevel = 3.0f;
+
+		[JsonProperty(PropertyName = "AutoloadRelatedWzFiles")]
+		public bool AutoloadRelatedWzFiles = false;
+	}
 }

@@ -19,46 +19,37 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HaCreator.GUI.EditorPanels
-{
-    public partial class PortalPanel : UserControl
-    {
-        private HaCreatorStateManager hcsm;
+namespace HaCreator.GUI.EditorPanels {
+	public partial class PortalPanel : UserControl {
+		private HaCreatorStateManager hcsm;
 
-        public PortalPanel()
-        {
-            InitializeComponent();
-        }
+		public PortalPanel() {
+			InitializeComponent();
+		}
 
-        public void Initialize(HaCreatorStateManager hcsm)
-        {
-            this.hcsm = hcsm;
+		public void Initialize(HaCreatorStateManager hcsm) {
+			this.hcsm = hcsm;
 
-            foreach (string pt in Program.InfoManager.PortalTypeById)
-            {
-                PortalInfo pInfo = PortalInfo.GetPortalInfoByType(pt);
-                try
-                {
-                    ImageViewer item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[pt], true);
-                    item.Tag = pInfo;
-                    item.MouseDown += new MouseEventHandler(portal_MouseDown);
-                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                }
-                catch (KeyNotFoundException) 
-                { 
-                }
-            }
-        }
+			foreach (var pt in Program.InfoManager.PortalTypeById) {
+				var pInfo = PortalInfo.GetPortalInfoByType(pt);
+				try {
+					var item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[pt], true);
+					item.Tag = pInfo;
+					item.MouseDown += new MouseEventHandler(portal_MouseDown);
+					item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+				}
+				catch (KeyNotFoundException) {
+				}
+			}
+		}
 
-        void portal_MouseDown(object sender, MouseEventArgs e)
-        {
-            lock (hcsm.MultiBoard)
-            {
-                hcsm.EnterEditMode(ItemTypes.Portals);
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((ImageViewer)sender).Tag);
-                hcsm.MultiBoard.Focus();
-                ((ImageViewer)sender).IsActive = true;
-            }
-        }
-    }
+		private void portal_MouseDown(object sender, MouseEventArgs e) {
+			lock (hcsm.MultiBoard) {
+				hcsm.EnterEditMode(ItemTypes.Portals);
+				hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo) ((ImageViewer) sender).Tag);
+				hcsm.MultiBoard.Focus();
+				((ImageViewer) sender).IsActive = true;
+			}
+		}
+	}
 }

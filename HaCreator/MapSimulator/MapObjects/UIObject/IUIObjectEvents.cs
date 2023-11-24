@@ -5,10 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapSimulator.MapObjects.UIObject
-{
-    public interface IUIObjectEvents
-    {
-        void CheckMouseEvent(int shiftCenteredX, int shiftCenteredY, MouseState mouseState);
-    }
+namespace HaCreator.MapSimulator.MapObjects.UIObject {
+	public interface IUIObjectEvents {
+		void CheckMouseEvent(int shiftCenteredX, int shiftCenteredY, MouseState mouseState);
+	}
 }

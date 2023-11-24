@@ -10,9 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.Exceptions
-{
-    public class NameAlreadyUsedException : Exception
-    {
-    }
+namespace HaCreator.Exceptions {
+	public class NameAlreadyUsedException : Exception {
+	}
 }

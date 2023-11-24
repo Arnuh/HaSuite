@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-namespace MapleLib.WzLib
-{
-    public abstract class WzExtended : WzImageProperty
-    {
-    }
+namespace MapleLib.WzLib {
+	public abstract class WzExtended : WzImageProperty {
+	}
 }

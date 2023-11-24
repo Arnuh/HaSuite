@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,32 +16,26 @@
 
 using System.Numerics;
 
-namespace MapleLib.MapleCryptoLib
-{
+namespace MapleLib.MapleCryptoLib {
 	/// <summary>
 	/// Class to handle the MapleStory Custom Encryption routines
 	/// </summary>
-	public class MapleCustomEncryption
-	{
-
+	public class MapleCustomEncryption {
 		/// <summary>
 		/// Encrypt data using MapleStory's Custom Encryption
 		/// </summary>
 		/// <param name="data">data to encrypt</param>
 		/// <returns>Encrypted data</returns>
-		public static void Encrypt(byte[] data)
-		{
-			int size = data.Length;
+		public static void Encrypt(byte[] data) {
+			var size = data.Length;
 			int j;
 			byte a, c;
-			for (int i = 0; i < 3; i++)
-			{
+			for (var i = 0; i < 3; i++) {
 				a = 0;
-				for (j = size; j > 0; j--)
-				{
+				for (j = size; j > 0; j--) {
 					c = data[size - j];
 					c = rol(c, 3);
-					c = (byte)(c + j);
+					c = (byte) (c + j);
 					c ^= a;
 					a = c;
 					c = ror(a, j);
@@ -49,12 +43,12 @@ namespace MapleLib.MapleCryptoLib
 					c += 0x48;
 					data[size - j] = c;
 				}
+
 				a = 0;
-				for (j = data.Length; j > 0; j--)
-				{
+				for (j = data.Length; j > 0; j--) {
 					c = data[j - 1];
 					c = rol(c, 4);
-					c = (byte)(c + j);
+					c = (byte) (c + j);
 					c ^= a;
 					a = c;
 					c ^= 0x13;
@@ -69,38 +63,35 @@ namespace MapleLib.MapleCryptoLib
 		/// </summary>
 		/// <param name="data">data to decrypt</param>
 		/// <returns>Decrypted data</returns>
-		public static void Decrypt(byte[] data)
-		{
-			int size = data.Length;
+		public static void Decrypt(byte[] data) {
+			var size = data.Length;
 			int j;
 			byte a, b, c;
-			for (int i = 0; i < 3; i++)
-			{
+			for (var i = 0; i < 3; i++) {
 				a = 0;
 				b = 0;
-				for (j = size; j > 0; j--)
-				{
+				for (j = size; j > 0; j--) {
 					c = data[j - 1];
 					c = rol(c, 3);
 					c ^= 0x13;
 					a = c;
 					c ^= b;
-					c = (byte)(c - j); // Guess this is supposed to be right?
+					c = (byte) (c - j); // Guess this is supposed to be right?
 					c = ror(c, 4);
 					b = a;
 					data[j - 1] = c;
 				}
+
 				a = 0;
 				b = 0;
-				for (j = size; j > 0; j--)
-				{
+				for (j = size; j > 0; j--) {
 					c = data[size - j];
 					c -= 0x48;
 					c ^= 0xFF;
 					c = rol(c, j);
 					a = c;
 					c ^= b;
-					c = (byte)(c - j); // Guess this is supposed to be right?
+					c = (byte) (c - j); // Guess this is supposed to be right?
 					c = ror(c, 3);
 					b = a;
 					data[size - j] = c;
@@ -108,34 +99,28 @@ namespace MapleLib.MapleCryptoLib
 			}
 		}
 
-        /// <summary>
-        /// Rolls a byte left
-        /// </summary>
-        /// <param name="val">input byte to roll</param>
-        /// <param name="num">amount of bits to roll</param>
-        /// <returns>The left rolled byte</returns>
-        public static byte rol(byte val, int num)
-        {
-            for (int i = 0; i < num; i++)
-            {
-                val = (byte)((val << 1) | ((val >> 7) & 1));
-            }
-            return val;
-        }
+		/// <summary>
+		/// Rolls a byte left
+		/// </summary>
+		/// <param name="val">input byte to roll</param>
+		/// <param name="num">amount of bits to roll</param>
+		/// <returns>The left rolled byte</returns>
+		public static byte rol(byte val, int num) {
+			for (var i = 0; i < num; i++) val = (byte) ((val << 1) | ((val >> 7) & 1));
 
-        /// <summary>
-        /// Rolls a byte right
-        /// </summary>
-        /// <param name="val">input byte to roll</param>
-        /// <param name="num">amount of bits to roll</param>
-        /// <returns>The right rolled byte</returns>
-        public static byte ror(byte val, int num)
-        {
-            for (int i = 0; i < num; i++)
-            {
-                val = (byte)((val >> 1) | ((val & 1) << 7));
-            }
-            return val;
-        }
-    }
+			return val;
+		}
+
+		/// <summary>
+		/// Rolls a byte right
+		/// </summary>
+		/// <param name="val">input byte to roll</param>
+		/// <param name="num">amount of bits to roll</param>
+		/// <returns>The right rolled byte</returns>
+		public static byte ror(byte val, int num) {
+			for (var i = 0; i < num; i++) val = (byte) ((val >> 1) | ((val & 1) << 7));
+
+			return val;
+		}
+	}
 }

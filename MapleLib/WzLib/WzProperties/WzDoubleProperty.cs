@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,37 +17,42 @@
 using System.IO;
 using MapleLib.WzLib.Util;
 
-namespace MapleLib.WzLib.WzProperties
-{
+namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
 	/// A property that has the value of a double
 	/// </summary>
-	public class WzDoubleProperty : WzImageProperty
-	{
+	public class WzDoubleProperty : WzImageProperty {
 		#region Fields
+
 		internal string name;
 		internal double val;
+
 		internal WzObject parent;
 		//internal WzImage imgParent;
+
 		#endregion
 
 		#region Inherited Members
-        public override void SetValue(object value)
-        {
-            val = System.Convert.ToDouble(value);
-        }
 
-        public override WzImageProperty DeepClone()
-        {
-            WzDoubleProperty clone = new WzDoubleProperty(name, val);
-            return clone;
-        }
+		public override void SetValue(object value) {
+			val = System.Convert.ToDouble(value);
+		}
 
-		public override object WzValue { get { return Value; } }
+		public override WzImageProperty DeepClone() {
+			var clone = new WzDoubleProperty(name, val);
+			return clone;
+		}
+
+		public override object WzValue => Value;
+
 		/// <summary>
 		/// The parent of the object
 		/// </summary>
-		public override WzObject Parent { get { return parent; } internal set { parent = value; } }
+		public override WzObject Parent {
+			get => parent;
+			internal set => parent = value;
+		}
+
 		/*/// <summary>
 		/// The image that this property is contained in
 		/// </summary>
@@ -55,85 +60,94 @@ namespace MapleLib.WzLib.WzProperties
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
-		public override WzPropertyType PropertyType { get { return WzPropertyType.Double; } }
+		public override WzPropertyType PropertyType => WzPropertyType.Double;
+
 		/// <summary>
 		/// The name of this property
 		/// </summary>
-		public override string Name { get { return name; } set { name = value; } }
-		public override void WriteValue(MapleLib.WzLib.Util.WzBinaryWriter writer)
-		{
-			writer.Write((byte)5);
+		public override string Name {
+			get => name;
+			set => name = value;
+		}
+
+		public override void WriteValue(WzBinaryWriter writer) {
+			writer.Write((byte) 5);
 			writer.Write(Value);
 		}
-		public override void ExportXml(StreamWriter writer, int level)
-		{
-			writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.EmptyNamedValuePair("WzDouble", this.Name, this.Value.ToString()));
+
+		public override void ExportXml(StreamWriter writer, int level) {
+			writer.WriteLine(XmlUtil.Indentation(level) +
+			                 XmlUtil.EmptyNamedValuePair("WzDouble", Name, Value.ToString()));
 		}
-		public override void Dispose()
-		{
+
+		public override void Dispose() {
 			name = null;
 		}
+
 		#endregion
 
 		#region Custom Members
+
 		/// <summary>
 		/// The value of this property
 		/// </summary>
-		public double Value { get { return val; } set { val = (double) value; } }
+		public double Value {
+			get => val;
+			set => val = (double) value;
+		}
+
 		/// <summary>
 		/// Creates a blank WzDoubleProperty
 		/// </summary>
-		public WzDoubleProperty() { }
+		public WzDoubleProperty() {
+		}
+
 		/// <summary>
 		/// Creates a WzDoubleProperty with the specified name
 		/// </summary>
 		/// <param name="name">The name of the property</param>
-		public WzDoubleProperty(string name)
-		{
+		public WzDoubleProperty(string name) {
 			this.name = name;
 		}
+
 		/// <summary>
 		/// Creates a WzDoubleProperty with the specified name and value
 		/// </summary>
 		/// <param name="name">The name of the property</param>
 		/// <param name="value">The value of the property</param>
-		public WzDoubleProperty(string name, double value)
-		{
+		public WzDoubleProperty(string name, double value) {
 			this.name = name;
-			this.val = value;
+			val = value;
 		}
+
 		#endregion
 
-        #region Cast Values
-        public override float GetFloat()
-        {
-            return (float)val;
-        }
+		#region Cast Values
 
-        public override double GetDouble()
-        {
-            return val;
-        }
+		public override float GetFloat() {
+			return (float) val;
+		}
 
-        public override int GetInt()
-        {
-            return (int)val;
-        }
+		public override double GetDouble() {
+			return val;
+		}
 
-        public override short GetShort()
-        {
-            return (short)val;
-        }
+		public override int GetInt() {
+			return (int) val;
+		}
 
-        public override long GetLong()
-        {
-            return (long)val;
-        }
+		public override short GetShort() {
+			return (short) val;
+		}
 
-        public override string ToString()
-        {
-            return val.ToString();
-        }
-        #endregion
+		public override long GetLong() {
+			return (long) val;
+		}
+
+		public override string ToString() {
+			return val.ToString();
+		}
+
+		#endregion
 	}
 }

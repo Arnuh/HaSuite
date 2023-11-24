@@ -12,39 +12,21 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance.Shapes
-{
-    public class VRDot : MapleDot
-    {
-        MapleEmptyRectangle rect;
+namespace HaCreator.MapEditor.Instance.Shapes {
+	public class VRDot : MapleDot {
+		private MapleEmptyRectangle rect;
 
-        public VRDot(MapleEmptyRectangle rect, Board board, int x, int y)
-            : base(board, x, y)
-        {
-            this.rect = rect;
-        }
+		public VRDot(MapleEmptyRectangle rect, Board board, int x, int y)
+			: base(board, x, y) {
+			this.rect = rect;
+		}
 
-        public override XNA.Color Color
-        {
-            get
-            {
-                return UserSettings.VRColor;
-            }
-        }
+		public override XNA.Color Color => UserSettings.VRColor;
 
-        public override XNA.Color InactiveColor
-        {
-            get { return MultiBoard.VRInactiveColor; }
-        }
+		public override XNA.Color InactiveColor => MultiBoard.VRInactiveColor;
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Misc; }
-        }
+		public override ItemTypes Type => ItemTypes.Misc;
 
-        protected override bool RemoveConnectedLines
-        {
-            get { return false; }
-        }
-    }
+		protected override bool RemoveConnectedLines => false;
+	}
 }

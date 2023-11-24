@@ -11,44 +11,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapEditor
-{
-    public class GraphicsDeviceService : IGraphicsDeviceService
-    {
-        private GraphicsDevice device;
+namespace HaCreator.MapEditor {
+	public class GraphicsDeviceService : IGraphicsDeviceService {
+		private GraphicsDevice device;
 
-        public GraphicsDeviceService(GraphicsDevice device)
-        {
-            this.device = device;
-            device.Disposing += new EventHandler<EventArgs>(device_Disposing);
-            device.DeviceResetting += new EventHandler<EventArgs>(device_DeviceResetting);
-            device.DeviceReset += new EventHandler<EventArgs>(device_DeviceReset);
-            if (DeviceCreated != null) DeviceCreated.Invoke(device, new EventArgs());
-        }
+		public GraphicsDeviceService(GraphicsDevice device) {
+			this.device = device;
+			device.Disposing += new EventHandler<EventArgs>(device_Disposing);
+			device.DeviceResetting += new EventHandler<EventArgs>(device_DeviceResetting);
+			device.DeviceReset += new EventHandler<EventArgs>(device_DeviceReset);
+			if (DeviceCreated != null) DeviceCreated.Invoke(device, new EventArgs());
+		}
 
-        void device_DeviceReset(object sender, EventArgs e)
-        {
-            if (DeviceReset != null) DeviceReset.Invoke(sender, e);
-        }
+		private void device_DeviceReset(object sender, EventArgs e) {
+			if (DeviceReset != null) DeviceReset.Invoke(sender, e);
+		}
 
-        void device_DeviceResetting(object sender, EventArgs e)
-        {
-            if (DeviceResetting != null) DeviceResetting.Invoke(sender, e);
-        }
+		private void device_DeviceResetting(object sender, EventArgs e) {
+			if (DeviceResetting != null) DeviceResetting.Invoke(sender, e);
+		}
 
-        void device_Disposing(object sender, EventArgs e)
-        {
-            if (DeviceDisposing != null) DeviceDisposing.Invoke(sender, e);
-        }
+		private void device_Disposing(object sender, EventArgs e) {
+			if (DeviceDisposing != null) DeviceDisposing.Invoke(sender, e);
+		}
 
-        public GraphicsDevice GraphicsDevice
-        {
-            get { return device; }
-        }
+		public GraphicsDevice GraphicsDevice => device;
 
-        public event EventHandler<EventArgs> DeviceCreated;
-        public event EventHandler<EventArgs> DeviceDisposing;
-        public event EventHandler<EventArgs> DeviceReset;
-        public event EventHandler<EventArgs> DeviceResetting;
-    }
+		public event EventHandler<EventArgs> DeviceCreated;
+		public event EventHandler<EventArgs> DeviceDisposing;
+		public event EventHandler<EventArgs> DeviceReset;
+		public event EventHandler<EventArgs> DeviceResetting;
+	}
 }

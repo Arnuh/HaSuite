@@ -37,7 +37,7 @@ namespace Spine {
 	// #region License
 	// /*
 	// Microsoft Public License (Ms-PL)
-	// MonoGame - Copyright © 2009 The MonoGame Team
+	// MonoGame - Copyright Â© 2009 The MonoGame Team
 	//
 	// All rights reserved.
 	//
@@ -83,60 +83,62 @@ namespace Spine {
 		private VertexPositionColorTexture[] vertexArray;
 		private short[] indices;
 
-		public RegionBatcher () {
+		public RegionBatcher() {
 			items = new List<RegionItem>(256);
 			freeItems = new Queue<RegionItem>(256);
 			EnsureArrayCapacity(256);
 		}
 
 		/// <summary>Returns a pooled RegionItem.</summary>
-		public RegionItem NextItem () {
-			RegionItem item = freeItems.Count > 0 ? freeItems.Dequeue() : new RegionItem();
+		public RegionItem NextItem() {
+			var item = freeItems.Count > 0 ? freeItems.Dequeue() : new RegionItem();
 			items.Add(item);
 			return item;
 		}
 
 		/// <summary>Resize and recreate the indices and vertex position color buffers.</summary>
-		private void EnsureArrayCapacity (int itemCount) {
+		private void EnsureArrayCapacity(int itemCount) {
 			if (indices != null && indices.Length >= 6 * itemCount) return;
 
-			short[] newIndices = new short[6 * itemCount];
-			int start = 0;
+			var newIndices = new short[6 * itemCount];
+			var start = 0;
 			if (indices != null) {
 				indices.CopyTo(newIndices, 0);
 				start = indices.Length / 6;
 			}
+
 			for (var i = start; i < itemCount; i++) {
 				/* TL    TR
 				 *  0----1 0,1,2,3 = index offsets for vertex indices
 				 *  |    | TL,TR,BL,BR are vertex references in RegionItem.
 				 *  2----3
 				 * BL    BR */
-				newIndices[i * 6 + 0] = (short)(i * 4);
-				newIndices[i * 6 + 1] = (short)(i * 4 + 1);
-				newIndices[i * 6 + 2] = (short)(i * 4 + 2);
-				newIndices[i * 6 + 3] = (short)(i * 4 + 1);
-				newIndices[i * 6 + 4] = (short)(i * 4 + 3);
-				newIndices[i * 6 + 5] = (short)(i * 4 + 2);
+				newIndices[i * 6 + 0] = (short) (i * 4);
+				newIndices[i * 6 + 1] = (short) (i * 4 + 1);
+				newIndices[i * 6 + 2] = (short) (i * 4 + 2);
+				newIndices[i * 6 + 3] = (short) (i * 4 + 1);
+				newIndices[i * 6 + 4] = (short) (i * 4 + 3);
+				newIndices[i * 6 + 5] = (short) (i * 4 + 2);
 			}
+
 			indices = newIndices;
 
 			vertexArray = new VertexPositionColorTexture[4 * itemCount];
 		}
 
-		public void Draw (GraphicsDevice device) {
+		public void Draw(GraphicsDevice device) {
 			if (items.Count == 0) return;
 
-			int itemIndex = 0;
-			int itemCount = items.Count;
+			var itemIndex = 0;
+			var itemCount = items.Count;
 			while (itemCount > 0) {
-				int itemsToProcess = Math.Min(itemCount, maxBatchSize);
+				var itemsToProcess = Math.Min(itemCount, maxBatchSize);
 				EnsureArrayCapacity(itemsToProcess);
 
 				var count = 0;
 				Texture2D texture = null;
-				for (int i = 0; i < itemsToProcess; i++, itemIndex++) {
-					RegionItem item = items[itemIndex];
+				for (var i = 0; i < itemsToProcess; i++, itemIndex++) {
+					var item = items[itemIndex];
 					if (item.texture != texture) {
 						FlushVertexArray(device, count);
 						texture = item.texture;
@@ -152,21 +154,23 @@ namespace Spine {
 					item.texture = null;
 					freeItems.Enqueue(item);
 				}
+
 				FlushVertexArray(device, count);
 				itemCount -= itemsToProcess;
 			}
+
 			items.Clear();
 		}
 
 		/// <summary>Sends the triangle list to the graphics device.</summary>
 		/// <param name="start">Start index of vertices to draw. Not used except to compute the count of vertices to draw.</param>
 		/// <param name="end">End index of vertices to draw. Not used except to compute the count of vertices to draw.</param>
-		private void FlushVertexArray (GraphicsDevice device, int count) {
+		private void FlushVertexArray(GraphicsDevice device, int count) {
 			if (count == 0) return;
 			device.DrawUserIndexedPrimitives(
 				PrimitiveType.TriangleList,
 				vertexArray, 0, count,
-				indices, 0, (count / 4) * 2,
+				indices, 0, count / 4 * 2,
 				VertexPositionColorTexture.VertexDeclaration);
 		}
 	}

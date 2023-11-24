@@ -1,6 +1,6 @@
-﻿/* 
+﻿/*
   koolk's Map Editor
- 
+
   Copyright (c) 2009-2013 koolk
 
   This software is provided 'as-is', without any express or implied
@@ -29,18 +29,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapEditor.TilesDesign
-{
-    public class MapTileDesignPotential
-    {
-        public string type;
-        public int x, y;
+namespace HaCreator.MapEditor.TilesDesign {
+	public class MapTileDesignPotential {
+		public string type;
+		public int x, y;
 
-        public MapTileDesignPotential(string type, int x, int y)
-        {
-            this.type = type;
-            this.x = x;
-            this.y = y;
-        }
-    }
+		public MapTileDesignPotential(string type, int x, int y) {
+			this.type = type;
+			this.x = x;
+			this.y = y;
+		}
+	}
 }

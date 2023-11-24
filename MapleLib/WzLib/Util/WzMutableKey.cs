@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2015 haha01haha01 and contributors
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,91 +19,72 @@ using System.IO;
 using System.Security.Cryptography;
 using MapleLib.MapleCryptoLib;
 
-namespace MapleLib.WzLib.Util
-{
-    public class WzMutableKey
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="WzIv"></param>
-        /// <param name="AesKey">The 32-byte AES UserKey (derived from 32 DWORD)</param>
-        public WzMutableKey(byte[] WzIv, byte[] AesKey)
-        {
-            this.IV = WzIv;
-            this.AESUserKey = AesKey;
-        }
+namespace MapleLib.WzLib.Util {
+	public class WzMutableKey {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="WzIv"></param>
+		/// <param name="AesKey">The 32-byte AES UserKey (derived from 32 DWORD)</param>
+		public WzMutableKey(byte[] WzIv, byte[] AesKey) {
+			IV = WzIv;
+			AESUserKey = AesKey;
+		}
 
-        private static readonly int BatchSize = 4096;
-        private readonly byte[] IV;
-        private readonly byte[] AESUserKey;
+		private static readonly int BatchSize = 4096;
+		private readonly byte[] IV;
+		private readonly byte[] AESUserKey;
 
-        private byte[] keys;
+		private byte[] keys;
 
-        public byte this[int index]
-        {
-            get
-            {
-                if (keys == null || keys.Length <= index)
-                {
-                    EnsureKeySize(index + 1);
-                }
-                return this.keys[index];
-            }
-        }
+		public byte this[int index] {
+			get {
+				if (keys == null || keys.Length <= index) EnsureKeySize(index + 1);
 
-        public void EnsureKeySize(int size)
-        {
-            if (keys != null && keys.Length >= size)
-            {
-                return;
-            }
+				return keys[index];
+			}
+		}
 
-            size = (int)Math.Ceiling(1.0 * size / BatchSize) * BatchSize;
-            byte[] newKeys = new byte[size];
+		public void EnsureKeySize(int size) {
+			if (keys != null && keys.Length >= size) return;
 
-            if (BitConverter.ToInt32(this.IV, 0) == 0)
-            {
-                this.keys = newKeys;
-                return;
-            }
+			size = (int) Math.Ceiling(1.0 * size / BatchSize) * BatchSize;
+			var newKeys = new byte[size];
 
-            int startIndex = 0;
+			if (BitConverter.ToInt32(IV, 0) == 0) {
+				keys = newKeys;
+				return;
+			}
 
-            if (keys != null)
-            {
-                Buffer.BlockCopy(keys, 0, newKeys, 0, keys.Length);
-                startIndex = keys.Length;
-            }
+			var startIndex = 0;
 
-            Rijndael aes = Rijndael.Create();
-            aes.KeySize = 256;
-            aes.BlockSize = 128;
-            aes.Key = AESUserKey;
-            aes.Mode = CipherMode.ECB;
-            MemoryStream ms = new MemoryStream(newKeys, startIndex, newKeys.Length - startIndex, true);
-            CryptoStream s = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+			if (keys != null) {
+				Buffer.BlockCopy(keys, 0, newKeys, 0, keys.Length);
+				startIndex = keys.Length;
+			}
 
-            for (int i = startIndex; i < size; i += 16)
-            {
-                if (i == 0)
-                {
-                    byte[] block = new byte[16];
-                    for (int j = 0; j < block.Length; j++)
-                    {
-                        block[j] = IV[j % 4];
-                    }
-                    s.Write(block, 0, block.Length);
-                }
-                else
-                {
-                    s.Write(newKeys, i - 16, 16);
-                }
-            }
+			var aes = Rijndael.Create();
+			aes.KeySize = 256;
+			aes.BlockSize = 128;
+			aes.Key = AESUserKey;
+			aes.Mode = CipherMode.ECB;
+			var ms = new MemoryStream(newKeys, startIndex, newKeys.Length - startIndex, true);
+			var s = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
 
-            s.Flush();
-            ms.Close();
-            this.keys = newKeys;
-        }
-    }
+			for (var i = startIndex; i < size; i += 16)
+				if (i == 0) {
+					var block = new byte[16];
+					for (var j = 0; j < block.Length; j++) block[j] = IV[j % 4];
+
+					s.Write(block, 0, block.Length);
+				}
+				else {
+					s.Write(newKeys, i - 16, 16);
+				}
+
+			s.Flush();
+			ms.Close();
+			keys = newKeys;
+		}
+	}
 }

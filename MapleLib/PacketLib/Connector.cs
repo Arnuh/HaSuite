@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,14 +17,11 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace MapleLib.PacketLib
-{
+namespace MapleLib.PacketLib {
 	/// <summary>
 	/// Socket class to connect to a listener
 	/// </summary>
-	public class Connector
-	{
-
+	public class Connector {
 		/// <summary>
 		/// The connecting socket
 		/// </summary>
@@ -43,8 +40,7 @@ namespace MapleLib.PacketLib
 		/// <summary>
 		/// Creates a new instance of Acceptor
 		/// </summary>
-		public Connector()
-		{
+		public Connector() {
 			_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		}
 
@@ -53,8 +49,7 @@ namespace MapleLib.PacketLib
 		/// </summary>
 		/// <param name="ep">IPEndPoint of listener</param>
 		/// <returns>Session connecting to</returns>
-		public Session Connect(IPEndPoint ep)
-		{
+		public Session Connect(IPEndPoint ep) {
 			_socket.Connect(ep);
 			return CreateSession();
 		}
@@ -65,8 +60,7 @@ namespace MapleLib.PacketLib
 		/// <param name="ip">IPAdress of listener</param>
 		/// <param name="port">Port of listener</param>
 		/// <returns>Session connecting to</returns>
-		public Session Connect(IPAddress ip, int port)
-		{
+		public Session Connect(IPAddress ip, int port) {
 			_socket.Connect(ip, port);
 			return CreateSession();
 		}
@@ -77,8 +71,7 @@ namespace MapleLib.PacketLib
 		/// <param name="ip">IPAdress's of listener</param>
 		/// <param name="port">Port of listener</param>
 		/// <returns>Session connecting to</returns>
-		public Session Connect(IPAddress[] ip, int port)
-		{
+		public Session Connect(IPAddress[] ip, int port) {
 			_socket.Connect(ip, port);
 			return CreateSession();
 		}
@@ -89,8 +82,7 @@ namespace MapleLib.PacketLib
 		/// <param name="ip">IPAdress of listener</param>
 		/// <param name="port">Port of listener</param>
 		/// <returns>Session connecting to</returns>
-		public Session Connect(string ip, int port)
-		{
+		public Session Connect(string ip, int port) {
 			_socket.Connect(ip, port);
 			return CreateSession();
 		}
@@ -99,9 +91,8 @@ namespace MapleLib.PacketLib
 		/// Creates the session after connecting
 		/// </summary>
 		/// <returns>Session created with listener</returns>
-		private Session CreateSession()
-		{
-			Session session = new Session(_socket, SessionType.CLIENT_TO_SERVER);
+		private Session CreateSession() {
+			var session = new Session(_socket, SessionType.CLIENT_TO_SERVER);
 
 			if (OnClientConnected != null)
 				OnClientConnected(session);

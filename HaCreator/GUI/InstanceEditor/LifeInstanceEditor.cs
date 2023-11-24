@@ -16,98 +16,99 @@ using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 
-namespace HaCreator.GUI.InstanceEditor
-{
-    public partial class LifeInstanceEditor : EditorBase
-    {
-        public LifeInstance item;
+namespace HaCreator.GUI.InstanceEditor {
+	public partial class LifeInstanceEditor : EditorBase {
+		public LifeInstance item;
 
-        public LifeInstanceEditor(LifeInstance item)
-        {
-            InitializeComponent();
-            this.item = item;
-            infoEnable.Tag = infoBox;
-            limitedNameEnable.Tag = limitedNameBox;
-            mobTimeEnable.Tag = mobTimeBox;
-            teamEnable.Tag = teamBox;
+		public LifeInstanceEditor(LifeInstance item) {
+			InitializeComponent();
+			this.item = item;
+			infoEnable.Tag = infoBox;
+			limitedNameEnable.Tag = limitedNameBox;
+			mobTimeEnable.Tag = mobTimeBox;
+			teamEnable.Tag = teamBox;
 
-            xInput.Value = item.X;
-            yInput.Value = item.Y;
-            rx0Box.Value = item.rx0Shift;
-            rx1Box.Value = item.rx1Shift;
-            yShiftBox.Value = item.yShift;
+			xInput.Value = item.X;
+			yInput.Value = item.Y;
+			rx0Box.Value = item.rx0Shift;
+			rx1Box.Value = item.rx1Shift;
+			yShiftBox.Value = item.yShift;
 
-            LoadOptionalInt(item.Info, infoEnable, infoBox);
-            LoadOptionalInt(item.Team, teamEnable, teamBox);
-            LoadOptionalInt(item.MobTime, mobTimeEnable, mobTimeBox);
-            LoadOptionalStr(item.LimitedName, limitedNameEnable, limitedNameBox);
+			LoadOptionalInt(item.Info, infoEnable, infoBox);
+			LoadOptionalInt(item.Team, teamEnable, teamBox);
+			LoadOptionalInt(item.MobTime, mobTimeEnable, mobTimeBox);
+			LoadOptionalStr(item.LimitedName, limitedNameEnable, limitedNameBox);
 
-            hideBox.Checked = item.Hide;
-            flipBox.Checked = item.Flip;
+			hideBox.Checked = item.Hide;
+			flipBox.Checked = item.Flip;
 
-            pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-        }
+			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
+		}
 
-        protected override void cancelButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+		protected override void cancelButton_Click(object sender, EventArgs e) {
+			Close();
+		}
 
-        protected override void okButton_Click(object sender, EventArgs e)
-        {
-            lock (item.Board.ParentControl)
-            {
-                List<UndoRedoAction> actions = new List<UndoRedoAction>();
-                if (xInput.Value != item.X || yInput.Value != item.Y)
-                {
-                    actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
-                    item.Move((int)xInput.Value, (int)yInput.Value);
-                }
-                if (actions.Count > 0)
-                    item.Board.UndoRedoMan.AddUndoBatch(actions);
-                item.rx0Shift = (int)rx0Box.Value;
-                item.rx1Shift = (int)rx1Box.Value;
-                item.yShift = (int)yShiftBox.Value;
-                item.MobTime = GetOptionalInt(mobTimeEnable, mobTimeBox);
-                item.Info = GetOptionalInt(infoEnable, infoBox);
-                item.Team = GetOptionalInt(teamEnable, teamBox);
-                //item.TypeStr = GetOptionalStr(typeEnable, typeBox);
-                item.LimitedName = GetOptionalStr(limitedNameEnable, limitedNameBox);
+		protected override void okButton_Click(object sender, EventArgs e) {
+			lock (item.Board.ParentControl) {
+				var actions = new List<UndoRedoAction>();
+				if (xInput.Value != item.X || yInput.Value != item.Y) {
+					actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y),
+						new Microsoft.Xna.Framework.Point((int) xInput.Value, (int) yInput.Value)));
+					item.Move((int) xInput.Value, (int) yInput.Value);
+				}
 
-                item.Hide = hideBox.Checked;
-                item.Flip = flipBox.Checked; 
-            }
-            Close();
-        }
+				if (actions.Count > 0)
+					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				item.rx0Shift = (int) rx0Box.Value;
+				item.rx1Shift = (int) rx1Box.Value;
+				item.yShift = (int) yShiftBox.Value;
+				item.MobTime = GetOptionalInt(mobTimeEnable, mobTimeBox);
+				item.Info = GetOptionalInt(infoEnable, infoBox);
+				item.Team = GetOptionalInt(teamEnable, teamBox);
+				//item.TypeStr = GetOptionalStr(typeEnable, typeBox);
+				item.LimitedName = GetOptionalStr(limitedNameEnable, limitedNameBox);
 
-        private void enablingCheckBoxCheckChanged(object sender, EventArgs e)
-        {
-            CheckBox cbx = (CheckBox)sender;
-            ((Control)cbx.Tag).Enabled = cbx.Checked;
-        }
+				item.Hide = hideBox.Checked;
+				item.Flip = flipBox.Checked;
+			}
 
-        private void LoadOptionalInt(int? value, CheckBox cbx, NumericUpDown box)
-        {
-            if (value == null) cbx.Checked = false;
-            else { cbx.Checked = true; box.Value = (int)value; }
-        }
+			Close();
+		}
 
-        private void LoadOptionalStr(string value, CheckBox cbx, TextBox box)
-        {
-            if (value == null) cbx.Checked = false;
-            else { cbx.Checked = true; box.Text = value; }
-        }
+		private void enablingCheckBoxCheckChanged(object sender, EventArgs e) {
+			var cbx = (CheckBox) sender;
+			((Control) cbx.Tag).Enabled = cbx.Checked;
+		}
 
-        private int? GetOptionalInt(CheckBox cbx, NumericUpDown box)
-        {
-            if (cbx.Checked) return (int)box.Value;
-            else return null;
-        }
+		private void LoadOptionalInt(int? value, CheckBox cbx, NumericUpDown box) {
+			if (value == null) {
+				cbx.Checked = false;
+			}
+			else {
+				cbx.Checked = true;
+				box.Value = (int) value;
+			}
+		}
 
-        private string GetOptionalStr(CheckBox cbx, TextBox box)
-        {
-            if (cbx.Checked) return box.Text;
-            else return null;
-        }
-    }
+		private void LoadOptionalStr(string value, CheckBox cbx, TextBox box) {
+			if (value == null) {
+				cbx.Checked = false;
+			}
+			else {
+				cbx.Checked = true;
+				box.Text = value;
+			}
+		}
+
+		private int? GetOptionalInt(CheckBox cbx, NumericUpDown box) {
+			if (cbx.Checked) return (int) box.Value;
+			else return null;
+		}
+
+		private string GetOptionalStr(CheckBox cbx, TextBox box) {
+			if (cbx.Checked) return box.Text;
+			else return null;
+		}
+	}
 }

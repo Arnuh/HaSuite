@@ -34,13 +34,13 @@
 #endif
 /* compile with -Dlocal if your debugger can't find static symbols */
 
-typedef unsigned char  uch;
+typedef unsigned char uch;
 typedef uch FAR uchf;
 typedef unsigned short ush;
 typedef ush FAR ushf;
-typedef unsigned long  ulg;
+typedef unsigned long ulg;
 
-extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
+extern const char* const z_errmsg[10]; /* indexed by 2-zlib_error */
 /* (size given to avoid silly warnings with Visual C++) */
 
 #define ERR_MSG(err) z_errmsg[Z_NEED_DICT-(err)]
@@ -49,7 +49,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
   return (strm->msg = (char*)ERR_MSG(err), (err))
 /* To be used only when the state is known to be valid */
 
-        /* common constants */
+/* common constants */
 
 #ifndef DEF_WBITS
 #  define DEF_WBITS MAX_WBITS
@@ -74,7 +74,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 
 #define PRESET_DICT 0x20 /* preset dictionary flag in zlib header */
 
-        /* target dependencies */
+/* target dependencies */
 
 #if defined(MSDOS) || (defined(WINDOWS) && !defined(WIN32))
 #  define OS_CODE  0x00
@@ -161,11 +161,11 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 
 /* provide prototypes for these when building zlib without LFS */
 #if !defined(_LARGEFILE64_SOURCE) || _LFS64_LARGEFILE-0 == 0
-    ZEXTERN uLong ZEXPORT adler32_combine64 OF((uLong, uLong, z_off_t));
-    ZEXTERN uLong ZEXPORT crc32_combine64 OF((uLong, uLong, z_off_t));
+ZEXTERN uLong ZEXPORT adler32_combine64 OF((uLong, uLong, z_off_t));
+ZEXTERN uLong ZEXPORT crc32_combine64 OF((uLong, uLong, z_off_t));
 #endif
 
-        /* common defaults */
+/* common defaults */
 
 #ifndef OS_CODE
 #  define OS_CODE  0x03  /* assume Unix */
@@ -175,7 +175,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #  define F_OPEN(name, mode) fopen((name), (mode))
 #endif
 
-         /* functions */
+/* functions */
 
 #if defined(STDC99) || (defined(__TURBOC__) && __TURBOC__ >= 0x550)
 #  ifndef HAVE_VSNPRINTF
@@ -197,7 +197,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #    define NO_vsnprintf
 #  endif
 #  ifdef WIN32
-     /* In Win32, vsnprintf is available as the "non-ANSI" _vsnprintf. */
+/* In Win32, vsnprintf is available as the "non-ANSI" _vsnprintf. */
 #    if !defined(vsnprintf) && !defined(NO_vsnprintf)
 #      if !defined(_MSC_VER) || ( defined(_MSC_VER) && _MSC_VER < 1500 )
 #         define vsnprintf _vsnprintf
@@ -263,8 +263,8 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 
 
 voidpf ZLIB_INTERNAL zcalloc OF((voidpf opaque, unsigned items,
-                        unsigned size));
-void ZLIB_INTERNAL zcfree  OF((voidpf opaque, voidpf ptr));
+	unsigned size));
+void ZLIB_INTERNAL zcfree OF((voidpf opaque, voidpf ptr));
 
 #define ZALLOC(strm, items, size) \
            (*((strm)->zalloc))((strm)->opaque, (items), (size))

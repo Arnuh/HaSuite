@@ -12,51 +12,40 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance.Misc
-{
-    public class SwimArea : MiscRectangle, ISerializable
-    {
-        string id;
+namespace HaCreator.MapEditor.Instance.Misc {
+	public class SwimArea : MiscRectangle, ISerializable {
+		private string id;
 
-        public SwimArea(Board board, XNA.Rectangle rect, string id)
-            : base(board, rect)
-        {
-            this.id = id;
-        }
+		public SwimArea(Board board, XNA.Rectangle rect, string id)
+			: base(board, rect) {
+			this.id = id;
+		}
 
-        public string Identifier
-        {
-            get { return id; }
-            set { id = value; }
-        }
+		public string Identifier {
+			get => id;
+			set => id = value;
+		}
 
-        public override string Name
-        {
-            get { return "SwimArea " + id; }
-        }
+		public override string Name => "SwimArea " + id;
 
-        public new class SerializationForm : MapleRectangle.SerializationForm
-        {
-            public string id;
-        }
+		public new class SerializationForm : MapleRectangle.SerializationForm {
+			public string id;
+		}
 
-        public override object Serialize()
-        {
-            SerializationForm result = new SerializationForm();
-            UpdateSerializedForm(result);
-            return result;
-        }
+		public override object Serialize() {
+			var result = new SerializationForm();
+			UpdateSerializedForm(result);
+			return result;
+		}
 
-        protected void UpdateSerializedForm(SerializationForm result)
-        {
-            base.UpdateSerializedForm(result);
-            result.id = id;
-        }
+		protected void UpdateSerializedForm(SerializationForm result) {
+			base.UpdateSerializedForm(result);
+			result.id = id;
+		}
 
-        public SwimArea(Board board, SerializationForm json)
-            : base(board, json)
-        {
-            id = json.id;
-        }
-    }
+		public SwimArea(Board board, SerializationForm json)
+			: base(board, json) {
+			id = json.id;
+		}
+	}
 }

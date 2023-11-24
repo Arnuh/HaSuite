@@ -7,64 +7,55 @@
 using System;
 using System.Windows.Forms;
 
-namespace HaRepacker.GUI.Input
-{
-    public enum ReplaceResult
-    {
-        Yes,
-        No,
-        YesToAll,
-        NoToAll,
-        NoneSelectedYet
-    }
+namespace HaRepacker.GUI.Input {
+	public enum ReplaceResult {
+		Yes,
+		No,
+		YesToAll,
+		NoToAll,
+		NoneSelectedYet
+	}
 
-    public partial class ReplaceBox : Form
-    {
-        public ReplaceResult result = ReplaceResult.No;
+	public partial class ReplaceBox : Form {
+		public ReplaceResult result = ReplaceResult.No;
 
-        private ReplaceBox()
-        {
-            InitializeComponent();
-        }
+		private ReplaceBox() {
+			InitializeComponent();
+		}
 
-        public static bool Show(string name, out ReplaceResult result)
-        {
-            ReplaceBox box = new ReplaceBox();
+		public static bool Show(string name, out ReplaceResult result) {
+			var box = new ReplaceBox();
 
-            box.label1.Text = string.Format(Properties.Resources.ReplaceConfirm, name);
+			box.label1.Text = string.Format(Properties.Resources.ReplaceConfirm, name);
 
-            box.ShowDialog();
-            result = box.result;
+			box.ShowDialog();
+			result = box.result;
 
-            return true;
-        }
+			return true;
+		}
 
 
-        private void btnYes_Click(object sender, EventArgs e)
-        {
-            result = ReplaceResult.Yes;
-            Close();
-        }
+		private void btnYes_Click(object sender, EventArgs e) {
+			result = ReplaceResult.Yes;
+			Close();
+		}
 
-        private void btnNo_Click(object sender, EventArgs e)
-        {
-            result = ReplaceResult.No;
+		private void btnNo_Click(object sender, EventArgs e) {
+			result = ReplaceResult.No;
 
-            Close();
-        }
+			Close();
+		}
 
-        private void btnYestoall_Click(object sender, EventArgs e)
-        {
-            result = ReplaceResult.YesToAll;
+		private void btnYestoall_Click(object sender, EventArgs e) {
+			result = ReplaceResult.YesToAll;
 
-            Close();
-        }
+			Close();
+		}
 
-        private void btnNotoall_Click(object sender, EventArgs e)
-        {
-            result = ReplaceResult.NoToAll;
+		private void btnNotoall_Click(object sender, EventArgs e) {
+			result = ReplaceResult.NoToAll;
 
-            Close();
-        }
-    }
+			Close();
+		}
+	}
 }

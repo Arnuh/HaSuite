@@ -8,44 +8,35 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace HaRepacker.GUI
-{
-    public partial class SearchSelectionForm : Form
-    {
-        // Events
-        public delegate void SearchSelectionChanged(string str);
-        public event SearchSelectionChanged OnSelectionChanged;
+namespace HaRepacker.GUI {
+	public partial class SearchSelectionForm : Form {
+		// Events
+		public delegate void SearchSelectionChanged(string str);
 
-        public SearchSelectionForm()
-        {
-            InitializeComponent();
-        }
+		public event SearchSelectionChanged OnSelectionChanged;
 
-        public static SearchSelectionForm Show(List<string> searchPaths)
-        {
-            SearchSelectionForm form = new SearchSelectionForm();
-            foreach (string item in searchPaths)
-            {
-                form.listBox_items.Items.Add(item);
-            }
-            form.Show();
-            form.BringToFront();
+		public SearchSelectionForm() {
+			InitializeComponent();
+		}
 
-            return form;
-        }
+		public static SearchSelectionForm Show(List<string> searchPaths) {
+			var form = new SearchSelectionForm();
+			foreach (var item in searchPaths) form.listBox_items.Items.Add(item);
 
-        /// <summary>
-        /// On Item selection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void listBox_items_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string selectedItem = listBox_items.SelectedItem as string;
-            if (selectedItem != null)
-            {
-                OnSelectionChanged?.Invoke(selectedItem);
-            }
-        }
-    }
+			form.Show();
+			form.BringToFront();
+
+			return form;
+		}
+
+		/// <summary>
+		/// On Item selection
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void listBox_items_SelectedIndexChanged(object sender, EventArgs e) {
+			var selectedItem = listBox_items.SelectedItem as string;
+			if (selectedItem != null) OnSelectionChanged?.Invoke(selectedItem);
+		}
+	}
 }

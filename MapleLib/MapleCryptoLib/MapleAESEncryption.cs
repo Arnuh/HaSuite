@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -18,15 +18,11 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace MapleLib.MapleCryptoLib
-{
-
+namespace MapleLib.MapleCryptoLib {
 	/// <summary>
 	/// Class to handle the AES Encryption routines
 	/// </summary>
-	public class MapleAESEncryption
-	{
-
+	public class MapleAESEncryption {
 		/// <summary>
 		/// Encrypt data using MapleStory's AES algorithm
 		/// </summary>
@@ -34,9 +30,9 @@ namespace MapleLib.MapleCryptoLib
 		/// <param name="data">Data to encrypt</param>
 		/// <param name="length">Length of data</param>
 		/// <returns>Crypted data</returns>
-		public static byte[] AesCrypt(byte[] IV, byte[] data, int length)
-		{
-			return AesCrypt(IV, data, length, MapleCryptoConstants.GetTrimmedUserKey(ref MapleCryptoConstants.UserKey_WzLib));
+		public static byte[] AesCrypt(byte[] IV, byte[] data, int length) {
+			return AesCrypt(IV, data, length,
+				MapleCryptoConstants.GetTrimmedUserKey(ref MapleCryptoConstants.UserKey_WzLib));
 		}
 
 		/// <summary>
@@ -47,46 +43,41 @@ namespace MapleLib.MapleCryptoLib
 		/// <param name="length">length of data</param>
 		/// <param name="key">the AES key to use</param>
 		/// <returns>Crypted data</returns>
-		public static byte[] AesCrypt(byte[] IV, byte[] data, int length, byte[] key)
-		{
-            AesManaged crypto = new AesManaged
-            {
-                KeySize = 256, //in bits
-                Key = key,
-                Mode = CipherMode.ECB // Should be OFB, but this works too
-            };
+		public static byte[] AesCrypt(byte[] IV, byte[] data, int length, byte[] key) {
+			var crypto = new AesManaged {
+				KeySize = 256, //in bits
+				Key = key,
+				Mode = CipherMode.ECB // Should be OFB, but this works too
+			};
 
-			using (MemoryStream memStream = new MemoryStream())
-			{
-				using (CryptoStream cryptoStream = new CryptoStream(memStream, crypto.CreateEncryptor(), CryptoStreamMode.Write))
-				{
-					int remaining = length;
-					int llength = 0x5B0;
-					int start = 0;
-					while (remaining > 0)
-					{
-						byte[] myIV = MapleCrypto.MultiplyBytes(IV, 4, 4);
-						if (remaining < llength)
-						{
-							llength = remaining;
-						}
-						for (int x = start; x < (start + llength); x++)
-						{
-							if ((x - start) % myIV.Length == 0)
-							{
+			using (var memStream = new MemoryStream()) {
+				using (var cryptoStream =
+				       new CryptoStream(memStream, crypto.CreateEncryptor(), CryptoStreamMode.Write)) {
+					var remaining = length;
+					var llength = 0x5B0;
+					var start = 0;
+					while (remaining > 0) {
+						var myIV = MapleCrypto.MultiplyBytes(IV, 4, 4);
+						if (remaining < llength) llength = remaining;
+
+						for (var x = start; x < start + llength; x++) {
+							if ((x - start) % myIV.Length == 0) {
 								cryptoStream.Write(myIV, 0, myIV.Length);
-								byte[] newIV = memStream.ToArray();
+								var newIV = memStream.ToArray();
 								Array.Copy(newIV, myIV, myIV.Length);
 								memStream.Position = 0;
 							}
+
 							data[x] ^= myIV[(x - start) % myIV.Length];
 						}
+
 						start += llength;
 						remaining -= llength;
 						llength = 0x5B4;
 					}
 				}
 			}
+
 			return data;
 		}
 	}

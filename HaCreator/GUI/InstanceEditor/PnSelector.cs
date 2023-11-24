@@ -15,39 +15,31 @@ using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance;
 
-namespace HaCreator.GUI.InstanceEditor
-{
-    public partial class TnSelector : EditorBase
-    {
-        public static string Show(Board board)
-        {
-            TnSelector ps = new TnSelector(board);
-            ps.ShowDialog();
-            return ps.result;
-        }
+namespace HaCreator.GUI.InstanceEditor {
+	public partial class TnSelector : EditorBase {
+		public static string Show(Board board) {
+			var ps = new TnSelector(board);
+			ps.ShowDialog();
+			return ps.result;
+		}
 
-        private string result = null;
+		private string result = null;
 
-        public TnSelector(Board board)
-        {
-            InitializeComponent();
+		public TnSelector(Board board) {
+			InitializeComponent();
 
-            foreach (PortalInstance pi in board.BoardItems.Portals)
-            {
-                if (pi.pn != null && pi.pn != "" && pi.pn != "sp" && pi.pn != "pt")
-                    pnList.Items.Add(pi.pn);
-            }
-        }
+			foreach (var pi in board.BoardItems.Portals)
+				if (pi.pn != null && pi.pn != "" && pi.pn != "sp" && pi.pn != "pt")
+					pnList.Items.Add(pi.pn);
+		}
 
-        protected override void cancelButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+		protected override void cancelButton_Click(object sender, EventArgs e) {
+			Close();
+		}
 
-        protected override void okButton_Click(object sender, EventArgs e)
-        {
-            result = (string)pnList.SelectedItem;
-            Close();
-        }
-    }
+		protected override void okButton_Click(object sender, EventArgs e) {
+			result = (string) pnList.SelectedItem;
+			Close();
+		}
+	}
 }

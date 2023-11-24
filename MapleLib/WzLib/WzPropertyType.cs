@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,21 +14,22 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-namespace MapleLib.WzLib
-{
-	public enum WzPropertyType
-	{
+namespace MapleLib.WzLib {
+	public enum WzPropertyType {
 		#region Regular
+
 		Null,
 		Short,
 		Int,
-        Long,
+		Long,
 		Float,
 		Double,
 		String,
+
 		#endregion
 
 		#region Extended
+
 		SubProperty,
 		Canvas,
 		Vector,
@@ -36,10 +37,13 @@ namespace MapleLib.WzLib
 		Sound,
 		UOL,
 		Lua,
+
 		#endregion
 
 		#region Png
+
 		PNG
+
 		#endregion
 	}
 }

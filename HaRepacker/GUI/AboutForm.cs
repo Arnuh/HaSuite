@@ -7,40 +7,35 @@
 using System;
 using System.Windows.Forms;
 
-namespace HaRepacker.GUI
-{
-    public partial class AboutForm : Form
-    {
-        public AboutForm()
-        {
-            InitializeComponent();
-        }
+namespace HaRepacker.GUI {
+	public partial class AboutForm : Form {
+		public AboutForm() {
+			InitializeComponent();
+		}
 
-        /// <summary>
-        /// Process command key on the form
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="keyData"></param>
-        /// <returns></returns>
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            // ...
-            if (keyData == (Keys.Escape))
-            {
-                Close(); // exit window
-                return true;
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
+		/// <summary>
+		/// Process command key on the form
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <param name="keyData"></param>
+		/// <returns></returns>
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
+			// ...
+			if (keyData == Keys.Escape) {
+				Close(); // exit window
+				return true;
+			}
 
-        /// <summary>
-        /// Exit button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-    }
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		/// <summary>
+		/// Exit button
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void button1_Click(object sender, EventArgs e) {
+			Close();
+		}
+	}
 }

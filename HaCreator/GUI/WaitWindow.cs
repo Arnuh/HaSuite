@@ -14,27 +14,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HaCreator.GUI
-{
-    public partial class WaitWindow : Form
-    {
-        private bool finished = false;
+namespace HaCreator.GUI {
+	public partial class WaitWindow : Form {
+		private bool finished = false;
 
-        public WaitWindow(string message)
-        {
-            InitializeComponent();
-            this.label1.Text = message;
-        }
+		public WaitWindow(string message) {
+			InitializeComponent();
+			label1.Text = message;
+		}
 
-        private void WaitWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = !finished;
-        }
+		private void WaitWindow_FormClosing(object sender, FormClosingEventArgs e) {
+			e.Cancel = !finished;
+		}
 
-        public void EndWait()
-        {
-            finished = true;
-            Close();
-        }
-    }
+		public void EndWait() {
+			finished = true;
+			Close();
+		}
+	}
 }

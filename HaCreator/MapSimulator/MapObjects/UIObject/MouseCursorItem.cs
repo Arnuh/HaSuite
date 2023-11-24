@@ -10,109 +10,98 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapSimulator.Objects.UIObject
-{
-    /// <summary>
-    /// For cursor
-    /// </summary>
-    public class MouseCursorItem : BaseDXDrawableItem
-    {
-        private MouseState previousMouseState;
-        public MouseState MouseState
-        {
-            get { return this.previousMouseState; }
-            private set { }
-        }
+namespace HaCreator.MapSimulator.Objects.UIObject {
+	/// <summary>
+	/// For cursor
+	/// </summary>
+	public class MouseCursorItem : BaseDXDrawableItem {
+		private MouseState previousMouseState;
 
-        private int mouseCursorItemStates; // enum
+		public MouseState MouseState {
+			get => previousMouseState;
+			private set { }
+		}
 
-        private BaseDXDrawableItem cursorItemPressedState; // default state of the cursor = this instance
+		private int mouseCursorItemStates; // enum
+
+		private BaseDXDrawableItem cursorItemPressedState; // default state of the cursor = this instance
 
 
-        public MouseCursorItem(List<IDXObject> frames, BaseDXDrawableItem cursorItemPressedState)
-            : base(frames, false)
-        {
-            previousMouseState = Mouse.GetState();
+		public MouseCursorItem(List<IDXObject> frames, BaseDXDrawableItem cursorItemPressedState)
+			: base(frames, false) {
+			previousMouseState = Mouse.GetState();
 
-            this.mouseCursorItemStates = (int)MouseCursorItemStates.Normal;
-            this.cursorItemPressedState = cursorItemPressedState;
-        }
+			mouseCursorItemStates = (int) MouseCursorItemStates.Normal;
+			this.cursorItemPressedState = cursorItemPressedState;
+		}
 
-        public void UpdateCursorState()
-        {
-            int newSetState = (int)MouseCursorItemStates.Normal; // 0
+		public void UpdateCursorState() {
+			var newSetState = (int) MouseCursorItemStates.Normal; // 0
 
-            // Left buttpn
-            if (previousMouseState.LeftButton == ButtonState.Released && Mouse.GetState().LeftButton == ButtonState.Pressed) // Left click
-            {
+			// Left buttpn
+			if (previousMouseState.LeftButton == ButtonState.Released &&
+			    Mouse.GetState().LeftButton == ButtonState.Pressed) // Left click
+			{
+			}
+			else if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
+				newSetState |= (int) MouseCursorItemStates.LeftPress;
+			}
 
-            }
-            else if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                newSetState |= (int)MouseCursorItemStates.LeftPress;
-            }
+			// Right button
+			if (previousMouseState.RightButton == ButtonState.Released &&
+			    Mouse.GetState().RightButton == ButtonState.Pressed) // Right click
+			{
+			}
+			else if (Mouse.GetState().RightButton == ButtonState.Pressed) {
+				newSetState |= (int) MouseCursorItemStates.RightPress;
+			}
 
-            // Right button
-            if (previousMouseState.RightButton == ButtonState.Released && Mouse.GetState().RightButton == ButtonState.Pressed) // Right click
-            {
+			mouseCursorItemStates = newSetState;
+			previousMouseState = Mouse.GetState(); // save
+		}
 
-            }
-            else if (Mouse.GetState().RightButton == ButtonState.Pressed)
-            {
-                newSetState |= (int)MouseCursorItemStates.RightPress;
-            }
+		/// <summary>
+		/// Draw 
+		/// </summary>
+		/// <param name="sprite"></param>
+		/// <param name="skeletonMeshRenderer"></param>
+		/// <param name="gameTime"></param>
+		/// <param name="mapShiftX"></param>
+		/// <param name="mapShiftY"></param>
+		/// <param name="centerX"></param>
+		/// <param name="centerY"></param>
+		/// <param name="renderWidth"></param>
+		/// <param name="renderHeight"></param>
+		/// <param name="RenderObjectScaling"></param>
+		/// <param name="mapRenderResolution"></param>
+		/// <param name="TickCount"></param>
+		public override void Draw(SpriteBatch sprite, SkeletonMeshRenderer skeletonMeshRenderer, GameTime gameTime,
+			int mapShiftX, int mapShiftY, int centerX, int centerY,
+			ReflectionDrawableBoundary drawReflectionInfo,
+			int renderWidth, int renderHeight, float RenderObjectScaling, RenderResolution mapRenderResolution,
+			int TickCount) {
+			var MousePos = Mouse.GetState().Position; // relative to the window already
 
-            this.mouseCursorItemStates = newSetState;
-            this.previousMouseState = Mouse.GetState(); // save
-        }
+			if ((mouseCursorItemStates & (int) MouseCursorItemStates.LeftPress) != (int) MouseCursorItemStates.LeftPress
+			    && (mouseCursorItemStates & (int) MouseCursorItemStates.RightPress) !=
+			    (int) MouseCursorItemStates.RightPress) // default
+				base.Draw(sprite, skeletonMeshRenderer, gameTime,
+					-MousePos.X, -MousePos.Y, centerX, centerY,
+					drawReflectionInfo,
+					renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
+					TickCount);
+			else // if left or right press is active, draw pressed state
+				cursorItemPressedState.Draw(sprite, skeletonMeshRenderer, gameTime,
+					-MousePos.X, -MousePos.Y, centerX, centerY,
+					drawReflectionInfo,
+					renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
+					TickCount);
+		}
+	}
 
-        /// <summary>
-        /// Draw 
-        /// </summary>
-        /// <param name="sprite"></param>
-        /// <param name="skeletonMeshRenderer"></param>
-        /// <param name="gameTime"></param>
-        /// <param name="mapShiftX"></param>
-        /// <param name="mapShiftY"></param>
-        /// <param name="centerX"></param>
-        /// <param name="centerY"></param>
-        /// <param name="renderWidth"></param>
-        /// <param name="renderHeight"></param>
-        /// <param name="RenderObjectScaling"></param>
-        /// <param name="mapRenderResolution"></param>
-        /// <param name="TickCount"></param>
-        public override void Draw(SpriteBatch sprite, SkeletonMeshRenderer skeletonMeshRenderer, GameTime gameTime,
-            int mapShiftX, int mapShiftY, int centerX, int centerY,
-            ReflectionDrawableBoundary drawReflectionInfo,
-            int renderWidth, int renderHeight, float RenderObjectScaling, RenderResolution mapRenderResolution,
-            int TickCount)
-        {
-            Point MousePos = Mouse.GetState().Position; // relative to the window already
-
-            if ((mouseCursorItemStates & (int)MouseCursorItemStates.LeftPress) != (int) MouseCursorItemStates.LeftPress
-                 && (mouseCursorItemStates & (int)MouseCursorItemStates.RightPress) != (int)MouseCursorItemStates.RightPress)  // default
-            {
-                base.Draw(sprite, skeletonMeshRenderer, gameTime,
-                    -MousePos.X, -MousePos.Y, centerX, centerY,
-                    drawReflectionInfo,
-                    renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
-                    TickCount);
-            }
-            else // if left or right press is active, draw pressed state
-            {
-                cursorItemPressedState.Draw(sprite, skeletonMeshRenderer, gameTime,
-                    -MousePos.X, -MousePos.Y, centerX, centerY,
-                    drawReflectionInfo,
-                    renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
-                    TickCount);
-            }
-        }
-    }
-
-    public enum MouseCursorItemStates
-    {
-        Normal = 0x0,
-        LeftPress = 0x1,
-        RightPress = 0x2,
-    }
+	public enum MouseCursorItemStates {
+		Normal = 0x0,
+		LeftPress = 0x1,
+		RightPress = 0x2
+	}
 }

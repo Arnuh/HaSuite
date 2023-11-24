@@ -1,10 +1,10 @@
 ﻿/******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- * 
+ *
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- * 
+ *
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -33,24 +33,37 @@ using System.Collections.Generic;
 
 namespace Spine {
 	public class IkConstraintData {
-		internal String name;
+		internal string name;
 		internal List<BoneData> bones = new List<BoneData>();
 		internal BoneData target;
 		internal int bendDirection = 1;
 		internal float mix = 1;
 
-		public String Name { get { return name; } }
-		public List<BoneData> Bones { get { return bones; } }
-		public BoneData Target { get { return target; } set { target = value; } }
-		public int BendDirection { get { return bendDirection; } set { bendDirection = value; } }
-		public float Mix { get { return mix; } set { mix = value; } }
+		public string Name => name;
 
-		public IkConstraintData (String name) {
+		public List<BoneData> Bones => bones;
+
+		public BoneData Target {
+			get => target;
+			set => target = value;
+		}
+
+		public int BendDirection {
+			get => bendDirection;
+			set => bendDirection = value;
+		}
+
+		public float Mix {
+			get => mix;
+			set => mix = value;
+		}
+
+		public IkConstraintData(string name) {
 			if (name == null) throw new ArgumentNullException("name cannot be null.");
 			this.name = name;
 		}
 
-		override public String ToString () {
+		public override string ToString() {
 			return name;
 		}
 	}

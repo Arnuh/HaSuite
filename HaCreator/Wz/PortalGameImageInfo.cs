@@ -13,36 +13,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.Wz
-{
-    public class PortalGameImageInfo
-    {
-        private Bitmap defaultImage;
+namespace HaCreator.Wz {
+	public class PortalGameImageInfo {
+		private Bitmap defaultImage;
 
-        private Dictionary<string, Bitmap> imageList;
+		private Dictionary<string, Bitmap> imageList;
 
-        public PortalGameImageInfo(Bitmap defaultImage, Dictionary<string, Bitmap> imageList)
-        {
-            this.defaultImage = defaultImage;
-            this.imageList = imageList;
-        }
+		public PortalGameImageInfo(Bitmap defaultImage, Dictionary<string, Bitmap> imageList) {
+			this.defaultImage = defaultImage;
+			this.imageList = imageList;
+		}
 
-        public Bitmap DefaultImage
-        {
-            get { return defaultImage; }
-        }
+		public Bitmap DefaultImage => defaultImage;
 
-        public Bitmap this[string name]
-        {
-            get
-            {
-                return imageList[name];
-            }
-        }
+		public Bitmap this[string name] => imageList[name];
 
-        public IDictionaryEnumerator GetEnumerator()
-        {
-            return imageList.GetEnumerator();
-        }
-    }
+		public IDictionaryEnumerator GetEnumerator() {
+			return imageList.GetEnumerator();
+		}
+	}
 }

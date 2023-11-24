@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2021 lastbattle
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -23,163 +23,174 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
-namespace MapleLib
-{
-    /// <summary>
-    /// The C# wrapper class for the squish.dll png library
-    /// </summary>
-    public class SquishPNGWrapper
-    {
-        private enum SquishLibLoadingState
-        {
-            Uninitialised = 0x0,
-            Initialised = 0x1,
-            WrongProcessorArchitecture = 0x2,
-            UnknownError = 0x3,
-        }
+namespace MapleLib {
+	/// <summary>
+	/// The C# wrapper class for the squish.dll png library
+	/// </summary>
+	public class SquishPNGWrapper {
+		private enum SquishLibLoadingState {
+			Uninitialised = 0x0,
+			Initialised = 0x1,
+			WrongProcessorArchitecture = 0x2,
+			UnknownError = 0x3
+		}
 
-        private static SquishLibLoadingState _SquishLibLoadingState = SquishLibLoadingState.Uninitialised;
+		private static SquishLibLoadingState _SquishLibLoadingState = SquishLibLoadingState.Uninitialised;
 
-        /// <summary>
-        /// Returns true if the squish library can be used on this HaRepacker assembly
-        /// </summary>
-        public static bool CheckAndLoadLibrary()
-        {
-            if (_SquishLibLoadingState == SquishLibLoadingState.Initialised)
-                return true; // shouldnt check again once its loaded anyway.
+		/// <summary>
+		/// Returns true if the squish library can be used on this HaRepacker assembly
+		/// </summary>
+		public static bool CheckAndLoadLibrary() {
+			if (_SquishLibLoadingState == SquishLibLoadingState.Initialised) {
+				return true; // shouldnt check again once its loaded anyway.
+			}
 
-            else if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
-            {
-                //similarly to find process architecture  
-                var assemblyArchitecture = Assembly.GetExecutingAssembly().GetName().ProcessorArchitecture;
-                if (!(assemblyArchitecture == ProcessorArchitecture.X86 || assemblyArchitecture == ProcessorArchitecture.Amd64))
-                {
-                    _SquishLibLoadingState = SquishLibLoadingState.WrongProcessorArchitecture;
+			else if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
+			{
+				//similarly to find process architecture  
+				var assemblyArchitecture = Assembly.GetExecutingAssembly().GetName().ProcessorArchitecture;
+				if (!(assemblyArchitecture == ProcessorArchitecture.X86 ||
+				      assemblyArchitecture == ProcessorArchitecture.Amd64)) {
+					_SquishLibLoadingState = SquishLibLoadingState.WrongProcessorArchitecture;
 
-                    System.Diagnostics.Debug.WriteLine("squish.dll library not loaded. MSIL assembly detected.");
-                    return false;
-                }
-                // Load library here
-                IntPtr errorCode = LoadLibrary("squish.dll");
-                if (errorCode != IntPtr.Zero)
-                {
-                    IntPtr FixFlagsPtr = GetProcAddress(errorCode, "_DLLEXPORT_FixFlags");
-                    if (FixFlagsPtr != null)
-                        FixFlags = (_DLLEXPORT_FixFlags)Marshal.GetDelegateForFunctionPointer(FixFlagsPtr, typeof(_DLLEXPORT_FixFlags));
+					System.Diagnostics.Debug.WriteLine("squish.dll library not loaded. MSIL assembly detected.");
+					return false;
+				}
 
-                    IntPtr CompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Compress");
-                    if (CompressPtr != null)
-                        Compress = (_DLLEXPORT_Compress)Marshal.GetDelegateForFunctionPointer(CompressPtr, typeof(_DLLEXPORT_Compress));
+				// Load library here
+				var errorCode = LoadLibrary("squish.dll");
+				if (errorCode != IntPtr.Zero) {
+					var FixFlagsPtr = GetProcAddress(errorCode, "_DLLEXPORT_FixFlags");
+					if (FixFlagsPtr != null)
+						FixFlags = (_DLLEXPORT_FixFlags) Marshal.GetDelegateForFunctionPointer(FixFlagsPtr,
+							typeof(_DLLEXPORT_FixFlags));
 
-                    IntPtr CompressMaskedPtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressMasked");
-                    if (CompressMaskedPtr != null)
-                        CompressMasked = (_DLLEXPORT_CompressMasked)Marshal.GetDelegateForFunctionPointer(CompressMaskedPtr, typeof(_DLLEXPORT_CompressMasked));
+					var CompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Compress");
+					if (CompressPtr != null)
+						Compress = (_DLLEXPORT_Compress) Marshal.GetDelegateForFunctionPointer(CompressPtr,
+							typeof(_DLLEXPORT_Compress));
 
-                    IntPtr DecompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Decompress");
-                    if (DecompressPtr != null)
-                        Decompress = (_DLLEXPORT_Decompress)Marshal.GetDelegateForFunctionPointer(DecompressPtr, typeof(_DLLEXPORT_Decompress));
+					var CompressMaskedPtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressMasked");
+					if (CompressMaskedPtr != null)
+						CompressMasked =
+							(_DLLEXPORT_CompressMasked) Marshal.GetDelegateForFunctionPointer(CompressMaskedPtr,
+								typeof(_DLLEXPORT_CompressMasked));
 
-                    IntPtr StorageRequirementsPtr = GetProcAddress(errorCode, "_DLLEXPORT_GetStorageRequirements");
-                    if (StorageRequirementsPtr != null)
-                        GetStorageRequirements = (_DLLEXPORT_GetStorageRequirements)Marshal.GetDelegateForFunctionPointer(StorageRequirementsPtr, typeof(_DLLEXPORT_GetStorageRequirements));
+					var DecompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Decompress");
+					if (DecompressPtr != null)
+						Decompress =
+							(_DLLEXPORT_Decompress) Marshal.GetDelegateForFunctionPointer(DecompressPtr,
+								typeof(_DLLEXPORT_Decompress));
 
-                    IntPtr CompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressImage");
-                    if (CompressImagePtr != null)
-                        CompressImage = (_DLLEXPORT_CompressImage)Marshal.GetDelegateForFunctionPointer(CompressImagePtr, typeof(_DLLEXPORT_CompressImage));
+					var StorageRequirementsPtr = GetProcAddress(errorCode, "_DLLEXPORT_GetStorageRequirements");
+					if (StorageRequirementsPtr != null)
+						GetStorageRequirements =
+							(_DLLEXPORT_GetStorageRequirements) Marshal.GetDelegateForFunctionPointer(
+								StorageRequirementsPtr, typeof(_DLLEXPORT_GetStorageRequirements));
 
-                    IntPtr DecompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_DecompressImage");
-                    if (DecompressImagePtr != null)
-                        DecompressImage = (_DLLEXPORT_DecompressImage)Marshal.GetDelegateForFunctionPointer(DecompressImagePtr, typeof(_DLLEXPORT_DecompressImage));
+					var CompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressImage");
+					if (CompressImagePtr != null)
+						CompressImage =
+							(_DLLEXPORT_CompressImage) Marshal.GetDelegateForFunctionPointer(CompressImagePtr,
+								typeof(_DLLEXPORT_CompressImage));
 
-
-                    _SquishLibLoadingState = SquishLibLoadingState.Initialised; // flag as initialised
-
-                    System.Diagnostics.Debug.WriteLine("Loaded squish.dll library.");
-
-                    return true;
-                }
-                else
-                {
-                    _SquishLibLoadingState = SquishLibLoadingState.UnknownError;
-
-                    System.Diagnostics.Debug.WriteLine("Error loaded squish.dll library, code = " + errorCode);
-                    return false;
-                    //throw new Exception("squish.dll not found in the program directory.");
-                }
-            }
-            return false;
-        }
-
-        #region Imports
-        public static _DLLEXPORT_FixFlags FixFlags;
-        public static _DLLEXPORT_Compress Compress;
-        public static _DLLEXPORT_CompressMasked CompressMasked;
-        public static _DLLEXPORT_Decompress Decompress;
-        public static _DLLEXPORT_GetStorageRequirements GetStorageRequirements;
-        public static _DLLEXPORT_CompressImage CompressImage;
-        public static _DLLEXPORT_DecompressImage DecompressImage;
+					var DecompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_DecompressImage");
+					if (DecompressImagePtr != null)
+						DecompressImage =
+							(_DLLEXPORT_DecompressImage) Marshal.GetDelegateForFunctionPointer(DecompressImagePtr,
+								typeof(_DLLEXPORT_DecompressImage));
 
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int _DLLEXPORT_FixFlags(int flags);
+					_SquishLibLoadingState = SquishLibLoadingState.Initialised; // flag as initialised
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void _DLLEXPORT_Compress(byte[] rgba, byte[] block, int flags);
+					System.Diagnostics.Debug.WriteLine("Loaded squish.dll library.");
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void _DLLEXPORT_CompressMasked(byte[] rgba, int mask, byte[] block, int flags);
+					return true;
+				}
+				else {
+					_SquishLibLoadingState = SquishLibLoadingState.UnknownError;
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void _DLLEXPORT_Decompress(byte[] rgba, byte[] block, int flags);
+					System.Diagnostics.Debug.WriteLine("Error loaded squish.dll library, code = " + errorCode);
+					return false;
+					//throw new Exception("squish.dll not found in the program directory.");
+				}
+			}
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int _DLLEXPORT_GetStorageRequirements(int width, int height, int flags);
+			return false;
+		}
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void _DLLEXPORT_CompressImage(byte[] rgba_src, int width, int height, byte[] blocks, int flags);
+		#region Imports
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void _DLLEXPORT_DecompressImage(byte[] rgba, int width, int height, byte[] blocks, int flags);
-
-        #endregion
-
-        #region Kernel32DLL Import
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr LoadLibrary(string lpFileName);
-        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-        private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-        #endregion
+		public static _DLLEXPORT_FixFlags FixFlags;
+		public static _DLLEXPORT_Compress Compress;
+		public static _DLLEXPORT_CompressMasked CompressMasked;
+		public static _DLLEXPORT_Decompress Decompress;
+		public static _DLLEXPORT_GetStorageRequirements GetStorageRequirements;
+		public static _DLLEXPORT_CompressImage CompressImage;
+		public static _DLLEXPORT_DecompressImage DecompressImage;
 
 
-        public enum FlagsEnum
-        {
-            //! Use DXT1 compression.
-            kDxt1 = (1 << 0),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int _DLLEXPORT_FixFlags(int flags);
 
-            //! Use DXT3 compression.
-            kDxt3 = (1 << 1),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void _DLLEXPORT_Compress(byte[] rgba, byte[] block, int flags);
 
-            //! Use DXT5 compression.
-            kDxt5 = (1 << 2),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void _DLLEXPORT_CompressMasked(byte[] rgba, int mask, byte[] block, int flags);
 
-            //! Use a very slow but very high quality colour compressor.
-            kColourIterativeClusterFit = (1 << 8),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void _DLLEXPORT_Decompress(byte[] rgba, byte[] block, int flags);
 
-            //! Use a slow but high quality colour compressor (the default).
-            kColourClusterFit = (1 << 3),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int _DLLEXPORT_GetStorageRequirements(int width, int height, int flags);
 
-            //! Use a fast but low quality colour compressor.
-            kColourRangeFit = (1 << 4),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void _DLLEXPORT_CompressImage(byte[] rgba_src, int width, int height, byte[] blocks, int flags);
 
-            //! Use a perceptual metric for colour error (the default).
-            kColourMetricPerceptual = (1 << 5),
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void _DLLEXPORT_DecompressImage(byte[] rgba, int width, int height, byte[] blocks, int flags);
 
-            //! Use a uniform metric for colour error.
-            kColourMetricUniform = (1 << 6),
+		#endregion
 
-            //! Weight the colour by alpha during cluster fit (disabled by default).
-            kWeightColourByAlpha = (1 << 7)
-        };
+		#region Kernel32DLL Import
 
-    }
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern IntPtr LoadLibrary(string lpFileName);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+		private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+		#endregion
+
+
+		public enum FlagsEnum {
+			//! Use DXT1 compression.
+			kDxt1 = 1 << 0,
+
+			//! Use DXT3 compression.
+			kDxt3 = 1 << 1,
+
+			//! Use DXT5 compression.
+			kDxt5 = 1 << 2,
+
+			//! Use a very slow but very high quality colour compressor.
+			kColourIterativeClusterFit = 1 << 8,
+
+			//! Use a slow but high quality colour compressor (the default).
+			kColourClusterFit = 1 << 3,
+
+			//! Use a fast but low quality colour compressor.
+			kColourRangeFit = 1 << 4,
+
+			//! Use a perceptual metric for colour error (the default).
+			kColourMetricPerceptual = 1 << 5,
+
+			//! Use a uniform metric for colour error.
+			kColourMetricUniform = 1 << 6,
+
+			//! Weight the colour by alpha during cluster fit (disabled by default).
+			kWeightColourByAlpha = 1 << 7
+		};
+	}
 }

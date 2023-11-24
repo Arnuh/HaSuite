@@ -25,140 +25,122 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HaCreator.GUI.EditorPanels
-{
-    public partial class BackgroundPanel : UserControl
-    {
-        private HaCreatorStateManager hcsm;
+namespace HaCreator.GUI.EditorPanels {
+	public partial class BackgroundPanel : UserControl {
+		private HaCreatorStateManager hcsm;
 
-        public BackgroundPanel()
-        {
-            InitializeComponent();
-        }
+		public BackgroundPanel() {
+			InitializeComponent();
+		}
 
-        public void Initialize(HaCreatorStateManager hcsm)
-        {
-            this.hcsm = hcsm;
+		public void Initialize(HaCreatorStateManager hcsm) {
+			this.hcsm = hcsm;
 
-            List<string> sortedBgSets = new List<string>();
-            foreach (KeyValuePair<string, WzImage> bS in Program.InfoManager.BackgroundSets)
-            {
-                sortedBgSets.Add(bS.Key);
-            }
-            sortedBgSets.Sort();
-            foreach (string bS in sortedBgSets)
-            {
-                bgSetListBox.Items.Add(bS);
-            }
-        }
+			var sortedBgSets = new List<string>();
+			foreach (var bS in Program.InfoManager.BackgroundSets) sortedBgSets.Add(bS.Key);
 
-        /// <summary>
-        /// On image selection changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bgSetListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (bgSetListBox.SelectedItem == null)
-                return;
-            bgImageContainer.Controls.Clear();
+			sortedBgSets.Sort();
+			foreach (var bS in sortedBgSets) bgSetListBox.Items.Add(bS);
+		}
 
-            string path;
-            BackgroundInfoType infoType = BackgroundInfoType.Animation;
-            if (radioButton_spine.Checked)
-            {
-                infoType = BackgroundInfoType.Spine;
-                path = "spine";
-            }
-            else if (aniBg.Checked)
-            {
-                infoType = BackgroundInfoType.Animation;
-                path = "ani";
-            }
-            else
-            {
-                infoType = BackgroundInfoType.Background;
-                path = "back";
-            }
+		/// <summary>
+		/// On image selection changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void bgSetListBox_SelectedIndexChanged(object sender, EventArgs e) {
+			if (bgSetListBox.SelectedItem == null)
+				return;
+			bgImageContainer.Controls.Clear();
 
-            WzImageProperty parentProp = Program.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem][path];
-            if (parentProp == null || parentProp.WzProperties == null)
-                return;
+			string path;
+			var infoType = BackgroundInfoType.Animation;
+			if (radioButton_spine.Checked) {
+				infoType = BackgroundInfoType.Spine;
+				path = "spine";
+			}
+			else if (aniBg.Checked) {
+				infoType = BackgroundInfoType.Animation;
+				path = "ani";
+			}
+			else {
+				infoType = BackgroundInfoType.Background;
+				path = "back";
+			}
 
-            foreach (WzImageProperty prop in parentProp.WzProperties)
-            {
-                BackgroundInfo bgInfo = BackgroundInfo.Get(hcsm.MultiBoard.GraphicsDevice, (string)bgSetListBox.SelectedItem, infoType, prop.Name);
-                if (bgInfo == null)
-                    continue;
+			var parentProp = Program.InfoManager.BackgroundSets[(string) bgSetListBox.SelectedItem][path];
+			if (parentProp == null || parentProp.WzProperties == null)
+				return;
 
-                ImageViewer item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
-                item.Tag = bgInfo;
-                item.MouseDown += new MouseEventHandler(bgItem_Click);
-                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                item.MaxHeight = UserSettings.ImageViewerHeight;
-                item.MaxWidth = UserSettings.ImageViewerWidth;
-            }
-        }
+			foreach (var prop in parentProp.WzProperties) {
+				var bgInfo = BackgroundInfo.Get(hcsm.MultiBoard.GraphicsDevice,
+					(string) bgSetListBox.SelectedItem, infoType, prop.Name);
+				if (bgInfo == null)
+					continue;
 
-        /// <summary>
-        /// On click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bgItem_Click(object sender, MouseEventArgs e)
-        {
-            ImageViewer imageViewer = sender as ImageViewer;
-            BackgroundInfo bgInfo = (BackgroundInfo)((ImageViewer)sender).Tag;
+				var item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
+				item.Tag = bgInfo;
+				item.MouseDown += new MouseEventHandler(bgItem_Click);
+				item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+				item.MaxHeight = UserSettings.ImageViewerHeight;
+				item.MaxWidth = UserSettings.ImageViewerWidth;
+			}
+		}
 
-            if (e.Button == MouseButtons.Left)
-            {
-                lock (hcsm.MultiBoard)
-                {
-                    hcsm.EnterEditMode(ItemTypes.Backgrounds);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(bgInfo);
-                    hcsm.MultiBoard.Focus();
-                    ((ImageViewer)sender).IsActive = true;
-                }
-            }
-            else // right click
-            {
-                if (bgInfo.Type == BackgroundInfoType.Spine) // only shows an animation preview window if its a spine object.
-                {
-                    ContextMenu cm = new ContextMenu();
+		/// <summary>
+		/// On click
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void bgItem_Click(object sender, MouseEventArgs e) {
+			var imageViewer = sender as ImageViewer;
+			var bgInfo = (BackgroundInfo) ((ImageViewer) sender).Tag;
 
-                    MenuItem menuItem = new MenuItem();
-                    menuItem.Text = "Preview";
-                    menuItem.Tag = bgInfo;
-                    menuItem.Click += new EventHandler(delegate (object sender_, EventArgs e_)
-                    {
-                        MenuItem menuItem_ = sender_ as MenuItem;
-                        BackgroundInfo bgInfo_ = menuItem_.Tag as BackgroundInfo;
+			if (e.Button == MouseButtons.Left) {
+				lock (hcsm.MultiBoard) {
+					hcsm.EnterEditMode(ItemTypes.Backgrounds);
+					hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(bgInfo);
+					hcsm.MultiBoard.Focus();
+					((ImageViewer) sender).IsActive = true;
+				}
+			}
+			else // right click
+			{
+				if (bgInfo.Type ==
+				    BackgroundInfoType.Spine) // only shows an animation preview window if its a spine object.
+				{
+					var cm = new ContextMenu();
 
-                        WzImageProperty spineAtlasProp = bgInfo_.WzImageProperty.WzProperties.FirstOrDefault(
-                            wzprop => wzprop is WzStringProperty && ((WzStringProperty)wzprop).IsSpineAtlasResources);
+					var menuItem = new MenuItem();
+					menuItem.Text = "Preview";
+					menuItem.Tag = bgInfo;
+					menuItem.Click += new EventHandler(delegate(object sender_, EventArgs e_) {
+						var menuItem_ = sender_ as MenuItem;
+						var bgInfo_ = menuItem_.Tag as BackgroundInfo;
 
-                        if (spineAtlasProp != null)
-                        {
-                            WzStringProperty stringObj = (WzStringProperty)spineAtlasProp;
-                            Thread thread = new Thread(() =>
-                            {
-                                WzSpineAnimationItem item = new WzSpineAnimationItem(stringObj);
+						var spineAtlasProp = bgInfo_.WzImageProperty.WzProperties.FirstOrDefault(
+							wzprop => wzprop is WzStringProperty && ((WzStringProperty) wzprop).IsSpineAtlasResources);
 
-                                string path_title = stringObj.Parent?.FullPath ?? "Animate";
+						if (spineAtlasProp != null) {
+							var stringObj = (WzStringProperty) spineAtlasProp;
+							var thread = new Thread(() => {
+								var item = new WzSpineAnimationItem(stringObj);
 
-                                // Create xna window
-                                SpineAnimationWindow Window = new SpineAnimationWindow(item, path_title);
-                                Window.Run();
-                            });
-                            thread.Start();
-                            thread.Join();
-                        }
-                    });
-                    cm.MenuItems.Add(menuItem);
+								var path_title = stringObj.Parent?.FullPath ?? "Animate";
 
-                    cm.Show(imageViewer, new Point(0, 50));
-                }
-            }
-        }
-    }
+								// Create xna window
+								var Window = new SpineAnimationWindow(item, path_title);
+								Window.Run();
+							});
+							thread.Start();
+							thread.Join();
+						}
+					});
+					cm.MenuItems.Add(menuItem);
+
+					cm.Show(imageViewer, new Point(0, 50));
+				}
+			}
+		}
+	}
 }

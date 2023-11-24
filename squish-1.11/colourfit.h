@@ -22,7 +22,7 @@
 	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
    -------------------------------------------------------------------------- */
-   
+
 #ifndef SQUISH_COLOURFIT_H
 #define SQUISH_COLOURFIT_H
 
@@ -30,24 +30,21 @@
 #include "maths.h"
 
 namespace squish {
+	class ColourSet;
 
-class ColourSet;
+	class ColourFit {
+		public:
+			ColourFit(const ColourSet* colours, int flags);
 
-class ColourFit
-{
-public:
-	ColourFit( ColourSet const* colours, int flags );
+			void Compress(void* block);
 
-	void Compress( void* block );
+		protected:
+			virtual void Compress3(void* block) = 0;
+			virtual void Compress4(void* block) = 0;
 
-protected:
-	virtual void Compress3( void* block ) = 0;
-	virtual void Compress4( void* block ) = 0;
-
-	ColourSet const* m_colours;
-	int m_flags;
-};
-
+			const ColourSet* m_colours;
+			int m_flags;
+	};
 } // namespace squish
 
 #endif // ndef SQUISH_COLOURFIT_H

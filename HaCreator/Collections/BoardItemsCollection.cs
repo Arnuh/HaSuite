@@ -12,22 +12,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.Collections
-{
-    public class BoardItemsCollection : ItemsCollectionBase, IEnumerable<BoardItem>
-    {
-        public BoardItemsCollection(BoardItemsManager bim, bool items) : base(bim, items)
-        {
-        }
+namespace HaCreator.Collections {
+	public class BoardItemsCollection : ItemsCollectionBase, IEnumerable<BoardItem> {
+		public BoardItemsCollection(BoardItemsManager bim, bool items) : base(bim, items) {
+		}
 
-        public IEnumerator<BoardItem> GetEnumerator()
-        {
-            return new BoardItemsEnumerator(this);
-        }
+		public IEnumerator<BoardItem> GetEnumerator() {
+			return new BoardItemsEnumerator(this);
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
+		IEnumerator IEnumerable.GetEnumerator() {
+			return GetEnumerator();
+		}
+	}
 }

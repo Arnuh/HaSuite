@@ -26,160 +26,137 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 
-namespace HaRepacker.GUI
-{
-    public partial class WzStringSearchForm : Form
-    {
+namespace HaRepacker.GUI {
+	public partial class WzStringSearchForm : Form {
+		// WZ Searcher
+		public static Dictionary<int, KeyValuePair<string, string>>
+			HexJumpList = new Dictionary<int, KeyValuePair<string, string>>();
 
-        // WZ Searcher
-        public static Dictionary<int, KeyValuePair<string, string>>
-            HexJumpList = new Dictionary<int, KeyValuePair<string, string>>();
-        public static Dictionary<int, int> JumpList_Map = new Dictionary<int, int>();
-        private WzStringSearchFormDataCache WzDataCache;
+		public static Dictionary<int, int> JumpList_Map = new Dictionary<int, int>();
+		private WzStringSearchFormDataCache WzDataCache;
 
-        private string loadedWzVersion;
+		private string loadedWzVersion;
 
-        public WzStringSearchForm(WzStringSearchFormDataCache WzDataCache, string loadedWzVersion)
-        {
-            InitializeComponent();
+		public WzStringSearchForm(WzStringSearchFormDataCache WzDataCache, string loadedWzVersion) {
+			InitializeComponent();
 
-            this.WzDataCache = WzDataCache;
-            this.loadedWzVersion = loadedWzVersion;
-        }
+			this.WzDataCache = WzDataCache;
+			this.loadedWzVersion = loadedWzVersion;
+		}
 
-        #region Wz data ID searcher
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void in_textchanged(object sender, EventArgs e)
-        {
-            int data = 0;
-            try
-            {
-                data = Int32.Parse(textBox6.Text);
-            }
-            catch (Exception) { }
-            textBox5.Text = BitConverter.ToString(ByteUtils.IntegerToLittleEndian(data)).Replace("-", " ");
+		#region Wz data ID searcher
 
-            Clipboard.SetText(textBox5.Text);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void in_textchanged(object sender, EventArgs e) {
+			var data = 0;
+			try {
+				data = int.Parse(textBox6.Text);
+			}
+			catch (Exception) {
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void comboBox_hexlist_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int selecIndex = comboBox_hexlist.SelectedIndex;
-            if (selecIndex >= 0)
-            {
-                int count = 0;
+			textBox5.Text = BitConverter.ToString(ByteUtils.IntegerToLittleEndian(data)).Replace("-", " ");
 
-                foreach (KeyValuePair<int, KeyValuePair<string, string>> data in HexJumpList)
-                {
-                    if (count == selecIndex)
-                    {
-                        textBox6.Text = data.Key.ToString();
+			Clipboard.SetText(textBox5.Text);
+		}
 
-                        label_itemname.Text = data.Value.Key;
-                        label_itemdesc.Text = data.Value.Value;
-                        break;
-                    }
-                    count++;
-                }
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void comboBox_hexlist_SelectedIndexChanged(object sender, EventArgs e) {
+			var selecIndex = comboBox_hexlist.SelectedIndex;
+			if (selecIndex >= 0) {
+				var count = 0;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textBox_itemidFind_TextChanged(object sender, EventArgs e)
-        {
-            string query = textBox_itemidFind.Text;
-            if (query.Length <= 2 && query != string.Empty) // if its string empty, include everything..
-                return;
+				foreach (var data in HexJumpList) {
+					if (count == selecIndex) {
+						textBox6.Text = data.Key.ToString();
 
-            HexJumpList.Clear();
-            comboBox_hexlist.Items.Clear();
+						label_itemname.Text = data.Value.Key;
+						label_itemdesc.Text = data.Value.Value;
+						break;
+					}
 
-            // Items
-            if (checkBox_searcheq.Checked)
-            {
-                WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Eqp, query, HexJumpList);
-            }
-            if (checkBox_searchuse.Checked)
-            {
-                WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Use, query, HexJumpList);
-            }
-            if (checkBox_searchsetup.Checked)
-            {
-                WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Setup, query, HexJumpList);
-            }
-            if (checkBox_searchetc.Checked)
-            {
-                WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Etc, query, HexJumpList);
-            }
-            if (checkBox_searchcash.Checked)
-            {
-                WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Cash, query, HexJumpList);
-            }
-            // Quests
-            if (checkBox_searchquest.Checked)
-            {
-                WzDataCache.LookupQuest(query, HexJumpList);
-            }
+					count++;
+				}
+			}
+		}
 
-            // NPC
-            if (checkBox_searchNPC.Checked)
-            {
-                WzDataCache.LookupNPCs(query, HexJumpList);
-            }
-            // Maps
-            if (checkBox_searchMaps.Checked)
-            {
-                WzDataCache.LookupMaps(query, HexJumpList);
-            }
-            // Skills
-            if (checkbox_searchSkill.Checked)
-            {
-                WzDataCache.LookupSkills(query, HexJumpList);
-            }
-            // Jobs
-            if (checkBox_searchJobs.Checked)
-            {
-                WzDataCache.LookupJobs(query, HexJumpList);
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textBox_itemidFind_TextChanged(object sender, EventArgs e) {
+			var query = textBox_itemidFind.Text;
+			if (query.Length <= 2 && query != string.Empty) // if its string empty, include everything..
+				return;
+
+			HexJumpList.Clear();
+			comboBox_hexlist.Items.Clear();
+
+			// Items
+			if (checkBox_searcheq.Checked)
+				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Eqp, query, HexJumpList);
+
+			if (checkBox_searchuse.Checked)
+				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Use, query, HexJumpList);
+
+			if (checkBox_searchsetup.Checked)
+				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Setup, query,
+					HexJumpList);
+
+			if (checkBox_searchetc.Checked)
+				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Etc, query, HexJumpList);
+
+			if (checkBox_searchcash.Checked)
+				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Cash, query,
+					HexJumpList);
+
+			// Quests
+			if (checkBox_searchquest.Checked) WzDataCache.LookupQuest(query, HexJumpList);
+
+			// NPC
+			if (checkBox_searchNPC.Checked) WzDataCache.LookupNPCs(query, HexJumpList);
+
+			// Maps
+			if (checkBox_searchMaps.Checked) WzDataCache.LookupMaps(query, HexJumpList);
+
+			// Skills
+			if (checkbox_searchSkill.Checked) WzDataCache.LookupSkills(query, HexJumpList);
+
+			// Jobs
+			if (checkBox_searchJobs.Checked) WzDataCache.LookupJobs(query, HexJumpList);
 
 
-            if (HexJumpList.Count == 0)
-            {
-                textBox6.Text = "0";
-                label_itemname.Text = "Not found";
-                label_itemdesc.Text = "Not found";
-            }
-            else
-            {
-                bool first = true;
-                foreach (KeyValuePair<int, KeyValuePair<string, string>> data in HexJumpList)
-                {
-                    if (first)
-                    {
-                        textBox6.Text = data.Key.ToString();
+			if (HexJumpList.Count == 0) {
+				textBox6.Text = "0";
+				label_itemname.Text = "Not found";
+				label_itemdesc.Text = "Not found";
+			}
+			else {
+				var first = true;
+				foreach (var data in HexJumpList) {
+					if (first) {
+						textBox6.Text = data.Key.ToString();
 
-                        label_itemname.Text = data.Value.Key;
-                        label_itemdesc.Text = data.Value.Value;
+						label_itemname.Text = data.Value.Key;
+						label_itemdesc.Text = data.Value.Value;
 
-                        first = false;
-                    }
-                    comboBox_hexlist.Items.Add(String.Format("{0} - {1}", data.Value.Key, data.Value.Value));
-                }
-            }
-        }
-        #endregion
-    }
+						first = false;
+					}
+
+					comboBox_hexlist.Items.Add(string.Format("{0} - {1}", data.Value.Key, data.Value.Value));
+				}
+			}
+		}
+
+		#endregion
+	}
 }

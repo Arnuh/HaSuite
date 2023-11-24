@@ -30,10 +30,8 @@ using Spine;
 using System;
 using System.Linq;
 
-namespace HaSharedLibrary.GUI
-{
-	public class SpineAnimationWindow : Microsoft.Xna.Framework.Game
-    {
+namespace HaSharedLibrary.GUI {
+	public class SpineAnimationWindow : Game {
 		private GraphicsDeviceManager graphicsDeviceMgr;
 
 		private SkeletonMeshRenderer skeletonRenderer;
@@ -56,8 +54,7 @@ namespace HaSharedLibrary.GUI
 		/// </summary>
 		/// <param name="spineAnimationItem"></param>
 		/// <param name="title_path">The path of the spine animation to set as title</param>
-		public SpineAnimationWindow(WzSpineAnimationItem spineAnimationItem, string title_path)
-		{
+		public SpineAnimationWindow(WzSpineAnimationItem spineAnimationItem, string title_path) {
 			IsMouseVisible = true;
 
 			//Window.IsBorderless = true;
@@ -67,12 +64,11 @@ namespace HaSharedLibrary.GUI
 			Content.RootDirectory = "Content";
 
 			// Res
-			this.UserScreenScaleFactor = (float)ScreenDPIUtil.GetScreenScaleFactor();
-			this.matrixScale = Matrix.CreateScale(UserScreenScaleFactor);
+			UserScreenScaleFactor = (float) ScreenDPIUtil.GetScreenScaleFactor();
+			matrixScale = Matrix.CreateScale(UserScreenScaleFactor);
 
 			// Graphics
-			graphicsDeviceMgr = new GraphicsDeviceManager(this)
-			{
+			graphicsDeviceMgr = new GraphicsDeviceManager(this) {
 				SynchronizeWithVerticalRetrace = true, // max fps with the monitor
 				HardwareModeSwitch = true,
 				GraphicsProfile = GraphicsProfile.HiDef,
@@ -81,16 +77,16 @@ namespace HaSharedLibrary.GUI
 				SupportedOrientations = DisplayOrientation.Default,
 				PreferredBackBufferWidth = (int) (1366 * UserScreenScaleFactor), // XNA isnt DPI aware.
 				PreferredBackBufferHeight = (int) (768 * UserScreenScaleFactor),
-				PreferredBackBufferFormat = SurfaceFormat.Color /*RGBA8888*/ | SurfaceFormat.Bgr32 | SurfaceFormat.Dxt1 | SurfaceFormat.Dxt5 ,
-				PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
+				PreferredBackBufferFormat = SurfaceFormat.Color /*RGBA8888*/ | SurfaceFormat.Bgr32 |
+				                            SurfaceFormat.Dxt1 | SurfaceFormat.Dxt5,
+				PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
 			};
 			graphicsDeviceMgr.ApplyChanges();
 
-			this.wzSpineObject = new WzSpineObject(spineAnimationItem);
+			wzSpineObject = new WzSpineObject(spineAnimationItem);
 		}
 
-        protected override void Initialize()
-		{
+		protected override void Initialize() {
 			// TODO: Add your initialization logic here
 
 			// https://stackoverflow.com/questions/55045066/how-do-i-convert-a-ttf-or-other-font-to-a-xnb-xna-game-studio-font
@@ -98,7 +94,7 @@ namespace HaSharedLibrary.GUI
 			// 
 			// to build your own font: /MonoGame Font Builder/game.mgcb
 			// build -> obj -> copy it over to HaRepacker-resurrected [Content]
-			font = Content.Load<SpriteFont>("XnaDefaultFont");  
+			font = Content.Load<SpriteFont>("XnaDefaultFont");
 
 			base.Initialize();
 		}
@@ -106,44 +102,40 @@ namespace HaSharedLibrary.GUI
 		/// <summary>
 		/// Load spine related assets and contents
 		/// </summary>
-		protected override void LoadContent()
-		{
+		protected override void LoadContent() {
 			// Font
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
 			// Spine
-			this.wzSpineObject.spineAnimationItem.LoadResources(graphicsDeviceMgr.GraphicsDevice); //  load spine resources (this must happen after window is loaded)
-			this.wzSpineObject.skeleton = new Skeleton(this.wzSpineObject.spineAnimationItem.SkeletonData);
+			wzSpineObject.spineAnimationItem.LoadResources(graphicsDeviceMgr
+				.GraphicsDevice); //  load spine resources (this must happen after window is loaded)
+			wzSpineObject.skeleton = new Skeleton(wzSpineObject.spineAnimationItem.SkeletonData);
 
-            skeletonRenderer = new SkeletonMeshRenderer(GraphicsDevice)
-            {
-                PremultipliedAlpha = this.wzSpineObject.spineAnimationItem.PremultipliedAlpha
-            };
+			skeletonRenderer = new SkeletonMeshRenderer(GraphicsDevice) {
+				PremultipliedAlpha = wzSpineObject.spineAnimationItem.PremultipliedAlpha
+			};
 
 			// Skin
-			Skin skin = this.wzSpineObject.spineAnimationItem.SkeletonData.Skins.FirstOrDefault();  // just set the first skin
-			if (skin != null)
-			{
-				this.wzSpineObject.skeleton.SetSkin(skin.Name);
-			}
-			this.spineSkinIndex = 0;
+			var skin = wzSpineObject.spineAnimationItem.SkeletonData.Skins
+				.FirstOrDefault(); // just set the first skin
+			if (skin != null) wzSpineObject.skeleton.SetSkin(skin.Name);
+
+			spineSkinIndex = 0;
 
 			// Define mixing between animations.
-			this.wzSpineObject.stateData = new AnimationStateData(this.wzSpineObject.skeleton.Data);
-			this.wzSpineObject.state = new AnimationState(this.wzSpineObject.stateData);
+			wzSpineObject.stateData = new AnimationStateData(wzSpineObject.skeleton.Data);
+			wzSpineObject.state = new AnimationState(wzSpineObject.stateData);
 
 			// Events
-			this.wzSpineObject.state.Start += Start;
-			this.wzSpineObject.state.End += End;
-			this.wzSpineObject.state.Complete += Complete;
-			this.wzSpineObject.state.Event += Event;
+			wzSpineObject.state.Start += Start;
+			wzSpineObject.state.End += End;
+			wzSpineObject.state.Complete += Complete;
+			wzSpineObject.state.Event += Event;
 
-			int i = 0;
-			foreach (Animation animation in this.wzSpineObject.spineAnimationItem.SkeletonData.Animations)
-			{
+			var i = 0;
+			foreach (var animation in wzSpineObject.spineAnimationItem.SkeletonData.Animations)
 				wzSpineObject.state.SetAnimation(i++, animation.Name, true);
-			}
 			/*if (name == "spineboy")
 			{
 				stateData.SetMix("run", "jump", 0.2f);
@@ -176,8 +168,7 @@ namespace HaSharedLibrary.GUI
 			wzSpineObject.skeleton.UpdateWorldTransform();
 		}
 
-		protected override void UnloadContent()
-		{
+		protected override void UnloadContent() {
 			// TODO: Unload any non ContentManager content here
 			skeletonRenderer.End();
 
@@ -186,31 +177,31 @@ namespace HaSharedLibrary.GUI
 			graphicsDeviceMgr = null;
 		}
 
-		protected override void Update(GameTime gameTime)
-		{
+		protected override void Update(GameTime gameTime) {
 			// Allows the game to exit
 #if !WINDOWS_STOREAPP
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-				|| Keyboard.GetState().IsKeyDown(Keys.Escape))
-				this.Exit();
+			    || Keyboard.GetState().IsKeyDown(Keys.Escape))
+				Exit();
 #endif
 			// Handle full screen
-			bool bIsAltEnterPressed = Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Enter);
-			if (bIsAltEnterPressed)
-			{
+			var bIsAltEnterPressed =
+				Keyboard.GetState().IsKeyDown(Keys.LeftAlt) && Keyboard.GetState().IsKeyDown(Keys.Enter);
+			if (bIsAltEnterPressed) {
 				graphicsDeviceMgr.IsFullScreen = !graphicsDeviceMgr.IsFullScreen;
 				graphicsDeviceMgr.ApplyChanges();
 			}
 
 			// Navigate around the rendered object
-			bool bIsShiftPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift) || Keyboard.GetState().IsKeyDown(Keys.RightShift);
+			var bIsShiftPressed = Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
+			                      Keyboard.GetState().IsKeyDown(Keys.RightShift);
 
-			bool bIsUpKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Up);
-			bool bIsDownKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Down);
-			bool bIsLeftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Left);
-			bool bIsRightKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Right);
+			var bIsUpKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Up);
+			var bIsDownKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Down);
+			var bIsLeftKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Left);
+			var bIsRightKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Right);
 
-			int MOVE_XY_POSITION = 2;
+			var MOVE_XY_POSITION = 2;
 			if (bIsShiftPressed) // Move 2x as fast with shift pressed
 				MOVE_XY_POSITION *= 2;
 
@@ -224,30 +215,29 @@ namespace HaSharedLibrary.GUI
 				wzSpineObject.skeleton.X -= MOVE_XY_POSITION;
 
 			// Swap between skins
-			if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
-			{
-				if (this.spineSkinIndex != 0)
-					this.spineSkinIndex--;
+			if (Keyboard.GetState().IsKeyDown(Keys.PageUp)) {
+				if (spineSkinIndex != 0)
+					spineSkinIndex--;
 				else
-					this.spineSkinIndex = wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count() - 1;
+					spineSkinIndex = wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count() - 1;
 
-				wzSpineObject.skeleton.SetSkin(wzSpineObject.spineAnimationItem.SkeletonData.Skins[this.spineSkinIndex]);
+				wzSpineObject.skeleton.SetSkin(
+					wzSpineObject.spineAnimationItem.SkeletonData.Skins[spineSkinIndex]);
 			}
-			else if (Keyboard.GetState().IsKeyDown(Keys.PageDown))
-			{
-				if (this.spineSkinIndex + 1 < wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count())
-					this.spineSkinIndex++;
+			else if (Keyboard.GetState().IsKeyDown(Keys.PageDown)) {
+				if (spineSkinIndex + 1 < wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count())
+					spineSkinIndex++;
 				else
-					this.spineSkinIndex = 0;
+					spineSkinIndex = 0;
 
-				wzSpineObject.skeleton.SetSkin(wzSpineObject.spineAnimationItem.SkeletonData.Skins[this.spineSkinIndex]);
+				wzSpineObject.skeleton.SetSkin(
+					wzSpineObject.spineAnimationItem.SkeletonData.Skins[spineSkinIndex]);
 			}
 
 			base.Update(gameTime);
 		}
 
-		protected override void Draw(GameTime gameTime)
-		{
+		protected override void Draw(GameTime gameTime) {
 			GraphicsDevice.Clear(Color.Black);
 
 			wzSpineObject.state.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
@@ -277,17 +267,20 @@ namespace HaSharedLibrary.GUI
 					}
 				}
 			}*/
-			
-			spriteBatch.Begin(SpriteSortMode.Immediate, // spine :( needs to be drawn immediately to maintain the layer orders
-														//SpriteSortMode.Deferred,
-				BlendState.NonPremultiplied, null, null, null, null, this.matrixScale); 
+
+			spriteBatch.Begin(
+				SpriteSortMode.Immediate, // spine :( needs to be drawn immediately to maintain the layer orders
+				//SpriteSortMode.Deferred,
+				BlendState.NonPremultiplied, null, null, null, null, matrixScale);
 
 			if (gameTime.TotalGameTime.TotalSeconds < 3)
-				spriteBatch.DrawString(font, 
-					string.Format("Press [Left] [Right] [Up] [Down] [Shift] for navigation.{0}{1}", 
+				spriteBatch.DrawString(font,
+					string.Format("Press [Left] [Right] [Up] [Down] [Shift] for navigation.{0}{1}",
 						Environment.NewLine,
-						wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count() > 1 ? "[Page up] [Page down] to swap between skins." : string.Empty), 
-					new Vector2(20, 10), 
+						wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count() > 1
+							? "[Page up] [Page down] to swap between skins."
+							: string.Empty),
+					new Vector2(20, 10),
 					Color.White);
 
 			spriteBatch.End();
@@ -295,14 +288,14 @@ namespace HaSharedLibrary.GUI
 			base.Draw(gameTime);
 		}
 
-        #region Spine Events
+		#region Spine Events
+
 		/// <summary>
 		/// Spine start draw event
 		/// </summary>
 		/// <param name="state"></param>
 		/// <param name="trackIndex"></param>
-        public void Start(AnimationState state, int trackIndex)
-		{
+		public void Start(AnimationState state, int trackIndex) {
 #if !WINDOWS_STOREAPP
 			Console.WriteLine(trackIndex + " " + state.GetCurrent(trackIndex) + ": start");
 #endif
@@ -313,8 +306,7 @@ namespace HaSharedLibrary.GUI
 		/// </summary>
 		/// <param name="state"></param>
 		/// <param name="trackIndex"></param>
-		public void End(AnimationState state, int trackIndex)
-		{
+		public void End(AnimationState state, int trackIndex) {
 #if !WINDOWS_STOREAPP
 			Console.WriteLine(trackIndex + " " + state.GetCurrent(trackIndex) + ": end");
 #endif
@@ -326,8 +318,7 @@ namespace HaSharedLibrary.GUI
 		/// <param name="state"></param>
 		/// <param name="trackIndex"></param>
 		/// <param name="loopCount"></param>
-		public void Complete(AnimationState state, int trackIndex, int loopCount)
-		{
+		public void Complete(AnimationState state, int trackIndex, int loopCount) {
 #if !WINDOWS_STOREAPP
 			Console.WriteLine(trackIndex + " " + state.GetCurrent(trackIndex) + ": complete " + loopCount);
 #endif
@@ -339,12 +330,12 @@ namespace HaSharedLibrary.GUI
 		/// <param name="state"></param>
 		/// <param name="trackIndex"></param>
 		/// <param name="e"></param>
-		public void Event(AnimationState state, int trackIndex, Event e)
-		{
+		public void Event(AnimationState state, int trackIndex, Event e) {
 #if !WINDOWS_STOREAPP
 			Console.WriteLine(trackIndex + " " + state.GetCurrent(trackIndex) + ": event " + e);
 #endif
 		}
+
 		#endregion
 	}
 }

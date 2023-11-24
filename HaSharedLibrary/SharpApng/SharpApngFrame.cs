@@ -12,27 +12,22 @@ using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.Drawing;
 
-namespace HaSharedLibrary.SharpApng
-{
-    public class SharpApngFrame : IDisposable
-    {
-        public void Dispose()
-        {
-            Bitmap.Dispose();
-        }
+namespace HaSharedLibrary.SharpApng {
+	public class SharpApngFrame : IDisposable {
+		public void Dispose() {
+			Bitmap.Dispose();
+		}
 
-        public SharpApngFrame(Bitmap bmp, int num, int den)
-        {
-            this.DelayNum = num;
-            this.DelayDen = den;
-            this.Bitmap = bmp;
-        }
+		public SharpApngFrame(Bitmap bmp, int num, int den) {
+			DelayNum = num;
+			DelayDen = den;
+			Bitmap = bmp;
+		}
 
-        public int DelayNum { get; set; }
+		public int DelayNum { get; set; }
 
-        public int DelayDen { get; set; }
+		public int DelayDen { get; set; }
 
-        public Bitmap Bitmap { get; set; }
-    }
-
+		public Bitmap Bitmap { get; set; }
+	}
 }

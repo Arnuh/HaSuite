@@ -12,35 +12,22 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance.Shapes
-{
-    public class RopeLine : MapleLine
-    {
-        public RopeLine(Board board, MapleDot firstDot, MapleDot secondDot)
-            : base(board, firstDot, secondDot)
-        {
-            xBind = true;
-        }
+namespace HaCreator.MapEditor.Instance.Shapes {
+	public class RopeLine : MapleLine {
+		public RopeLine(Board board, MapleDot firstDot, MapleDot secondDot)
+			: base(board, firstDot, secondDot) {
+			xBind = true;
+		}
 
-        public RopeLine(Board board, MapleDot firstDot)
-            : base(board, firstDot)
-        {
-            xBind = true;
-        }
+		public RopeLine(Board board, MapleDot firstDot)
+			: base(board, firstDot) {
+			xBind = true;
+		}
 
-        public override XNA.Color Color
-        {
-            get { return UserSettings.RopeColor; }
-        }
+		public override XNA.Color Color => UserSettings.RopeColor;
 
-        public override XNA.Color InactiveColor
-        {
-            get { return MultiBoard.RopeInactiveColor; }
-        }
+		public override XNA.Color InactiveColor => MultiBoard.RopeInactiveColor;
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Ropes; }
-        }
-    }
+		public override ItemTypes Type => ItemTypes.Ropes;
+	}
 }

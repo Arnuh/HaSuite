@@ -6,102 +6,83 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HaCreator.CustomControls
-{
-    public class WatermarkTextBox : TextBox
-    {
-        /// <summary>
-        /// The text that will be presented as the watermak hint
-        /// </summary>
-        private string _watermarkText = "Type here";
-        /// <summary>
-        /// Gets or Sets the text that will be presented as the watermak hint
-        /// </summary>
-        public string WatermarkText
-        {
-            get { return _watermarkText; }
-            set { _watermarkText = value; }
-        }
+namespace HaCreator.CustomControls {
+	public class WatermarkTextBox : TextBox {
+		/// <summary>
+		/// The text that will be presented as the watermak hint
+		/// </summary>
+		private string _watermarkText = "Type here";
 
-        /// <summary>
-        /// Whether watermark effect is enabled or not
-        /// </summary>
-        private bool _watermarkActive = true;
-        /// <summary>
-        /// Gets or Sets whether watermark effect is enabled or not
-        /// </summary>
-        public bool WatermarkActive
-        {
-            get { return _watermarkActive; }
-            set { _watermarkActive = value; }
-        }
+		/// <summary>
+		/// Gets or Sets the text that will be presented as the watermak hint
+		/// </summary>
+		public string WatermarkText {
+			get => _watermarkText;
+			set => _watermarkText = value;
+		}
 
-        /// <summary>
-        /// Create a new TextBox that supports watermak hint
-        /// </summary>
-        public WatermarkTextBox()
-        {
-            this._watermarkActive = true;
-            this.Text = _watermarkText;
-            this.ForeColor = Color.Gray;
+		/// <summary>
+		/// Whether watermark effect is enabled or not
+		/// </summary>
+		private bool _watermarkActive = true;
 
-            GotFocus += (source, e) =>
-            {
-                RemoveWatermak();
-            };
+		/// <summary>
+		/// Gets or Sets whether watermark effect is enabled or not
+		/// </summary>
+		public bool WatermarkActive {
+			get => _watermarkActive;
+			set => _watermarkActive = value;
+		}
 
-            LostFocus += (source, e) =>
-            {
-                ApplyWatermark();
-            };
+		/// <summary>
+		/// Create a new TextBox that supports watermak hint
+		/// </summary>
+		public WatermarkTextBox() {
+			_watermarkActive = true;
+			Text = _watermarkText;
+			ForeColor = Color.Gray;
 
-        }
+			GotFocus += (source, e) => { RemoveWatermak(); };
 
-        /// <summary>
-        /// Remove watermark from the textbox
-        /// </summary>
-        public void RemoveWatermak()
-        {
-            if (this._watermarkActive)
-            {
-                this._watermarkActive = false;
-                this.Text = "";
-                this.ForeColor = Color.Black;
-            }
-        }
+			LostFocus += (source, e) => { ApplyWatermark(); };
+		}
 
-        /// <summary>
-        /// Applywatermak immediately
-        /// </summary>
-        public void ApplyWatermark()
-        {
-            if (!this._watermarkActive && string.IsNullOrEmpty(this.Text)
-                || ForeColor == Color.Gray)
-            {
-                this._watermarkActive = true;
-                this.Text = _watermarkText;
-                this.ForeColor = Color.Gray;
-            }
-        }
+		/// <summary>
+		/// Remove watermark from the textbox
+		/// </summary>
+		public void RemoveWatermak() {
+			if (_watermarkActive) {
+				_watermarkActive = false;
+				Text = "";
+				ForeColor = Color.Black;
+			}
+		}
 
-        /// <summary>
-        /// Apply watermak to the textbox. 
-        /// </summary>
-        /// <param name="newText">Text to apply</param>
-        public void ApplyWatermark(string newText)
-        {
-            WatermarkText = newText;
-            ApplyWatermark();
-        }
+		/// <summary>
+		/// Applywatermak immediately
+		/// </summary>
+		public void ApplyWatermark() {
+			if ((!_watermarkActive && string.IsNullOrEmpty(Text))
+			    || ForeColor == Color.Gray) {
+				_watermarkActive = true;
+				Text = _watermarkText;
+				ForeColor = Color.Gray;
+			}
+		}
 
-        protected override void OnTextChanged(EventArgs e)
-        {
-            if (WatermarkActive)
-            {
-                return;
-            }
+		/// <summary>
+		/// Apply watermak to the textbox. 
+		/// </summary>
+		/// <param name="newText">Text to apply</param>
+		public void ApplyWatermark(string newText) {
+			WatermarkText = newText;
+			ApplyWatermark();
+		}
 
-            base.OnTextChanged(e);
-        }
-    }
+		protected override void OnTextChanged(EventArgs e) {
+			if (WatermarkActive) return;
+
+			base.OnTextChanged(e);
+		}
+	}
 }

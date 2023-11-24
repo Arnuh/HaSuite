@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -21,157 +21,147 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace MapleLib.Configuration
-{
-    public class ConfigurationManager
-    {
-        private const string SETTINGS_FILE_USER = "Settings.txt";
-        private const string SETTINGS_FILE_APPLICATION = "ApplicationSettings.txt";
-        public const string configPipeName = "HaRepacker";
+namespace MapleLib.Configuration {
+	public class ConfigurationManager {
+		private const string SETTINGS_FILE_USER = "Settings.txt";
+		private const string SETTINGS_FILE_APPLICATION = "ApplicationSettings.txt";
+		public const string configPipeName = "HaRepacker";
 
 
-        private string folderPath;
+		private string folderPath;
 
-        private UserSettings _userSettings = new UserSettings(); // default configuration for UI designer :( 
-        public UserSettings UserSettings
-        {
-            get { return _userSettings; }
-            private set { }
-        }
+		private UserSettings _userSettings = new UserSettings(); // default configuration for UI designer :( 
 
-        private ApplicationSettings _appSettings = new ApplicationSettings(); // default configuration for UI designer :( 
-        public ApplicationSettings ApplicationSettings
-        {
-            get { return _appSettings; }
-            private set { }
-        }
+		public UserSettings UserSettings {
+			get => _userSettings;
+			private set { }
+		}
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public ConfigurationManager()
-        {
-            this.folderPath = GetLocalFolderPath();
-        }
+		private ApplicationSettings
+			_appSettings = new ApplicationSettings(); // default configuration for UI designer :( 
 
-        /// <summary>
-        /// Gets the local folder path
-        /// </summary>
-        /// <returns></returns>
-        public static string GetLocalFolderPath()
-        {
-            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string our_folder = Path.Combine(appdata, configPipeName);
-            if (!Directory.Exists(our_folder))
-                Directory.CreateDirectory(our_folder);
-            return our_folder;
-        }
+		public ApplicationSettings ApplicationSettings {
+			get => _appSettings;
+			private set { }
+		}
 
-        /// <summary>
-        /// Load application setting from user application data 
-        /// </summary>
-        /// <returns></returns>
-        public bool Load()
-        {
-            string userFilePath = Path.Combine(folderPath, SETTINGS_FILE_USER);
-            string applicationFilePath = Path.Combine(folderPath, SETTINGS_FILE_APPLICATION);
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public ConfigurationManager() {
+			folderPath = GetLocalFolderPath();
+		}
 
-            if (File.Exists(userFilePath) && File.Exists(applicationFilePath))
-            {
-                string userFileContent = File.ReadAllText(userFilePath);
-                string applicationFileContent = File.ReadAllText(applicationFilePath);
+		/// <summary>
+		/// Gets the local folder path
+		/// </summary>
+		/// <returns></returns>
+		public static string GetLocalFolderPath() {
+			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var our_folder = Path.Combine(appdata, configPipeName);
+			if (!Directory.Exists(our_folder))
+				Directory.CreateDirectory(our_folder);
+			return our_folder;
+		}
 
-                try
-                {
-                    _userSettings = JsonConvert.DeserializeObject<UserSettings>(userFileContent); // deserialize to static content... 
-                    _appSettings = JsonConvert.DeserializeObject<ApplicationSettings>(applicationFileContent);
+		/// <summary>
+		/// Load application setting from user application data 
+		/// </summary>
+		/// <returns></returns>
+		public bool Load() {
+			var userFilePath = Path.Combine(folderPath, SETTINGS_FILE_USER);
+			var applicationFilePath = Path.Combine(folderPath, SETTINGS_FILE_APPLICATION);
 
-                    return true;
-                } catch (Exception)
-                {
-                    // delete all
-                    try
-                    {
-                        File.Delete(userFilePath);
-                        File.Delete(applicationFilePath);
-                    }
-                    catch { } // throws if it cant access without admin
-                }
-            }
-            _userSettings = new UserSettings(); // defaults
-            _appSettings = new ApplicationSettings();
-            return false;
-        }
+			if (File.Exists(userFilePath) && File.Exists(applicationFilePath)) {
+				var userFileContent = File.ReadAllText(userFilePath);
+				var applicationFileContent = File.ReadAllText(applicationFilePath);
 
-        /// <summary>
-        /// Saves setting to user application data
-        /// </summary>
-        /// <returns></returns>
-        public bool Save()
-        {
-            string userSettingsSerialised = JsonConvert.SerializeObject(_userSettings, Formatting.Indented); // format for user
-            string appSettingsSerialised = JsonConvert.SerializeObject(_appSettings, Formatting.Indented);
+				try {
+					_userSettings =
+						JsonConvert.DeserializeObject<UserSettings>(
+							userFileContent); // deserialize to static content... 
+					_appSettings = JsonConvert.DeserializeObject<ApplicationSettings>(applicationFileContent);
 
-            string userFilePath = Path.Combine(folderPath, SETTINGS_FILE_USER);
-            string applicationFilePath = Path.Combine(folderPath, SETTINGS_FILE_APPLICATION);
+					return true;
+				}
+				catch (Exception) {
+					// delete all
+					try {
+						File.Delete(userFilePath);
+						File.Delete(applicationFilePath);
+					}
+					catch {
+					} // throws if it cant access without admin
+				}
+			}
 
-            try
-            {
-                // user setting
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(userFilePath))
-                {
-                    file.Write(userSettingsSerialised);
-                }
-                // app setting
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(applicationFilePath))
-                {
-                    file.Write(appSettingsSerialised);
-                }
-                return true;
-            } catch
-            {
+			_userSettings = new UserSettings(); // defaults
+			_appSettings = new ApplicationSettings();
+			return false;
+		}
 
-            }
-            return false;
-        }
+		/// <summary>
+		/// Saves setting to user application data
+		/// </summary>
+		/// <returns></returns>
+		public bool Save() {
+			var userSettingsSerialised =
+				JsonConvert.SerializeObject(_userSettings, Formatting.Indented); // format for user
+			var appSettingsSerialised = JsonConvert.SerializeObject(_appSettings, Formatting.Indented);
+
+			var userFilePath = Path.Combine(folderPath, SETTINGS_FILE_USER);
+			var applicationFilePath = Path.Combine(folderPath, SETTINGS_FILE_APPLICATION);
+
+			try {
+				// user setting
+				using (var file = new StreamWriter(userFilePath)) {
+					file.Write(userSettingsSerialised);
+				}
+
+				// app setting
+				using (var file = new StreamWriter(applicationFilePath)) {
+					file.Write(appSettingsSerialised);
+				}
+
+				return true;
+			}
+			catch {
+			}
+
+			return false;
+		}
 
 
-        /// <summary>
-        /// Gets the custom WZ IV from settings
-        /// </summary>
-        /// <returns></returns>
-        public byte[] GetCusomWzIVEncryption()
-        {
-            bool loaded = Load();
-            if (loaded)
-            {
-                string storedCustomEnc = ApplicationSettings.MapleVersion_CustomEncryptionBytes;
-                byte[] bytes = HexEncoding.GetBytes(storedCustomEnc);
+		/// <summary>
+		/// Gets the custom WZ IV from settings
+		/// </summary>
+		/// <returns></returns>
+		public byte[] GetCusomWzIVEncryption() {
+			var loaded = Load();
+			if (loaded) {
+				var storedCustomEnc = ApplicationSettings.MapleVersion_CustomEncryptionBytes;
+				var bytes = HexEncoding.GetBytes(storedCustomEnc);
 
-                if (bytes.Length == 4)
-                {
-                    return bytes;
-                }
-            }
-            return new byte[4] { 0x0, 0x0, 0x0, 0x0 }; // fallback with BMS
-        }
+				if (bytes.Length == 4) return bytes;
+			}
 
-        public void SetCustomWzUserKeyFromConfig()
-        {
-            // Set the UserKey in memory.
-            MapleCryptoConstants.UserKey_WzLib = new byte[128];
-            byte[] bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
-            if (bytes.Length == 0)
-                return;
+			return new byte[4] {0x0, 0x0, 0x0, 0x0}; // fallback with BMS
+		}
 
-            MapleCryptoConstants.UserKey_WzLib = new byte[MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.Length];
-            for (int i = 0; i < MapleCryptoConstants.UserKey_WzLib.Length; i += 4)
-            {
-                MapleCryptoConstants.UserKey_WzLib[i] = bytes[i / 4];
-                MapleCryptoConstants.UserKey_WzLib[i + 1] = 0;
-                MapleCryptoConstants.UserKey_WzLib[i + 2] = 0;
-                MapleCryptoConstants.UserKey_WzLib[i + 3] = 0;
-            }
-        }
-    }
+		public void SetCustomWzUserKeyFromConfig() {
+			// Set the UserKey in memory.
+			MapleCryptoConstants.UserKey_WzLib = new byte[128];
+			var bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
+			if (bytes.Length == 0)
+				return;
+
+			MapleCryptoConstants.UserKey_WzLib = new byte[MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.Length];
+			for (var i = 0; i < MapleCryptoConstants.UserKey_WzLib.Length; i += 4) {
+				MapleCryptoConstants.UserKey_WzLib[i] = bytes[i / 4];
+				MapleCryptoConstants.UserKey_WzLib[i + 1] = 0;
+				MapleCryptoConstants.UserKey_WzLib[i + 2] = 0;
+				MapleCryptoConstants.UserKey_WzLib[i + 3] = 0;
+			}
+		}
+	}
 }

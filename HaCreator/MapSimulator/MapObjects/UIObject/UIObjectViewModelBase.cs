@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.MapSimulator.MapObjects.UIObject
-{
-    public partial class UIObjectViewModelBase
-    {
-        public UIObjectViewModelBase()
-        {
-            //this.Height = 1;
-        }
+namespace HaCreator.MapSimulator.MapObjects.UIObject {
+	public partial class UIObjectViewModelBase {
+		public UIObjectViewModelBase() {
+			//this.Height = 1;
+		}
 /*
         //
         // Summary:
@@ -104,5 +101,5 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject
         // Value:
         //     The window template resource key.
         public string WindowTemplateResourceKey { get; }*/
-    }
+	}
 }

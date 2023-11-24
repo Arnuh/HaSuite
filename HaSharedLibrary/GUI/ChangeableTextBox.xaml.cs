@@ -14,102 +14,100 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HaSharedLibrary.GUI
-{
-    /// <summary>
-    /// Interaction logic for ChangeableTextBoxXAML.xaml
-    /// </summary>
-    public partial class ChangeableTextBox : System.Windows.Controls.UserControl, INotifyPropertyChanged
-    {
-        public ChangeableTextBox()
-        {
-            InitializeComponent();
+namespace HaSharedLibrary.GUI {
+	/// <summary>
+	/// Interaction logic for ChangeableTextBoxXAML.xaml
+	/// </summary>
+	public partial class ChangeableTextBox : UserControl, INotifyPropertyChanged {
+		public ChangeableTextBox() {
+			InitializeComponent();
 
-            this.DataContext = this; // set data binding to self.
-        }
+			DataContext = this; // set data binding to self.
+		}
 
-        #region Exported Fields
-        private string _Header = "";
-        public string Header
-        {
-            get { return _Header; }
-            set {
-                _Header = value;
-                OnPropertyChanged("Header");
-            }
-        }
+		#region Exported Fields
 
-        public string Text
-        {
-            get { return textBox.Text; }
-            set {
-                textBox.Text = value;
-                OnPropertyChanged("Text");
-            }
-        }
+		private string _Header = "";
 
-        /// <summary>
-        /// Apply button
-        /// </summary>
-        public bool ApplyButtonEnabled
-        {
-            get { return applyButton.IsEnabled; }
-            set {
-                applyButton.IsEnabled = value;
-                OnPropertyChanged("ButtonEnabled");
-            }
-        }
+		public string Header {
+			get => _Header;
+			set {
+				_Header = value;
+				OnPropertyChanged("Header");
+			}
+		}
 
-        private TextWrapping _TextWrap;
-        public TextWrapping TextWrap
-        {
-            get { return _TextWrap; }
-            set {
-                this._TextWrap = value;
-                OnPropertyChanged("TextWrap");
-            }
-        }
+		public string Text {
+			get => textBox.Text;
+			set {
+				textBox.Text = value;
+				OnPropertyChanged("Text");
+			}
+		}
 
-        private bool _AcceptsReturn = false;
-        public bool AcceptsReturn
-        {
-            get { return _AcceptsReturn; }
-            set {
-                this._AcceptsReturn = value;
-                OnPropertyChanged("AcceptsReturn");
-            }
-        }
-        #endregion
+		/// <summary>
+		/// Apply button
+		/// </summary>
+		public bool ApplyButtonEnabled {
+			get => applyButton.IsEnabled;
+			set {
+				applyButton.IsEnabled = value;
+				OnPropertyChanged("ButtonEnabled");
+			}
+		}
 
-        public event EventHandler ButtonClicked;
-        private void applyButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ButtonClicked != null)
-                ButtonClicked.Invoke(sender, e);
+		private TextWrapping _TextWrap;
 
-            applyButton.IsEnabled = false;
-        }
+		public TextWrapping TextWrap {
+			get => _TextWrap;
+			set {
+				_TextWrap = value;
+				OnPropertyChanged("TextWrap");
+			}
+		}
 
-        /// <summary>
-        /// On text changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            applyButton.IsEnabled = true;
-        }
+		private bool _AcceptsReturn = false;
 
-        #region PropertyChanged
-        /// <summary>
-        /// Property changed event handler to trigger update UI
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-    }
+		public bool AcceptsReturn {
+			get => _AcceptsReturn;
+			set {
+				_AcceptsReturn = value;
+				OnPropertyChanged("AcceptsReturn");
+			}
+		}
+
+		#endregion
+
+		public event EventHandler ButtonClicked;
+
+		private void applyButton_Click(object sender, RoutedEventArgs e) {
+			if (ButtonClicked != null)
+				ButtonClicked.Invoke(sender, e);
+
+			applyButton.IsEnabled = false;
+		}
+
+		/// <summary>
+		/// On text changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textBox_TextChanged(object sender, TextChangedEventArgs e) {
+			applyButton.IsEnabled = true;
+		}
+
+		#region PropertyChanged
+
+		/// <summary>
+		/// Property changed event handler to trigger update UI
+		/// </summary>
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged(string propertyName) {
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		#endregion
+	}
 }

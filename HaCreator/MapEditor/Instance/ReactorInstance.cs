@@ -14,146 +14,104 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance
-{
-    public class ReactorInstance : BoardItem, IFlippable, ISerializable
-    {
-        private readonly ReactorInfo reactorInfo;
-        public ReactorInfo ReactorInfo { get { return reactorInfo; } }
+namespace HaCreator.MapEditor.Instance {
+	public class ReactorInstance : BoardItem, IFlippable, ISerializable {
+		private readonly ReactorInfo reactorInfo;
 
-        private int reactorTime;
-        private bool flip;
-        private string name;
+		public ReactorInfo ReactorInfo => reactorInfo;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="baseInfo"></param>
-        /// <param name="board"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="reactorTime"></param>
-        /// <param name="name"></param>
-        /// <param name="flip"></param>
-        public ReactorInstance(ReactorInfo baseInfo, Board board, int x, int y, int reactorTime, string name, bool flip)
-            : base(board, x, y, -1)
-        {
-            this.reactorInfo = baseInfo;
-            this.reactorTime = reactorTime;
-            this.flip = flip;
-            this.name = name;
-            if (flip)
-                X -= Width - 2 * Origin.X;
-        }
+		private int reactorTime;
+		private bool flip;
+		private string name;
 
-        public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
-        {
-            XNA.Rectangle destinationRectangle = new XNA.Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-            //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
-            sprite.Draw(reactorInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
-            base.Draw(sprite, color, xShift, yShift);
-        }
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="baseInfo"></param>
+		/// <param name="board"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="reactorTime"></param>
+		/// <param name="name"></param>
+		/// <param name="flip"></param>
+		public ReactorInstance(ReactorInfo baseInfo, Board board, int x, int y, int reactorTime, string name, bool flip)
+			: base(board, x, y, -1) {
+			reactorInfo = baseInfo;
+			this.reactorTime = reactorTime;
+			this.flip = flip;
+			this.name = name;
+			if (flip)
+				X -= Width - 2 * Origin.X;
+		}
 
-        public override MapleDrawableInfo BaseInfo
-        {
-            get { return reactorInfo; }
-        }
+		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+			var destinationRectangle =
+				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+			//if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
+			sprite.Draw(reactorInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
+				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
+			base.Draw(sprite, color, xShift, yShift);
+		}
 
-        public bool Flip
-        {
-            get
-            {
-                return flip;
-            }
-            set
-            {
-                if (flip == value) return;
-                flip = value;
-                int xFlipShift = Width - 2 * Origin.X;
-                if (flip) X -= xFlipShift;
-                else X += xFlipShift;
-            }
-        }
+		public override MapleDrawableInfo BaseInfo => reactorInfo;
 
-        public int UnflippedX
-        {
-            get
-            {
-                return flip ? (X + Width - 2 * Origin.X) : X;
-            }
-        }
+		public bool Flip {
+			get => flip;
+			set {
+				if (flip == value) return;
+				flip = value;
+				var xFlipShift = Width - 2 * Origin.X;
+				if (flip) X -= xFlipShift;
+				else X += xFlipShift;
+			}
+		}
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Reactors; }
-        }
+		public int UnflippedX => flip ? X + Width - 2 * Origin.X : X;
 
-        public override System.Drawing.Bitmap Image
-        {
-            get
-            {
-                return reactorInfo.Image;
-            }
-        }
+		public override ItemTypes Type => ItemTypes.Reactors;
 
-        public override int Width
-        {
-            get { return reactorInfo.Width; }
-        }
+		public override System.Drawing.Bitmap Image => reactorInfo.Image;
 
-        public override int Height
-        {
-            get { return reactorInfo.Height; }
-        }
+		public override int Width => reactorInfo.Width;
 
-        public override System.Drawing.Point Origin
-        {
-            get
-            {
-                return reactorInfo.Origin;
-            }
-        }
+		public override int Height => reactorInfo.Height;
 
-        public int ReactorTime
-        {
-            get { return reactorTime; }
-            set { reactorTime = value; }
-        }
+		public override System.Drawing.Point Origin => reactorInfo.Origin;
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+		public int ReactorTime {
+			get => reactorTime;
+			set => reactorTime = value;
+		}
 
-        public new class SerializationForm : BoardItem.SerializationForm
-        {
-            public string id;
-            public int reactortime;
-            public bool flip;
-            public string name;
-        }
+		public string Name {
+			get => name;
+			set => name = value;
+		}
 
-        public override object Serialize()
-        {
-            SerializationForm result = new SerializationForm();
-            UpdateSerializedForm(result);
-            return result;
-        }
+		public new class SerializationForm : BoardItem.SerializationForm {
+			public string id;
+			public int reactortime;
+			public bool flip;
+			public string name;
+		}
 
-        protected void UpdateSerializedForm(SerializationForm result)
-        {
-            base.UpdateSerializedForm(result);
-            result.id = reactorInfo.ID;
-            result.reactortime = reactorTime;
-            result.flip = flip;
-            result.name = name;
-        }
+		public override object Serialize() {
+			var result = new SerializationForm();
+			UpdateSerializedForm(result);
+			return result;
+		}
 
-        public ReactorInstance(Board board, SerializationForm json)
-            : base(board, json)
-        {
-            reactorInfo = ReactorInfo.Get(json.id);
-        }
-    }
+		protected void UpdateSerializedForm(SerializationForm result) {
+			base.UpdateSerializedForm(result);
+			result.id = reactorInfo.ID;
+			result.reactortime = reactorTime;
+			result.flip = flip;
+			result.name = name;
+		}
+
+		public ReactorInstance(Board board, SerializationForm json)
+			: base(board, json) {
+			reactorInfo = ReactorInfo.Get(json.id);
+		}
+	}
 }

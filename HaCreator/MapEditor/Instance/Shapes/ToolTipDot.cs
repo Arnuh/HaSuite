@@ -12,58 +12,32 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance.Shapes
-{
-    public class ToolTipDot : MapleDot
-    {
-        private MapleRectangle parentTooltip;
+namespace HaCreator.MapEditor.Instance.Shapes {
+	public class ToolTipDot : MapleDot {
+		private MapleRectangle parentTooltip;
 
-        public ToolTipDot(MapleRectangle parentTooltip, Board board, int x, int y)
-            : base(board, x, y)
-        {
-            this.parentTooltip = parentTooltip;
-        }
+		public ToolTipDot(MapleRectangle parentTooltip, Board board, int x, int y)
+			: base(board, x, y) {
+			this.parentTooltip = parentTooltip;
+		}
 
-        public override XNA.Color Color
-        {
-            get
-            {
-                return UserSettings.ToolTipColor;
-            }
-        }
+		public override XNA.Color Color => UserSettings.ToolTipColor;
 
-        public override XNA.Color InactiveColor
-        {
-            get { return MultiBoard.ToolTipInactiveColor; }
-        }
+		public override XNA.Color InactiveColor => MultiBoard.ToolTipInactiveColor;
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.ToolTips; }
-        }
+		public override ItemTypes Type => ItemTypes.ToolTips;
 
-        public MapleRectangle ParentTooltip
-        {
-            get { return parentTooltip; }
-            set { parentTooltip = value; }
-        }
+		public MapleRectangle ParentTooltip {
+			get => parentTooltip;
+			set => parentTooltip = value;
+		}
 
-        protected override bool RemoveConnectedLines
-        {
-            get { return false; }
-        }
+		protected override bool RemoveConnectedLines => false;
 
-        public override bool ShouldSelectSerialized
-        {
-            get
-            {
-                return true;
-            }
-        }
+		public override bool ShouldSelectSerialized => true;
 
-        public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
-        {
-            return new List<ISerializableSelector> { parentTooltip };
-        }
-    }
+		public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems) {
+			return new List<ISerializableSelector> {parentTooltip};
+		}
+	}
 }

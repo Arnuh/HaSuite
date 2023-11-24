@@ -15,53 +15,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HaCreator.GUI
-{
-    public partial class CancelableWaitWindow : Form
-    {
-        private bool finished = false;
-        private Thread actionThread;
-        public object result = null;
+namespace HaCreator.GUI {
+	public partial class CancelableWaitWindow : Form {
+		private bool finished = false;
+		private Thread actionThread;
+		public object result = null;
 
-        public CancelableWaitWindow(string message, Func<object> action)
-        {
-            InitializeComponent();
-            this.label1.Text = message;
-            actionThread = new Thread(new ParameterizedThreadStart(x =>
-            {
-                CancelableWaitWindow cww = (CancelableWaitWindow)x;
-                cww.result = action();
-                cww.Invoke((Action)delegate { cww.EndWait(); });
-            }));
-        }
+		public CancelableWaitWindow(string message, Func<object> action) {
+			InitializeComponent();
+			label1.Text = message;
+			actionThread = new Thread(new ParameterizedThreadStart(x => {
+				var cww = (CancelableWaitWindow) x;
+				cww.result = action();
+				cww.Invoke((Action) delegate { cww.EndWait(); });
+			}));
+		}
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-            actionThread.Abort();
+		private void button1_Click(object sender, EventArgs e) {
+			button1.Enabled = false;
+			actionThread.Abort();
 
-            // Is the thread stuck?
-            if (!actionThread.Join(5000))
-            {
-                MessageBox.Show("Could not terminate actionThread after 5000ms. This usually means something has gone horribly wrong. The program may now be in an undefined state, try to save your work and restart.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            EndWait();
-        }
+			// Is the thread stuck?
+			if (!actionThread.Join(5000))
+				MessageBox.Show(
+					"Could not terminate actionThread after 5000ms. This usually means something has gone horribly wrong. The program may now be in an undefined state, try to save your work and restart.",
+					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-        public void EndWait()
-        {
-            finished = true;
-            Close();
-        }
+			EndWait();
+		}
 
-        private void CancelableWaitWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = !finished;
-        }
+		public void EndWait() {
+			finished = true;
+			Close();
+		}
 
-        private void CancelableWaitWindow_Load(object sender, EventArgs e)
-        {
-            actionThread.Start(this);
-        }
-    }
+		private void CancelableWaitWindow_FormClosing(object sender, FormClosingEventArgs e) {
+			e.Cancel = !finished;
+		}
+
+		private void CancelableWaitWindow_Load(object sender, EventArgs e) {
+			actionThread.Start(this);
+		}
+	}
 }

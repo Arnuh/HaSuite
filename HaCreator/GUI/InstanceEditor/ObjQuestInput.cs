@@ -15,35 +15,27 @@ using System.Windows.Forms;
 using MapleLib.WzLib.WzStructure.Data;
 using HaCreator.MapEditor.Instance;
 
-namespace HaCreator.GUI.InstanceEditor
-{
-    public partial class ObjQuestInput : EditorBase
-    {
-        public ObjectInstanceQuest result;
+namespace HaCreator.GUI.InstanceEditor {
+	public partial class ObjQuestInput : EditorBase {
+		public ObjectInstanceQuest result;
 
-        public ObjQuestInput()
-        {
-            InitializeComponent();
+		public ObjQuestInput() {
+			InitializeComponent();
 
-            foreach (QuestState state in Enum.GetValues(typeof(QuestState)))
-            {
-                stateInput.Items.Add(state.ToString());
-            }
+			foreach (QuestState state in Enum.GetValues(typeof(QuestState))) stateInput.Items.Add(state.ToString());
 
-            DialogResult = System.Windows.Forms.DialogResult.No;
-            stateInput.SelectedIndex = 0;
-        }
+			DialogResult = DialogResult.No;
+			stateInput.SelectedIndex = 0;
+		}
 
-        protected override void cancelButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+		protected override void cancelButton_Click(object sender, EventArgs e) {
+			Close();
+		}
 
-        protected override void okButton_Click(object sender, EventArgs e)
-        {
-            result = new ObjectInstanceQuest((int)idInput.Value, (QuestState)stateInput.SelectedIndex);
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-    }
+		protected override void okButton_Click(object sender, EventArgs e) {
+			result = new ObjectInstanceQuest((int) idInput.Value, (QuestState) stateInput.SelectedIndex);
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+	}
 }

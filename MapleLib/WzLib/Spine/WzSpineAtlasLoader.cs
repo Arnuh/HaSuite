@@ -32,92 +32,80 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static MapleLib.WzDataReader;
 
-namespace MapleLib.WzLib.Spine
-{
-    public class WzSpineAtlasLoader
-    {
-        /// <summary>
-        /// Loads skeleton 
-        /// </summary>
-        /// <param name="atlasNode"></param>
-        /// <param name="textureLoader"></param>
-        /// <returns></returns>
-        public static SkeletonData LoadSkeleton(WzStringProperty atlasNode, TextureLoader textureLoader)
-        {
-            string atlasData = atlasNode.GetString();
-            if (string.IsNullOrEmpty(atlasData))
-            {
-                return null;
-            }
-            StringReader atlasReader = new StringReader(atlasData);
+namespace MapleLib.WzLib.Spine {
+	public class WzSpineAtlasLoader {
+		/// <summary>
+		/// Loads skeleton 
+		/// </summary>
+		/// <param name="atlasNode"></param>
+		/// <param name="textureLoader"></param>
+		/// <returns></returns>
+		public static SkeletonData LoadSkeleton(WzStringProperty atlasNode, TextureLoader textureLoader) {
+			var atlasData = atlasNode.GetString();
+			if (string.IsNullOrEmpty(atlasData)) return null;
 
-            Atlas atlas = new Atlas(atlasReader, string.Empty, textureLoader);
-            SkeletonData skeletonData;
+			var atlasReader = new StringReader(atlasData);
 
-            if (!TryLoadSkeletonJsonOrBinary(atlasNode, atlas, out skeletonData))
-            {
-                atlas.Dispose();
-                return null;
-            }
-            return skeletonData;
-        }
+			var atlas = new Atlas(atlasReader, string.Empty, textureLoader);
+			SkeletonData skeletonData;
 
-        /// <summary>
-        /// Load skeleton data by json or binary automatically
-        /// </summary>
-        /// <param name="atlasNode"></param>
-        /// <param name="atlas"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static bool TryLoadSkeletonJsonOrBinary(WzImageProperty atlasNode, Atlas atlas, out SkeletonData data)
-        {
-            data = null;
+			if (!TryLoadSkeletonJsonOrBinary(atlasNode, atlas, out skeletonData)) {
+				atlas.Dispose();
+				return null;
+			}
 
-            if (atlasNode == null || atlasNode.Parent == null || atlas == null)
-            {
-                return false;
-            }
-            WzObject parent = atlasNode.Parent;
+			return skeletonData;
+		}
 
-            List<WzImageProperty> childProperties;
-            if (parent is WzImageProperty)
-                childProperties = ((WzImageProperty)parent).WzProperties;
-            else
-                childProperties = ((WzImage)parent).WzProperties;
+		/// <summary>
+		/// Load skeleton data by json or binary automatically
+		/// </summary>
+		/// <param name="atlasNode"></param>
+		/// <param name="atlas"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		private static bool TryLoadSkeletonJsonOrBinary(WzImageProperty atlasNode, Atlas atlas, out SkeletonData data) {
+			data = null;
+
+			if (atlasNode == null || atlasNode.Parent == null || atlas == null) return false;
+
+			var parent = atlasNode.Parent;
+
+			List<WzImageProperty> childProperties;
+			if (parent is WzImageProperty)
+				childProperties = ((WzImageProperty) parent).WzProperties;
+			else
+				childProperties = ((WzImage) parent).WzProperties;
 
 
-            if (childProperties != null)
-            {
-                WzStringProperty stringJsonProp = (WzStringProperty) childProperties.Where(child => child.Name.EndsWith(".json")).FirstOrDefault();
+			if (childProperties != null) {
+				var stringJsonProp =
+					(WzStringProperty) childProperties.Where(child => child.Name.EndsWith(".json")).FirstOrDefault();
 
-                if (stringJsonProp != null) // read json based 
-                {
-                    StringReader skeletonReader = new StringReader(stringJsonProp.GetString());
-                    SkeletonJson json = new SkeletonJson(atlas);
-                    data = json.ReadSkeletonData(skeletonReader);
+				if (stringJsonProp != null) // read json based 
+				{
+					var skeletonReader = new StringReader(stringJsonProp.GetString());
+					var json = new SkeletonJson(atlas);
+					data = json.ReadSkeletonData(skeletonReader);
 
-                    return true;
-                } else
-                {
-                    // try read binary based 
-                    foreach (WzImageProperty property in childProperties)
-                    {
-                        WzImageProperty linkedProperty = property.GetLinkedWzImageProperty();
+					return true;
+				}
+				else {
+					// try read binary based 
+					foreach (var property in childProperties) {
+						var linkedProperty = property.GetLinkedWzImageProperty();
 
-                        if (linkedProperty is WzBinaryProperty soundProp)
-                        {
-                            using (MemoryStream ms = new MemoryStream(soundProp.GetBytes(false)))
-                            {
-                                SkeletonBinary skeletonBinary = new SkeletonBinary(atlas);
-                                data = skeletonBinary.ReadSkeletonData(ms);
-                                return true;
-                            }
-                        } 
-                      
-                    }
-                }
-            }
-            return false;
-        }
-    }
+						if (linkedProperty is WzBinaryProperty soundProp)
+							using (var ms = new MemoryStream(soundProp.GetBytes(false))) {
+								var skeletonBinary = new SkeletonBinary(atlas);
+								data = skeletonBinary.ReadSkeletonData(ms);
+								return true;
+							}
+					}
+				}
+			}
+
+			return false;
+		}
+	}
 }

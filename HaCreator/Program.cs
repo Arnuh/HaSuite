@@ -21,120 +21,111 @@ using HaCreator.Wz;
 using HaSharedLibrary;
 using MapleLib;
 
-namespace HaCreator
-{
-    static class Program
-    {
-        public static WzFileManager WzManager;
-        public static WzInformationManager InfoManager;
-        public static bool AbortThreads = false;
-        public static bool Restarting;
+namespace HaCreator {
+	internal static class Program {
+		public static WzFileManager WzManager;
+		public static WzInformationManager InfoManager;
+		public static bool AbortThreads = false;
+		public static bool Restarting;
 
-        public const string APP_NAME = "HaCreator";
+		public const string APP_NAME = "HaCreator";
 
-        public static HaEditor HaEditorWindow = null;
+		public static HaEditor HaEditorWindow = null;
 
-        #region Settings
-        public static WzSettingsManager SettingsManager;
-        public static string GetLocalSettingsFolder()
-        {
-            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string our_folder = Path.Combine(appdata, APP_NAME);
-            if (!Directory.Exists(our_folder))
-                Directory.CreateDirectory(our_folder);
-            return our_folder;
-        }
+		#region Settings
 
-        public static string GetLocalSettingsPath()
-        {
-            return Path.Combine(GetLocalSettingsFolder(), "Settings.json");
-        }
-        #endregion
+		public static WzSettingsManager SettingsManager;
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            // Startup
+		public static string GetLocalSettingsFolder() {
+			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var our_folder = Path.Combine(appdata, APP_NAME);
+			if (!Directory.Exists(our_folder))
+				Directory.CreateDirectory(our_folder);
+			return our_folder;
+		}
+
+		public static string GetLocalSettingsPath() {
+			return Path.Combine(GetLocalSettingsFolder(), "Settings.json");
+		}
+
+		#endregion
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		private static void Main() {
+			// Startup
 #if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 #endif
 
-            // Localisation
-            CultureInfo ci = GetMainCulture(CultureInfo.CurrentCulture);
-            Properties.Resources.Culture = ci;
+			// Localisation
+			var ci = GetMainCulture(CultureInfo.CurrentCulture);
+			Properties.Resources.Culture = ci;
 
-            Thread.CurrentThread.CurrentCulture = ci;
-            Thread.CurrentThread.CurrentUICulture = ci;
+			Thread.CurrentThread.CurrentCulture = ci;
+			Thread.CurrentThread.CurrentUICulture = ci;
 
-            CultureInfo.CurrentCulture = ci;
-            CultureInfo.CurrentUICulture = ci;
-            CultureInfo.DefaultThreadCurrentCulture = ci;
-            CultureInfo.DefaultThreadCurrentUICulture = ci;
+			CultureInfo.CurrentCulture = ci;
+			CultureInfo.CurrentUICulture = ci;
+			CultureInfo.DefaultThreadCurrentCulture = ci;
+			CultureInfo.DefaultThreadCurrentUICulture = ci;
 
 
-            Properties.Resources.Culture = CultureInfo.CurrentCulture;
-            InfoManager = new WzInformationManager();
-            SettingsManager = new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings));
-            SettingsManager.LoadSettings();
-           
-            MultiBoard.RecalculateSettings();
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+			Properties.Resources.Culture = CultureInfo.CurrentCulture;
+			InfoManager = new WzInformationManager();
+			SettingsManager =
+				new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings));
+			SettingsManager.LoadSettings();
 
-            // Program run here
-            GUI.Initialization initForm = new GUI.Initialization();
-            Application.Run(initForm);
+			MultiBoard.RecalculateSettings();
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
-            // Shutdown
-            if (initForm.editor != null)
-                initForm.editor.hcsm.backupMan.ClearBackups();
-            SettingsManager.SaveSettings();
-            if (Restarting)
-            {
-                Application.Restart();
-            }
-            if (WzManager != null)  // doesnt initialise on load until WZ files are loaded via Initialization.xaml.cs
-            {
-                WzManager.Dispose();
-            }
-        }
+			// Program run here
+			var initForm = new Initialization();
+			Application.Run(initForm);
 
-        /// <summary>
-        /// Allows customisation of display text during runtime..
-        /// </summary>
-        /// <param name="ci"></param>
-        /// <returns></returns>
-        private static CultureInfo GetMainCulture(CultureInfo ci)
-        {
-            if (!ci.Name.Contains("-"))
-                return ci;
-            switch (ci.Name.Split("-".ToCharArray())[0])
-            {
-                case "ko":
-                    return new CultureInfo("ko");
-                case "ja":
-                    return new CultureInfo("ja");
-                case "en":
-                    return new CultureInfo("en");
-                case "zh":
-                    if (ci.EnglishName.Contains("Simplified"))
-                        return new CultureInfo("zh-CHS");
-                    else
-                        return new CultureInfo("zh-CHT");
-                default:
-                    return ci;
-            }
-        }
+			// Shutdown
+			if (initForm.editor != null)
+				initForm.editor.hcsm.backupMan.ClearBackups();
+			SettingsManager.SaveSettings();
+			if (Restarting) Application.Restart();
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            new ThreadExceptionDialog((Exception)e.ExceptionObject).ShowDialog();
-            Environment.Exit(-1);
-        }
-    }
+			if (WzManager != null) // doesnt initialise on load until WZ files are loaded via Initialization.xaml.cs
+				WzManager.Dispose();
+		}
+
+		/// <summary>
+		/// Allows customisation of display text during runtime..
+		/// </summary>
+		/// <param name="ci"></param>
+		/// <returns></returns>
+		private static CultureInfo GetMainCulture(CultureInfo ci) {
+			if (!ci.Name.Contains("-"))
+				return ci;
+			switch (ci.Name.Split("-".ToCharArray())[0]) {
+				case "ko":
+					return new CultureInfo("ko");
+				case "ja":
+					return new CultureInfo("ja");
+				case "en":
+					return new CultureInfo("en");
+				case "zh":
+					if (ci.EnglishName.Contains("Simplified"))
+						return new CultureInfo("zh-CHS");
+					else
+						return new CultureInfo("zh-CHT");
+				default:
+					return ci;
+			}
+		}
+
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			new ThreadExceptionDialog((Exception) e.ExceptionObject).ShowDialog();
+			Environment.Exit(-1);
+		}
+	}
 }
-

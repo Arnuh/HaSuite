@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 //uncomment to enable automatic UOL resolving, comment to disable it
+
 #define UOLRES
 
 using System.IO;
@@ -22,48 +23,51 @@ using System.Collections.Generic;
 using MapleLib.WzLib.Util;
 using System.Drawing;
 
-namespace MapleLib.WzLib.WzProperties
-{
+namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
 	/// A property that's value is a string
 	/// </summary>
-    public class WzUOLProperty : WzExtended
-	{
+	public class WzUOLProperty : WzExtended {
 		#region Fields
+
 		internal string name, val;
+
 		internal WzObject parent;
+
 		//internal WzImage imgParent;
 		internal WzObject linkVal;
+
 		#endregion
 
 		#region Inherited Members
-        public override void SetValue(object value)
-        {
-            val = (string)value;
-        }
 
-        public override WzImageProperty DeepClone()
-        {
-            WzUOLProperty clone = new WzUOLProperty(name, val);
-            clone.linkVal = null;
-            return clone;
-        }
+		public override void SetValue(object value) {
+			val = (string) value;
+		}
 
-		public override object WzValue
-        {
-            get
-            {
+		public override WzImageProperty DeepClone() {
+			var clone = new WzUOLProperty(name, val);
+			clone.linkVal = null;
+			return clone;
+		}
+
+		public override object WzValue {
+			get {
 #if UOLRES
-                return LinkValue;
+				return LinkValue;
 #else
                 return this;
 #endif
-            }
-        }
+			}
+		}
+
 		/// <summary>
 		/// The parent of the object
 		/// </summary>
-		public override WzObject Parent { get { return parent; } internal set { parent = value; } }
+		public override WzObject Parent {
+			get => parent;
+			internal set => parent = value;
+		}
 
 		/*/// <summary>
 		/// The image that this property is contained in
@@ -73,104 +77,95 @@ namespace MapleLib.WzLib.WzProperties
 		/// <summary>
 		/// The name of the property
 		/// </summary>
-		public override string Name { get { return name; } set { name = value; } }
+		public override string Name {
+			get => name;
+			set => name = value;
+		}
 
 #if UOLRES
-		public override List<WzImageProperty> WzProperties
-		{
-			get
-			{
-               return LinkValue is WzImageProperty ? ((WzImageProperty)LinkValue).WzProperties : null;
-			}
-		}
+		public override List<WzImageProperty> WzProperties =>
+			LinkValue is WzImageProperty ? ((WzImageProperty) LinkValue).WzProperties : null;
 
 
-        public override WzImageProperty this[string name]
-		{
-			get
-			{
+		public override WzImageProperty this[string name] =>
+			LinkValue is WzImageProperty ? ((WzImageProperty) LinkValue)[name] :
+			LinkValue is WzImage ? ((WzImage) LinkValue)[name] : null;
 
-                return LinkValue is WzImageProperty ? ((WzImageProperty)LinkValue)[name] : LinkValue is WzImage ? ((WzImage)LinkValue)[name] : null;
-			}
-		}
-
-		public override WzImageProperty GetFromPath(string path)
-		{
-            return LinkValue is WzImageProperty ? ((WzImageProperty)LinkValue).GetFromPath(path) : LinkValue is WzImage ? ((WzImage)LinkValue).GetFromPath(path) : null;
+		public override WzImageProperty GetFromPath(string path) {
+			return LinkValue is WzImageProperty ? ((WzImageProperty) LinkValue).GetFromPath(path) :
+				LinkValue is WzImage ? ((WzImage) LinkValue).GetFromPath(path) : null;
 		}
 #endif
 
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
-		public override WzPropertyType PropertyType { get { return WzPropertyType.UOL; } }
+		public override WzPropertyType PropertyType => WzPropertyType.UOL;
 
-		public override void WriteValue(WzBinaryWriter writer)
-		{
-			writer.WriteStringValue("UOL", WzImage.WzImageHeaderByte_WithoutOffset, WzImage.WzImageHeaderByte_WithOffset);
-			writer.Write((byte)0);
+		public override void WriteValue(WzBinaryWriter writer) {
+			writer.WriteStringValue("UOL", WzImage.WzImageHeaderByte_WithoutOffset,
+				WzImage.WzImageHeaderByte_WithOffset);
+			writer.Write((byte) 0);
 			writer.WriteStringValue(Value, 0, 1);
 		}
 
-		public override void ExportXml(StreamWriter writer, int level)
-		{
-			writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.EmptyNamedValuePair("WzUOL", this.Name, this.Value));
+		public override void ExportXml(StreamWriter writer, int level) {
+			writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.EmptyNamedValuePair("WzUOL", Name, Value));
 		}
 
 		/// <summary>
 		/// Disposes the object
 		/// </summary>
-		public override void Dispose()
-		{
+		public override void Dispose() {
 			name = null;
 			val = null;
 		}
+
 		#endregion
 
 		#region Custom Members
+
 		/// <summary>
 		/// The value of the property
 		/// </summary>
-		public string Value { get { return val; } set { val = value; } }
+		public string Value {
+			get => val;
+			set => val = value;
+		}
 
 #if UOLRES
-        public WzObject LinkValue
-		{
-			get
-			{
-				if (linkVal == null)
-				{
-					string[] paths = val.Split('/');
-                    linkVal = (WzObject)this.parent;
-                    string fullPath = parent.FullPath;
+		public WzObject LinkValue {
+			get {
+				if (linkVal == null) {
+					var paths = val.Split('/');
+					linkVal = (WzObject) parent;
+					var fullPath = parent.FullPath;
 
-					foreach (string path in paths)
-					{
-						if (path == "..")
-						{
-                            linkVal = (WzObject)linkVal.Parent;
+					foreach (var path in paths)
+						if (path == "..") {
+							linkVal = (WzObject) linkVal.Parent;
 						}
-						else
-						{
-                            if (linkVal is WzImageProperty)
-                                linkVal = ((WzImageProperty)linkVal)[path];
-                            else if (linkVal is WzImage image) 
-                                linkVal = image[path];
-							else if (linkVal is WzDirectory directory)
-							{
+						else {
+							if (linkVal is WzImageProperty) {
+								linkVal = ((WzImageProperty) linkVal)[path];
+							}
+							else if (linkVal is WzImage image) {
+								linkVal = image[path];
+							}
+							else if (linkVal is WzDirectory directory) {
 								if (path.EndsWith(".img"))
 									linkVal = directory[path];
 								else
 									linkVal = directory[path + ".img"];
 							}
-							else
-							{
-								MapleLib.Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "UOL got nexon'd at property: " + this.FullPath);
+							else {
+								Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical,
+									"UOL got nexon'd at property: " + FullPath);
 								return null;
 							}
 						}
-					}
 				}
+
 				return linkVal;
 			}
 		}
@@ -179,14 +174,14 @@ namespace MapleLib.WzLib.WzProperties
 		/// <summary>
 		/// Creates a blank WzUOLProperty
 		/// </summary>
-		public WzUOLProperty() { }
+		public WzUOLProperty() {
+		}
 
 		/// <summary>
 		/// Creates a WzUOLProperty with the specified name
 		/// </summary>
 		/// <param name="name">The name of the property</param>
-		public WzUOLProperty(string name)
-		{
+		public WzUOLProperty(string name) {
 			this.name = name;
 		}
 
@@ -195,69 +190,61 @@ namespace MapleLib.WzLib.WzProperties
 		/// </summary>
 		/// <param name="name">The name of the property</param>
 		/// <param name="value">The value of the property</param>
-		public WzUOLProperty(string name, string value)
-		{
+		public WzUOLProperty(string name, string value) {
 			this.name = name;
-			this.val = value;
+			val = value;
 		}
+
 		#endregion
 
-        #region Cast Values
+		#region Cast Values
+
 #if UOLRES
-        public override int GetInt()
-        {
-            return LinkValue.GetInt();
-        }
+		public override int GetInt() {
+			return LinkValue.GetInt();
+		}
 
-        public override short GetShort()
-        {
-            return LinkValue.GetShort();
-        }
+		public override short GetShort() {
+			return LinkValue.GetShort();
+		}
 
-        public override long GetLong()
-        {
-            return LinkValue.GetLong();
-        }
+		public override long GetLong() {
+			return LinkValue.GetLong();
+		}
 
-        public override float GetFloat()
-        {
-            return LinkValue.GetFloat();
-        }
+		public override float GetFloat() {
+			return LinkValue.GetFloat();
+		}
 
-        public override double GetDouble()
-        {
-            return LinkValue.GetDouble();
-        }
+		public override double GetDouble() {
+			return LinkValue.GetDouble();
+		}
 
-        public override string GetString()
-        {
-            return LinkValue.GetString();
-        }
+		public override string GetString() {
+			return LinkValue.GetString();
+		}
 
-        public override Point GetPoint()
-        {
-            return LinkValue.GetPoint();
-        }
+		public override Point GetPoint() {
+			return LinkValue.GetPoint();
+		}
 
-        public override Bitmap GetBitmap()
-        {
-            return LinkValue.GetBitmap();
-        }
+		public override Bitmap GetBitmap() {
+			return LinkValue.GetBitmap();
+		}
 
-        public override byte[] GetBytes()
-        {
-            return LinkValue.GetBytes();
-        }
+		public override byte[] GetBytes() {
+			return LinkValue.GetBytes();
+		}
 #else
         public override string GetString()
         {
             return val;
         }
 #endif
-        public override string ToString()
-        {
-            return val;
-        }
-        #endregion
-    }
+		public override string ToString() {
+			return val;
+		}
+
+		#endregion
+	}
 }

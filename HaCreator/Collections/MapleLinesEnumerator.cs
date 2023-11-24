@@ -12,22 +12,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HaCreator.Collections
-{
-    public class MapleLinesEnumerator : ItemsEnumeratorBase, IEnumerator<MapleLine>
-    {
-        public MapleLinesEnumerator(MapleLinesCollection mlc) : base(mlc)
-        {
-        }
+namespace HaCreator.Collections {
+	public class MapleLinesEnumerator : ItemsEnumeratorBase, IEnumerator<MapleLine> {
+		public MapleLinesEnumerator(MapleLinesCollection mlc) : base(mlc) {
+		}
 
-        public MapleLine Current
-        {
-            get { return (MapleLine)base.CurrentObject; }
-        }
+		public MapleLine Current => (MapleLine) CurrentObject;
 
-        object IEnumerator.Current
-        {
-            get { return base.CurrentObject; }
-        }
-    }
+		object IEnumerator.Current => CurrentObject;
+	}
 }

@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -20,14 +20,11 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace MapleLib.PacketLib
-{
-	public abstract class AbstractPacket
-	{
+namespace MapleLib.PacketLib {
+	public abstract class AbstractPacket {
 		protected MemoryStream _buffer;
 
-		public byte[] ToArray()
-		{
+		public byte[] ToArray() {
 			return _buffer.ToArray();
 		}
 	}

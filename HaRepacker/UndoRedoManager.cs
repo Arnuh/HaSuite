@@ -10,124 +10,106 @@ using System.Linq;
 using System.Text;
 using HaRepacker.GUI.Panels;
 
-namespace HaRepacker
-{
-    public class UndoRedoManager
-    {
-        public List<UndoRedoBatch> UndoList = new List<UndoRedoBatch>();
-        public List<UndoRedoBatch> RedoList = new List<UndoRedoBatch>();
-        private MainPanel parentPanel;
+namespace HaRepacker {
+	public class UndoRedoManager {
+		public List<UndoRedoBatch> UndoList = new List<UndoRedoBatch>();
+		public List<UndoRedoBatch> RedoList = new List<UndoRedoBatch>();
+		private MainPanel parentPanel;
 
-        public UndoRedoManager(MainPanel parentPanel)
-        {
-            this.parentPanel = parentPanel;
-        }
+		public UndoRedoManager(MainPanel parentPanel) {
+			this.parentPanel = parentPanel;
+		}
 
-        public void AddUndoBatch(List<UndoRedoAction> actions)
-        {
-            UndoRedoBatch batch = new UndoRedoBatch() { Actions = actions };
-            UndoList.Add(batch);
-            RedoList.Clear();
-        }
+		public void AddUndoBatch(List<UndoRedoAction> actions) {
+			var batch = new UndoRedoBatch() {Actions = actions};
+			UndoList.Add(batch);
+			RedoList.Clear();
+		}
 
-        #region Undo Actions Creation
-        public static UndoRedoAction ObjectAdded(WzNode parent, WzNode item)
-        {
-            return new UndoRedoAction(item, parent, UndoRedoType.ObjectAdded);
-        }
+		#region Undo Actions Creation
 
-        public static UndoRedoAction ObjectRemoved(WzNode parent, WzNode item)
-        {
-            return new UndoRedoAction(item, parent, UndoRedoType.ObjectRemoved);
-        }
+		public static UndoRedoAction ObjectAdded(WzNode parent, WzNode item) {
+			return new UndoRedoAction(item, parent, UndoRedoType.ObjectAdded);
+		}
 
-        public static UndoRedoAction ObjectRenamed(WzNode parent, WzNode item)
-        {
-            return new UndoRedoAction(item, parent, UndoRedoType.ObjectRemoved);
-        }
-        #endregion
+		public static UndoRedoAction ObjectRemoved(WzNode parent, WzNode item) {
+			return new UndoRedoAction(item, parent, UndoRedoType.ObjectRemoved);
+		}
 
-        public void Undo()
-        {
-            UndoRedoBatch action = UndoList[UndoList.Count - 1];
-            action.UndoRedo();
-            action.SwitchActions();
-            UndoList.RemoveAt(UndoList.Count - 1);
-            RedoList.Add(action);
-        }
+		public static UndoRedoAction ObjectRenamed(WzNode parent, WzNode item) {
+			return new UndoRedoAction(item, parent, UndoRedoType.ObjectRemoved);
+		}
 
-        public void Redo()
-        {
-            UndoRedoBatch action = RedoList[RedoList.Count - 1];
-            action.UndoRedo();
-            action.SwitchActions();
-            RedoList.RemoveAt(RedoList.Count - 1);
-            UndoList.Add(action);
-        }
-    }
+		#endregion
 
-    public class UndoRedoBatch
-    {
-        public List<UndoRedoAction> Actions = new List<UndoRedoAction>();
+		public void Undo() {
+			var action = UndoList[UndoList.Count - 1];
+			action.UndoRedo();
+			action.SwitchActions();
+			UndoList.RemoveAt(UndoList.Count - 1);
+			RedoList.Add(action);
+		}
 
-        public void UndoRedo()
-        {
-            foreach (UndoRedoAction action in Actions) action.UndoRedo();
-        }
+		public void Redo() {
+			var action = RedoList[RedoList.Count - 1];
+			action.UndoRedo();
+			action.SwitchActions();
+			RedoList.RemoveAt(RedoList.Count - 1);
+			UndoList.Add(action);
+		}
+	}
 
-        public void SwitchActions()
-        {
-            foreach (UndoRedoAction action in Actions) action.SwitchAction();
-        }
-    }
+	public class UndoRedoBatch {
+		public List<UndoRedoAction> Actions = new List<UndoRedoAction>();
 
-    public class UndoRedoAction
-    {
-        private readonly WzNode item;
-        private readonly WzNode parent;
-        private UndoRedoType type;
+		public void UndoRedo() {
+			foreach (var action in Actions) action.UndoRedo();
+		}
 
-        public UndoRedoAction(WzNode item, WzNode parent, UndoRedoType type)
-        {
-            this.item = item;
-            this.parent = parent;
-            this.type = type;
-        }
+		public void SwitchActions() {
+			foreach (var action in Actions) action.SwitchAction();
+		}
+	}
 
-        public void UndoRedo()
-        {
-            switch (type)
-            {
-                case UndoRedoType.ObjectAdded:
-                    item.DeleteWzNode();
-                    break;
-                case UndoRedoType.ObjectRemoved:
-                    parent.AddNode(item, true);
-                    break;
-            }
-        }
+	public class UndoRedoAction {
+		private readonly WzNode item;
+		private readonly WzNode parent;
+		private UndoRedoType type;
+
+		public UndoRedoAction(WzNode item, WzNode parent, UndoRedoType type) {
+			this.item = item;
+			this.parent = parent;
+			this.type = type;
+		}
+
+		public void UndoRedo() {
+			switch (type) {
+				case UndoRedoType.ObjectAdded:
+					item.DeleteWzNode();
+					break;
+				case UndoRedoType.ObjectRemoved:
+					parent.AddNode(item, true);
+					break;
+			}
+		}
 
 
-        public unsafe void SwitchAction()
-        {
-            switch (type)
-            {
-                case UndoRedoType.ObjectAdded:
-                    type = UndoRedoType.ObjectRemoved;
-                    break;
-                case UndoRedoType.ObjectRemoved:
-                    type = UndoRedoType.ObjectAdded;
-                    break;
+		public unsafe void SwitchAction() {
+			switch (type) {
+				case UndoRedoType.ObjectAdded:
+					type = UndoRedoType.ObjectRemoved;
+					break;
+				case UndoRedoType.ObjectRemoved:
+					type = UndoRedoType.ObjectAdded;
+					break;
+			}
+		}
+	}
 
-            }
-        }
-    }
-
-    public enum UndoRedoType
-    {
-        ObjectAdded,
-        ObjectRemoved,
-        ObjectRenamed,
-        ObjectChanged
-    }
+	public enum UndoRedoType {
+		ObjectAdded,
+		ObjectRemoved,
+		ObjectRenamed,
+		ObjectChanged
+	}
 }

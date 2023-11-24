@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- * 
+ *
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- * 
+ *
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -36,19 +36,27 @@ using Microsoft.Xna.Framework;
 namespace Spine {
 	/// <summary>Draws region attachments.</summary>
 	public class SkeletonRegionRenderer {
-		GraphicsDevice device;
-		RegionBatcher batcher;
-		RasterizerState rasterizerState;
-		float[] vertices = new float[8];
-		BlendState defaultBlendState;
+		private GraphicsDevice device;
+		private RegionBatcher batcher;
+		private RasterizerState rasterizerState;
+		private float[] vertices = new float[8];
+		private BlendState defaultBlendState;
 
-		BasicEffect effect;
-		public BasicEffect Effect { get { return effect; } set { effect = value; } }
+		private BasicEffect effect;
+
+		public BasicEffect Effect {
+			get => effect;
+			set => effect = value;
+		}
 
 		private bool premultipliedAlpha;
-		public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
 
-		public SkeletonRegionRenderer (GraphicsDevice device) {
+		public bool PremultipliedAlpha {
+			get => premultipliedAlpha;
+			set => premultipliedAlpha = value;
+		}
+
+		public SkeletonRegionRenderer(GraphicsDevice device) {
 			this.device = device;
 
 			batcher = new RegionBatcher();
@@ -65,42 +73,43 @@ namespace Spine {
 			Bone.yDown = true;
 		}
 
-		public void Begin () {
+		public void Begin() {
 			defaultBlendState = premultipliedAlpha ? BlendState.AlphaBlend : BlendState.NonPremultiplied;
 
 			device.RasterizerState = rasterizerState;
 			device.BlendState = defaultBlendState;
 
-			effect.Projection = Matrix.CreateOrthographicOffCenter(0, device.Viewport.Width, device.Viewport.Height, 0, 1, 0);
+			effect.Projection =
+				Matrix.CreateOrthographicOffCenter(0, device.Viewport.Width, device.Viewport.Height, 0, 1, 0);
 		}
 
-		public void End () {
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+		public void End() {
+			foreach (var pass in effect.CurrentTechnique.Passes) {
 				pass.Apply();
 				batcher.Draw(device);
 			}
 		}
 
-		public void Draw (Skeleton skeleton) {
-			List<Slot> drawOrder = skeleton.DrawOrder;
+		public void Draw(Skeleton skeleton) {
+			var drawOrder = skeleton.DrawOrder;
 			float skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B, skeletonA = skeleton.A;
 			for (int i = 0, n = drawOrder.Count; i < n; i++) {
-				Slot slot = drawOrder[i];
-				RegionAttachment regionAttachment = slot.Attachment as RegionAttachment;
+				var slot = drawOrder[i];
+				var regionAttachment = slot.Attachment as RegionAttachment;
 				if (regionAttachment != null) {
-					BlendState blend = slot.Data.AdditiveBlending ? BlendState.Additive : defaultBlendState;
+					var blend = slot.Data.AdditiveBlending ? BlendState.Additive : defaultBlendState;
 					if (device.BlendState != blend) {
 						End();
 						device.BlendState = blend;
 					}
 
-					RegionItem item = batcher.NextItem();
+					var item = batcher.NextItem();
 
-					AtlasRegion region = (AtlasRegion)regionAttachment.RendererObject;
-					item.texture = (Texture2D)region.page.rendererObject;
+					var region = (AtlasRegion) regionAttachment.RendererObject;
+					item.texture = (Texture2D) region.page.rendererObject;
 
 					Color color;
-					float a = skeletonA * slot.A;
+					var a = skeletonA * slot.A;
 					if (premultipliedAlpha)
 						color = new Color(skeletonR * slot.R * a, skeletonG * slot.G * a, skeletonB * slot.B * a, a);
 					else
@@ -110,7 +119,7 @@ namespace Spine {
 					item.vertexBR.Color = color;
 					item.vertexTR.Color = color;
 
-					float[] vertices = this.vertices;
+					var vertices = this.vertices;
 					regionAttachment.ComputeWorldVertices(slot.Bone, vertices);
 					item.vertexTL.Position.X = vertices[RegionAttachment.X1];
 					item.vertexTL.Position.Y = vertices[RegionAttachment.Y1];
@@ -125,7 +134,7 @@ namespace Spine {
 					item.vertexTR.Position.Y = vertices[RegionAttachment.Y4];
 					item.vertexTR.Position.Z = 0;
 
-					float[] uvs = regionAttachment.UVs;
+					var uvs = regionAttachment.UVs;
 					item.vertexTL.TextureCoordinate.X = uvs[RegionAttachment.X1];
 					item.vertexTL.TextureCoordinate.Y = uvs[RegionAttachment.Y1];
 					item.vertexBL.TextureCoordinate.X = uvs[RegionAttachment.X2];

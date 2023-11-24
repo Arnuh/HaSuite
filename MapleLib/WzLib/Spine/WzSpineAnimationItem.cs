@@ -33,59 +33,52 @@ using System.Text;
 using System.Threading.Tasks;
 using static MapleLib.WzDataReader;
 
-namespace MapleLib.WzLib.Spine
-{
-    public class WzSpineAnimationItem
-    {
-        // Spine 
+namespace MapleLib.WzLib.Spine {
+	public class WzSpineAnimationItem {
+		// Spine 
 
-        /// <summary>
-        ///  Whether the renderer will assume that colors have premultiplied alpha. 
-        ///  
-        ///  A variation of a bitmap image or alpha blending calculation in which the RGB color values are assumed 
-        ///  to be already multiplied by an alpha channel, to reduce computations during Alpha blending; 
-        ///  uses the blend operation: dst *= (1 - alpha) + src; capable of mixing alpha blending with additive blending effects
-        /// </summary>
-        public bool PremultipliedAlpha { get; set; }
+		/// <summary>
+		///  Whether the renderer will assume that colors have premultiplied alpha. 
+		///  
+		///  A variation of a bitmap image or alpha blending calculation in which the RGB color values are assumed 
+		///  to be already multiplied by an alpha channel, to reduce computations during Alpha blending; 
+		///  uses the blend operation: dst *= (1 - alpha) + src; capable of mixing alpha blending with additive blending effects
+		/// </summary>
+		public bool PremultipliedAlpha { get; set; }
 
-        public SkeletonData SkeletonData { get; private set; }
+		public SkeletonData SkeletonData { get; private set; }
 
-        // pre-loading
-        private readonly WzStringProperty wzSpineAtlasPropertyNode;
+		// pre-loading
+		private readonly WzStringProperty wzSpineAtlasPropertyNode;
 
-        /// <summary>
-        /// SpineAnimationItem Constructor
-        /// </summary>
-        /// <param name="wzSpineAtlasPropertyNode">.atlas WzStringProperty</param>
-        /// <param name="loadWithJson"></param>
-        public WzSpineAnimationItem(WzStringProperty wzSpineAtlasPropertyNode)
-        {
-            this.wzSpineAtlasPropertyNode = wzSpineAtlasPropertyNode;
-        }
+		/// <summary>
+		/// SpineAnimationItem Constructor
+		/// </summary>
+		/// <param name="wzSpineAtlasPropertyNode">.atlas WzStringProperty</param>
+		/// <param name="loadWithJson"></param>
+		public WzSpineAnimationItem(WzStringProperty wzSpineAtlasPropertyNode) {
+			this.wzSpineAtlasPropertyNode = wzSpineAtlasPropertyNode;
+		}
 
-        /// <summary>
-        /// Load spine resources 
-        /// </summary>
-        /// <param name="graphicsDevice"></param>
-        public void LoadResources(GraphicsDevice graphicsDevice)
-        {
-            var textureLoader = new WzSpineTextureLoader(wzSpineAtlasPropertyNode.Parent, graphicsDevice);
+		/// <summary>
+		/// Load spine resources 
+		/// </summary>
+		/// <param name="graphicsDevice"></param>
+		public void LoadResources(GraphicsDevice graphicsDevice) {
+			var textureLoader = new WzSpineTextureLoader(wzSpineAtlasPropertyNode.Parent, graphicsDevice);
 
-            SkeletonData skeletonData = WzSpineAtlasLoader.LoadSkeleton(wzSpineAtlasPropertyNode, textureLoader);
-            if (skeletonData == null)
-            {
-                return;
-            }
+			var skeletonData = WzSpineAtlasLoader.LoadSkeleton(wzSpineAtlasPropertyNode, textureLoader);
+			if (skeletonData == null) return;
 
-            bool pma;
-            if (wzSpineAtlasPropertyNode.parent is WzImageProperty imgProperty)
-                pma = imgProperty["PMA"].ReadValue(0) > 0;
-            else
-                pma = ((WzImage)wzSpineAtlasPropertyNode.parent)["PMA"].ReadValue(0) > 0;
+			bool pma;
+			if (wzSpineAtlasPropertyNode.parent is WzImageProperty imgProperty)
+				pma = imgProperty["PMA"].ReadValue(0) > 0;
+			else
+				pma = ((WzImage) wzSpineAtlasPropertyNode.parent)["PMA"].ReadValue(0) > 0;
 
-            this.SkeletonData = skeletonData;
-            this.PremultipliedAlpha = pma; //  whether the renderer will assume that colors have premultiplied alpha. Default is true.
-
-        }
-    }
+			SkeletonData = skeletonData;
+			PremultipliedAlpha =
+				pma; //  whether the renderer will assume that colors have premultiplied alpha. Default is true.
+		}
+	}
 }

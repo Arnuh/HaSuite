@@ -11,35 +11,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapleLib.WzLib
-{
-    public class WzMainDirectory
-    {
-        private readonly WzFile file;
-        private readonly WzDirectory directory;
+namespace MapleLib.WzLib {
+	public class WzMainDirectory {
+		private readonly WzFile file;
+		private readonly WzDirectory directory;
 
-        /// <summary>
-        /// Constructor for oridinary Wz file
-        /// </summary>
-        /// <param name="file"></param>
-        public WzMainDirectory(WzFile file)
-        {
-            this.file = file;
-            this.directory = file.WzDirectory;
-        }
+		/// <summary>
+		/// Constructor for oridinary Wz file
+		/// </summary>
+		/// <param name="file"></param>
+		public WzMainDirectory(WzFile file) {
+			this.file = file;
+			directory = file.WzDirectory;
+		}
 
-        /// <summary>
-        /// Constructor for hotfix Data.wz file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="directory"></param>
-        public WzMainDirectory(WzFile file, WzDirectory directory)
-        {
-            this.file = file;
-            this.directory = directory;
-        }
+		/// <summary>
+		/// Constructor for hotfix Data.wz file
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="directory"></param>
+		public WzMainDirectory(WzFile file, WzDirectory directory) {
+			this.file = file;
+			this.directory = directory;
+		}
 
-        public WzFile File { get { return file; } }
-        public WzDirectory MainDir { get { return directory; } }
-    }
+		public WzFile File => file;
+
+		public WzDirectory MainDir => directory;
+	}
 }

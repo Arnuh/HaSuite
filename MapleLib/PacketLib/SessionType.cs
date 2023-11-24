@@ -1,6 +1,6 @@
 ﻿/*  MapleLib - A general-purpose MapleStory library
  * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
-   
+
  * This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,10 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MapleLib.PacketLib
-{
-	public enum SessionType
-	{
+namespace MapleLib.PacketLib {
+	public enum SessionType {
 		SERVER_TO_CLIENT,
 		CLIENT_TO_SERVER
 	}

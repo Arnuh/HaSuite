@@ -13,33 +13,19 @@ using System.Text;
 using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
-namespace HaCreator.MapEditor.Instance.Shapes
-{
-    public class ToolTipLine : MapleLine
-    {
-        public ToolTipLine(Board board, MapleDot firstDot, MapleDot secondDot)
-            : base(board, firstDot, secondDot)
-        {
-        }
+namespace HaCreator.MapEditor.Instance.Shapes {
+	public class ToolTipLine : MapleLine {
+		public ToolTipLine(Board board, MapleDot firstDot, MapleDot secondDot)
+			: base(board, firstDot, secondDot) {
+		}
 
-        public override XNA.Color Color
-        {
-            get { return UserSettings.ToolTipColor; }
-        }
+		public override XNA.Color Color => UserSettings.ToolTipColor;
 
-        public override XNA.Color InactiveColor
-        {
-            get { return MultiBoard.ToolTipInactiveColor; }
-        }
+		public override XNA.Color InactiveColor => MultiBoard.ToolTipInactiveColor;
 
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.ToolTips; }
-        }
+		public override ItemTypes Type => ItemTypes.ToolTips;
 
-        public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
-        {
-
-        }
-    }
+		public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe) {
+		}
+	}
 }
