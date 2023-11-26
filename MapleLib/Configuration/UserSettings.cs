@@ -15,7 +15,7 @@ namespace MapleLib.Configuration {
 		}
 
 		[JsonProperty(PropertyName = "Indentation")]
-		public int Indentation = 0;
+		public int Indentation = 4;
 
 		[JsonProperty(PropertyName = "LineBreakType")] [JsonConverter(typeof(StringEnumConverter))]
 		public LineBreak LineBreakType = LineBreak.None;
