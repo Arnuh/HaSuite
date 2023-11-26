@@ -31,6 +31,7 @@ using HaRepacker.GUI.Input;
 using HaRepacker.Comparer;
 using HaSharedLibrary;
 using MapleLib.Configuration;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaRepacker.GUI {
 	public partial class MainForm : Form {
@@ -154,6 +155,25 @@ namespace HaRepacker.GUI {
 				parent.TreeView.BeginUpdate();
 				parent.TreeView.Sort();
 				parent.TreeView.EndUpdate();
+			}
+		}
+
+		public void SortNodeProperties(WzNode node) {
+			if (node.Tag is WzSubProperty) {
+				var nodeParent = (WzNode) node.Parent;
+
+				nodeParent.TreeView.BeginUpdate();
+
+				// sort the order in the WzSubProperty
+				var subProperties = node.Tag as WzSubProperty;
+				subProperties.SortProperties();
+
+				// Refresh the TreeView view to be in synchronized with the new WzSubProperty's order
+				var newNode = new WzNode(subProperties, true);
+				nodeParent.Nodes[node.Index] = newNode;
+				nodeParent.Nodes.Remove(node);
+
+				nodeParent.TreeView.EndUpdate();
 			}
 		}
 

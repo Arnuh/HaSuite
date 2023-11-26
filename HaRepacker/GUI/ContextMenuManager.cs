@@ -34,11 +34,14 @@ namespace HaRepacker {
 		private ToolStripMenuItem Reload;
 		private ToolStripMenuItem CollapseAllChildNode;
 		private ToolStripMenuItem ExpandAllChildNode;
-		private ToolStripMenuItem SortAllChildNode;
+		private ToolStripMenuItem SortAllChildViewNode, SortAllChildViewNode2;
+		private ToolStripMenuItem SortPropertiesByName;
 
 		private ToolStripMenuItem AddPropsSubMenu;
 		private ToolStripMenuItem AddDirsSubMenu;
-		private ToolStripMenuItem AddConvexSubMenu;
+		private ToolStripMenuItem AddEtcMenu;
+		private ToolStripMenuItem AddSortMenu;
+		private ToolStripMenuItem AddSortMenu_WithoutPropSort;
 		private ToolStripMenuItem AddImage;
 		private ToolStripMenuItem AddDirectory;
 		private ToolStripMenuItem AddByteFloat;
@@ -56,20 +59,7 @@ namespace HaRepacker {
 		private ToolStripMenuItem AddVector;
 		private ToolStripMenuItem Rename;
 		private ToolStripMenuItem FixLink;
-
-		/*private ToolStripMenuItem ExportPropertySubMenu;
-		private ToolStripMenuItem ExportAnimationSubMenu;
-		private ToolStripMenuItem ExportDirectorySubMenu;
-		private ToolStripMenuItem ExportPServerXML;
-		private ToolStripMenuItem ExportDataXML;
-		private ToolStripMenuItem ExportImgData;
-		private ToolStripMenuItem ExportRawData;
-		private ToolStripMenuItem ExportGIF;
-		private ToolStripMenuItem ExportAPNG;
-
-		private ToolStripMenuItem ImportSubMenu;
-		private ToolStripMenuItem ImportXML;
-		private ToolStripMenuItem ImportImgData;*/
+		
 
 		public ContextMenuManager(MainPanel haRepackerMainPanel, UndoRedoManager undoMan) {
 			parentPanel = haRepackerMainPanel;
@@ -113,9 +103,21 @@ namespace HaRepacker {
 				delegate(object sender, EventArgs e) {
 					foreach (var node in GetNodes(sender)) node.ExpandAll();
 				}));
-			SortAllChildNode = new ToolStripMenuItem("Sort child nodes", Properties.Resources.sort, new EventHandler(
+			// This only sorts the view, does not affect the actual order of the 
+			// wz properties
+			SortAllChildViewNode = new ToolStripMenuItem("Sort child nodes view", null,
+				new EventHandler( // SortAllChildViewNode cant be in 2 place at once, gotta make copies
 				delegate(object sender, EventArgs e) {
 					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
+				}));
+			SortAllChildViewNode2 = new ToolStripMenuItem("Sort child nodes view", null,
+				new EventHandler( // SortAllChildViewNode cant be in 2 place at once, gotta make copies
+					delegate(object sender, EventArgs e) {
+						foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
+				}));
+			SortPropertiesByName = new ToolStripMenuItem("Sort properties by name", null, new EventHandler(
+				delegate(object sender, EventArgs e) {
+					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodeProperties(node);
 				}));
 
 			AddImage = new ToolStripMenuItem("Image", null, new EventHandler(
@@ -274,26 +276,17 @@ namespace HaRepacker {
 			FixLink = new ToolStripMenuItem("Fix linked image for old MapleStory ver.", null, new EventHandler(
 				delegate(object sender, EventArgs e) { haRepackerMainPanel.FixLinkForOldMS_Click(); }));
 
-			AddConvexSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add, AddVector);
-			AddDirsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add, AddDirectory, AddImage);
-			AddPropsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add, AddCanvas, AddConvex, AddDouble,
-				AddByteFloat, AddLong, AddInt, AddNull, AddUshort, AddSound, AddString, AddSub, AddUOL, AddVector);
+			AddDirsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add,
+				AddDirectory, AddImage);
+			AddPropsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add,
+				AddCanvas, AddConvex, AddDouble, AddByteFloat, AddLong, AddInt, AddNull, AddUshort, AddSound, AddString, AddSub, AddUOL, AddVector);
 
-			WzFileMenu = new ContextMenuStrip();
-			WzFileMenu.Items.AddRange(new ToolStripItem[] {AddDirsSubMenu, SaveFile, Unload, Reload});
+			AddEtcMenu = new ToolStripMenuItem("Etc", Properties.Resources.add,
+				FixLink);
 
-			WzDirectoryMenu = new ContextMenuStrip();
-			WzDirectoryMenu.Items.AddRange(new ToolStripItem[] {AddDirsSubMenu, Rename, /*export, import,*/Remove});
+			AddSortMenu = new ToolStripMenuItem("Sort", Properties.Resources.sort, SortAllChildViewNode, SortPropertiesByName);
 
-			PropertyContainerMenu = new ContextMenuStrip();
-			PropertyContainerMenu.Items.AddRange(new ToolStripItem[]
-				{AddPropsSubMenu, Rename, /*export, import,*/Remove});
-
-			PropertyMenu = new ContextMenuStrip();
-			PropertyMenu.Items.AddRange(new ToolStripItem[] {Rename, /*export, import,*/Remove});
-
-			SubPropertyMenu = new ContextMenuStrip();
-			SubPropertyMenu.Items.AddRange(new ToolStripItem[] {AddPropsSubMenu, Rename, /*export, import,*/Remove});
+			AddSortMenu_WithoutPropSort = new ToolStripMenuItem("Sort", Properties.Resources.sort, SortAllChildViewNode2);
 		}
 
 		/// <summary>
@@ -330,11 +323,15 @@ namespace HaRepacker {
 				toolStripmenuItems.Add(Unload);
 				toolStripmenuItems.Add(Reload);
 			}
-
-			toolStripmenuItems.Add(FixLink);
+			
 			toolStripmenuItems.Add(ExpandAllChildNode);
 			toolStripmenuItems.Add(CollapseAllChildNode);
-			toolStripmenuItems.Add(SortAllChildNode);
+			toolStripmenuItems.Add(AddEtcMenu);
+
+			if (Tag.GetType() == typeof(WzSubProperty))
+				toolStripmenuItems.Add(AddSortMenu);
+			else
+				toolStripmenuItems.Add(AddSortMenu_WithoutPropSort);
 
 			// Add
 			foreach (var toolStripItem in toolStripmenuItems) menu.Items.Add(toolStripItem);
