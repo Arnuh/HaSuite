@@ -30,6 +30,7 @@ using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Input;
 using HaRepacker.Comparer;
 using HaSharedLibrary;
+using MapleLib.Configuration;
 
 namespace HaRepacker.GUI {
 	public partial class MainForm : Form {
@@ -798,15 +799,16 @@ namespace HaRepacker.GUI {
 			// Load WZ file
 			using (var dialog = new OpenFileDialog() {
 				       Title = Properties.Resources.SelectWz,
-				       Filter = string.Format("{0}|*.wz;ZLZ.dll",
-					       Properties.Resources.WzFilter),
-				       Multiselect = true
+				       Filter = $"{Properties.Resources.WzFilter}|*.wz;ZLZ.dll",
+				       Multiselect = true,
+				       InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			       }) {
 				if (dialog.ShowDialog() != DialogResult.OK)
 					return;
 
 				var wzfilePathsToLoad = new List<string>();
 				foreach (var filePath in dialog.FileNames) {
+					UpdatePreviousLoadDirectory(filePath);
 					var filePathLowerCase = filePath.ToLower();
 
 					if (filePathLowerCase.EndsWith("zlz.dll")) // ZLZ.dll encryption keys
@@ -1274,8 +1276,9 @@ namespace HaRepacker.GUI {
 		private void xMLToolStripMenuItem_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectWz,
-				Filter = string.Format("{0}|*.wz", Properties.Resources.WzFilter),
-				Multiselect = true
+				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
 			if (dialog.ShowDialog() != DialogResult.OK)
@@ -1285,6 +1288,9 @@ namespace HaRepacker.GUI {
 			};
 			if (folderDialog.ShowDialog() != DialogResult.OK)
 				return;
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
 
 			var serializer = new WzClassicXmlSerializer(
 				Program.ConfigurationManager.UserSettings.Indentation,
@@ -1346,13 +1352,24 @@ namespace HaRepacker.GUI {
 				: Program.ConfigurationManager.UserSettings.DefaultXmlFolder;
 		}
 
+		private static void UpdatePreviousLoadDirectory(string fileName) {
+			var directory = Directory.GetParent(fileName);
+			if (directory == null) return;
+			Program.ConfigurationManager.UserSettings.PreviousLoadFolder = directory.FullName;
+		}
+
 		private void rawDataToolStripMenuItem_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectWz,
-				Filter = string.Format("{0}|*.wz", Properties.Resources.WzFilter), Multiselect = true
+				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
 
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
@@ -1372,12 +1389,16 @@ namespace HaRepacker.GUI {
 		private void imgToolStripMenuItem_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectWz,
-				Filter = string.Format("{0}|*.wz", Properties.Resources.WzFilter),
-				Multiselect = true
+				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
 
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
@@ -1622,12 +1643,17 @@ namespace HaRepacker.GUI {
 				return;
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectXml,
-				Filter = string.Format("{0}|*.xml", Properties.Resources.XmlFilter),
-				Multiselect = true
+				Filter = $"{Properties.Resources.XmlFilter}|*.xml",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
+			
 			var deserializer =
 				new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion));
 			yesToAll = false;
@@ -1654,11 +1680,15 @@ namespace HaRepacker.GUI {
 
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectWzImg,
-				Filter = string.Format("{0}|*.img", Properties.Resources.WzImgFilter),
-				Multiselect = true
+				Filter = $"{Properties.Resources.WzImgFilter}|*.img",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
+			
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
 
 			var wzImageImportVersion = WzMapleVersion.BMS;
 			var input = WzMapleVersionInputBox.Show(Properties.Resources.InteractionWzMapleVersionTitle,
@@ -1990,12 +2020,16 @@ namespace HaRepacker.GUI {
 		private void nXForamtToolStripMenuItem_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectWz,
-				Filter = string.Format("{0}|*.wz", Properties.Resources.WzFilter),
-				Multiselect = true
+				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
+			
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
 
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {

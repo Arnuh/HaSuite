@@ -70,5 +70,8 @@ namespace MapleLib.Configuration {
 
 		[JsonProperty(PropertyName = "AutoloadRelatedWzFiles")]
 		public bool AutoloadRelatedWzFiles = false;
+
+		[JsonProperty(PropertyName = "PreviousLoadFolder")]
+		public string PreviousLoadFolder = "";
 	}
 }
