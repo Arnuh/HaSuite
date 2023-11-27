@@ -302,8 +302,7 @@ namespace MapleLib.WzLib {
 				reader.BaseStream.Position = header.FStart; // go back to 0x3C
 
 				int encver = reader.ReadUInt16();
-				if (encver > 0xff) // encver always less than 256
-				{
+				if (encver > 0xff) { // encver always less than 256
 					wz_withEncryptVersionHeader = false;
 				} else if (encver == 0x80) {
 					// there's an exceptional case that the first field of data part is a compressed int which determined property count,
@@ -537,19 +536,18 @@ namespace MapleLib.WzLib {
 			wzDir.WzIv = WzIv;
 
 			// MapleStory UserKey
-			var bIsWzUserKeyDefault =
-				MapleCryptoConstants.IsDefaultMapleStoryUserKey(); // check if its saving to the same UserKey.
+			var bIsWzUserKeyDefault = MapleCryptoConstants.IsDefaultMapleStoryUserKey(); // check if its saving to the same UserKey.
 			// Save WZ as 64-bit wz format
-			var bSaveAs64BitWz = wz_withEncryptVersionHeader;
+			var bSaveAs64BitWz = Is64BitWzFile;
 			if (override_saveAs64BitWZ != null) bSaveAs64BitWz = (bool) override_saveAs64BitWZ;
 
 			CreateWZVersionHash();
 			wzDir.SetVersionHash(versionHash);
 
 			Debug.WriteLine("----------------------------------------");
-			Debug.WriteLine(string.Format("Saving Wz File {0}", Name));
-			Debug.WriteLine(string.Format("wzVersionHeader: {0}", wzVersionHeader));
-			Debug.WriteLine(string.Format("bSaveAs64BitWz: {0}", bSaveAs64BitWz));
+			Debug.WriteLine($"Saving Wz File {Name}");
+			Debug.WriteLine($"wzVersionHeader: {wzVersionHeader}");
+			Debug.WriteLine($"bSaveAs64BitWz: {bSaveAs64BitWz}");
 			Debug.WriteLine("----------------------------------------");
 
 			try {
