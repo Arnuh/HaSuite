@@ -162,8 +162,8 @@ namespace MapleLib.WzLib.WzProperties {
 			// Image info
 			writer.WriteCompressedInt(PngProperty.Width);
 			writer.WriteCompressedInt(PngProperty.Height);
-			writer.WriteCompressedInt(PngProperty.Format);
-			writer.WriteCompressedInt(PngProperty.Format2);
+			writer.WriteCompressedInt(PngProperty.PixFormat);
+			writer.WriteCompressedInt(PngProperty.MagLevel);
 			writer.Write((int) 0);
 
 			// Write image

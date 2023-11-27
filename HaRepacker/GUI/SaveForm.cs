@@ -168,7 +168,6 @@ namespace HaRepacker.GUI {
 					_mainPanel.MainForm.UnloadWzFile(wzf);
 
 					// Reload the new file
-					var loadedFiles = Program.WzFileManager.WzFileList;
 					var loadedWzFile = Program.WzFileManager.LoadWzFile(dialog.FileName, wzMapleVersionSelected);
 					if (loadedWzFile != null) _mainPanel.MainForm.AddLoadedWzObjectToMainPanel(loadedWzFile);
 				}

@@ -59,6 +59,7 @@ namespace HaRepacker {
 		private ToolStripMenuItem AddVector;
 		private ToolStripMenuItem Rename;
 		private ToolStripMenuItem FixLink;
+		private ToolStripMenuItem FixPixFormat;
 		
 
 		public ContextMenuManager(MainPanel haRepackerMainPanel, UndoRedoManager undoMan) {
@@ -276,13 +277,16 @@ namespace HaRepacker {
 			FixLink = new ToolStripMenuItem("Fix linked image for old MapleStory ver.", null, new EventHandler(
 				delegate(object sender, EventArgs e) { haRepackerMainPanel.FixLinkForOldMS_Click(); }));
 
+			FixPixFormat = new ToolStripMenuItem("Fix wrong pixel formats", null, new EventHandler(
+				delegate(object sender, EventArgs e) { haRepackerMainPanel.FixAllIncorrectPixelFormats(); }));
+
 			AddDirsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add,
 				AddDirectory, AddImage);
 			AddPropsSubMenu = new ToolStripMenuItem("Add", Properties.Resources.add,
 				AddCanvas, AddConvex, AddDouble, AddByteFloat, AddLong, AddInt, AddNull, AddUshort, AddSound, AddString, AddSub, AddUOL, AddVector);
 
 			AddEtcMenu = new ToolStripMenuItem("Etc", Properties.Resources.add,
-				FixLink);
+				FixLink, FixPixFormat);
 
 			AddSortMenu = new ToolStripMenuItem("Sort", Properties.Resources.sort, SortAllChildViewNode, SortPropertiesByName);
 

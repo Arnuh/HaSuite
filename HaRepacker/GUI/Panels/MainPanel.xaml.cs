@@ -106,6 +106,7 @@ namespace HaRepacker.GUI.Panels {
 			menuItem_changeSound.Visibility = Visibility.Collapsed;
 			menuItem_saveSound.Visibility = Visibility.Collapsed;
 			menuItem_saveImage.Visibility = Visibility.Collapsed;
+			menuItem_ChangePixelFormat.Visibility = Visibility.Collapsed;
 
 			textEditor.SaveButtonClicked += TextEditor_SaveButtonClicked;
 			Loaded += MainPanelXAML_Loaded;
@@ -304,12 +305,16 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
+			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.B8G8R8A8, out var pixelFormat))
+				return;
+
 			var wzNode = (WzNode) target;
 
 			var i = 0;
 			foreach (var bmp in bitmaps) {
 				var canvas = new WzCanvasProperty(bitmaps.Count == 1 ? name : name + i);
 				var pngProperty = new WzPngProperty();
+				pngProperty.PixFormat = pixelFormat;
 				pngProperty.SetImage(bmp);
 				canvas.PngProperty = pngProperty;
 
@@ -924,6 +929,10 @@ namespace HaRepacker.GUI.Panels {
 					childInlinkNode.DeleteWzNode(); // Delete '_inlink' node
 				}
 
+				if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.B8G8R8A8, out var pixelFormat))
+					return;
+
+				selectedWzCanvas.PngProperty.PixFormat = pixelFormat;
 				selectedWzCanvas.PngProperty.SetImage(bmp);
 
 				// Updates
@@ -956,7 +965,7 @@ namespace HaRepacker.GUI.Panels {
 
 				childOutlinkNode.DeleteWzNode(); // Delete '_outlink' node
 			}
-
+			
 			selectedWzCanvas.PngProperty.SetImage(linkedTarget.GetBitmap());
 
 			// Updates
@@ -1377,6 +1386,7 @@ namespace HaRepacker.GUI.Panels {
 			menuItem_changeSound.Visibility = Visibility.Collapsed;
 			menuItem_saveSound.Visibility = Visibility.Collapsed;
 			menuItem_exportFile.Visibility = Visibility.Collapsed;
+			menuItem_ChangePixelFormat.Visibility = Visibility.Collapsed;
 
 			// Canvas collapsed state
 			canvasPropBox.Visibility = Visibility.Collapsed;
@@ -1425,6 +1435,7 @@ namespace HaRepacker.GUI.Panels {
 
 				menuItem_changeImage.Visibility = Visibility.Visible;
 				menuItem_saveImage.Visibility = Visibility.Visible;
+				menuItem_ChangePixelFormat.Visibility = Visibility.Visible;
 
 				// Image
 				if (canvasProp.HaveInlinkProperty() || canvasProp.HaveOutlinkProperty()) {
@@ -1435,6 +1446,9 @@ namespace HaRepacker.GUI.Panels {
 				else {
 					canvasPropBox.Image = canvasProp.GetLinkedWzCanvasBitmap().ToWpfBitmap();
 				}
+
+				toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
+					canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
 
 				SetImageRenderView(canvasProp);
 			}
@@ -1449,6 +1463,9 @@ namespace HaRepacker.GUI.Panels {
 						canvasUOL.GetLinkedWzCanvasBitmap()
 							.ToWpfBitmap(); // in any event that the WzCanvasProperty is an '_inlink' or '_outlink'
 					menuItem_saveImage.Visibility = Visibility.Visible; // dont show change image, as its a UOL
+
+					toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasUOL.PngProperty.PixFormat,
+						canvasUOL.PngProperty.MagLevel, canvasUOL.PngProperty.IsIncorrectFormat2());
 
 					SetImageRenderView(canvasUOL);
 				}
@@ -1872,5 +1889,62 @@ namespace HaRepacker.GUI.Panels {
 		}
 
 		#endregion
+
+		private void MenuItem_changePixelFormat_OnClick(object sender, RoutedEventArgs e) {
+			if (!(DataTree.SelectedNode.Tag is WzCanvasProperty canvas))
+				return;
+			if (!PixelFormatSelector.Show(canvas.PngProperty.PixFormat, out var pixelFormat))
+				return;
+			if (!canvas.PngProperty.IsIncorrectFormat2())
+				return;
+
+			canvas.PngProperty.ConvertPixFormat(pixelFormat);
+			canvas.ParentImage.Changed = true;
+		}
+
+		public void FixAllIncorrectPixelFormats() {
+			var start = DateTime.Now;
+			var nodes = 0;
+			foreach (WzNode node in DataTree.SelectedNodes)
+				nodes += FixFormatRecursive(node.Tag);
+
+			var ms = (DateTime.Now - start).TotalMilliseconds;
+			MessageBox.Show($"Done.\r\nElapsed time: {ms} ms for {nodes} images.");
+		}
+
+		private int FixFormatRecursive(object node) {
+			if (node is WzImage img)
+				if (!img.Parsed)
+					img.ParseImage();
+			//node.Reparse();
+			var count = 0;
+
+			if (node is WzCanvasProperty property) {
+				if (FixIncorrectPixelFormat(property))
+					++count;
+				foreach (var child in property.WzProperties)
+					count += FixFormatRecursive(child);
+			} else if (node is IPropertyContainer container) {
+				foreach (var child in container.WzProperties)
+					count += FixFormatRecursive(child);
+			} else if (node is WzFile file) {
+				count += FixFormatRecursive(file.WzDirectory);
+			} else if (node is WzDirectory dir) {
+				foreach (var child in dir.WzImages) count += FixFormatRecursive(child);
+				foreach (var child in dir.WzDirectories) count += FixFormatRecursive(child);
+			}
+
+			return count;
+		}
+
+		private bool FixIncorrectPixelFormat(WzCanvasProperty selectedWzCanvas) {
+			if (selectedWzCanvas.PngProperty.IsIncorrectFormat2()) {
+				selectedWzCanvas.PngProperty.ConvertPixFormat((int) WzPngProperty.WzPixelFormat.B4G4R4A4);
+				selectedWzCanvas.ParentImage.Changed = true;
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

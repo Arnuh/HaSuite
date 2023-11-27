@@ -30,8 +30,10 @@ using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Input;
 using HaRepacker.Comparer;
 using HaSharedLibrary;
-using MapleLib.Configuration;
 using MapleLib.WzLib.WzProperties;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
+using Size = System.Drawing.Size;
 
 namespace HaRepacker.GUI {
 	public partial class MainForm : Form {
@@ -47,6 +49,7 @@ namespace HaRepacker.GUI {
 		/// <param name="firstrun"></param>
 		public MainForm(string wzPathToLoad, bool usingPipes, bool firstrun) {
 			InitializeComponent();
+			StartPosition = FormStartPosition.CenterScreen;
 
 			AddTabsInternal("Default");
 

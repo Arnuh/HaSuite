@@ -269,7 +269,7 @@
                             <ColumnDefinition Width="5" />
 
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="300" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                     </Grid>
@@ -448,6 +448,8 @@
                             <MenuItem Header="Save Image" x:Name="menuItem_saveImage" Click="menuItem_saveImage_Click" />
                             <MenuItem Header="Export file" x:Name="menuItem_exportFile"
                                       Click="menuItem_ExportFile_Click" />
+                            <MenuItem Header="Change Pixel Format" x:Name="menuItem_ChangePixelFormat"
+                                      Click="MenuItem_changePixelFormat_OnClick" />
                             <!--  <MenuItem Header="Save Sound">
                                         <MenuItem Header="ReadMe.txt"/>
                                         <MenuItem Header="Schedule.xls"/>

@@ -119,17 +119,18 @@ namespace MapleLib.WzLib.Serialization {
 					property3.PngProperty.GetImage(false).Save(stream, ImageFormat.Png);
 					var pngbytes = stream.ToArray();
 					stream.Close();
-					tw.Write(string.Concat(new object[] {
-						depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name), "\" width=\"",
-						property3.PngProperty.Width, "\" height=\"", property3.PngProperty.Height, "\" basedata=\"",
-						Convert.ToBase64String(pngbytes), "\">"
-					}) + lineBreak);
+					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name),
+						         "\" width=\"", property3.PngProperty.Width, "\" height=\"",
+						         property3.PngProperty.Height,
+						         "\" pixFormat=\"", property3.PngProperty.PixFormat, "\" magLevel=\"",
+						         property3.PngProperty.MagLevel, "\" basedata=\"", Convert.ToBase64String(pngbytes),
+						         "\">") +
+					         lineBreak);
 				}
 				else {
-					tw.Write(string.Concat(new object[] {
-						depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name), "\" width=\"",
-						property3.PngProperty.Width, "\" height=\"", property3.PngProperty.Height, "\">"
-					}) + lineBreak);
+					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name),
+						"\" width=\"", property3.PngProperty.Width, "\" height=\"", property3.PngProperty.Height,
+						"\">") + lineBreak);
 				}
 
 				var newDepth = depth + indent;
@@ -140,16 +141,13 @@ namespace MapleLib.WzLib.Serialization {
 			}
 			else if (prop is WzIntProperty) {
 				var property4 = (WzIntProperty) prop;
-				tw.Write(string.Concat(new object[] {
-					depth, "<int name=\"", XmlUtil.SanitizeText(property4.Name), "\" value=\"", property4.Value, "\"/>"
-				}) + lineBreak);
+				tw.Write(string.Concat(depth, "<int name=\"", XmlUtil.SanitizeText(property4.Name), "\" value=\"",
+					property4.Value, "\"/>") + lineBreak);
 			}
 			else if (prop is WzDoubleProperty) {
 				var property5 = (WzDoubleProperty) prop;
-				tw.Write(string.Concat(new object[] {
-					depth, "<double name=\"", XmlUtil.SanitizeText(property5.Name), "\" value=\"", property5.Value,
-					"\"/>"
-				}) + lineBreak);
+				tw.Write(string.Concat(depth, "<double name=\"", XmlUtil.SanitizeText(property5.Name), "\" value=\"",
+					property5.Value, "\"/>") + lineBreak);
 			}
 			else if (prop is WzNullProperty) {
 				var property6 = (WzNullProperty) prop;
@@ -183,16 +181,13 @@ namespace MapleLib.WzLib.Serialization {
 			}
 			else if (prop is WzShortProperty) {
 				var property10 = (WzShortProperty) prop;
-				tw.Write(string.Concat(new object[] {
-					depth, "<short name=\"", XmlUtil.SanitizeText(property10.Name), "\" value=\"", property10.Value,
-					"\"/>"
-				}) + lineBreak);
+				tw.Write(string.Concat(depth, "<short name=\"", XmlUtil.SanitizeText(property10.Name), "\" value=\"",
+					property10.Value, "\"/>") + lineBreak);
 			}
 			else if (prop is WzLongProperty) {
 				var long_prop = (WzLongProperty) prop;
-				tw.Write(string.Concat(new object[] {
-					depth, "<long name=\"", XmlUtil.SanitizeText(long_prop.Name), "\" value=\"", long_prop.Value, "\"/>"
-				}) + lineBreak);
+				tw.Write(string.Concat(depth, "<long name=\"", XmlUtil.SanitizeText(long_prop.Name), "\" value=\"",
+					long_prop.Value, "\"/>") + lineBreak);
 			}
 			else if (prop is WzUOLProperty) {
 				var property11 = (WzUOLProperty) prop;
@@ -201,10 +196,8 @@ namespace MapleLib.WzLib.Serialization {
 			}
 			else if (prop is WzVectorProperty) {
 				var property12 = (WzVectorProperty) prop;
-				tw.Write(string.Concat(new object[] {
-					depth, "<vector name=\"", XmlUtil.SanitizeText(property12.Name), "\" x=\"", property12.X.Value,
-					"\" y=\"", property12.Y.Value, "\"/>"
-				}) + lineBreak);
+				tw.Write(string.Concat(depth, "<vector name=\"", XmlUtil.SanitizeText(property12.Name), "\" x=\"",
+					property12.X.Value, "\" y=\"", property12.Y.Value, "\"/>") + lineBreak);
 			}
 			else if (prop is WzFloatProperty) {
 				var property13 = (WzFloatProperty) prop;
@@ -251,11 +244,12 @@ namespace MapleLib.WzLib.Serialization {
 			string exportFilePath) {
 			const string
 				FIELD_TYPE_NAME = "_dirType"; // avoid the same naming as anything in the WZ to avoid exceptions
-			//const string FIELD_DEPTH_NAME = "_depth";
 			const string FIELD_NAME_NAME = "_dirName";
 
 			const string FIELD_WIDTH_NAME = "_width";
 			const string FIELD_HEIGHT_NAME = "_height";
+			const string FIELD_PIXEL_FORMAT_NAME = "_pixFormat";
+			const string FIELD_MAG_LEVEL_NAME = "_maxLevel";
 
 			const string FIELD_X_NAME = "_x";
 			const string FIELD_Y_NAME = "_y";
@@ -273,7 +267,9 @@ namespace MapleLib.WzLib.Serialization {
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyCanvas.Name)},
 					{FIELD_TYPE_NAME, "canvas"},
 					{FIELD_WIDTH_NAME, propertyCanvas.PngProperty.Width},
-					{FIELD_HEIGHT_NAME, propertyCanvas.PngProperty.Height}
+					{FIELD_HEIGHT_NAME, propertyCanvas.PngProperty.Height},
+					{FIELD_PIXEL_FORMAT_NAME, propertyCanvas.PngProperty.PixFormat},
+					{FIELD_MAG_LEVEL_NAME, propertyCanvas.PngProperty.MagLevel}
 				};
 				if (bExportBase64Data) {
 					byte[] pngbytes;
@@ -1068,6 +1064,10 @@ namespace MapleLib.WzLib.Serialization {
 					if (!element.HasAttribute("basedata"))
 						throw new NoBase64DataException("no base64 data in canvas element with name " + canvas.Name);
 					canvas.PngProperty = new WzPngProperty();
+					if (element.HasAttribute("pixFormat"))
+						canvas.PngProperty.PixFormat = Convert.ToInt32(element.GetAttribute("pixFormat"));
+					if (element.HasAttribute("magLevel"))
+						canvas.PngProperty.MagLevel = Convert.ToInt32(element.GetAttribute("magLevel"));
 					var pngstream =
 						new MemoryStream(Convert.FromBase64String(element.GetAttribute("basedata")));
 					canvas.PngProperty.SetImage((Bitmap) Image.FromStream(pngstream, true, true));

@@ -15,18 +15,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using MapleLib.Converters;
 using MapleLib.WzLib.Util;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -40,14 +36,13 @@ namespace MapleLib.WzLib.WzProperties {
 	public class WzPngProperty : WzImageProperty {
 		#region Fields
 
-		private int width, height, format, format2;
+		private int width, height, pixFormat, magLevel;
 		internal byte[] compressedImageBytes;
 		internal Bitmap png;
 
 		internal WzObject parent;
 
-		//internal WzImage imgParent;
-		internal bool listWzUsed = false;
+		internal bool listWzUsed;
 
 		internal WzBinaryReader wzReader;
 		internal long offs;
@@ -64,6 +59,8 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public override WzImageProperty DeepClone() {
 			var clone = new WzPngProperty();
+			clone.pixFormat = pixFormat;
+			clone.magLevel = magLevel;
 			clone.SetImage(GetImage(false));
 			return clone;
 		}
@@ -136,17 +133,21 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <summary>
 		/// The format of the bitmap
 		/// </summary>
-		public int Format {
-			get => format + format2;
-			set {
-				format = value;
-				format2 = 0;
-			}
+		public int PixFormat {
+			get => pixFormat;
+			set => pixFormat = value;
 		}
 
-		public int Format2 {
-			get => format2;
-			set => format2 = value;
+		public void ConvertPixFormat(int newFormat) {
+			if (pixFormat == newFormat) return;
+			var bmp = GetImage(false);
+			pixFormat = newFormat;
+			CompressPng(bmp);
+		}
+
+		public int MagLevel {
+			get => magLevel;
+			set => magLevel = value;
 		}
 
 		/// <summary>
@@ -156,7 +157,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <param name="pngform"></param>
 		/// <returns></returns>
 		public SurfaceFormat GetXNASurfaceFormat() {
-			switch (Format) {
+			switch (PixFormat) {
 				case 1: return SurfaceFormat.Bgra4444;
 				case 2:
 				case 3: return SurfaceFormat.Bgra32;
@@ -204,8 +205,8 @@ namespace MapleLib.WzLib.WzProperties {
 			// Read compressed bytes
 			width = reader.ReadCompressedInt();
 			height = reader.ReadCompressedInt();
-			format = reader.ReadCompressedInt();
-			format2 = reader.ReadCompressedInt();
+			pixFormat = reader.ReadCompressedInt();
+			magLevel = reader.ReadCompressedInt();
 			reader.BaseStream.Position += 4;
 			offs = reader.BaseStream.Position;
 			var len = reader.ReadInt32() - 1;
@@ -303,107 +304,41 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 		}
 
-		public void ParsePng(bool saveInMemory, Texture2D texture2d = null) {
-			var rawBytes = GetRawImage(saveInMemory);
-			if (rawBytes == null) {
-				png = null;
-				return;
-			}
-
-			try {
-				Bitmap bmp = null;
-				var rect_ = new Rectangle(0, 0, width, height);
-
-				switch (Format) {
-					case 1: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-						DecompressImage_PixelDataBgra4444(rawBytes, width, height, bmp, bmpData);
-						break;
-					}
-					case 2: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
-						bmp.UnlockBits(bmpData);
-						break;
-					}
-					case 3: {
-						// New format 黑白缩略图
-						// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
-						// you'll be remembered forever <3 
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
-						break;
-					}
-					case 257
-						: // http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
-					{
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppArgb1555);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly,
-							PixelFormat.Format16bppArgb1555);
-						// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
-
-						CopyBmpDataWithStride(rawBytes, bmp.Width * 2, bmpData);
-
-						bmp.UnlockBits(bmpData);
-						break;
-					}
-					case 513: // nexon wizet logo
-					{
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
-						var bmpData =
-							bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
-
-						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
-						bmp.UnlockBits(bmpData);
-						break;
-					}
-					case 517: {
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
-						var bmpData =
-							bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
-
-						DecompressImage_PixelDataForm517(rawBytes, width, height, bmp, bmpData);
-						break;
-					}
-					case 1026: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
-						break;
-					}
-					case 2050: // new
-					{
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-						DecompressImageDXT5(rawBytes, Width, Height, bmp, bmpData);
-						break;
-					}
-					default:
-						Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
-							string.Format("Unknown PNG format {0} {1}", format, format2));
-						break;
+		internal byte[] GetRawImageArray() {
+			switch (pixFormat) {
+				case 1: {
+					return new byte[width * height * 2];
 				}
-
-				if (bmp != null)
-					if (texture2d != null) {
-						var rect = new Microsoft.Xna.Framework.Rectangle(
-							Microsoft.Xna.Framework.Point.Zero,
-							new Microsoft.Xna.Framework.Point(width, height));
-						texture2d.SetData(0, 0, rect, rawBytes, 0, rawBytes.Length);
-					}
-
-				png = bmp;
-			}
-			catch (InvalidDataException) {
-				png = null;
+				case 2: {
+					return new byte[width * height * 4];
+				}
+				case 3: {
+					// New format 黑白缩略图
+					// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
+					// you'll be remembered forever <3 
+					return new byte[width * height * 4];
+				}
+				case 257: {
+					// http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
+					// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
+					return new byte[width * height * 2];
+				}
+				case 513: { // 0x200 nexon wizet logo
+					return new byte[width * height * 2];
+				}
+				case 517: { // 0x200 + 5
+					return new byte[width * height / 128];
+				}
+				case 1026: { // 0x400 + 2?
+					return new byte[width * height * 4];
+				}
+				case 2050: { // 0x800 + 2?
+					return new byte[width * height];
+				}
+				default:
+					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
+						string.Format("Unknown PNG format {0} {1}", pixFormat, magLevel));
+					return null;
 			}
 		}
 
@@ -422,8 +357,7 @@ namespace MapleLib.WzLib.WzProperties {
 					listWzUsed = header != 0x9C78 && header != 0xDA78 && header != 0x0178 && header != 0x5E78;
 					if (!listWzUsed) {
 						zlib = new DeflateStream(reader.BaseStream, CompressionMode.Decompress);
-					}
-					else {
+					} else {
 						reader.BaseStream.Position -= 2;
 						var dataStream = new MemoryStream();
 						var blocksize = 0;
@@ -440,82 +374,112 @@ namespace MapleLib.WzLib.WzProperties {
 						zlib = new DeflateStream(dataStream, CompressionMode.Decompress);
 					}
 
-					var uncompressedSize = 0;
-					byte[] decBuf = null;
-
-					switch (format + format2) {
-						case 1: // 0x1
-						{
-							uncompressedSize = width * height * 2;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 2: // 0x2
-						{
-							uncompressedSize = width * height * 4;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 3: // 0x2 + 1?
-						{
-							// New format 黑白缩略图
-							// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
-							// you'll be remembered forever <3 
-
-							uncompressedSize = width * height * 4;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 257: // 0x100 + 1?
-						{
-							// http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
-							// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
-
-							uncompressedSize = width * height * 2;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 513: // 0x200 nexon wizet logo
-						{
-							uncompressedSize = width * height * 2;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 517: // 0x200 + 5
-						{
-							uncompressedSize = width * height / 128;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 1026: // 0x400 + 2?
-						{
-							uncompressedSize = width * height * 4;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						case 2050: // 0x800 + 2? new
-						{
-							uncompressedSize = width * height;
-							decBuf = new byte[uncompressedSize];
-							break;
-						}
-						default:
-							Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
-								string.Format("Unknown PNG format {0} {1}", format, format2));
-							break;
-					}
+					var decBuf = GetRawImageArray();
 
 					if (decBuf != null)
 						using (zlib) {
-							zlib.Read(decBuf, 0, uncompressedSize);
+							zlib.Read(decBuf, 0, decBuf.Length);
 							return decBuf;
 						}
 				}
-			}
-			catch (InvalidDataException) {
+			} catch (InvalidDataException) {
 			}
 
 			return null;
+		}
+
+		public void ParsePng(bool saveInMemory, Texture2D texture2d = null) {
+			var rawBytes = GetRawImage(saveInMemory);
+			if (rawBytes == null) {
+				png = null;
+				return;
+			}
+
+			try {
+				Bitmap bmp = null;
+				var rect_ = new Rectangle(0, 0, width, height);
+
+				switch (pixFormat) {
+					case 1: {
+						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+						DecompressImage_PixelDataBgra4444(rawBytes, width, height, bmp, bmpData);
+						break;
+					}
+					case 2: {
+						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
+						bmp.UnlockBits(bmpData);
+						break;
+					}
+					case 3: {
+						// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
+						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
+						break;
+					}
+					case 257: { // http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
+						bmp = new Bitmap(width, height, PixelFormat.Format16bppArgb1555);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppArgb1555);
+						// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
+
+						CopyBmpDataWithStride(rawBytes, bmp.Width * 2, bmpData);
+
+						bmp.UnlockBits(bmpData);
+						break;
+					}
+					case 513: { // nexon wizet logo
+						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
+
+						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
+						bmp.UnlockBits(bmpData);
+						break;
+					}
+					case 517: {
+						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
+
+						DecompressImage_PixelDataForm517(rawBytes, width, height, bmp, bmpData);
+						break;
+					}
+					case 1026: {
+						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
+						break;
+					}
+					case 2050: {
+						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+						DecompressImageDXT5(rawBytes, Width, Height, bmp, bmpData);
+						break;
+					}
+					default:
+						Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature, $"Unknown PNG format {pixFormat} {magLevel}");
+						break;
+				}
+
+				if (bmp != null)
+					if (texture2d != null) {
+						var rect = new Microsoft.Xna.Framework.Rectangle(
+							Microsoft.Xna.Framework.Point.Zero,
+							new Microsoft.Xna.Framework.Point(width, height));
+						texture2d.SetData(0, 0, rect, rawBytes, 0, rawBytes.Length);
+					}
+
+				png = bmp;
+			}
+			catch (InvalidDataException) {
+				png = null;
+			}
 		}
 
 		#region Decoders
@@ -545,7 +509,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <param name="bmp"></param>
 		/// <param name="bmpData"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static unsafe void DecompressImage_PixelDataBgra4444(byte[] rawData, int width, int height, Bitmap bmp,
+		public unsafe void DecompressImage_PixelDataBgra4444(byte[] rawData, int width, int height, Bitmap bmp,
 			BitmapData bmpData) {
 			var uncompressedSize = width * height * 2;
 			var decoded = new byte[uncompressedSize * 2];
@@ -560,12 +524,12 @@ namespace MapleLib.WzLib.WzProperties {
 					for (var i = 0; i < uncompressedSize; i++) {
 						var byteAtPosition = *(pRawData + i);
 
-						var lo = byteAtPosition & 0x0F;
-						var b = (byte) (lo | (lo << 4));
+						var low = byteAtPosition & 0x0F;
+						var b = (byte) (low | (low << 4));
 						*(pDecoded + i * 2) = b;
 
-						var hi = byteAtPosition & 0xF0;
-						var g = (byte) (hi | (hi >> 4));
+						var high = byteAtPosition & 0xF0;
+						var g = (byte) (high | (high >> 4));
 						*(pDecoded + i * 2 + 1) = g;
 					}
 				}
@@ -802,33 +766,31 @@ namespace MapleLib.WzLib.WzProperties {
 		#endregion
 
 		internal void CompressPng(Bitmap bmp) {
-			var buf = new byte[bmp.Width * bmp.Height * 8];
-			format = 2;
-			format2 = 0;
+			if (pixFormat == 0) throw new Exception($"Unknown pixFormat {pixFormat}");
+
 			width = bmp.Width;
 			height = bmp.Height;
 
-			//byte[] bmpBytes = bmp.BitmapToBytes();
-			/* if (SquishPNGWrapper.CheckAndLoadLibrary())
-			            {
-			                byte[] bmpBytes = bmp.BitmapToBytes();
-			                SquishPNGWrapper.CompressImage(bmpBytes, width, height, buf, (int)SquishPNGWrapper.FlagsEnum.kDxt1);
-			            }
-			            else
-			            {*/
-			unsafe {
-				fixed (byte* pBuf = buf) {
-					var pCurPixel = pBuf;
-					for (var i = 0; i < height; i++)
-					for (var j = 0; j < width; j++) {
-						var curPixel = bmp.GetPixel(j, i);
-						*pCurPixel = curPixel.B;
-						*(pCurPixel + 1) = curPixel.G;
-						*(pCurPixel + 2) = curPixel.R;
-						*(pCurPixel + 3) = curPixel.A;
-						pCurPixel += 4;
-					}
+			var buf = GetRawImageArray();
+			var rect = new Rectangle(0, 0, width, height);
+
+			switch (pixFormat) {
+				case 1:
+					CompressImage_PixelDataBgra4444(buf, bmp);
+					break;
+				case 2:
+					WriteImage_PixelData(buf, bmp);
+					break;
+				case 513: {
+					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
+					Marshal.Copy(bmpData.Scan0, buf, 0, buf.Length);
+					bmp.UnlockBits(bmpData);
+					break;
 				}
+				default:
+					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
+						$"Unknown PNG format {pixFormat} {magLevel}");
+					return;
 			}
 
 			compressedImageBytes = Compress(buf);
@@ -850,6 +812,44 @@ namespace MapleLib.WzLib.WzProperties {
 				}
 		}
 
+		#region Encoders
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void CompressImage_PixelDataBgra4444(byte[] buf, Bitmap bmp) {
+			unsafe {
+				fixed (byte* pBuf = buf) {
+					var pCurPixel = pBuf;
+					for (var y = 0; y < height; y++)
+					for (var x = 0; x < width; x++) {
+						var curPixel = bmp.GetPixel(x, y);
+						*pCurPixel = (byte) ((curPixel.B >> 4) | (curPixel.G & 0xF0));
+						*(pCurPixel + 1) = (byte) ((curPixel.R >> 4) | (curPixel.A & 0xF0));
+						pCurPixel += 2;
+					}
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void WriteImage_PixelData(byte[] buf, Bitmap bmp) {
+			unsafe {
+				fixed (byte* pBuf = buf) {
+					var pCurPixel = pBuf;
+					for (var i = 0; i < height; i++)
+					for (var j = 0; j < width; j++) {
+						var curPixel = bmp.GetPixel(j, i);
+						*pCurPixel = curPixel.B;
+						*(pCurPixel + 1) = curPixel.G;
+						*(pCurPixel + 2) = curPixel.R;
+						*(pCurPixel + 3) = curPixel.A;
+						pCurPixel += 4;
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#endregion
 
 		#region Cast Values
@@ -859,5 +859,31 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		#endregion
+
+		public enum WzPixelFormat {
+			Unknown,
+			B4G4R4A4,
+			B8G8R8A8,
+			R5G6B5 = 513,
+			//DXT3 = 1026,
+			//DXT5 = 2050,
+		}
+
+		public bool IsIncorrectFormat2() {
+			if (pixFormat != (int) WzPixelFormat.B8G8R8A8) return false;
+
+			GetImage(false); // Load png if missing.
+
+			for (var y = 0; y < height; y++)
+			for (var x = 0; x < width; x++) {
+				var curPixel = png.GetPixel(x, y);
+				if (Math.Abs(curPixel.B / 17.0 % 1) > double.Epsilon * 100) return false;
+				if (Math.Abs(curPixel.G / 17.0 % 1) > double.Epsilon * 100) return false;
+				if (Math.Abs(curPixel.R / 17.0 % 1) > double.Epsilon * 100) return false;
+				if (Math.Abs(curPixel.A / 17.0 % 1) > double.Epsilon * 100) return false;
+			}
+
+			return true;
+		}
 	}
 }

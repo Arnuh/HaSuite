@@ -134,6 +134,7 @@ namespace HaCreator.Wz {
 				var canvas = new WzCanvasProperty {
 					PngProperty = new WzPngProperty()
 				};
+				canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.B4G4R4A4;
 				canvas.PngProperty.SetImage(board.MiniMap);
 				miniMap["canvas"] = canvas;
 				miniMap["width"] = InfoTool.SetInt(board.MinimapRectangle.Width);
