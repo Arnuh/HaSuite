@@ -55,8 +55,7 @@ namespace HaRepacker.Converter {
 			if (delta < 12 * MONTH) {
 				var months = (int) Math.Floor((double) ts.Days / 30);
 				return string.Format(Properties.Resources.RelativeTime_MonthsAgo, months);
-			}
-			else {
+			} else {
 				var years = (int) Math.Floor((double) ts.Days / 365);
 				return string.Format(Properties.Resources.RelativeTime_YearsAgo, years);
 			}

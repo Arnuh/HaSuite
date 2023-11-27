@@ -46,8 +46,7 @@ namespace HaSharedLibrary.GUI {
 
 				// Set binding source
 				comboBox_fieldType.ItemsSource = fieldTypes;
-			}
-			finally {
+			} finally {
 				bIsLoading = false;
 			}
 		}
@@ -69,8 +68,7 @@ namespace HaSharedLibrary.GUI {
 
 					i++;
 				}
-			}
-			finally {
+			} finally {
 				bIsLoading = false;
 			}
 		}

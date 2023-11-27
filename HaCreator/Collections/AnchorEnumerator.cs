@@ -51,12 +51,10 @@ namespace HaCreator.Collections {
 					return false;
 				else
 					curr = toVisit.Pop();
-			}
-			else if (anchors.Count == 1) {
+			} else if (anchors.Count == 1) {
 				curr = anchors[0];
 				visited.Add(curr);
-			}
-			else {
+			} else {
 				foreach (var anchor in anchors) {
 					visited.Add(anchor);
 					toVisit.Push(anchor);

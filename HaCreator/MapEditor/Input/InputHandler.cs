@@ -70,8 +70,7 @@ namespace HaCreator.MapEditor.Input {
 			if (a.X < b.X) {
 				left = a.X;
 				right = b.X;
-			}
-			else {
+			} else {
 				left = b.X;
 				right = a.X;
 			}
@@ -79,8 +78,7 @@ namespace HaCreator.MapEditor.Input {
 			if (a.Y < b.Y) {
 				top = a.Y;
 				bottom = b.Y;
-			}
-			else {
+			} else {
 				top = b.Y;
 				bottom = a.Y;
 			}
@@ -105,10 +103,9 @@ namespace HaCreator.MapEditor.Input {
 				OnUserInteraction();
 				if (selectedBoard.Mouse.MinimapBrowseOngoing && selectedBoard.Mouse.State == MouseState.Selection) {
 					HandleMinimapBrowse(selectedBoard, currPhysicalPos);
-				}
-				else if (selectedBoard.Mouse.MultiSelectOngoing &&
-				         (Math.Abs(selectedBoard.Mouse.X - selectedBoard.Mouse.MultiSelectStart.X) > 1 ||
-				          Math.Abs(selectedBoard.Mouse.Y - selectedBoard.Mouse.MultiSelectStart.Y) > 1)) {
+				} else if (selectedBoard.Mouse.MultiSelectOngoing &&
+				           (Math.Abs(selectedBoard.Mouse.X - selectedBoard.Mouse.MultiSelectStart.X) > 1 ||
+				            Math.Abs(selectedBoard.Mouse.Y - selectedBoard.Mouse.MultiSelectStart.Y) > 1)) {
 					var oldRect = CreateRectangle(oldPos, selectedBoard.Mouse.MultiSelectStart);
 					var newRect = CreateRectangle(newPos, selectedBoard.Mouse.MultiSelectStart);
 					var toRemove = new List<BoardItem>();
@@ -123,15 +120,13 @@ namespace HaCreator.MapEditor.Input {
 					foreach (var item in toRemove)
 						item.Selected = false;
 					toRemove.Clear();
-				}
-				else if (selectedBoard.Mouse.SingleSelectStarting &&
-				         (Distance(newPos.X - selectedBoard.Mouse.SingleSelectStart.X,
-					          newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y) > UserSettings.SignificantDistance ||
-				          IsKeyPushedDown(Keys.Menu))) {
+				} else if (selectedBoard.Mouse.SingleSelectStarting &&
+				           (Distance(newPos.X - selectedBoard.Mouse.SingleSelectStart.X,
+					            newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y) > UserSettings.SignificantDistance ||
+				            IsKeyPushedDown(Keys.Menu))) {
 					BindAllSelectedItems(selectedBoard, selectedBoard.Mouse.SingleSelectStart);
 					selectedBoard.Mouse.SingleSelectStarting = false;
-				}
-				else if (selectedBoard.Mouse.BoundItems.Count > 0) {
+				} else if (selectedBoard.Mouse.BoundItems.Count > 0) {
 					//snapping
 					if (UserSettings.useSnapping && selectedBoard.Mouse.BoundItems.Count != 0 &&
 					    !IsKeyPushedDown(Keys.Menu)) {
@@ -145,8 +140,7 @@ namespace HaCreator.MapEditor.Input {
 									((ISnappable) item).DoSnap();
 						}
 					}
-				}
-				else if (selectedBoard.Mouse.State == MouseState.Footholds) {
+				} else if (selectedBoard.Mouse.State == MouseState.Footholds) {
 					// Foothold snap-like behavior
 					selectedBoard.Mouse.DoSnap();
 				}
@@ -227,8 +221,7 @@ namespace HaCreator.MapEditor.Input {
 									item.X--;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(1, 0)));
 								}
-						}
-						else // if no item is being selected, shift the view instead
+						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddHScrollbarValue(-navigationSHVScrollSpeed);
 						}
@@ -242,8 +235,7 @@ namespace HaCreator.MapEditor.Input {
 									item.X++;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(-1, 0)));
 								}
-						}
-						else // if no item is being selected, shift the view instead
+						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddHScrollbarValue(navigationSHVScrollSpeed);
 						}
@@ -257,8 +249,7 @@ namespace HaCreator.MapEditor.Input {
 									item.Y--;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, 1)));
 								}
-						}
-						else // if no item is being selected, shift the view instead
+						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddVScrollbarValue(-navigationSHVScrollSpeed);
 						}
@@ -272,8 +263,7 @@ namespace HaCreator.MapEditor.Input {
 									item.Y++;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, -1)));
 								}
-						}
-						else // if no item is being selected, shift the view instead
+						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddVScrollbarValue(navigationSHVScrollSpeed);
 						}
@@ -299,8 +289,7 @@ namespace HaCreator.MapEditor.Input {
 								foreach (var item in selectedItems)
 									if (item is ToolTipDot || item is MiscDot) {
 										continue;
-									}
-									else if (item is VRDot) {
+									} else if (item is VRDot) {
 										if (!askedVr) {
 											askedVr = true;
 											if (MessageBox.Show(
@@ -309,8 +298,7 @@ namespace HaCreator.MapEditor.Input {
 											    DialogResult.Yes)
 												selectedBoard.VRRectangle.RemoveItem(null);
 										}
-									}
-									else if (item is MinimapDot) {
+									} else if (item is MinimapDot) {
 										if (!askedMm) {
 											askedMm = true;
 											if (MessageBox.Show(
@@ -319,8 +307,7 @@ namespace HaCreator.MapEditor.Input {
 											    DialogResult.Yes)
 												selectedBoard.MinimapRectangle.RemoveItem(null);
 										}
-									}
-									else {
+									} else {
 										item.RemoveItem(actions);
 									}
 
@@ -373,8 +360,7 @@ namespace HaCreator.MapEditor.Input {
 										var li = (LayeredItem) item;
 										if (li.CheckIfLayerSelected(selectedBoard.GetUserSelectionInfo()))
 											item.Selected = true;
-									}
-									else {
+									} else {
 										item.Selected = true;
 									}
 								}
@@ -412,12 +398,10 @@ namespace HaCreator.MapEditor.Input {
 							try {
 								items = selectedBoard.SerializationManager.DeserializeList(
 									(string) Clipboard.GetData(SerializationManager.HaClipboardData));
-							}
-							catch (SerializationException de) {
+							} catch (SerializationException de) {
 								MessageBox.Show(de.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 								return;
-							}
-							catch (Exception e) {
+							} catch (Exception e) {
 								MessageBox.Show(string.Format("An error occurred: {0}", e.ToString()), "Error",
 									MessageBoxButtons.OK, MessageBoxIcon.Error);
 								return;
@@ -434,8 +418,7 @@ namespace HaCreator.MapEditor.Input {
 									if (currtS != tS) {
 										if (tS == null) {
 											tS = currtS;
-										}
-										else {
+										} else {
 											MessageBox.Show(
 												"Clipboard contains two tiles with different tile sets, cannot paste.",
 												"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -477,8 +460,7 @@ namespace HaCreator.MapEditor.Input {
 										maxPos.X = bi.Right;
 									if (bi.Bottom > maxPos.Y)
 										maxPos.Y = bi.Bottom;
-								}
-								else if (item is Rope) {
+								} else if (item is Rope) {
 									var r = (Rope) item;
 									var x = r.FirstAnchor.X;
 									var minY = Math.Min(r.FirstAnchor.Y, r.SecondAnchor.Y);
@@ -531,11 +513,9 @@ namespace HaCreator.MapEditor.Input {
 							ClearBoundItems(selectedBoard);
 							ClearSelectedItems(selectedBoard);
 							clearRedo = false;
-						}
-						else if (selectedBoard.Mouse.State == MouseState.Footholds) {
+						} else if (selectedBoard.Mouse.State == MouseState.Footholds) {
 							selectedBoard.Mouse.Clear();
-						}
-						else {
+						} else {
 							parentBoard.InvokeReturnToSelectionState();
 						}
 
@@ -575,8 +555,7 @@ namespace HaCreator.MapEditor.Input {
 					ClearSelectedItems(selectedBoard);
 					target.Selected = true;
 					parentBoard.EditInstanceClicked(target);
-				}
-				else if (selectedBoard.Mouse.State == MouseState.Footholds) {
+				} else if (selectedBoard.Mouse.State == MouseState.Footholds) {
 					selectedBoard.Mouse.CreateFhAnchor();
 				}
 			}
@@ -604,8 +583,7 @@ namespace HaCreator.MapEditor.Input {
 						parentBoard.PointToScreen(new System.Windows.Point(realPosition.X, realPosition.Y));
 
 					bicm.Menu.Show(new System.Drawing.Point((int) point.X, (int) point.Y));
-				}
-				else {
+				} else {
 					parentBoard.InvokeReturnToSelectionState();
 				}
 			}
@@ -650,8 +628,7 @@ namespace HaCreator.MapEditor.Input {
 					//ClearSelectedItems(selectedBoard);
 					selectedBoard.Mouse.MinimapBrowseOngoing = true;
 					HandleMinimapBrowse(selectedBoard, realPosition);
-				}
-				else if (selectedBoard.Mouse.State == MouseState.Selection) {
+				} else if (selectedBoard.Mouse.State == MouseState.Selection) {
 					//handle drag-drop, multiple selection and all that
 					var ctrlDown = (Control.ModifierKeys & Keys.Control) == Keys.Control;
 					if (item == null && selectedItem == null) //drag-selection is starting
@@ -660,8 +637,7 @@ namespace HaCreator.MapEditor.Input {
 
 						selectedBoard.Mouse.MultiSelectOngoing = true;
 						selectedBoard.Mouse.MultiSelectStart = virtualPosition;
-					}
-					else //Single click on item
+					} else //Single click on item
 					{
 						BoardItem itemToSelect = null;
 						var itemAlreadySelected = false;
@@ -670,19 +646,16 @@ namespace HaCreator.MapEditor.Input {
 						{
 							itemToSelect = selectedItem;
 							itemAlreadySelected = true;
-						}
-						else if
+						} else if
 							(selectedItem ==
 							 null) // We are guaranteed (item != null) at this point, so just select item
 						{
 							itemToSelect = item;
-						}
-						else if
+						} else if
 							(!selectedItemHigher) // item needs to be selected but there is already a selectedItem; only switch selection if the selectedItem is not higher
 						{
 							itemToSelect = item;
-						}
-						else // Otherwise, just mark selectedItem as the item we are selecting
+						} else // Otherwise, just mark selectedItem as the item we are selecting
 						{
 							itemToSelect = selectedItem;
 							itemAlreadySelected = true;
@@ -695,8 +668,7 @@ namespace HaCreator.MapEditor.Input {
 						if (ctrlDown) // If we are clicking an item and ctrl IS down, we need to toggle its selection
 						{
 							itemToSelect.Selected = !itemToSelect.Selected;
-						}
-						else // Otherwise, mark the item as selected (if it's already selected nothing will happen) and bind it to the mouse to start drag-drop action
+						} else // Otherwise, mark the item as selected (if it's already selected nothing will happen) and bind it to the mouse to start drag-drop action
 						{
 							itemToSelect.Selected = true;
 							selectedBoard.Mouse.SingleSelectStarting = true;

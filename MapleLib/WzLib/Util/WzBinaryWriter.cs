@@ -71,8 +71,7 @@ namespace MapleLib.WzLib.Util {
 			if (s.Length > 4 && StringCache.ContainsKey(s)) {
 				Write((byte) withOffset);
 				Write((int) StringCache[s]);
-			}
-			else {
+			} else {
 				Write((byte) withoutOffset);
 				var sOffset = (int) BaseStream.Position;
 				Write(s);
@@ -97,8 +96,7 @@ namespace MapleLib.WzLib.Util {
 				Write((int) StringCache[storeName]);
 
 				return true;
-			}
-			else {
+			} else {
 				var sOffset = (int) (BaseStream.Position - Header.FStart);
 				Write((byte) type);
 				Write(stringObjectValue);
@@ -111,8 +109,7 @@ namespace MapleLib.WzLib.Util {
 		public override void Write(string value) {
 			if (value.Length == 0) {
 				Write((byte) 0);
-			}
-			else {
+			} else {
 				var unicode = value.Any(c => c > sbyte.MaxValue);
 
 				if (unicode) {
@@ -123,8 +120,7 @@ namespace MapleLib.WzLib.Util {
 					{
 						Write(sbyte.MaxValue);
 						Write(value.Length);
-					}
-					else {
+					} else {
 						Write((sbyte) value.Length);
 					}
 
@@ -138,8 +134,7 @@ namespace MapleLib.WzLib.Util {
 
 						i++;
 					}
-				}
-				else // ASCII
+				} else // ASCII
 				{
 					byte mask = 0xAA;
 
@@ -148,8 +143,7 @@ namespace MapleLib.WzLib.Util {
 					{
 						Write(sbyte.MinValue);
 						Write(value.Length);
-					}
-					else {
+					} else {
 						Write((sbyte) -value.Length);
 					}
 
@@ -199,8 +193,7 @@ namespace MapleLib.WzLib.Util {
 			if (value > sbyte.MaxValue || value <= sbyte.MinValue) {
 				Write(sbyte.MinValue);
 				Write(value);
-			}
-			else {
+			} else {
 				Write((sbyte) value);
 			}
 		}
@@ -209,8 +202,7 @@ namespace MapleLib.WzLib.Util {
 			if (value > sbyte.MaxValue || value <= sbyte.MinValue) {
 				Write(sbyte.MinValue);
 				Write(value);
-			}
-			else {
+			} else {
 				Write((sbyte) value);
 			}
 		}

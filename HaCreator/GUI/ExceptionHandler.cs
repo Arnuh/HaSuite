@@ -36,8 +36,7 @@ namespace HaCreator.GUI {
 					". If you want the bug to be solved ASAP, do report this error via github, preferably with some details about the problem (e.g. are your files edited or clean).";
 				restartButton.Text = "Restart HaCreator";
 				restartButton.Click += new EventHandler(Restart);
-			}
-			else {
+			} else {
 				crashMessageLabel.Text =
 					"Whoops! It looks like HaCreator crashed. The good news are, because I am such a 1337 programmer a backup file containing the map you were working on will be dumped once you click on the button below (and it's going to be extremely funny if it crashes again while trying to back up the data, in which case you are screwed), and it will be loaded next time you open HaCreator after the initialization screen.\r\nAdditionaly, an error log was saved to " +
 					logPath +

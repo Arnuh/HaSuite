@@ -127,8 +127,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				var result = new Dictionary<string, object>();
 				result[TTC_KEY] = refDict[ttc];
 				return result;
-			}
-			else {
+			} else {
 				return null;
 			}
 		}

@@ -220,8 +220,7 @@ namespace MapleLib {
 					var iniFile = iniFiles[0];
 					if (!File.Exists(iniFile)) {
 						throw new Exception(".ini file at the directory '" + dir + "' is missing.");
-					}
-					else {
+					} else {
 						var iniFileLines = File.ReadAllLines(iniFile);
 						if (iniFileLines.Length <= 0)
 							throw new Exception(".ini file does not contain LastWzIndex information.");
@@ -256,8 +255,7 @@ namespace MapleLib {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				var wzFileNames = Directory.EnumerateFileSystemEntries(baseDir, "*.wz", SearchOption.AllDirectories)
 					.Where(f => !File.GetAttributes(f).HasFlag(FileAttributes.Directory) // exclude directories
 					            && !EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(x =>
@@ -313,8 +311,7 @@ namespace MapleLib {
 				_wzFiles[fileName_] = wzf;
 				_wzFilesUpdated[wzf] = false;
 				_wzDirs[fileName_] = new WzMainDirectory(wzf);
-			}
-			finally {
+			} finally {
 				_readWriteLock.ExitWriteLock();
 			}
 
@@ -349,8 +346,7 @@ namespace MapleLib {
 				_wzFiles[baseName] = wzf;
 				_wzFilesUpdated[wzf] = false;
 				_wzDirs[baseName] = new WzMainDirectory(wzf);
-			}
-			finally {
+			} finally {
 				_readWriteLock.ExitWriteLock();
 			}
 
@@ -406,12 +402,10 @@ namespace MapleLib {
 				_readWriteLock.EnterWriteLock();
 				try {
 					_wzFilesUpdated[wzFile] = true;
-				}
-				finally {
+				} finally {
 					_readWriteLock.ExitWriteLock();
 				}
-			}
-			else {
+			} else {
 				throw new Exception("wz file to be flagged do not exist in memory " + wzFile.FilePath);
 			}
 		}
@@ -428,8 +422,7 @@ namespace MapleLib {
 				foreach (var wzFileUpdated in _wzFilesUpdated)
 					if (wzFileUpdated.Value == true)
 						updatedWzFiles.Add(wzFileUpdated.Key);
-			}
-			finally {
+			} finally {
 				_readWriteLock.ExitReadLock();
 			}
 
@@ -449,8 +442,7 @@ namespace MapleLib {
 					_wzFiles.Remove(baseName);
 					_wzFilesUpdated.Remove(wzFile);
 					_wzDirs.Remove(baseName);
-				}
-				finally {
+				} finally {
 					_readWriteLock.ExitWriteLock();
 				}
 
@@ -474,8 +466,7 @@ namespace MapleLib {
 				_wzFilesUpdated.Clear();
 				_updatedWzImages.Clear();
 				_wzDirs.Clear();
-			}
-			finally {
+			} finally {
 				_readWriteLock.ExitWriteLock();
 			}
 		}
@@ -537,8 +528,7 @@ namespace MapleLib {
 				if (!_wzFilesList.ContainsKey("data"))
 					return new List<string>(); // return as an empty list if none
 				return _wzFilesList["data"];
-			}
-			else {
+			} else {
 				if (!_wzFilesList.ContainsKey(baseName))
 					return new List<string>(); // return as an empty list if none
 				return _wzFilesList[baseName];

@@ -291,8 +291,7 @@ namespace Spine {
 			if (newSkin != null) {
 				if (skin != null) {
 					newSkin.AttachAll(this, skin);
-				}
-				else {
+				} else {
 					var slots = this.slots;
 					for (int i = 0, n = slots.Count; i < n; i++) {
 						var slot = slots[i];

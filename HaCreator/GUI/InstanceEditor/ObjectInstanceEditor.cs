@@ -51,8 +51,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			SetOptionalInt(cyInt, cyBox, item.cy);
 			if (item.tags == null) {
 				tagsEnable.Checked = false;
-			}
-			else {
+			} else {
 				tagsEnable.Checked = true;
 				tagsBox.Text = item.tags;
 			}
@@ -107,8 +106,7 @@ namespace HaCreator.GUI.InstanceEditor {
 					var questInfo = new List<ObjectInstanceQuest>();
 					foreach (ObjectInstanceQuest info in questList.Items) questInfo.Add(info);
 					item.QuestInfo = questInfo;
-				}
-				else {
+				} else {
 					item.QuestInfo = null;
 				}
 			}
@@ -125,8 +123,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			var featureActivated = cbx.Checked && cbx.Enabled;
 			if (cbx.Tag is Control) {
 				((Control) cbx.Tag).Enabled = featureActivated;
-			}
-			else {
+			} else {
 				foreach (var control in (Control[]) cbx.Tag) control.Enabled = featureActivated;
 				foreach (var control in (Control[]) cbx.Tag)
 					if (control is CheckBox)

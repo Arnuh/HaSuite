@@ -39,8 +39,7 @@ namespace HaCreator.MapEditor.Info {
 			if (mobImage != null) {
 				Image = mobImage.GetLinkedWzCanvasBitmap();
 				Origin = WzInfoTools.PointFToSystemPoint(mobImage.GetCanvasOriginPosition());
-			}
-			else {
+			} else {
 				Image = new Bitmap(1, 1);
 				Origin = new Point();
 			}
@@ -123,8 +122,7 @@ namespace HaCreator.MapEditor.Info {
 						var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("mob", linkImgName);
 
 						_LinkedWzImage = linkedImage ?? mobImage; // fallback to mobImage if linkedimage isnt available
-					}
-					else {
+					} else {
 						_LinkedWzImage = mobImage;
 					}
 				}

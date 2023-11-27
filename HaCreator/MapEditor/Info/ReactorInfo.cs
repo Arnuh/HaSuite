@@ -29,8 +29,7 @@ namespace HaCreator.MapEditor.Info {
 			if (reactorImage != null) {
 				Image = reactorImage.GetLinkedWzCanvasBitmap();
 				Origin = WzInfoTools.PointFToSystemPoint(reactorImage.GetCanvasOriginPosition());
-			}
-			else {
+			} else {
 				Image = new Bitmap(1, 1);
 				Origin = new Point();
 			}
@@ -84,8 +83,7 @@ namespace HaCreator.MapEditor.Info {
 						var findLinkedImg = (WzImage) Program.WzManager.FindWzImageByName("reactor", linkImgName);
 
 						_LinkedWzImage = findLinkedImg ?? (WzImage) reactorObject; // fallback if link is null
-					}
-					else {
+					} else {
 						_LinkedWzImage = (WzImage) reactorObject;
 					}
 				}

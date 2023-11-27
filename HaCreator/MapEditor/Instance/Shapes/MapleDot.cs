@@ -138,8 +138,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 					if (xAngle < yAngle) {
 						xSmaller = true;
 						minAngle = xAngle;
-					}
-					else {
+					} else {
 						xSmaller = false;
 						minAngle = yAngle;
 					}

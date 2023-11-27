@@ -52,8 +52,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 				checkbox_border.IsChecked = Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation;
 
 				ZoomSlider.Value = Program.ConfigurationManager.UserSettings.ImageZoomLevel;
-			}
-			finally {
+			} finally {
 				isLoading = false;
 			}
 		}

@@ -1157,8 +1157,7 @@ namespace HaCreator.MapSimulator {
 				 */
 				mapShiftX = leftRightVRDifference / 2 + (int) (vr_fieldBoundary.Left * RenderObjectScaling) -
 				            RenderWidth / 2;
-			}
-			else {
+			} else {
 				// System.Diagnostics.Debug.WriteLine("[{4}] VR.Right {0}, Width {1}, Relative {2}. [Scaling {3}]", 
 				//      vr.Right, RenderWidth, (int)(vr.Right - RenderWidth), (int)((vr.Right - (RenderWidth * RenderObjectScaling)) * RenderObjectScaling),
 				//     mapShiftX + offset);
@@ -1184,8 +1183,7 @@ namespace HaCreator.MapSimulator {
 			if (topDownVRDifference < RenderHeight) {
 				mapShiftY = topDownVRDifference / 2 + (int) (vr_fieldBoundary.Top * RenderObjectScaling) -
 				            RenderHeight / 2;
-			}
-			else {
+			} else {
 				/*System.Diagnostics.Debug.WriteLine("[{0}] VR.Bottom {1}, Height {2}, Relative {3}. [Scaling {4}]",
 				    (int)((vr.Bottom - (RenderHeight))),
 				    vr.Bottom, RenderHeight, (int)(vr.Bottom - RenderHeight),

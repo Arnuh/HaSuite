@@ -87,8 +87,7 @@ namespace HaCreator.GUI.EditorPanels {
 						item.Tag = randomInfos;
 						item.MouseDown += new MouseEventHandler(tileItem_Click);
 						item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-					}
-					else {
+					} else {
 						foreach (WzCanvasProperty tile in tCat.WzProperties) {
 							var item = tileImagesContainer.Add(tile.GetLinkedWzCanvasBitmap(),
 								tCat.Name + "/" + tile.Name, true);

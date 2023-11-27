@@ -223,8 +223,7 @@ namespace HaSharedLibrary.GUI {
 
 				wzSpineObject.skeleton.SetSkin(
 					wzSpineObject.spineAnimationItem.SkeletonData.Skins[spineSkinIndex]);
-			}
-			else if (Keyboard.GetState().IsKeyDown(Keys.PageDown)) {
+			} else if (Keyboard.GetState().IsKeyDown(Keys.PageDown)) {
 				if (spineSkinIndex + 1 < wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count())
 					spineSkinIndex++;
 				else

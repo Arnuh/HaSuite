@@ -105,8 +105,7 @@ namespace HaCreator.GUI {
 
 					bLoadedSuccessfully = true;
 				}
-			}
-			catch (Exception exp) {
+			} catch (Exception exp) {
 				MessageBox.Show("Map.wz is not loaded, or Map.wz/Physics.img do not exist.\r\n" + exp.ToString());
 				return false;
 			}
@@ -149,15 +148,12 @@ namespace HaCreator.GUI {
 					mapPhysicsImage["flyJumpDec"].SetValue(numericUpDown_flyJumpDec.Value);
 
 					Program.WzManager.SetWzFileUpdated(WZ_FILE_NAME, mapPhysicsImage); // flag as changed 
-				}
-				else {
+				} else {
 					errorMessage = "Map.wz is not loaded, or Map.wz/Physics.img do not exist.";
 				}
-			}
-			catch (Exception exp) {
+			} catch (Exception exp) {
 				errorMessage = exp.Message;
-			}
-			finally {
+			} finally {
 				button_save.Enabled = true;
 			}
 
@@ -166,8 +162,7 @@ namespace HaCreator.GUI {
 				MessageBox.Show("Updated. Please save the changes to .wz via File -> 'Repack WZ Files'.", "Success");
 				Close(); // close window directly
 				return true;
-			}
-			else {
+			} else {
 				label_error.Text = errorMessage;
 			}
 
@@ -267,8 +262,7 @@ namespace HaCreator.GUI {
 			if (e.KeyCode == Keys.Escape) // Close without saving
 			{
 				Close();
-			}
-			else if (e.KeyCode == Keys.Enter) {
+			} else if (e.KeyCode == Keys.Enter) {
 				//saveButton_Click(null, null);
 			}
 		}

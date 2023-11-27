@@ -427,8 +427,7 @@ namespace HaCreator.GUI {
 			var featureActivated = cbx.Checked && cbx.Enabled;
 			if (cbx.Tag is Control) {
 				((Control) cbx.Tag).Enabled = featureActivated;
-			}
-			else {
+			} else {
 				foreach (var control in (Control[]) cbx.Tag)
 					control.Enabled = featureActivated;
 				foreach (var control in (Control[]) cbx.Tag)
@@ -445,8 +444,7 @@ namespace HaCreator.GUI {
 			if (cannotReturnCBX.Checked) {
 				lastret = (int) returnBox.Value;
 				returnBox.Value = info.id;
-			}
-			else {
+			} else {
 				returnBox.Value = lastret;
 			}
 		}
@@ -456,8 +454,7 @@ namespace HaCreator.GUI {
 			if (returnHereCBX.Checked) {
 				lastforcedret = (int) forcedRet.Value;
 				forcedRet.Value = 999999999;
-			}
-			else {
+			} else {
 				forcedRet.Value = lastforcedret;
 			}
 		}

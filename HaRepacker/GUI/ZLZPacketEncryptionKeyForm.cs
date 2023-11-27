@@ -55,8 +55,7 @@ namespace HaRepacker.GUI {
 					var lastError = kernel32.GetLastError();
 
 					MessageBox.Show("Unable to load DLL Library. Kernel32 GetLastError() : " + lastError, "Error");
-				}
-				else {
+				} else {
 					try {
 						var Method =
 							Marshal.GetDelegateForFunctionPointer((IntPtr) (module.ToInt32() + 0x1340),
@@ -66,13 +65,11 @@ namespace HaRepacker.GUI {
 						ShowKey(module);
 
 						return true;
-					}
-					catch (Exception exp) {
+					} catch (Exception exp) {
 						MessageBox.Show(
 							"Invalid KeyGen position. This version of MapleStory may be unsupported.\r\n" +
 							exp.ToString(), "Error");
-					}
-					finally {
+					} finally {
 						kernel32.FreeLibrary(module);
 					}
 				}

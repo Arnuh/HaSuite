@@ -61,8 +61,7 @@ namespace HaCreator.MapEditor.Info {
 			if (objInfoProp.HCTag == null)
 				try {
 					objInfoProp.HCTag = Load((WzSubProperty) objInfoProp, oS, l0, l1, l2);
-				}
-				catch (KeyNotFoundException) {
+				} catch (KeyNotFoundException) {
 					return null;
 				}
 
@@ -86,8 +85,7 @@ namespace HaCreator.MapEditor.Info {
 				try {
 					foreach (WzConvexProperty offsetSet in prop.WzProperties)
 						result.Add(ParsePropToOffsetList(offsetSet));
-				}
-				catch (InvalidCastException) {
+				} catch (InvalidCastException) {
 				}
 			else
 				result = null;

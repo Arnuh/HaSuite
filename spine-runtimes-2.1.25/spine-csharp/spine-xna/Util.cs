@@ -65,8 +65,7 @@ namespace Spine {
 #endif
 				try {
 					return LoadTexture(device, input);
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					throw new Exception("Error reading texture file: " + path, ex);
 				}
 			}

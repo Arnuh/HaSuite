@@ -59,8 +59,7 @@ namespace MapleLib {
 			else if (value.PropertyType == WzPropertyType.String)
 				try {
 					return long.Parse(((WzStringProperty) value).Value);
-				}
-				catch {
+				} catch {
 					Debug.WriteLine("Error parsing string to long: " + ((WzStringProperty) value).Value);
 					return def;
 				}
@@ -102,16 +101,13 @@ namespace MapleLib {
 		public static int ReadValue(this WzImageProperty value, int def) {
 			if (value == null) {
 				return def;
-			}
-			else if (value.PropertyType == WzPropertyType.Int) {
+			} else if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			}
-			else if (value.PropertyType == WzPropertyType.String) {
+			} else if (value.PropertyType == WzPropertyType.String) {
 				var strdata = ((WzStringProperty) value).Value;
 				try {
 					return int.Parse(strdata);
-				}
-				catch {
+				} catch {
 					if (strdata.EndsWith("%"))
 						// Stupid nexon, see <imgdir name="02040016">
 						// It have a scroll success rate of 10% instead of 10

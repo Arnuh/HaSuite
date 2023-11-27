@@ -31,8 +31,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			for (var i = 0; i < portalTypes; i++)
 				try {
 					portals.Add(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[i]]);
-				}
-				catch (KeyNotFoundException) {
+				} catch (KeyNotFoundException) {
 					continue;
 				}
 
@@ -80,8 +79,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void SetOptionalInt(int? value, CheckBox enabler, NumericUpDown input) {
 			if (value == null) {
 				enabler.Checked = false;
-			}
-			else {
+			} else {
 				enabler.Checked = true;
 				input.Value = (int) value;
 			}
@@ -486,8 +484,7 @@ namespace HaCreator.GUI.InstanceEditor {
 				btnBrowseTn.Enabled = true;
 			if (!Program.InfoManager.GamePortals.ContainsKey(pt)) {
 				rowMan.SetInvisible("image");
-			}
-			else {
+			} else {
 				portalImageList.Items.Clear();
 				portalImageList.Items.Add("default");
 				portalImageBox.Image = null;

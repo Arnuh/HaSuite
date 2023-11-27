@@ -48,8 +48,7 @@ namespace HaCreator.MapEditor.Info {
 				if (Image.Width == 1 && Image.Height == 1) Image = Properties.Resources.placeholder;
 
 				Origin = WzInfoTools.PointFToSystemPoint(npcImage.GetCanvasOriginPosition());
-			}
-			else {
+			} else {
 				Image = new Bitmap(1, 1);
 				Origin = new Point();
 			}
@@ -121,8 +120,7 @@ namespace HaCreator.MapEditor.Info {
 						var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("npc", linkImgName);
 
 						_LinkedWzImage = linkedImage ?? npcImage; // fallback to npcImage if null
-					}
-					else {
+					} else {
 						_LinkedWzImage = npcImage;
 					}
 				}

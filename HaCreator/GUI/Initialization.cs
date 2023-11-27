@@ -119,8 +119,7 @@ namespace HaCreator.GUI {
 
 				try {
 					Program.WzManager.LoadLegacyDataWzFile("Data", _wzMapleVersion);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					MessageBox.Show("Error initializing data.wz (" + e.Message +
 					                ").\r\nCheck that the directory is valid and the file is not in use.");
 					return false;
@@ -138,8 +137,7 @@ namespace HaCreator.GUI {
 				ExtractTileSets();
 				ExtractObjSets();
 				ExtractBackgroundSets();
-			}
-			else // for versions beyond v30x
+			} else // for versions beyond v30x
 			{
 				// String.wz
 				var stringWzFiles = Program.WzManager.GetWzFileNameListFromBase("string");
@@ -292,8 +290,7 @@ namespace HaCreator.GUI {
 
 				if (pathBox.Items.Count == 0)
 					pathBox.Items.Add("Select Maple Folder");
-			}
-			catch {
+			} catch {
 			}
 
 			versionBox.SelectedIndex = ApplicationSettings.MapleVersionIndex;
@@ -389,13 +386,11 @@ namespace HaCreator.GUI {
 							}
 
 					allBackgrounds.Clear();
-				}
-				catch (Exception exp) {
+				} catch (Exception exp) {
 					var error = string.Format("Exception occured loading {0}{1}{2}{3}", Environment.NewLine,
 						mapImage.ToString() /*overrides, see WzImage.ToString*/, Environment.NewLine, exp.ToString());
 					ErrorLogger.Log(ErrorLevel.Crash, error);
-				}
-				finally {
+				} finally {
 					mapBoard.Dispose();
 
 					mapBoard.BoardItems.BackBackgrounds.Clear();
@@ -518,8 +513,7 @@ namespace HaCreator.GUI {
 							WzBinaryProperty binProperty = null;
 							if (bgmImage is WzBinaryProperty bgm) {
 								binProperty = bgm;
-							}
-							else if (bgmImage is WzUOLProperty uolBGM) // is UOL property
+							} else if (bgmImage is WzUOLProperty uolBGM) // is UOL property
 							{
 								var linkVal = ((WzUOLProperty) bgmImage).LinkValue;
 								if (linkVal is WzBinaryProperty linkCanvas) binProperty = linkCanvas;
@@ -530,8 +524,7 @@ namespace HaCreator.GUI {
 										WzInfoTools.RemoveExtension(soundImage.Name) + @"/" + binProperty.Name] =
 									binProperty;
 						}
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						var error = string.Format("[ExtractSoundFile] Error parsing {0}, {1} file.\r\nError: {2}",
 							soundWzDir.Name, soundImage.Name, e.ToString());
 						ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
@@ -683,8 +676,7 @@ namespace HaCreator.GUI {
 					}
 
 					Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
-				}
-				else if (portal.WzProperties[0] is WzCanvasProperty) {
+				} else if (portal.WzProperties[0] is WzCanvasProperty) {
 					var images = new Dictionary<string, Bitmap>();
 					Bitmap defaultImage = null;
 					try {
@@ -697,8 +689,7 @@ namespace HaCreator.GUI {
 						}
 
 						Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
-					}
-					catch (InvalidCastException) {
+					} catch (InvalidCastException) {
 						continue;
 					} //nexon likes to toss ints in here zType etc
 				}

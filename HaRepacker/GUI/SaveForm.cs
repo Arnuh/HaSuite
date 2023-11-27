@@ -47,8 +47,7 @@ namespace HaRepacker.GUI {
 
 				versionBox.Enabled = false; // disable, not necessary
 				checkBox_64BitFile.Enabled = false; // disable, not necessary
-			}
-			else {
+			} else {
 				wzf = (WzFile) wzNode.Tag;
 				IsRegularWzFile = true;
 			}
@@ -74,12 +73,10 @@ namespace HaRepacker.GUI {
 						wzf.Is64BitWzFile
 							? false
 							: true; // disable checkbox if its checked as 64-bit, since the version will always be 777
-				}
-				else { // Data.wz uses BMS encryption... no sepcific version indicated
+				} else { // Data.wz uses BMS encryption... no sepcific version indicated
 					encryptionBox.SelectedIndex = MainForm.GetIndexByWzMapleVersion(WzMapleVersion.BMS);
 				}
-			}
-			finally {
+			} finally {
 				bIsLoading = false;
 			}
 		}
@@ -115,8 +112,7 @@ namespace HaRepacker.GUI {
 			if (wzMapleVersion == WzMapleVersion.CUSTOM) {
 				var customWzInputBox = new CustomWZEncryptionInputBox();
 				customWzInputBox.ShowDialog();
-			}
-			else {
+			} else {
 				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
 		}
@@ -156,12 +152,10 @@ namespace HaRepacker.GUI {
 						try {
 							File.Delete(dialog.FileName);
 							File.Move(dialog.FileName + "$tmp", dialog.FileName);
-						}
-						catch (IOException ex) {
+						} catch (IOException ex) {
 							MessageBox.Show("Handle error overwriting WZ file", Properties.Resources.Error);
 						}
-					}
-					else {
+					} else {
 						wzf.SaveToDisk(dialog.FileName, bSaveAs64BitWzFile, wzMapleVersionSelected);
 					}
 
@@ -170,8 +164,7 @@ namespace HaRepacker.GUI {
 					// Reload the new file
 					var loadedWzFile = Program.WzFileManager.LoadWzFile(dialog.FileName, wzMapleVersionSelected);
 					if (loadedWzFile != null) _mainPanel.MainForm.AddLoadedWzObjectToMainPanel(loadedWzFile);
-				}
-				else {
+				} else {
 					var WzIv = WzTool.GetIvByMapleVersion(wzMapleVersionSelected);
 
 					// Save file
@@ -189,14 +182,12 @@ namespace HaRepacker.GUI {
 						try {
 							File.Copy(tmpFilePath, targetFilePath, true);
 							File.Delete(tmpFilePath);
-						}
-						catch (Exception exp) {
+						} catch (Exception exp) {
 							Debug.WriteLine(exp); // nvm, dont show to user
 						}
 
 						wzNode.DeleteWzNode(); // this is a WzImage, and cannot be unloaded by _mainPanel.MainForm.UnloadWzFile
-					}
-					catch (UnauthorizedAccessException) {
+					} catch (UnauthorizedAccessException) {
 						error_noAdminPriviledge = true;
 					}
 

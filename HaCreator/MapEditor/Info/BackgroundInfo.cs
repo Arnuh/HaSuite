@@ -78,8 +78,7 @@ namespace HaCreator.MapEditor.Info {
 					bgInfoProp.HCTagSpine = Load(graphicsDevice, bgInfoProp, bS, type, no);
 
 				return (BackgroundInfo) bgInfoProp.HCTagSpine;
-			}
-			else {
+			} else {
 				if (bgInfoProp.HCTag == null) bgInfoProp.HCTag = Load(graphicsDevice, bgInfoProp, bS, type, no);
 
 				return (BackgroundInfo) bgInfoProp.HCTag;
@@ -101,8 +100,7 @@ namespace HaCreator.MapEditor.Info {
 			WzCanvasProperty frame0;
 			if (type == BackgroundInfoType.Animation) {
 				frame0 = (WzCanvasProperty) WzInfoTools.GetRealProperty(parentObject["0"]);
-			}
-			else if (type == BackgroundInfoType.Spine) {
+			} else if (type == BackgroundInfoType.Spine) {
 				// TODO: make a preview of the spine image ffs
 				var spineCanvas = (WzCanvasProperty) parentObject["0"];
 				if (spineCanvas != null) {
@@ -129,14 +127,12 @@ namespace HaCreator.MapEditor.Info {
 
 					return new BackgroundInfo(parentObject, bitmap, WzInfoTools.PointFToSystemPoint(origin__), bS, type,
 						no, parentObject, wzSpineAnimationItem);
-				}
-				else {
+				} else {
 					var origin_ = new PointF();
 					return new BackgroundInfo(parentObject, Resources.placeholder,
 						WzInfoTools.PointFToSystemPoint(origin_), bS, type, no, parentObject, null);
 				}
-			}
-			else {
+			} else {
 				frame0 = (WzCanvasProperty) WzInfoTools.GetRealProperty(parentObject);
 			}
 

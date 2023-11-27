@@ -407,8 +407,7 @@ namespace Spine {
 
 							timelines.Add(timeline);
 							duration = Math.Max(duration, timeline.frames[timeline.FrameCount * 5 - 5]);
-						}
-						else if (timelineName == "attachment") {
+						} else if (timelineName == "attachment") {
 							var timeline = new AttachmentTimeline(values.Count);
 							timeline.slotIndex = slotIndex;
 
@@ -420,8 +419,7 @@ namespace Spine {
 
 							timelines.Add(timeline);
 							duration = Math.Max(duration, timeline.frames[timeline.FrameCount - 1]);
-						}
-						else {
+						} else {
 							throw new Exception("Invalid timeline type for a slot: " + timelineName + " (" + slotName +
 							                    ")");
 						}
@@ -453,14 +451,12 @@ namespace Spine {
 
 							timelines.Add(timeline);
 							duration = Math.Max(duration, timeline.frames[timeline.FrameCount * 2 - 2]);
-						}
-						else if (timelineName == "translate" || timelineName == "scale") {
+						} else if (timelineName == "translate" || timelineName == "scale") {
 							TranslateTimeline timeline;
 							float timelineScale = 1;
 							if (timelineName == "scale") {
 								timeline = new ScaleTimeline(values.Count);
-							}
-							else {
+							} else {
 								timeline = new TranslateTimeline(values.Count);
 								timelineScale = scale;
 							}
@@ -480,8 +476,7 @@ namespace Spine {
 
 							timelines.Add(timeline);
 							duration = Math.Max(duration, timeline.frames[timeline.FrameCount * 3 - 3]);
-						}
-						else if (timelineName == "flipX" || timelineName == "flipY") {
+						} else if (timelineName == "flipX" || timelineName == "flipY") {
 							var x = timelineName == "flipX";
 							var timeline = x ? new FlipXTimeline(values.Count) : new FlipYTimeline(values.Count);
 							timeline.boneIndex = boneIndex;
@@ -497,8 +492,7 @@ namespace Spine {
 
 							timelines.Add(timeline);
 							duration = Math.Max(duration, timeline.frames[timeline.FrameCount * 2 - 2]);
-						}
-						else {
+						} else {
 							throw new Exception("Invalid timeline type for a bone: " + timelineName + " (" + boneName +
 							                    ")");
 						}
@@ -554,8 +548,7 @@ namespace Spine {
 										vertices = ((MeshAttachment) attachment).vertices;
 									else
 										vertices = new float[vertexCount];
-								}
-								else {
+								} else {
 									var verticesValue = (List<object>) valueMap["vertices"];
 									vertices = new float[vertexCount];
 									var start = GetInt(valueMap, "offset", 0);
@@ -653,8 +646,7 @@ namespace Spine {
 			var curveObject = valueMap["curve"];
 			if (curveObject.Equals("stepped")) {
 				timeline.SetStepped(frameIndex);
-			}
-			else if (curveObject is List<object>) {
+			} else if (curveObject is List<object>) {
 				var curve = (List<object>) curveObject;
 				timeline.SetCurve(frameIndex, (float) curve[0], (float) curve[1], (float) curve[2], (float) curve[3]);
 			}

@@ -59,8 +59,7 @@ namespace HaRepacker {
 				errorTBox = Properties.Resources.FHSettingsPortalValue;
 				int.Parse(TypeTBox.Text);
 				double.Parse(SizeTBox.Text);
-			}
-			catch {
+			} catch {
 				doOverwrite = false;
 				MessageBox.Show(string.Format(Properties.Resources.FHSettingsInvalidMessage, errorTBox),
 					Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);

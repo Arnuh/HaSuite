@@ -138,8 +138,7 @@ namespace HaRepacker.GUI {
 
 				if (skillName == null) {
 					Debug.WriteLine("Skillid of " + item.Key + " is null.");
-				}
-				else {
+				} else {
 					if (skillName.ToLower().Contains(SearchQuery) || desc.ToLower().Contains(SearchQuery))
 						HexJumpList.Add(item.Key,
 							new KeyValuePair<string, string>(skillName, string.Format("{0}\r\n{1}", desc, h)));
@@ -299,8 +298,7 @@ namespace HaRepacker.GUI {
 							if (LoadedVersion == string.Empty)
 								LoadedVersion = "MapleStory v." + File.Version + " WZ version: " +
 								                File.MapleVersion.ToString();
-						}
-						else {
+						} else {
 							MessageBox.Show(parseStatus.GetErrorDescription(), Properties.Resources.Error);
 						}
 					}
@@ -381,8 +379,7 @@ namespace HaRepacker.GUI {
 				if (bookName != null) {
 					if (!JobsCache.ContainsKey(SkillIdOrJobID))
 						JobsCache.Add(SkillIdOrJobID, bookName);
-				}
-				else {
+				} else {
 					var name = skill["name"]?.ReadString("NULL");
 					var desc = skill["desc"]?.ReadString(null);
 					var h1 = skill["h1"]?.ReadString(null);

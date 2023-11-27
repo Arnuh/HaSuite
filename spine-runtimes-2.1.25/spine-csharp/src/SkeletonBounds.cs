@@ -90,8 +90,7 @@ namespace Spine {
 				if (poolCount > 0) {
 					polygon = polygonPool[poolCount - 1];
 					polygonPool.RemoveAt(poolCount - 1);
-				}
-				else {
+				} else {
 					polygon = new Polygon();
 				}
 

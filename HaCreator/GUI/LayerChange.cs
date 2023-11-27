@@ -34,8 +34,7 @@ namespace HaCreator.GUI {
 			if (board.SelectedLayerIndex == -1) {
 				layerBox.SelectedIndex = 0;
 				zmBox.SelectedIndex = 0;
-			}
-			else {
+			} else {
 				layerBox.SelectedIndex = board.SelectedLayerIndex;
 				if (board.SelectedPlatform != -1) zmBox.SelectedItem = board.SelectedPlatform;
 			}

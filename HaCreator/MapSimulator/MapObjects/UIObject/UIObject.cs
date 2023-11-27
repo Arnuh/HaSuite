@@ -288,8 +288,7 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 
 					if (seBtMouseClick != null) // play mouse click sound
 						seBtMouseClick.Play();
-				}
-				else if (mouseState.LeftButton == ButtonState.Released) {
+				} else if (mouseState.LeftButton == ButtonState.Released) {
 					var priorState = currentState;
 
 					SetButtonState(UIObjectState.MouseOver);
@@ -299,15 +298,13 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 						    .Pressed) // this after setting the MouseOver state, so user-code does not get override
 						// Invoke clicked event
 						ButtonClickReleased?.Invoke(this);
-				}
-				else {
+				} else {
 					SetButtonState(UIObjectState.MouseOver);
 
 					if (seBtMouseOver != null) // play mouse over sound
 						seBtMouseOver.Play();
 				}
-			}
-			else {
+			} else {
 				SetButtonState(UIObjectState.Normal);
 			}
 		}

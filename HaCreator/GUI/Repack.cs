@@ -117,8 +117,7 @@ namespace HaCreator.GUI {
 					Directory.CreateDirectory(testDir);
 					Directory.Delete(testDir);
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				if (e is UnauthorizedAccessException) bSaveFileInHaCreatorDirectory = true;
 			}
 
@@ -141,8 +140,7 @@ namespace HaCreator.GUI {
 					Directory.CreateDirectory(XMLDir);
 
 				foreach (var fi in new DirectoryInfo(backupDir).GetFiles()) fi.Delete();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				ShowErrorMessageThreadSafe(e, "backup files");
 				return;
 			}
@@ -159,8 +157,7 @@ namespace HaCreator.GUI {
 						Directory.CreateDirectory(xmlPathDir);
 					var xmlSer = new WzClassicXmlSerializer(0, LineBreak.None, false);
 					xmlSer.SerializeImage(img, xmlPath);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					ShowErrorMessageThreadSafe(e, "XMLs");
 					return;
 				}
@@ -187,8 +184,7 @@ namespace HaCreator.GUI {
 				string tmpFile;
 				if (!bSaveFileInHaCreatorDirectory) {
 					tmpFile = orgFile + "$tmp";
-				}
-				else {
+				} else {
 					var folderPath = Path.Combine(rootDir, "Output");
 					tmpFile = Path.Combine(folderPath, wzf.Name);
 
@@ -198,8 +194,7 @@ namespace HaCreator.GUI {
 
 						if (!File.Exists(tmpFile))
 							File.Create(tmpFile).Close();
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						ShowErrorMessageThreadSafe(e, wzf.Name);
 						return;
 					}
@@ -218,8 +213,7 @@ namespace HaCreator.GUI {
 						// Move the newly created WZ file as the new file 
 						File.Move(tmpFile, orgFile);
 					}
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					ShowErrorMessageThreadSafe(e, wzf.Name);
 					return;
 				}

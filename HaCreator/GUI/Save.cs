@@ -54,24 +54,19 @@ namespace HaCreator.GUI {
 			if (idBox.Text == "") {
 				statusLabel.Text = "Please choose an ID";
 				saveButton.Enabled = false;
-			}
-			else if (GetIdBoxMapType() != MapType.RegularMap) {
+			} else if (GetIdBoxMapType() != MapType.RegularMap) {
 				statusLabel.Text = "";
 				saveButton.Enabled = true;
-			}
-			else if (!int.TryParse(idBox.Text, out id)) {
+			} else if (!int.TryParse(idBox.Text, out id)) {
 				statusLabel.Text = "Must enter a number";
 				saveButton.Enabled = false;
-			}
-			else if (id < MapConstants.MinMap || id > MapConstants.MaxMap) {
+			} else if (id < MapConstants.MinMap || id > MapConstants.MaxMap) {
 				statusLabel.Text = "Out of range";
 				saveButton.Enabled = false;
-			}
-			else if (WzInfoTools.GetMapStringProp(id.ToString(), Program.WzManager) != null) {
+			} else if (WzInfoTools.GetMapStringProp(id.ToString(), Program.WzManager) != null) {
 				statusLabel.Text = "WARNING: Will overwrite existing map";
 				saveButton.Enabled = true;
-			}
-			else {
+			} else {
 				statusLabel.Text = "";
 				saveButton.Enabled = true;
 			}
@@ -103,8 +98,7 @@ namespace HaCreator.GUI {
 				saver.UpdateMapLists();
 
 				MessageBox.Show("Saved map with ID: " + newId.ToString());
-			}
-			else {
+			} else {
 				board.MapInfo.strMapName = idBox.Text;
 				((TabItemContainer) board.TabPage.Tag).Text = board.MapInfo.strMapName;
 				saver.ChangeMapTypeAndID(-1, type);

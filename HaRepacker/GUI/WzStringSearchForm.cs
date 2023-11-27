@@ -55,8 +55,7 @@ namespace HaRepacker.GUI {
 			var data = 0;
 			try {
 				data = int.Parse(textBox6.Text);
-			}
-			catch (Exception) {
+			} catch (Exception) {
 			}
 
 			textBox5.Text = BitConverter.ToString(ByteUtils.IntegerToLittleEndian(data)).Replace("-", " ");
@@ -139,8 +138,7 @@ namespace HaRepacker.GUI {
 				textBox6.Text = "0";
 				label_itemname.Text = "Not found";
 				label_itemdesc.Text = "Not found";
-			}
-			else {
+			} else {
 				var first = true;
 				foreach (var data in HexJumpList) {
 					if (first) {

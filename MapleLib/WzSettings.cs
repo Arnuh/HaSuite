@@ -57,13 +57,11 @@ namespace MapleLib.WzLib {
 
 					LoadSettingsJson((JObject) mainJson[USER_SETTING_JSON], userSettingsType);
 					LoadSettingsJson((JObject) mainJson[APP_SETTING_JSON], appSettingsType);
-				}
-				catch {
+				} catch {
 					// its fine if loading isnt possible
 					// fallback to default
 				}
-			}
-			else {
+			} else {
 				// do nothing, default setting is in the value as specified in WzSettings.cs
 			}
 		}
@@ -92,11 +90,9 @@ namespace MapleLib.WzLib {
 			if (jsonHoldingObject == null) {
 				// does nothing to this field if json does not contain anything
 				// fallback to default as specified in WzSettings.json
-			}
-			else if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum") {
+			} else if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum") {
 				fieldInfo.SetValue(null, (int) jsonHoldingObject["value"]);
-			}
-			else {
+			} else {
 				var fieldType = (string) jsonHoldingObject["type"];
 
 				switch (fieldType) {

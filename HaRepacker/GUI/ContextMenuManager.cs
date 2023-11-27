@@ -60,7 +60,7 @@ namespace HaRepacker {
 		private ToolStripMenuItem Rename;
 		private ToolStripMenuItem FixLink;
 		private ToolStripMenuItem FixPixFormat;
-		
+
 
 		public ContextMenuManager(MainPanel haRepackerMainPanel, UndoRedoManager undoMan) {
 			parentPanel = haRepackerMainPanel;
@@ -108,14 +108,14 @@ namespace HaRepacker {
 			// wz properties
 			SortAllChildViewNode = new ToolStripMenuItem("Sort child nodes view", null,
 				new EventHandler( // SortAllChildViewNode cant be in 2 place at once, gotta make copies
-				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
-				}));
+					delegate(object sender, EventArgs e) {
+						foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
+					}));
 			SortAllChildViewNode2 = new ToolStripMenuItem("Sort child nodes view", null,
 				new EventHandler( // SortAllChildViewNode cant be in 2 place at once, gotta make copies
 					delegate(object sender, EventArgs e) {
 						foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
-				}));
+					}));
 			SortPropertiesByName = new ToolStripMenuItem("Sort properties by name", null, new EventHandler(
 				delegate(object sender, EventArgs e) {
 					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodeProperties(node);
@@ -310,24 +310,21 @@ namespace HaRepacker {
 				toolStripmenuItems.Add(Rename);
 				// export, import
 				toolStripmenuItems.Add(Remove);
-			}
-			else if (Tag is WzImageProperty) {
+			} else if (Tag is WzImageProperty) {
 				toolStripmenuItems.Add(Rename);
 				toolStripmenuItems.Add(Remove);
-			}
-			else if (Tag is WzDirectory) {
+			} else if (Tag is WzDirectory) {
 				toolStripmenuItems.Add(AddDirsSubMenu);
 				toolStripmenuItems.Add(Rename);
 				toolStripmenuItems.Add(Remove);
-			}
-			else if (Tag is WzFile) {
+			} else if (Tag is WzFile) {
 				toolStripmenuItems.Add(AddDirsSubMenu);
 				toolStripmenuItems.Add(Rename);
 				toolStripmenuItems.Add(SaveFile);
 				toolStripmenuItems.Add(Unload);
 				toolStripmenuItems.Add(Reload);
 			}
-			
+
 			toolStripmenuItems.Add(ExpandAllChildNode);
 			toolStripmenuItems.Add(CollapseAllChildNode);
 			toolStripmenuItems.Add(AddEtcMenu);

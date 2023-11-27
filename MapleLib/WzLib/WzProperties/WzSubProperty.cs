@@ -222,7 +222,7 @@ namespace MapleLib.WzLib.WzProperties {
 						if (nodeId1 > nodeId2)
 							return 1;
 						return -1;
-					} else {// default to string compare
+					} else { // default to string compare
 						return img1.Name.CompareTo(img2.Name);
 					}
 				} else {
@@ -230,6 +230,7 @@ namespace MapleLib.WzLib.WzProperties {
 				}
 			});
 		}
+
 		#endregion
 	}
 }

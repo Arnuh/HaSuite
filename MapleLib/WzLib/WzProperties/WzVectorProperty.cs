@@ -38,8 +38,7 @@ namespace MapleLib.WzLib.WzProperties {
 			if (value is System.Drawing.Point) {
 				x.val = ((System.Drawing.Point) value).X;
 				y.val = ((System.Drawing.Point) value).Y;
-			}
-			else {
+			} else {
 				x.val = ((System.Drawing.Size) value).Width;
 				y.val = ((System.Drawing.Size) value).Height;
 			}

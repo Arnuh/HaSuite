@@ -89,8 +89,7 @@ namespace MapleLib.WzLib.Spine {
 					data = json.ReadSkeletonData(skeletonReader);
 
 					return true;
-				}
-				else {
+				} else {
 					// try read binary based 
 					foreach (var property in childProperties) {
 						var linkedProperty = property.GetLinkedWzImageProperty();

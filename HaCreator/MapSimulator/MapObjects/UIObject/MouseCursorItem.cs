@@ -42,8 +42,7 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 			if (previousMouseState.LeftButton == ButtonState.Released &&
 			    Mouse.GetState().LeftButton == ButtonState.Pressed) // Left click
 			{
-			}
-			else if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
+			} else if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
 				newSetState |= (int) MouseCursorItemStates.LeftPress;
 			}
 
@@ -51,8 +50,7 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 			if (previousMouseState.RightButton == ButtonState.Released &&
 			    Mouse.GetState().RightButton == ButtonState.Pressed) // Right click
 			{
-			}
-			else if (Mouse.GetState().RightButton == ButtonState.Pressed) {
+			} else if (Mouse.GetState().RightButton == ButtonState.Pressed) {
 				newSetState |= (int) MouseCursorItemStates.RightPress;
 			}
 

@@ -84,8 +84,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void LoadOptionalInt(int? value, CheckBox cbx, NumericUpDown box) {
 			if (value == null) {
 				cbx.Checked = false;
-			}
-			else {
+			} else {
 				cbx.Checked = true;
 				box.Value = (int) value;
 			}
@@ -94,8 +93,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void LoadOptionalStr(string value, CheckBox cbx, TextBox box) {
 			if (value == null) {
 				cbx.Checked = false;
-			}
-			else {
+			} else {
 				cbx.Checked = true;
 				box.Text = value;
 			}

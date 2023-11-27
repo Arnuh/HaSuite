@@ -79,16 +79,14 @@ namespace HaRepacker {
 				if (!m_coll.Contains(e.Node)) // new node ?
 				{
 					m_coll.Add(e.Node);
-				}
-				else // not new, remove it from the collection
+				} else // not new, remove it from the collection
 				{
 					removePaintFromNodes();
 					m_coll.Remove(e.Node);
 				}
 
 				paintSelectedNodes();
-			}
-			else {
+			} else {
 				// SHIFT is pressed
 				if (bShift) {
 					var myQueue = new Queue();
@@ -142,8 +140,7 @@ namespace HaRepacker {
 
 								nIndexUpper++;
 							} // end while
-						}
-						else {
+						} else {
 							if (!m_coll.Contains(uppernode)) myQueue.Enqueue(uppernode);
 							if (!m_coll.Contains(bottomnode)) myQueue.Enqueue(bottomnode);
 						}

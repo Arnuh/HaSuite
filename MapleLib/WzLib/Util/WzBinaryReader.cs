@@ -95,8 +95,7 @@ namespace MapleLib.WzLib.Util {
 					retString.Append((char) encryptedChar);
 					mask++;
 				}
-			}
-			else { // ASCII
+			} else { // ASCII
 				byte mask = 0xAA;
 				if (smallLength == sbyte.MinValue)
 					length = ReadInt32();

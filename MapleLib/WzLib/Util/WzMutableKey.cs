@@ -77,8 +77,7 @@ namespace MapleLib.WzLib.Util {
 					for (var j = 0; j < block.Length; j++) block[j] = IV[j % 4];
 
 					s.Write(block, 0, block.Length);
-				}
-				else {
+				} else {
 					s.Write(newKeys, i - 16, 16);
 				}
 

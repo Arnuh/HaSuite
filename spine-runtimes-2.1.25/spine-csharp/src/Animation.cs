@@ -205,8 +205,7 @@ namespace Spine {
 					if (i == start) {
 						prevX = 0;
 						prevY = 0;
-					}
-					else {
+					} else {
 						prevX = curves[i - 2];
 						prevY = curves[i - 1];
 					}
@@ -432,8 +431,7 @@ namespace Spine {
 				g = frames[i - 2];
 				b = frames[i - 1];
 				a = frames[i];
-			}
-			else {
+			} else {
 				// Interpolate between the previous frame and the current frame.
 				var frameIndex = Animation.binarySearch(frames, time, 5);
 				var prevFrameR = frames[frameIndex - 4];
@@ -456,8 +454,7 @@ namespace Spine {
 				slot.g += (g - slot.g) * alpha;
 				slot.b += (b - slot.b) * alpha;
 				slot.a += (a - slot.a) * alpha;
-			}
-			else {
+			} else {
 				slot.r = r;
 				slot.g = g;
 				slot.b = b;
@@ -504,8 +501,7 @@ namespace Spine {
 			if (time < frames[0]) {
 				if (lastTime > time) Apply(skeleton, lastTime, int.MaxValue, null, 0);
 				return;
-			}
-			else if (lastTime > time) //
+			} else if (lastTime > time) //
 			{
 				lastTime = -1;
 			}
@@ -556,8 +552,7 @@ namespace Spine {
 			if (lastTime > time) { // Fire events after last time for looped animations.
 				Apply(skeleton, lastTime, int.MaxValue, firedEvents, alpha);
 				lastTime = -1f;
-			}
-			else if (lastTime >= frames[frameCount - 1]) // Last time is after last frame.
+			} else if (lastTime >= frames[frameCount - 1]) // Last time is after last frame.
 			{
 				return;
 			}
@@ -567,8 +562,7 @@ namespace Spine {
 			int frameIndex;
 			if (lastTime < frames[0]) {
 				frameIndex = 0;
-			}
-			else {
+			} else {
 				frameIndex = Animation.binarySearch(frames, lastTime);
 				var frame = frames[frameIndex];
 				while (frameIndex > 0) { // Fire multiple events with the same frame.
@@ -626,8 +620,7 @@ namespace Spine {
 			if (drawOrderToSetupIndex == null) {
 				drawOrder.Clear();
 				drawOrder.AddRange(slots);
-			}
-			else {
+			} else {
 				for (int i = 0, n = drawOrderToSetupIndex.Length; i < n; i++)
 					drawOrder[i] = slots[drawOrderToSetupIndex[i]];
 			}
@@ -818,8 +811,7 @@ namespace Spine {
 			if (time < frames[0]) {
 				if (lastTime > time) Apply(skeleton, lastTime, int.MaxValue, null, 0);
 				return;
-			}
-			else if (lastTime > time) //
+			} else if (lastTime > time) //
 			{
 				lastTime = -1;
 			}

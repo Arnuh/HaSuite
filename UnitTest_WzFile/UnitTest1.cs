@@ -82,12 +82,10 @@ namespace UnitTest_WzFile {
 				wzImg_newTmpFile.Dispose(); // unload
 				try {
 					File.Delete(tmpFilePath);
-				}
-				catch (Exception exp) {
+				} catch (Exception exp) {
 					Debug.WriteLine(exp); // nvm, dont show to user
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				Assert.IsTrue(true,
 					"Error initializing " + Path.GetFileName(filePath) + " (" + e.Message +
 					").\r\nAlso, check that the directory is valid and the file is not in use.");
@@ -114,8 +112,7 @@ namespace UnitTest_WzFile {
 
 					Assert.IsFalse(parseStatus != WzFileParseStatus.Success,
 						"Error initializing " + fileName + " (" + parseStatus.GetErrorDescription() + ").");
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					Assert.IsTrue(true,
 						"Error initializing " + Path.GetFileName(filePath) + " (" + e.Message +
 						").\r\nAlso, check that the directory is valid and the file is not in use.");

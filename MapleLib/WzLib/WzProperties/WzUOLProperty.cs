@@ -144,21 +144,17 @@ namespace MapleLib.WzLib.WzProperties {
 					foreach (var path in paths)
 						if (path == "..") {
 							linkVal = (WzObject) linkVal.Parent;
-						}
-						else {
-							if (linkVal is WzImageProperty) {
-								linkVal = ((WzImageProperty) linkVal)[path];
-							}
-							else if (linkVal is WzImage image) {
+						} else {
+							if (linkVal is WzImageProperty property) {
+								linkVal = property;
+							} else if (linkVal is WzImage image) {
 								linkVal = image[path];
-							}
-							else if (linkVal is WzDirectory directory) {
+							} else if (linkVal is WzDirectory directory) {
 								if (path.EndsWith(".img"))
 									linkVal = directory[path];
 								else
 									linkVal = directory[path + ".img"];
-							}
-							else {
+							} else {
 								Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical,
 									"UOL got nexon'd at property: " + FullPath);
 								return null;

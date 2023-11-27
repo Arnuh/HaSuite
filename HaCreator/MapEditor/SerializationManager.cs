@@ -168,18 +168,15 @@ namespace HaCreator.MapEditor {
 				foreach (var pair in (JObject) obj) result.Add(pair.Key, Deserialize2(pair.Value));
 
 				return result;
-			}
-			else if (obj is JValue) {
+			} else if (obj is JValue) {
 				return ((JValue) obj).Value;
-			}
-			else if (obj is JArray) {
+			} else if (obj is JArray) {
 				var jarr = (JArray) obj;
 				var arr = new object[jarr.Count];
 				for (var i = 0; i < jarr.Count; i++) arr[i] = Deserialize2(jarr[i]);
 
 				return arr;
-			}
-			else {
+			} else {
 				throw new Exception();
 			}
 		}

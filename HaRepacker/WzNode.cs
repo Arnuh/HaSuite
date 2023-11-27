@@ -41,13 +41,11 @@ namespace HaRepacker {
 					Nodes.Add(new WzNode(dir));
 				foreach (var img in ((WzDirectory) SourceObject).WzImages)
 					Nodes.Add(new WzNode(img));
-			}
-			else if (SourceObject is WzImage image) {
+			} else if (SourceObject is WzImage image) {
 				if (image.Parsed)
 					foreach (var prop in image.WzProperties)
 						Nodes.Add(new WzNode(prop));
-			}
-			else if (SourceObject is IPropertyContainer container) {
+			} else if (SourceObject is IPropertyContainer container) {
 				foreach (var prop in container.WzProperties)
 					Nodes.Add(new WzNode(prop));
 			}
@@ -107,29 +105,24 @@ namespace HaRepacker {
 					directory.AddImage(wzImgProperty);
 				else
 					return false;
-			}
-			else if (TaggedObject is WzImage wzImageProperty) {
+			} else if (TaggedObject is WzImage wzImageProperty) {
 				if (!wzImageProperty.Parsed)
 					wzImageProperty.ParseImage();
 				if (obj is WzImageProperty imgProperty) {
 					wzImageProperty.AddProperty(imgProperty);
 					wzImageProperty.Changed = true;
-				}
-				else {
+				} else {
 					return false;
 				}
-			}
-			else if (TaggedObject is IPropertyContainer container) {
+			} else if (TaggedObject is IPropertyContainer container) {
 				if (obj is WzImageProperty property) {
 					container.AddProperty(property);
 					if (TaggedObject is WzImageProperty imgProperty)
 						imgProperty.ParentImage.Changed = true;
-				}
-				else {
+				} else {
 					return false;
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
 
@@ -147,8 +140,7 @@ namespace HaRepacker {
 				Nodes.Add(node);
 				AddObjInternal((WzObject) node.Tag);
 				return true;
-			}
-			else {
+			} else {
 				MessageBox.Show(
 					"Cannot insert node \"" + node.Text +
 					"\" because a node with the same name already exists. Skipping.", "Skipping Node",
@@ -186,13 +178,11 @@ namespace HaRepacker {
 						{UndoRedoManager.ObjectAdded(this, node)});
 					node.EnsureVisible();
 					return node;
-				}
-				else {
+				} else {
 					Warning.Error("Could not insert property, make sure all types are correct");
 					return null;
 				}
-			}
-			else {
+			} else {
 				MessageBox.Show(
 					"Cannot insert object \"" + obj.Name +
 					"\" because an object with the same name already exists. Skipping.", "Skipping Object",

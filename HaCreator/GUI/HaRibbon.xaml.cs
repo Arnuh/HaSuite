@@ -36,7 +36,7 @@ namespace HaCreator.GUI {
 #if DEBUG
 			debugTab.Visibility = Visibility.Visible;
 #else
-            debugTab.Visibility = Visibility.Collapsed;
+			debugTab.Visibility = Visibility.Collapsed;
 #endif
 
 			PreviewMouseWheel += HaRibbon_PreviewMouseWheel;

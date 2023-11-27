@@ -75,8 +75,7 @@ namespace MapleLib.WzLib.WzProperties {
 			writer.Write((byte) 4);
 			if (Value == 0f) {
 				writer.Write((byte) 0);
-			}
-			else {
+			} else {
 				writer.Write((byte) 0x80);
 				writer.Write(Value);
 			}

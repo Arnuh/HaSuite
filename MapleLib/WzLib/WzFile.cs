@@ -278,8 +278,7 @@ namespace MapleLib.WzLib {
 
 				//parseErrorMessage = "Error with game version hash : The specified game version is incorrect and WzLib was unable to determine the version itself";
 				return WzFileParseStatus.Error_Game_Ver_Hash;
-			}
-			else {
+			} else {
 				versionHash = CheckAndGetVersionHash(wzVersionHeader, mapleStoryPatchVersion);
 				reader.Hash = versionHash;
 
@@ -306,8 +305,7 @@ namespace MapleLib.WzLib {
 				if (encver > 0xff) // encver always less than 256
 				{
 					wz_withEncryptVersionHeader = false;
-				}
-				else if (encver == 0x80) {
+				} else if (encver == 0x80) {
 					// there's an exceptional case that the first field of data part is a compressed int which determined property count,
 					// if the value greater than 127 and also to be a multiple of 256, the first 5 bytes will become to
 					//   80 00 xx xx xx
@@ -318,12 +316,10 @@ namespace MapleLib.WzLib {
 						if (propCount > 0 && (propCount & 0xff) == 0 && propCount <= 0xffff)
 							wz_withEncryptVersionHeader = false;
 					}
-				}
-				else {
+				} else {
 					// old wz file with header version
 				}
-			}
-			else {
+			} else {
 				// Obviously, if data part have only 1 byte, encver must be deleted.
 				wz_withEncryptVersionHeader = false;
 			}
@@ -349,8 +345,7 @@ namespace MapleLib.WzLib {
 			try {
 				testDirectory = new WzDirectory(reader, name, versionHash, WzIv, this);
 				testDirectory.ParseDirectory(lazyParse);
-			}
-			catch (Exception exp) {
+			} catch (Exception exp) {
 				Debug.WriteLine(exp.ToString());
 
 				reader.BaseStream.Position = fallbackOffsetPosition;
@@ -394,15 +389,13 @@ namespace MapleLib.WzLib {
 						}
 
 						reader.BaseStream.Position = fallbackOffsetPosition; // reset
-					}
-					catch {
+					} catch {
 						reader.BaseStream.Position = fallbackOffsetPosition; // reset
 						return false;
 					}
 
 					return true;
-				}
-				else // if there's no image in the WZ file (new KMST Base.wz), test the directory instead
+				} else // if there's no image in the WZ file (new KMST Base.wz), test the directory instead
 				{
 					// coincidentally in msea v194 Map001.wz, the hash matches exactly using mapleStoryPatchVersion of 113, and it fails to decrypt later on (probably 1 in a million chance? o_O).
 					// damn, technical debt accumulating here
@@ -411,16 +404,14 @@ namespace MapleLib.WzLib {
 						// hack for now
 						reader.BaseStream.Position = fallbackOffsetPosition; // reset
 						return false;
-					}
-					else {
+					} else {
 						wzDir = testDirectory;
 						bCloseTestDirectory = false;
 
 						return true;
 					}
 				}
-			}
-			finally {
+			} finally {
 				//     if (bCloseTestDirectory)
 				//         testDirectory.Dispose();
 			}
@@ -599,8 +590,7 @@ namespace MapleLib.WzLib {
 
 					wzWriter.StringCache.Clear();
 				}
-			}
-			finally {
+			} finally {
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 			}
@@ -617,8 +607,7 @@ namespace MapleLib.WzLib {
 				writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.CloseTag("WzFile"));
 
 				writer.Close();
-			}
-			else {
+			} else {
 				throw new Exception("Under Construction");
 			}
 		}
@@ -634,13 +623,11 @@ namespace MapleLib.WzLib {
 		public List<WzObject> GetObjectsFromWildcardPath(string path) {
 			if (path.ToLower() == name.ToLower()) {
 				return new List<WzObject> {WzDirectory};
-			}
-			else if (path == "*") {
+			} else if (path == "*") {
 				var fullList = new List<WzObject> {WzDirectory};
 				fullList.AddRange(GetObjectsFromDirectory(WzDirectory));
 				return fullList;
-			}
-			else if (!path.Contains("*")) {
+			} else if (!path.Contains("*")) {
 				return new List<WzObject> {GetObjectFromPath(path)};
 			}
 
@@ -828,16 +815,13 @@ namespace MapleLib.WzLib {
 							if (checkObjInOtherWzFile == null)
 								return null;
 							seperatedPath = seperatedPath.Skip(2).ToArray();
-						}
-						else {
+						} else {
 							seperatedPath = seperatedPath.Skip(1).ToArray();
 						}
-					}
-					else {
+					} else {
 						return null;
 					}
-				}
-				else {
+				} else {
 					return null;
 				}
 			}
@@ -931,12 +915,10 @@ namespace MapleLib.WzLib {
 					// If we reached here, it means the remaining part of the wildcard could not be matched
 					// with the remaining part of the compare string, so return false.
 					return false;
-				}
-				else if (strWildCard[wildCardIndex] == strCompare[compareIndex]) {
+				} else if (strWildCard[wildCardIndex] == strCompare[compareIndex]) {
 					wildCardIndex++;
 					compareIndex++;
-				}
-				else {
+				} else {
 					// If the current characters do not match and the wildcard character is not a *,
 					// return false.
 					return false;

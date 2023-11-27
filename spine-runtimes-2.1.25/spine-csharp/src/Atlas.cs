@@ -71,8 +71,7 @@ namespace Spine {
 #endif
 				try {
 					Load(reader, Path.GetDirectoryName(path), textureLoader);
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					throw new Exception("Error reading atlas file: " + path, ex);
 				}
 			}
@@ -100,8 +99,7 @@ namespace Spine {
 				if (line == null) break;
 				if (line.Trim().Length == 0) {
 					page = null;
-				}
-				else if (page == null) {
+				} else if (page == null) {
 					page = new AtlasPage();
 					page.name = line;
 
@@ -131,8 +129,7 @@ namespace Spine {
 					textureLoader.Load(page, Path.Combine(imagesDir, line));
 
 					pages.Add(page);
-				}
-				else {
+				} else {
 					var region = new AtlasRegion();
 					region.name = line;
 					region.page = page;
@@ -152,8 +149,7 @@ namespace Spine {
 					if (region.rotate) {
 						region.u2 = (x + height) / (float) page.width;
 						region.v2 = (y + width) / (float) page.height;
-					}
-					else {
+					} else {
 						region.u2 = (x + width) / (float) page.width;
 						region.v2 = (y + height) / (float) page.height;
 					}

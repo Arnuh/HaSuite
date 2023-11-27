@@ -90,15 +90,13 @@ namespace HaCreator.MapEditor {
 					if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
 						    yShift - item.Origin.Y) && (sel.visibleTypes & item.Type) != 0)
 						item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
-			}
-			else if ((sel.visibleTypes & list.ListType) != 0) {
+			} else if ((sel.visibleTypes & list.ListType) != 0) {
 				if (list.IsItem) {
 					foreach (BoardItem item in list)
 						if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
 							    yShift - item.Origin.Y))
 							item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
-				}
-				else {
+				} else {
 					foreach (MapleLine line in list)
 						if (parent.IsItemInRange(Math.Min(line.FirstDot.X, line.SecondDot.X),
 							    Math.Min(line.FirstDot.Y, line.SecondDot.Y),
@@ -131,8 +129,7 @@ namespace HaCreator.MapEditor {
 				lock (parent) {
 					if (MinimapRectangle == null) {
 						MiniMap = null;
-					}
-					else {
+					} else {
 						var bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
 						var processor = System.Drawing.Graphics.FromImage(bmp);
 						foreach (BoardItem item in BoardItems.TileObjs)
@@ -149,8 +146,7 @@ namespace HaCreator.MapEditor {
 				}
 
 				return true;
-			}
-			catch {
+			} catch {
 				return false;
 			}
 		}

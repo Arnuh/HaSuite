@@ -88,8 +88,7 @@ namespace HaCreator.GUI {
 				cww = new CancelableWaitWindow("Searching...",
 					() => Enumerable.Concat(SearchMapWzForObj(l2),
 						SearchEditorForObj(l2).Select(x => x + " (In Editor)")));
-			}
-			else {
+			} else {
 				cww = new CancelableWaitWindow("Searching...",
 					() => SearchEditorForObj(l2).Select(x => x + " (In Editor)"));
 			}

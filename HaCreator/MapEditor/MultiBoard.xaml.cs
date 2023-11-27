@@ -115,8 +115,7 @@ namespace HaCreator.MapEditor {
 #if FPS_TEST
                     fpsCounter.Tick();
 #endif
-				}
-				else {
+				} else {
 					Thread.Sleep(100);
 				}
 		}
@@ -172,8 +171,7 @@ namespace HaCreator.MapEditor {
 			try {
 				result = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,
 					GraphicsProfile.HiDef, pParams);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				MessageBox.Show(string.Format("Graphics adapter is not supported: {0}\r\n\r\n{1}", e.Message,
 					e.StackTrace));
 				Environment.Exit(0);
@@ -302,10 +300,8 @@ namespace HaCreator.MapEditor {
 			sprite.End();
 			try {
 				DxDevice.Present();
-			}
-			catch (DeviceLostException) {
-			}
-			catch (DeviceNotResetException) {
+			} catch (DeviceLostException) {
+			} catch (DeviceNotResetException) {
 				needsReset = true;
 			}
 		}
@@ -420,8 +416,7 @@ namespace HaCreator.MapEditor {
 						if (item.Selected) {
 							selectedUnderPoint = item;
 							selectedItemHigher = true;
-						}
-						else {
+						} else {
 							itemUnderPoint = item;
 							selectedItemHigher = false;
 						}
@@ -439,8 +434,7 @@ namespace HaCreator.MapEditor {
 						if (item.Selected) {
 							selectedUnderPoint = item;
 							selectedItemHigher = true;
-						}
-						else {
+						} else {
 							itemUnderPoint = item;
 							selectedItemHigher = false;
 						}
@@ -747,8 +741,7 @@ namespace HaCreator.MapEditor {
 					System.Drawing.Bitmap bmp;
 					try {
 						bmp = (System.Drawing.Bitmap) System.Drawing.Image.FromFile(file);
-					}
-					catch {
+					} catch {
 						continue;
 					}
 
@@ -805,12 +798,10 @@ namespace HaCreator.MapEditor {
 					if (hScrollBar.Maximum < selectedBoard.hScroll) {
 						hScrollBar.Value = hScrollBar.Maximum - 1;
 						selectedBoard.hScroll = (int) hScrollBar.Value;
-					}
-					else {
+					} else {
 						hScrollBar.Value = selectedBoard.hScroll;
 					}
-				}
-				else {
+				} else {
 					hScrollBar.IsEnabled = false;
 					hScrollBar.Value = 0;
 					hScrollBar.Maximum = 0;
@@ -823,12 +814,10 @@ namespace HaCreator.MapEditor {
 					if (vScrollBar.Maximum < selectedBoard.vScroll) {
 						vScrollBar.Value = vScrollBar.Maximum - 1;
 						selectedBoard.vScroll = (int) vScrollBar.Value;
-					}
-					else {
+					} else {
 						vScrollBar.Value = selectedBoard.vScroll;
 					}
-				}
-				else {
+				} else {
 					vScrollBar.IsEnabled = false;
 					vScrollBar.Value = 0;
 					vScrollBar.Maximum = 0;

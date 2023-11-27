@@ -411,8 +411,7 @@ namespace Spine {
 							float timelineScale = 1;
 							if (timelineType == TIMELINE_SCALE) {
 								timeline = new ScaleTimeline(frameCount);
-							}
-							else {
+							} else {
 								timeline = new TranslateTimeline(frameCount);
 								timelineScale = scale;
 							}
@@ -488,8 +487,7 @@ namespace Spine {
 									vertices = ((MeshAttachment) attachment).vertices;
 								else
 									vertices = new float[vertexCount];
-							}
-							else {
+							} else {
 								vertices = new float[vertexCount];
 								var start = ReadInt(input, true);
 								end += start;

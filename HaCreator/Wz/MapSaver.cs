@@ -66,8 +66,7 @@ namespace HaCreator.Wz {
 				parent.AddImage(image);
 
 				Program.WzManager.SetWzFileUpdated(parent.GetTopMostWzDirectory().Name /* "map" */, image);
-			}
-			else {
+			} else {
 				var mapDir = (WzDirectory) Program.WzManager["ui"];
 				var mapImg = (WzImage) mapDir[image.Name];
 				if (mapImg != null) mapImg.Remove();
@@ -197,11 +196,9 @@ namespace HaCreator.Wz {
 
 						objParent[objIndex.ToString()] = obj;
 						objIndex++;
-					}
-					else if (item is TileInstance instance1) {
+					} else if (item is TileInstance instance1) {
 						tiles.Add(instance1);
-					}
-					else {
+					} else {
 						throw new Exception("Unkown type in layered lists");
 					}
 
@@ -388,8 +385,7 @@ namespace HaCreator.Wz {
 
 						UpdateString(descProp, ttInst.Desc, strTooltipImg);
 					}
-				}
-				else {
+				} else {
 					var strTooltipProp = new WzSubProperty();
 					strTooltipProp["Title"] = InfoTool.SetOptionalString(ttInst.Title);
 					strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc);
@@ -483,8 +479,7 @@ namespace HaCreator.Wz {
 			FootholdOrientation result;
 			if (TryGetSimpleFootholdOrientation(line, out result)) {
 				return result;
-			}
-			else {
+			} else {
 				// Vertical foothold, search for near nonvertical foothold as orientation reference
 
 				// Obtain vertical orientation of the foothold
@@ -492,12 +487,10 @@ namespace HaCreator.Wz {
 				if (line.FirstDot.Y < line.SecondDot.Y) {
 					top = (FootholdAnchor) line.FirstDot;
 					bottom = (FootholdAnchor) line.SecondDot;
-				}
-				else if (line.FirstDot.Y > line.SecondDot.Y) {
+				} else if (line.FirstDot.Y > line.SecondDot.Y) {
 					bottom = (FootholdAnchor) line.FirstDot;
 					top = (FootholdAnchor) line.SecondDot;
-				}
-				else {
+				} else {
 					throw new Exception("Zero length foothold in saving");
 				}
 
@@ -563,24 +556,19 @@ namespace HaCreator.Wz {
 			if (line.prevOverride != null && line.FirstDot.connectedLines.Contains(line.prevOverride)) {
 				result = FootholdOrientation.PrevFirstNextSecond;
 				return true;
-			}
-			else if (line.prevOverride != null && line.SecondDot.connectedLines.Contains(line.prevOverride)) {
+			} else if (line.prevOverride != null && line.SecondDot.connectedLines.Contains(line.prevOverride)) {
 				result = FootholdOrientation.NextFirstPrevSecond;
 				return true;
-			}
-			else if (line.nextOverride != null && line.FirstDot.connectedLines.Contains(line.nextOverride)) {
+			} else if (line.nextOverride != null && line.FirstDot.connectedLines.Contains(line.nextOverride)) {
 				result = FootholdOrientation.NextFirstPrevSecond;
 				return true;
-			}
-			else if (line.nextOverride != null && line.SecondDot.connectedLines.Contains(line.nextOverride)) {
+			} else if (line.nextOverride != null && line.SecondDot.connectedLines.Contains(line.nextOverride)) {
 				result = FootholdOrientation.PrevFirstNextSecond;
 				return true;
-			}
-			else if (!line.IsWall) {
+			} else if (!line.IsWall) {
 				result = GetNonverticalFootholdOrientation(line);
 				return true;
-			}
-			else {
+			} else {
 				// Result doesn't really matter here since we're returning false
 				result = FootholdOrientation.PrevFirstNextSecond;
 				return false;
@@ -616,8 +604,7 @@ namespace HaCreator.Wz {
 			if (overrideLine != null && (line.FirstDot.connectedLines.Contains(overrideLine) ||
 			                             line.SecondDot.connectedLines.Contains(overrideLine))) {
 				return overrideLine.num;
-			}
-			else {
+			} else {
 				var anchor =
 					(FootholdAnchor) ((orientation == FootholdOrientation.PrevFirstNextSecond) ^
 					                  (dir == FootholdDirection.Next)
@@ -701,8 +688,7 @@ namespace HaCreator.Wz {
 					clockProp["width"] = InfoTool.SetInt(item.Width);
 					clockProp["height"] = InfoTool.SetInt(item.Height);
 					image["clock"] = clockProp;
-				}
-				else if (item is ShipObject) {
+				} else if (item is ShipObject) {
 					var ship = (ShipObject) item;
 					var shipInfo = (ObjectInfo) ship.BaseInfo;
 					var shipProp = new WzSubProperty();
@@ -716,12 +702,10 @@ namespace HaCreator.Wz {
 					shipProp["shipKind"] = InfoTool.SetInt(ship.ShipKind);
 					shipProp["f"] = InfoTool.SetBool(ship.Flip);
 					image["shipObj"] = shipProp;
-				}
-				else if (item is Area) {
+				} else if (item is Area) {
 					var area = (Area) item;
 					areaParent[area.Identifier] = PackRectangle(area);
-				}
-				else if (item is Healer) {
+				} else if (item is Healer) {
 					var healer = (Healer) item;
 					var healerInfo = (ObjectInfo) healer.BaseInfo;
 					var healerProp = new WzSubProperty();
@@ -735,8 +719,7 @@ namespace HaCreator.Wz {
 					healerProp["fall"] = InfoTool.SetInt(healer.fall);
 					healerProp["rise"] = InfoTool.SetInt(healer.rise);
 					image["healer"] = healerProp;
-				}
-				else if (item is Pulley) {
+				} else if (item is Pulley) {
 					var pulley = (Pulley) item;
 					var pulleyInfo = (ObjectInfo) pulley.BaseInfo;
 					var pulleyProp = new WzSubProperty();
@@ -745,16 +728,14 @@ namespace HaCreator.Wz {
 					pulleyProp["x"] = InfoTool.SetInt(pulley.X);
 					pulleyProp["y"] = InfoTool.SetInt(pulley.Y);
 					image["pulley"] = pulleyProp;
-				}
-				else if (item is BuffZone) {
+				} else if (item is BuffZone) {
 					var buff = (BuffZone) item;
 					var buffProp = PackRectangle(buff);
 					buffProp["ItemID"] = InfoTool.SetInt(buff.ItemID);
 					buffProp["Interval"] = InfoTool.SetInt(buff.Interval);
 					buffProp["Duration"] = InfoTool.SetInt(buff.Duration);
 					buffParent[buff.ZoneName] = buffProp;
-				}
-				else if (item is SwimArea) {
+				} else if (item is SwimArea) {
 					var swim = (SwimArea) item;
 					swimParent[swim.Identifier] = PackRectangle(swim);
 				}
@@ -845,8 +826,7 @@ namespace HaCreator.Wz {
 						itemProp["alphaTest"] = InfoTool.SetOptionalBool(mirrorFieldData.ReflectionInfo.AlphaTest);
 
 						targetObjectWzProperty.WzProperties.Add(itemProp);
-					}
-					else {
+					} else {
 						throw new Exception("Error saving mirror field data. Missing MirrorFieldDataType of " +
 						                    forTargetObject);
 					}

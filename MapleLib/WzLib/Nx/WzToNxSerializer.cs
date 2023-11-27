@@ -198,13 +198,11 @@ namespace MapleLib.WzLib.Nx {
 			if (flag) {
 				childs.AddRange(((WzDirectory) node).WzImages);
 				childs.AddRange(((WzDirectory) node).WzDirectories);
-			}
-			else {
+			} else {
 				var flag2 = node is WzImage;
 				if (flag2) {
 					childs.AddRange(((WzImage) node).WzProperties);
-				}
-				else {
+				} else {
 					var flag3 = node is WzImageProperty && !(node is WzUOLProperty);
 					if (flag3) {
 						var flag4 = ((WzImageProperty) node).WzProperties != null;
@@ -249,40 +247,31 @@ namespace MapleLib.WzLib.Nx {
 			bw.Write(type);
 			if (node is WzIntProperty) {
 				bw.Write((long) ((WzIntProperty) node).Value);
-			}
-			else if (node is WzShortProperty) {
+			} else if (node is WzShortProperty) {
 				bw.Write((long) ((WzShortProperty) node).Value);
-			}
-			else if (node is WzLongProperty) {
+			} else if (node is WzLongProperty) {
 				bw.Write(((WzLongProperty) node).Value);
-			}
-			else if (node is WzFloatProperty) {
+			} else if (node is WzFloatProperty) {
 				bw.Write((double) ((WzFloatProperty) node).Value);
-			}
-			else if (node is WzDoubleProperty) {
+			} else if (node is WzDoubleProperty) {
 				bw.Write(((WzDoubleProperty) node).Value);
-			}
-			else if (node is WzStringProperty) {
+			} else if (node is WzStringProperty) {
 				bw.Write(ds.AddString(((WzStringProperty) node).Value));
-			}
-			else if (node is WzVectorProperty) {
+			} else if (node is WzVectorProperty) {
 				var pNode = ((WzVectorProperty) node).Pos;
 				bw.Write(pNode.X);
 				bw.Write(pNode.Y);
-			}
-			else if (node is WzCanvasProperty) {
+			} else if (node is WzCanvasProperty) {
 				var wzcp = (WzCanvasProperty) node;
 				bw.Write(ds.AddCanvas(wzcp));
 				var flag16 = true; // export canvas
 				if (flag16) {
 					bw.Write((ushort) wzcp.PngProperty.GetBitmap().Width);
 					bw.Write((ushort) wzcp.PngProperty.GetBitmap().Height);
-				}
-				else {
+				} else {
 					bw.Write(0);
 				}
-			}
-			else if (node is WzBinaryProperty) {
+			} else if (node is WzBinaryProperty) {
 				var wzmp = (WzBinaryProperty) node;
 				bw.Write(ds.AddMP3(wzmp));
 				var flag18 = true;

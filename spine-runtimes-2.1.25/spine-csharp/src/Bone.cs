@@ -143,8 +143,7 @@ namespace Spine {
 				if (data.inheritScale) {
 					worldScaleX = parent.worldScaleX * scaleX;
 					worldScaleY = parent.worldScaleY * scaleY;
-				}
-				else {
+				} else {
 					worldScaleX = scaleX;
 					worldScaleY = scaleY;
 				}
@@ -152,8 +151,7 @@ namespace Spine {
 				worldRotation = data.inheritRotation ? parent.worldRotation + rotationIK : rotationIK;
 				worldFlipX = parent.worldFlipX != flipX;
 				worldFlipY = parent.worldFlipY != flipY;
-			}
-			else {
+			} else {
 				var skeleton = this.skeleton;
 				bool skeletonFlipX = skeleton.flipX, skeletonFlipY = skeleton.flipY;
 				worldX = skeletonFlipX ? -x : x;
@@ -171,8 +169,7 @@ namespace Spine {
 			if (worldFlipX) {
 				m00 = -cos * worldScaleX;
 				m01 = sin * worldScaleY;
-			}
-			else {
+			} else {
 				m00 = cos * worldScaleX;
 				m01 = -sin * worldScaleY;
 			}
@@ -180,8 +177,7 @@ namespace Spine {
 			if (worldFlipY != yDown) {
 				m10 = -sin * worldScaleX;
 				m11 = -cos * worldScaleY;
-			}
-			else {
+			} else {
 				m10 = sin * worldScaleX;
 				m11 = cos * worldScaleY;
 			}

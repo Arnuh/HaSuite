@@ -77,8 +77,7 @@ namespace HaCreator.GUI.EditorPanels {
 					lifePictureBox.Image = new Bitmap(info.Image);
 					hcsm.EnterEditMode(ItemTypes.Reactors);
 					hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
-				}
-				else if (npcRButton.Checked) {
+				} else if (npcRButton.Checked) {
 					var id = ((string) lifeListBox.SelectedItem).Substring(0,
 						((string) lifeListBox.SelectedItem).IndexOf(" - "));
 					var info = NpcInfo.Get(id);
@@ -92,8 +91,7 @@ namespace HaCreator.GUI.EditorPanels {
 					lifePictureBox.Image = new Bitmap(info.Image);
 					hcsm.EnterEditMode(ItemTypes.NPCs);
 					hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
-				}
-				else if (mobRButton.Checked) {
+				} else if (mobRButton.Checked) {
 					var id = ((string) lifeListBox.SelectedItem).Substring(0,
 						((string) lifeListBox.SelectedItem).IndexOf(" - "));
 					var info = MobInfo.Get(id);

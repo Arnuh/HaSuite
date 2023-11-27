@@ -58,12 +58,10 @@ namespace HaCreator.GUI.EditorPanels {
 			if (radioButton_spine.Checked) {
 				infoType = BackgroundInfoType.Spine;
 				path = "spine";
-			}
-			else if (aniBg.Checked) {
+			} else if (aniBg.Checked) {
 				infoType = BackgroundInfoType.Animation;
 				path = "ani";
-			}
-			else {
+			} else {
 				infoType = BackgroundInfoType.Background;
 				path = "back";
 			}
@@ -103,8 +101,7 @@ namespace HaCreator.GUI.EditorPanels {
 					hcsm.MultiBoard.Focus();
 					((ImageViewer) sender).IsActive = true;
 				}
-			}
-			else // right click
+			} else // right click
 			{
 				if (bgInfo.Type ==
 				    BackgroundInfoType.Spine) // only shows an animation preview window if its a spine object.

@@ -264,8 +264,7 @@ namespace MapleLib.WzLib {
 
 					if (lazyParse)
 						break;
-				}
-				else {
+				} else {
 					var img = new WzImage(fname, reader, checksum) {
 						BlockSize = fsize,
 						Offset = offset,
@@ -309,8 +308,7 @@ namespace MapleLib.WzLib {
 					fs.Read(buffer, 0, img.size);
 
 					wzWriter.Write(buffer);
-				}
-				else {
+				} else {
 					//reader.BaseStream.Position = img.tempFileStart;
 					//wzWriter.Write(reader.ReadBytes((int)(img.tempFileEnd - img.tempFileStart)));
 					img.reader.BaseStream.Position = img.tempFileStart;
@@ -357,8 +355,7 @@ namespace MapleLib.WzLib {
 							img.tempFileEnd = prevOpenedStream.Position;
 						}
 					}
-				}
-				else {
+				} else {
 					img.tempFileStart = img.offset;
 					img.tempFileEnd = img.offset + img.size;
 				}

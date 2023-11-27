@@ -102,8 +102,7 @@ namespace HaRepacker.GUI {
 				myProcess.StartInfo.UseShellExecute = true;
 				myProcess.StartInfo.FileName = ((LinkLabel) sender).Text;
 				myProcess.Start();
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				Console.WriteLine(ex.Message);
 			}
 		}

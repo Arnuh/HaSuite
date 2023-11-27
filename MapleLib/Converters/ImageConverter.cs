@@ -84,8 +84,7 @@ namespace MapleLib.Converters {
 				Marshal.Copy(ptr, bytedata, 0, numbytes);
 
 				return bytedata;
-			}
-			finally {
+			} finally {
 				if (bmpdata != null)
 					bitmap.UnlockBits(bmpdata);
 			}

@@ -69,8 +69,7 @@ namespace HaCreator.MapEditor.Input {
 							X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2,
 							Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false);
 						currAddedObj = boardItem;
-					}
-					else {
+					} else {
 						var boardItem = tileRandomList[NextInt32(tileRandomList.Length)]
 							.CreateInstance(Board.SelectedLayer, Board,
 								X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2,
@@ -82,16 +81,14 @@ namespace HaCreator.MapEditor.Input {
 					BindItem(currAddedObj,
 						new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2,
 							currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
-				}
-				else if (state == MouseState.Chairs) // Chair
+				} else if (state == MouseState.Chairs) // Chair
 				{
 					Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> {UndoRedoManager.ItemAdded(currAddedObj)});
 					ReleaseItem(currAddedObj);
 					currAddedObj = new Chair(Board, X, Y);
 					Board.BoardItems.Add(currAddedObj, false);
 					BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
-				}
-				else if (state == MouseState.Ropes) // Ropes
+				} else if (state == MouseState.Ropes) // Ropes
 				{
 					var count = BoundItems.Count;
 					var anchor = (RopeAnchor) BoundItems.Keys.ElementAt(0);
@@ -101,8 +98,7 @@ namespace HaCreator.MapEditor.Input {
 							{UndoRedoManager.RopeAdded(anchor.ParentRope)});
 						CreateRope();
 					}
-				}
-				else if (state == MouseState.Tooltip) // Tooltip
+				} else if (state == MouseState.Tooltip) // Tooltip
 				{
 					var count = BoundItems.Count;
 					var dot = (ToolTipDot) BoundItems.Keys.ElementAt(0);
@@ -113,8 +109,7 @@ namespace HaCreator.MapEditor.Input {
 						Board.UndoRedoMan.AddUndoBatch(undoPipe);
 						CreateTooltip();
 					}
-				}
-				else if (state == MouseState.Clock) // Clock
+				} else if (state == MouseState.Clock) // Clock
 				{
 					var count = BoundItems.Count;
 					var items = BoundItems.Keys.ToList();
@@ -172,8 +167,7 @@ namespace HaCreator.MapEditor.Input {
 				Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> {UndoRedoManager.ItemAdded(fhAnchor)});
 				if (connectedLines.Count == 0) {
 					Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
-				}
-				else {
+				} else {
 					connectedLines[0].ConnectSecondDot(fhAnchor);
 					Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
 				}
@@ -202,8 +196,7 @@ namespace HaCreator.MapEditor.Input {
 								var fh = new FootholdLine(Board, anchor);
 								Board.BoardItems.FootholdLines.Add(fh);
 							}
-						}
-						else // Construct a footholdline between the anchor and the mouse
+						} else // Construct a footholdline between the anchor and the mouse
 						{
 							Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
 						}
@@ -223,13 +216,11 @@ namespace HaCreator.MapEditor.Input {
 						((RopeAnchor) BoundItems.Keys.ElementAt(0)).RemoveItem(null);
 					else
 						((ToolTipDot) BoundItems.Keys.ElementAt(0)).ParentTooltip.RemoveItem(null);
-				}
-				else if (state == MouseState.Footholds && connectedLines.Count > 0) {
+				} else if (state == MouseState.Footholds && connectedLines.Count > 0) {
 					var fh = (FootholdLine) connectedLines[0];
 					fh.Remove(false, null);
 					Board.BoardItems.FootholdLines.Remove(fh);
-				}
-				else if (state == MouseState.Clock) {
+				} else if (state == MouseState.Clock) {
 					var items = BoundItems.Keys.ToList();
 					foreach (var item in items) item.RemoveItem(null);
 				}

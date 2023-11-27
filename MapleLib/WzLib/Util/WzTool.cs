@@ -65,8 +65,7 @@ namespace MapleLib.WzLib.Util {
 			var storeName = type + "_" + s;
 			if (s.Length > 4 && StringCache.ContainsKey(storeName)) {
 				return 5;
-			}
-			else {
+			} else {
 				StringCache[storeName] = 1;
 				return 1 + GetEncodedStringLength(s);
 			}
@@ -75,8 +74,7 @@ namespace MapleLib.WzLib.Util {
 		public static T StringToEnum<T>(string name) {
 			try {
 				return (T) Enum.Parse(typeof(T), name);
-			}
-			catch {
+			} catch {
 				return default;
 			}
 		}

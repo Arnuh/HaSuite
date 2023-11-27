@@ -29,8 +29,7 @@ namespace HaCreator.GUI {
 			if (e.KeyCode == Keys.Escape) {
 				DialogResult = DialogResult.Cancel;
 				Close();
-			}
-			else if (e.KeyCode == Keys.Enter && okButton.Enabled) {
+			} else if (e.KeyCode == Keys.Enter && okButton.Enabled) {
 				okButton_Click(null, null);
 			}
 		}
@@ -49,8 +48,7 @@ namespace HaCreator.GUI {
 			if (zms.Contains((int) zmBox.Value)) {
 				statusLabel.Text = "Already exists";
 				okButton.Enabled = false;
-			}
-			else {
+			} else {
 				statusLabel.Text = "";
 				okButton.Enabled = true;
 			}

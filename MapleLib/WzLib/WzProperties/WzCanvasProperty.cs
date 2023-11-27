@@ -154,8 +154,7 @@ namespace MapleLib.WzLib.WzProperties {
 			{
 				writer.Write((byte) 1);
 				WritePropertyList(writer, properties);
-			}
-			else {
+			} else {
 				writer.Write((byte) 0);
 			}
 
@@ -289,8 +288,7 @@ namespace MapleLib.WzLib.WzProperties {
 					var foundProperty = wzImageParent.GetFromPath(_inlink);
 					if (foundProperty != null && foundProperty is WzImageProperty property) return property;
 				}
-			}
-			else if (_outlink != null) {
+			} else if (_outlink != null) {
 				WzObject currentWzObj = this; // first object to work with
 				while ((currentWzObj = currentWzObj.Parent) != null) {
 					if (!(currentWzObj is WzDirectory)) // keep looping if its not a WzImage
@@ -311,8 +309,7 @@ namespace MapleLib.WzLib.WzProperties {
 						// fixed root path
 						var realpath = _outlink.Replace(prefixWz, WzFileParent.Name.Replace(".wz", "") + "/");
 						foundProperty = wzFileParent.GetObjectFromPath(realpath);
-					}
-					else {
+					} else {
 						foundProperty = wzFileParent.GetObjectFromPath(_outlink);
 					}
 

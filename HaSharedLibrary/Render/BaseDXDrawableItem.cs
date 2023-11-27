@@ -83,8 +83,7 @@ namespace HaSharedLibrary.Render.DX {
 				frame0 = frames[0];
 				notAnimated = true;
 				this.flip = flip;
-			}
-			else {
+			} else {
 				this.frames = frames;
 				notAnimated = false;
 				this.flip = flip;
@@ -157,8 +156,7 @@ namespace HaSharedLibrary.Render.DX {
 				);
 
 				_LastFrameDrawn = drawFrame; // set the last frame drawn
-			}
-			else {
+			} else {
 				_LastFrameDrawn = null;
 			}
 		}

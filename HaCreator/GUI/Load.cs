@@ -85,16 +85,14 @@ namespace HaCreator.GUI {
 				searchBox.Enabled = false;
 				mapBrowser.IsEnabled = false;
 				loadButton.Enabled = true;
-			}
-			else if (XMLSelect.Checked) {
+			} else if (XMLSelect.Checked) {
 				ApplicationSettings.lastRadioIndex = 1;
 				HAMBox.Enabled = false;
 				XMLBox.Enabled = true;
 				searchBox.Enabled = false;
 				mapBrowser.IsEnabled = false;
 				loadButton.Enabled = XMLBox.Text != "";
-			}
-			else if (WZSelect.Checked) {
+			} else if (WZSelect.Checked) {
 				ApplicationSettings.lastRadioIndex = 2;
 				HAMBox.Enabled = false;
 				XMLBox.Enabled = false;
@@ -147,19 +145,16 @@ namespace HaCreator.GUI {
 				ww.EndWait();
 				Close();
 				return;
-			}
-			else if (XMLSelect.Checked) {
+			} else if (XMLSelect.Checked) {
 				try {
 					mapImage = (WzImage) new WzXmlDeserializer(false, null).ParseXML(XMLBox.Text)[0];
-				}
-				catch {
+				} catch {
 					MessageBox.Show("Error while loading XML. Aborted.");
 					ww.EndWait();
 					Show();
 					return;
 				}
-			}
-			else if (WZSelect.Checked) {
+			} else if (WZSelect.Checked) {
 				if (mapBrowser.SelectedItem == null)
 					return; // racing event
 
@@ -175,8 +170,7 @@ namespace HaCreator.GUI {
 					}
 
 					mapName = streetName = categoryName = selectedName;
-				}
-				else if (mapBrowser.SelectedItem == "CashShopPreview") {
+				} else if (mapBrowser.SelectedItem == "CashShopPreview") {
 					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
 					foreach (var uiWzDir in uiWzDirs) {
 						mapImage = (WzImage) uiWzDir?["CashShopPreview.img"];
@@ -185,8 +179,7 @@ namespace HaCreator.GUI {
 					}
 
 					mapName = streetName = categoryName = "CashShopPreview";
-				}
-				else {
+				} else {
 					var mapid_str = mapBrowser.SelectedItem.Substring(0, 9);
 					int.TryParse(mapid_str, out mapid);
 

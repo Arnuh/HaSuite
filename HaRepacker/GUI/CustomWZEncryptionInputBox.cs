@@ -41,8 +41,7 @@ namespace HaRepacker.GUI {
 						parsed = false;
 						break;
 					}
-			}
-			else {
+			} else {
 				parsed = false;
 			}
 
@@ -50,8 +49,7 @@ namespace HaRepacker.GUI {
 				// do nothing.. default, could be corrupted anyway
 				appSettings.MapleVersion_CustomEncryptionBytes = "00 00 00 00";
 				Program.ConfigurationManager.Save();
-			}
-			else {
+			} else {
 				var i = 0;
 				foreach (var byte_ in splitBytes) {
 					switch (i) {
@@ -77,8 +75,7 @@ namespace HaRepacker.GUI {
 			if (appSettings.MapleVersion_CustomAESUserKey == string.Empty) // set default if there's none
 			{
 				SetDefaultTextBoxAESUserKey();
-			}
-			else {
+			} else {
 				var storedCustomAESKey = appSettings.MapleVersion_CustomAESUserKey;
 				var splitAESKeyBytes = storedCustomAESKey.Split(' ');
 
@@ -89,8 +86,7 @@ namespace HaRepacker.GUI {
 							parsed2 = false;
 							break;
 						}
-				}
-				else {
+				} else {
 					parsed2 = false;
 				}
 
@@ -98,8 +94,7 @@ namespace HaRepacker.GUI {
 					// do nothing.. default, could be corrupted anyway
 					appSettings.MapleVersion_CustomAESUserKey = string.Empty;
 					Program.ConfigurationManager.Save();
-				}
-				else {
+				} else {
 					var i = 0;
 					foreach (var byte_ in splitAESKeyBytes) {
 						switch (i) {
@@ -315,8 +310,7 @@ namespace HaRepacker.GUI {
 				for (var i = 0; i < input.Length; i++)
 					if (!HexEncoding.IsHexDigit(input[i]))
 						return false;
-			}
-			else {
+			} else {
 				return false;
 			}
 

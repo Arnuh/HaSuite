@@ -62,9 +62,7 @@ namespace HaCreator.Collections {
 
 			var pos = new Microsoft.Xna.Framework.Point(x, y - 60);
 			var reflectionBoundaryWithin = MirrorFieldDatas.FirstOrDefault(
-				mirror => {
-					return mirror.Rectangle.Contains(pos) && mirror.MirrorFieldDataType == filter_objectForOverlay;
-				});
+				mirror => { return mirror.Rectangle.Contains(pos) && mirror.MirrorFieldDataType == filter_objectForOverlay; });
 
 			if (reflectionBoundaryWithin != null)
 				return reflectionBoundaryWithin;
@@ -102,20 +100,17 @@ namespace HaCreator.Collections {
 			lock (board.ParentControl) {
 				if (item is TileInstance || item is ObjectInstance) {
 					TileObjs.Remove((LayeredItem) item);
-				}
-				else if (item is BackgroundInstance) {
+				} else if (item is BackgroundInstance) {
 					if (((BackgroundInstance) item).front)
 						FrontBackgrounds.Remove((BackgroundInstance) item);
 					else
 						BackBackgrounds.Remove((BackgroundInstance) item);
-				}
-				else if (item.Type == ItemTypes.Misc) {
+				} else if (item.Type == ItemTypes.Misc) {
 					if (item is VRDot || item is MinimapDot)
 						SpecialDots.Remove((MapleDot) item);
 					else
 						MiscItems.Remove(item);
-				}
-				else {
+				} else {
 					var itemType = item.GetType();
 					foreach (var itemList in AllItemLists) {
 						var listType = itemList.GetType().GetGenericArguments()[0];
@@ -136,8 +131,7 @@ namespace HaCreator.Collections {
 					TileObjs.Add((LayeredItem) item);
 					if (sort)
 						Sort();
-				}
-				else if (item is BackgroundInstance instance) {
+				} else if (item is BackgroundInstance instance) {
 					if (instance.front)
 						FrontBackgrounds.Add(instance);
 					else
@@ -145,14 +139,12 @@ namespace HaCreator.Collections {
 
 					if (sort)
 						Sort();
-				}
-				else if (item.Type == ItemTypes.Misc) {
+				} else if (item.Type == ItemTypes.Misc) {
 					if (item is VRDot || item is MinimapDot)
 						SpecialDots.Add((MapleDot) item);
 					else
 						MiscItems.Add(item);
-				}
-				else {
+				} else {
 					var itemType = item.GetType();
 					foreach (var itemList in AllItemLists) {
 						var listType = itemList.GetType().GetGenericArguments()[0];
@@ -180,21 +172,17 @@ namespace HaCreator.Collections {
 						delegate(LayeredItem a, LayeredItem b) {
 							if (a.Layer.LayerNumber > b.Layer.LayerNumber) {
 								return 1;
-							}
-							else if (a.Layer.LayerNumber < b.Layer.LayerNumber) {
+							} else if (a.Layer.LayerNumber < b.Layer.LayerNumber) {
 								return -1;
-							}
-							else {
+							} else {
 								if (a is TileInstance && b is TileInstance) {
 									var ai = (TileInfo) a.BaseInfo;
 									var bi = (TileInfo) b.BaseInfo;
 									if (ai.z > bi.z) {
 										return 1;
-									}
-									else if (ai.z < bi.z) {
+									} else if (ai.z < bi.z) {
 										return -1;
-									}
-									else {
+									} else {
 										if (a.Z > b.Z)
 											return 1;
 										else if (a.Z < b.Z)
@@ -210,11 +198,9 @@ namespace HaCreator.Collections {
 									else if (a.Z < b.Z)
 										return -1;
 									else return 0;
-								}
-								else if (a is TileInstance && b is ObjectInstance) {
+								} else if (a is TileInstance && b is ObjectInstance) {
 									return 1;
-								}
-								else {
+								} else {
 									return -1;
 								}
 							}

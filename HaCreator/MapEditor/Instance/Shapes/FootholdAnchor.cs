@@ -43,32 +43,24 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public static int FHAnchorSorter(FootholdAnchor c, FootholdAnchor d) {
 			if (c.X > d.X) {
 				return 1;
-			}
-			else if (c.X < d.X) {
+			} else if (c.X < d.X) {
 				return -1;
-			}
-			else {
+			} else {
 				if (c.Y > d.Y) {
 					return 1;
-				}
-				else if (c.Y < d.Y) {
+				} else if (c.Y < d.Y) {
 					return -1;
-				}
-				else {
+				} else {
 					if (c.LayerNumber > d.LayerNumber) {
 						return 1;
-					}
-					else if (c.LayerNumber < d.LayerNumber) {
+					} else if (c.LayerNumber < d.LayerNumber) {
 						return -1;
-					}
-					else {
+					} else {
 						if (c.PlatformNumber > d.PlatformNumber) {
 							return 1;
-						}
-						else if (c.PlatformNumber < d.PlatformNumber) {
+						} else if (c.PlatformNumber < d.PlatformNumber) {
 							return -1;
-						}
-						else {
+						} else {
 							if (c.Parent != null && c.Parent is TileInstance &&
 							    ((TileInfo) c.Parent.BaseInfo).u == "edU")
 								return -1;

@@ -80,8 +80,7 @@ namespace HaRepacker.GUI {
 						IsBackground = true
 					};
 					Program.pipeThread.Start();
-				}
-				catch (IOException) {
+				} catch (IOException) {
 					if (wzPathToLoad != null)
 						try {
 							using (var clientPipe =
@@ -95,8 +94,7 @@ namespace HaRepacker.GUI {
 							}
 
 							Environment.Exit(0);
-						}
-						catch (TimeoutException) {
+						} catch (TimeoutException) {
 						}
 				}
 
@@ -140,8 +138,7 @@ namespace HaRepacker.GUI {
 					SortNodesRecursively(node);
 					MainPanel.DataTree.EndUpdate();
 				}
-			}
-			catch {
+			} catch {
 				Warning.Error(string.Format(Properties.Resources.MainCouldntOpenWZ, path));
 			}
 		}
@@ -218,8 +215,7 @@ namespace HaRepacker.GUI {
 					MainPanel.DataTree.EndUpdate();
 					//MainPanel.DataTree.Update();
 				}));
-			}
-			else {
+			} else {
 				MainPanel.DataTree.BeginUpdate();
 
 				MainPanel.DataTree.Nodes.Add(node);
@@ -244,9 +240,7 @@ namespace HaRepacker.GUI {
 
 			// Unload it
 			if (currentDispatcher != null)
-				await currentDispatcher.BeginInvoke((Action) (() => {
-					UnloadWzFile(existingLoadedWzFile, currentDispatcher);
-				}));
+				await currentDispatcher.BeginInvoke((Action) (() => { UnloadWzFile(existingLoadedWzFile, currentDispatcher); }));
 			else
 				UnloadWzFile(existingLoadedWzFile, currentDispatcher);
 
@@ -304,8 +298,7 @@ namespace HaRepacker.GUI {
 				}*/
 				button_addTab.ForeColor = Color.White;
 				button_addTab.BackColor = Color.Black;
-			}
-			else {
+			} else {
 				BackColor = DefaultBackColor;
 				mainMenu.BackColor = DefaultBackColor;
 				mainMenu.ForeColor = Color.Black;
@@ -338,8 +331,7 @@ namespace HaRepacker.GUI {
 			foreach (var res in resources) {
 				if (isToolStripComboBox) {
 					((ToolStripComboBox) encryptionBox).Items.Add(res); // in mainform
-				}
-				else {
+				} else {
 					if (i != 4) // dont show bruteforce option in SaveForm
 						((ComboBox) encryptionBox).Items.Add(res); // in saveForm
 				}
@@ -364,8 +356,7 @@ namespace HaRepacker.GUI {
 			if (wzMapleVer == WzMapleVersion.CUSTOM) {
 				var customWzInputBox = new CustomWZEncryptionInputBox();
 				customWzInputBox.ShowDialog();
-			}
-			else {
+			} else {
 				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
 		}
@@ -479,8 +470,7 @@ namespace HaRepacker.GUI {
 					OnPipeRequest(sr.ReadLine());
 					Program.pipe.Disconnect();
 				}
-			}
-			catch {
+			} catch {
 			}
 		}
 
@@ -636,8 +626,7 @@ namespace HaRepacker.GUI {
 				if (!NameInputBox.Show(Properties.Resources.MainAddTabTitle, 25, out tabName)) return;
 
 				defaultName = tabName;
-			}
-			else {
+			} else {
 				MainPanel = (MainPanel) elemHost.Child;
 			}
 
@@ -846,8 +835,7 @@ namespace HaRepacker.GUI {
 
 							if (opened)
 								form.Show();
-						}
-						else {
+						} else {
 							MessageBox.Show(Properties.Resources.ExecutingAssemblyError,
 								Properties.Resources.Warning, MessageBoxButtons.OK);
 						}
@@ -866,11 +854,9 @@ namespace HaRepacker.GUI {
 						}
 
 						AddLoadedWzObjectToMainPanel(img);
-					}
-					else if (WzTool.IsListFile(filePath)) {
+					} else if (WzTool.IsListFile(filePath)) {
 						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
-					}
-					else {
+					} else {
 						wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
 
 						// Check if there are any related files
@@ -908,8 +894,7 @@ namespace HaRepacker.GUI {
 						var f = Program.WzFileManager.LoadWzFile(filePath, MapleVersionEncryptionSelected);
 						if (f == null) {
 							// error should be thrown 
-						}
-						else {
+						} else {
 							lock (loadedWzFiles) {
 								loadedWzFiles.Add(f);
 							}
@@ -974,8 +959,7 @@ namespace HaRepacker.GUI {
 						var f = Program.WzFileManager.LoadWzFile(filePath, MapleVersionEncryptionSelected);
 						if (f == null) {
 							// error should be thrown 
-						}
-						else {
+						} else {
 							lock (loadedWzFiles) {
 								loadedWzFiles.Add(f);
 							}
@@ -1062,8 +1046,7 @@ namespace HaRepacker.GUI {
 
 						MessageBox.Show(sb.ToString(), "Error rendering map");
 					}
-				}
-				catch (ArgumentException argExp) {
+				} catch (ArgumentException argExp) {
 					MessageBox.Show(argExp.Message, "Error rendering map");
 				}
 			}
@@ -1120,14 +1103,12 @@ namespace HaRepacker.GUI {
 			if (MainPanel.DataTree.SelectedNode == null) {
 				if (MainPanel.DataTree.Nodes.Count == 1) {
 					node = (WzNode) MainPanel.DataTree.Nodes[0];
-				}
-				else {
+				} else {
 					MessageBox.Show(Properties.Resources.MainSelectWzFolder,
 						Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
-			}
-			else {
+			} else {
 				if (MainPanel.DataTree.SelectedNode.Tag is WzFile)
 					node = (WzNode) MainPanel.DataTree.SelectedNode;
 				else
@@ -1256,8 +1237,7 @@ namespace HaRepacker.GUI {
 					serializer.SerializeObject(obj, path);
 					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 				}
-			}
-			else if (serializers is WzNewXmlSerializer serializer_) {
+			} else if (serializers is WzNewXmlSerializer serializer_) {
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, true, true);
 				serializer_.ExportCombinedXml(objsToDump, path);
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
@@ -1339,8 +1319,7 @@ namespace HaRepacker.GUI {
 					if (absolute)
 						pbar.Maximum = value;
 					else pbar.Maximum += value;
-				}
-				else {
+				} else {
 					if (absolute)
 						pbar.Value = value;
 					else pbar.Value += value;
@@ -1676,7 +1655,7 @@ namespace HaRepacker.GUI {
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
-			
+
 			var deserializer =
 				new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion));
 			yesToAll = false;
@@ -1709,7 +1688,7 @@ namespace HaRepacker.GUI {
 			};
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
-			
+
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
 
@@ -1958,11 +1937,9 @@ namespace HaRepacker.GUI {
 		private bool ShowReplaceDialog(string name) {
 			if (yesToAll) {
 				return true;
-			}
-			else if (noToAll) {
+			} else if (noToAll) {
 				return false;
-			}
-			else {
+			} else {
 				ReplaceBox.Show(name, out result);
 				switch (result) {
 					case ReplaceResult.NoToAll:
@@ -2000,8 +1977,7 @@ namespace HaRepacker.GUI {
 				try {
 					if (deserializer is WzXmlDeserializer) {
 						objs = ((WzXmlDeserializer) deserializer).ParseXML(file);
-					}
-					else {
+					} else {
 						bool successfullyParsedImage;
 						objs = new List<WzObject> {
 							((WzImgDeserializer) deserializer).WzImageFromIMGFile(file, iv, Path.GetFileName(file),
@@ -2015,11 +1991,9 @@ namespace HaRepacker.GUI {
 							continue;
 						}
 					}
-				}
-				catch (ThreadAbortException) {
+				} catch (ThreadAbortException) {
 					return;
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					Warning.Error(string.Format(Properties.Resources.MainInvalidFileError, file, e.Message));
 					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 					continue;
@@ -2050,7 +2024,7 @@ namespace HaRepacker.GUI {
 
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
-			
+
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
 

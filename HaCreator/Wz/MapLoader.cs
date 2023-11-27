@@ -362,11 +362,9 @@ namespace HaCreator.Wz {
 				delegate(Chair a, Chair b) {
 					if (a.X > b.X) {
 						return 1;
-					}
-					else if (a.X < b.X) {
+					} else if (a.X < b.X) {
 						return -1;
-					}
-					else {
+					} else {
 						if (a.Y > b.Y)
 							return 1;
 						else if (a.Y < b.Y)
@@ -383,8 +381,7 @@ namespace HaCreator.Wz {
 					if (a.Parent == null && b.Parent != null) {
 						mapBoard.BoardItems.Chairs.Remove(a);
 						i--;
-					}
-					else {
+					} else {
 						mapBoard.BoardItems.Chairs.Remove(b);
 					}
 				}
@@ -471,8 +468,7 @@ namespace HaCreator.Wz {
 						foreach (FootholdLine line in anchor.connectedLines)
 							if (IsAnchorPrevOfFoothold(anchor, line)) {
 								if (fhs.ContainsKey(line.prev)) line.prevOverride = fhs[line.prev];
-							}
-							else {
+							} else {
 								if (fhs.ContainsKey(line.next)) line.nextOverride = fhs[line.next];
 							}
 
@@ -839,8 +835,7 @@ namespace HaCreator.Wz {
 				minimapCenter = new Point(5 - vr.Value.Left, 5 - vr.Value.Top);
 				mapSize = new Point(minimapSize.X, minimapSize.Y);
 				mapCenter = new Point(minimapCenter.X, minimapCenter.Y);
-			}
-			else {
+			} else {
 				var miniMap = mapImage["miniMap"];
 				minimapSize = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
 				minimapCenter = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
@@ -852,8 +847,7 @@ namespace HaCreator.Wz {
 				if (vr == null) {
 					// We have no VR info, so set all VRs according to their target
 					vr = new System.Drawing.Rectangle(leftTarget, topTarget, rightTarget, botTarget);
-				}
-				else {
+				} else {
 					if (vr.Value.Left < leftTarget) leftOffs = leftTarget - vr.Value.Left;
 
 					if (vr.Value.Top < topTarget) topOffs = topTarget - vr.Value.Top;
@@ -909,8 +903,7 @@ namespace HaCreator.Wz {
 			try {
 				GetMapDimensions(mapImage, out VR, out center, out size, out minimapCenter, out minimapSize, out hasVR,
 					out hasMinimap);
-			}
-			catch (NoVRException) {
+			} catch (NoVRException) {
 				MessageBox.Show(
 					"Error - map does not contain size information and HaCreator was unable to generate it. An error has been logged.",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

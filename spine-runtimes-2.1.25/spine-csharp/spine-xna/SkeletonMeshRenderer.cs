@@ -159,8 +159,7 @@ namespace Spine {
 					itemVertices[BR].TextureCoordinate.Y = uvs[RegionAttachment.Y3];
 					itemVertices[TR].TextureCoordinate.X = uvs[RegionAttachment.X4];
 					itemVertices[TR].TextureCoordinate.Y = uvs[RegionAttachment.Y4];
-				}
-				else if (attachment is MeshAttachment) {
+				} else if (attachment is MeshAttachment) {
 					var mesh = (MeshAttachment) attachment;
 					var vertexCount = mesh.Vertices.Length;
 					if (vertices.Length < vertexCount) vertices = new float[vertexCount];
@@ -196,8 +195,7 @@ namespace Spine {
 						itemVertices[ii].TextureCoordinate.X = uvs[v];
 						itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
 					}
-				}
-				else if (attachment is SkinnedMeshAttachment) {
+				} else if (attachment is SkinnedMeshAttachment) {
 					var mesh = (SkinnedMeshAttachment) attachment;
 					var vertexCount = mesh.UVs.Length;
 					if (vertices.Length < vertexCount) vertices = new float[vertexCount];

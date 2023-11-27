@@ -51,8 +51,7 @@ namespace Footholds {
 					((WzIntProperty) portal.Data["y"]).Value = int.Parse(YTBox.Text);
 					portal.Data["y"].ParentImage.Changed = true;
 				}
-			}
-			catch (FormatException) {
+			} catch (FormatException) {
 				MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput,
 					HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}

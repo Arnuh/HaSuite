@@ -43,9 +43,7 @@ namespace MapleLib {
 		public static bool CheckAndLoadLibrary() {
 			if (_SquishLibLoadingState == SquishLibLoadingState.Initialised) {
 				return true; // shouldnt check again once its loaded anyway.
-			}
-
-			else if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
+			} else if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
 			{
 				//similarly to find process architecture  
 				var assemblyArchitecture = Assembly.GetExecutingAssembly().GetName().ProcessorArchitecture;
@@ -106,8 +104,7 @@ namespace MapleLib {
 					System.Diagnostics.Debug.WriteLine("Loaded squish.dll library.");
 
 					return true;
-				}
-				else {
+				} else {
 					_SquishLibLoadingState = SquishLibLoadingState.UnknownError;
 
 					System.Diagnostics.Debug.WriteLine("Error loaded squish.dll library, code = " + errorCode);

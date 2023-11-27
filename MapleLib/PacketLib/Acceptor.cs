@@ -78,12 +78,10 @@ namespace MapleLib.PacketLib {
 				session.WaitForData();
 
 				_listener.BeginAccept(new AsyncCallback(OnClientConnect), null);
-			}
-			catch (ObjectDisposedException) {
+			} catch (ObjectDisposedException) {
 				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] OnClientConnect: Socket closed.");
 				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] OnClientConnect: Socket closed.");
-			}
-			catch (Exception se) {
+			} catch (Exception se) {
 				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] OnClientConnect: " + se);
 				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] OnClientConnect: " + se);
 			}

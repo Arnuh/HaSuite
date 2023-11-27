@@ -82,8 +82,7 @@ namespace HaSharedLibrary.GUI {
 				if (currAudio != null) currAudio.Pause();
 
 				PauseButton.Content = "Play";
-			}
-			else {
+			} else {
 				if (soundProp == null) return;
 
 				PrepareAudioForPlayback();
@@ -155,8 +154,7 @@ namespace HaSharedLibrary.GUI {
 					currAudio.Pause();
 					currAudio.Dispose();
 				}
-			}
-			catch {
+			} catch {
 			}
 		}
 

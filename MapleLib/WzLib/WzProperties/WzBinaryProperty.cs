@@ -214,8 +214,7 @@ namespace MapleLib.WzLib.WzProperties {
 
 			if (otherProperty.mp3bytes == null) {
 				mp3bytes = otherProperty.GetBytes(false);
-			}
-			else {
+			} else {
 				mp3bytes = new byte[otherProperty.mp3bytes.Length];
 				Array.Copy(otherProperty.mp3bytes, mp3bytes, otherProperty.mp3bytes.Length);
 			}
@@ -278,8 +277,7 @@ namespace MapleLib.WzLib.WzProperties {
 			try {
 				Marshal.StructureToPtr(obj, handle.AddrOfPinnedObject(), false);
 				return result;
-			}
-			finally {
+			} finally {
 				handle.Free();
 			}
 		}
@@ -288,8 +286,7 @@ namespace MapleLib.WzLib.WzProperties {
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			try {
 				return Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
-			}
-			finally {
+			} finally {
 				handle.Free();
 			}
 		}
@@ -300,8 +297,7 @@ namespace MapleLib.WzLib.WzProperties {
 				var obj = (T) FormatterServices.GetUninitializedObject(typeof(T));
 				Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject(), obj);
 				return obj;
-			}
-			finally {
+			} finally {
 				handle.Free();
 			}
 		}
@@ -345,8 +341,7 @@ namespace MapleLib.WzLib.WzProperties {
 		public byte[] GetBytes(bool saveInMemory) {
 			if (mp3bytes != null) {
 				return mp3bytes;
-			}
-			else {
+			} else {
 				if (wzReader == null)
 					return null;
 
@@ -356,8 +351,7 @@ namespace MapleLib.WzLib.WzProperties {
 				wzReader.BaseStream.Position = currentPos;
 				if (saveInMemory) {
 					return mp3bytes;
-				}
-				else {
+				} else {
 					var result = mp3bytes;
 					mp3bytes = null;
 					return result;

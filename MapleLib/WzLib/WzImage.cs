@@ -344,8 +344,7 @@ namespace MapleLib.WzLib {
 			if (!forceReadFromData) { // only check if parsed or changed if its not false read
 				if (Parsed) {
 					return true;
-				}
-				else if (Changed) {
+				} else if (Changed) {
 					Parsed = true;
 					return true;
 				}
@@ -447,8 +446,7 @@ namespace MapleLib.WzLib {
 				writer.StringCache.Clear();
 
 				size = (int) (writer.BaseStream.Position - startPos);
-			}
-			else {
+			} else {
 				var pos = reader.BaseStream.Position;
 				reader.BaseStream.Position = offset;
 				writer.Write(reader.ReadBytes((int) pos));
@@ -462,8 +460,7 @@ namespace MapleLib.WzLib {
 				writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.OpenNamedTag("WzImage", name, true));
 				WzImageProperty.DumpPropertyList(writer, level, WzProperties);
 				writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.CloseTag("WzImage"));
-			}
-			else {
+			} else {
 				throw new Exception("Under Construction");
 			}
 		}

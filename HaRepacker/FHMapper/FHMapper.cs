@@ -117,8 +117,7 @@ namespace HaRepacker.FHMapper {
 					((WzIntProperty) miniMapSubProperty["height"]).Value);
 				center = new Point(((WzIntProperty) miniMapSubProperty["centerX"]).Value,
 					((WzIntProperty) miniMapSubProperty["centerY"]).Value);
-			}
-			catch (Exception exp) {
+			} catch (Exception exp) {
 				if (exp is KeyNotFoundException || exp is NullReferenceException)
 					try {
 						var infoSubProperty = (WzSubProperty) img["info"];
@@ -130,8 +129,7 @@ namespace HaRepacker.FHMapper {
 							((WzIntProperty) infoSubProperty["VRTop"]).Value);
 						center = new Point(((WzIntProperty) infoSubProperty["VRRight"]).Value,
 							((WzIntProperty) infoSubProperty["VRBottom"]).Value);
-					}
-					catch {
+					} catch {
 						errorList.Add("Missing map info WzSubProperty. Path: " + mapIdName +
 						              ".img/info/VRRight; VRLeft; VRBottom; VRTop\r\n OR info/miniMap/width ; height; centerX; centerY");
 						return false;
@@ -235,8 +233,7 @@ namespace HaRepacker.FHMapper {
 							if (!isNPC) {
 								mobWzPath = string.Format("Mob.wz/{0}.img/info/link", lifeStrId);
 								mobNamePath = string.Format("String.wz/Mob.img/{0}/name", lifeId);
-							}
-							else {
+							} else {
 								mobWzPath = string.Format("Npc.wz/{0}.img/info/link", lifeStrId);
 								mobNamePath = string.Format("String.wz/Npc.img/{0}/name", lifeId);
 							}
@@ -267,8 +264,7 @@ namespace HaRepacker.FHMapper {
 									renderMobbitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
 								drawBuf.DrawImage(renderMobbitmap, renderXY);
-							}
-							else {
+							} else {
 								//drawBuf.FillRectangle(new SolidBrush(Color.FromArgb(95, MSPColor.R, MSPColor.G, MSPColor.B)), x_text, y_text, 30, 30);
 								//drawBuf.DrawRectangle(new Pen(Color.Black, 1F), x_text, y_text, 30, 30);
 								errorList.Add("Missing monster/npc object. Path: " + mobWzPath + "\r\n" +
@@ -372,8 +368,7 @@ namespace HaRepacker.FHMapper {
 								drawImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
 							tileBuf.DrawImage(drawImage, renderXY);
-						}
-						else {
+						} else {
 							errorList.Add("Missing Map BG object. Path: " + bgObjImagePath);
 						}
 					}
@@ -459,27 +454,21 @@ namespace HaRepacker.FHMapper {
 							if (objData is WzCanvasProperty) {
 								png = (WzCanvasProperty) objData;
 								origin = ((WzCanvasProperty) objData).GetCanvasOriginPosition();
-							}
-							else if (objData is WzUOLProperty) {
+							} else if (objData is WzUOLProperty) {
 								var currProp = objData.Parent;
 								foreach (var directive in ((WzUOLProperty) objData).Value.Split("/".ToCharArray()))
 									if (directive == "..") {
 										currProp = currProp.Parent;
-									}
-									else {
+									} else {
 										if (currProp.GetType() == typeof(WzSubProperty)) {
 											currProp = ((WzSubProperty) currProp)[directive];
-										}
-										else if (currProp.GetType() == typeof(WzCanvasProperty)) {
+										} else if (currProp.GetType() == typeof(WzCanvasProperty)) {
 											currProp = ((WzCanvasProperty) currProp)[directive];
-										}
-										else if (currProp.GetType() == typeof(WzImage)) {
+										} else if (currProp.GetType() == typeof(WzImage)) {
 											currProp = ((WzImage) currProp)[directive];
-										}
-										else if (currProp.GetType() == typeof(WzConvexProperty)) {
+										} else if (currProp.GetType() == typeof(WzConvexProperty)) {
 											currProp = ((WzConvexProperty) currProp)[directive];
-										}
-										else {
+										} else {
 											errorList.Add("UOL error at map renderer");
 											return false;
 										}
@@ -487,8 +476,7 @@ namespace HaRepacker.FHMapper {
 
 								objData = (WzImageProperty) currProp;
 								goto tryagain;
-							}
-							else {
+							} else {
 								errorList.Add("Unknown Wz type at map renderer");
 								return false;
 							}
@@ -628,8 +616,7 @@ namespace HaRepacker.FHMapper {
 				showMap.scale = zoom;
 				showMap.Show();
 				return true;
-			}
-			catch (FormatException) {
+			} catch (FormatException) {
 				MessageBox.Show("You must set the render scale to a valid number.", "Warning", MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);
 				return false;
@@ -675,8 +662,7 @@ namespace HaRepacker.FHMapper {
 				settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DFPc:)\w+(?=!)").Value));
 				settings.Add(Regex.Match(theSettings, @"(?<=!DSt:)\d*,?\d*(?=!)").Value);
 				settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DSc:)\w+(?=!)").Value));
-			}
-			catch {
+			} catch {
 				MessageBox.Show("Failed to load settings.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}

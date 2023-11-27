@@ -34,8 +34,7 @@ namespace HaCreator.MapEditor.Instance {
 					Board.BoardItems.TileObjs.Remove(this);
 					layer.Items.Remove(this);
 					throw new Exception("tile added to a layer with different tS");
-				}
-				else {
+				} else {
 					layer.tS = baseInfo.tS;
 				}
 			}

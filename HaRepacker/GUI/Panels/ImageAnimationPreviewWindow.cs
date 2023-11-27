@@ -118,14 +118,12 @@ namespace HaRepacker.GUI.Panels {
 					if (!isUOLProperty) {
 						canvasProperty = (WzCanvasProperty) obj;
 						image = canvasProperty.GetLinkedWzCanvasBitmap();
-					}
-					else {
+					} else {
 						var linkVal = ((WzUOLProperty) obj).LinkValue;
 						if (linkVal is WzCanvasProperty property) {
 							canvasProperty = property;
 							image = canvasProperty.GetLinkedWzCanvasBitmap();
-						}
-						else {
+						} else {
 							break;
 						}
 					}

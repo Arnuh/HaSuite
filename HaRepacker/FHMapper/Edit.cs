@@ -34,16 +34,14 @@ namespace Footholds {
 			if (!(bool) settings.ToArray()[5])
 				try {
 					ForceTBox.Text = ((WzIntProperty) fh.Data["force"]).Value.ToString();
-				}
-				catch {
+				} catch {
 				}
 			else
 				ForceTBox.Text = settings.ToArray()[4].ToString();
 
 			try {
 				ForceLbl.Text = ((WzIntProperty) fh.Data["force"]).Value.ToString();
-			}
-			catch {
+			} catch {
 				ForceLbl.Text = "None";
 			}
 		}
@@ -65,16 +63,14 @@ namespace Footholds {
 						var forceProperty = new WzIntProperty("force", int.Parse(ForceTBox.Text));
 						fh.Data.AddProperty(forceProperty);
 						fh.Data.ParentImage.Changed = true;
-					}
-					else {
+					} else {
 						((WzIntProperty) fh.Data["force"]).Value = int.Parse(ForceTBox.Text);
 						fh.Data["force"].ParentImage.Changed = true;
 					}
 				}
 
 				Close();
-			}
-			catch {
+			} catch {
 				MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput,
 					HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}

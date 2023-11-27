@@ -31,8 +31,7 @@ namespace HaSharedLibrary.SharpApng {
 				if (saveApngPtr != null)
 					SaveAPNG = (SaveAPNGDelegate) Marshal.GetDelegateForFunctionPointer(saveApngPtr,
 						typeof(SaveAPNGDelegate));
-			}
-			else {
+			} else {
 				throw new Exception("apng64.dll or apng32.dll not found.");
 			}
 		}

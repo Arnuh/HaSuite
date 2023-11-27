@@ -141,25 +141,19 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public static int FHSorter(FootholdLine a, FootholdLine b) {
 			if (a.FirstDot.X > b.FirstDot.X) {
 				return 1;
-			}
-			else if (a.FirstDot.X < b.FirstDot.X) {
+			} else if (a.FirstDot.X < b.FirstDot.X) {
 				return -1;
-			}
-			else {
+			} else {
 				if (a.FirstDot.Y > b.FirstDot.Y) {
 					return 1;
-				}
-				else if (a.FirstDot.Y < b.FirstDot.Y) {
+				} else if (a.FirstDot.Y < b.FirstDot.Y) {
 					return -1;
-				}
-				else {
+				} else {
 					if (a.SecondDot.X > b.SecondDot.X) {
 						return 1;
-					}
-					else if (a.SecondDot.X < b.SecondDot.X) {
+					} else if (a.SecondDot.X < b.SecondDot.X) {
 						return -1;
-					}
-					else {
+					} else {
 						if (a.SecondDot.Y > b.SecondDot.Y)
 							return 1;
 						else if (a.SecondDot.Y < b.SecondDot.Y)

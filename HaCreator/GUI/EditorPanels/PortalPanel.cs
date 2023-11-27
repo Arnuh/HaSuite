@@ -37,8 +37,7 @@ namespace HaCreator.GUI.EditorPanels {
 					item.Tag = pInfo;
 					item.MouseDown += new MouseEventHandler(portal_MouseDown);
 					item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-				}
-				catch (KeyNotFoundException) {
+				} catch (KeyNotFoundException) {
 				}
 			}
 		}

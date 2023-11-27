@@ -55,19 +55,16 @@ namespace HaCreator.Collections {
 				if (stashedLines.Count == 0) {
 					// Enumeration finished
 					return false;
-				}
-				else {
+				} else {
 					// This path finished, pop a new path from the stack
 					var item = stashedLines.Pop();
 					currLine = item.Item1;
 					nextAnchor = item.Item2;
 				}
-			}
-			else if (nextLineOpts.Count == 1) {
+			} else if (nextLineOpts.Count == 1) {
 				currLine = nextLineOpts[0];
 				visited.Add(currLine);
-			}
-			else // more than 1 option, we need to stash
+			} else // more than 1 option, we need to stash
 			{
 				// Stash all options
 				foreach (var line in nextLineOpts) {

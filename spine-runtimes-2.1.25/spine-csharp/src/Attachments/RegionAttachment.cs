@@ -161,8 +161,7 @@ namespace Spine {
 				uvs[Y4] = v;
 				uvs[X1] = u2;
 				uvs[Y1] = v2;
-			}
-			else {
+			} else {
 				uvs[X1] = u;
 				uvs[Y1] = v2;
 				uvs[X2] = u;

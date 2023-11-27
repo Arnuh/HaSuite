@@ -119,8 +119,7 @@ namespace MapleLib.PacketLib {
 					SocketFlags.None,
 					new AsyncCallback(OnDataReceived),
 					socketInfo);
-			}
-			catch (Exception se) {
+			} catch (Exception se) {
 				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.WaitForData: " + se);
 				//Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.WaitForData: " + se);
 			}
@@ -152,8 +151,7 @@ namespace MapleLib.PacketLib {
 								socketInfo.DataBuffer = new byte[packetHeader];
 								socketInfo.Index = 0;
 								WaitForData(socketInfo);
-							}
-							else {
+							} else {
 								var headerReader = new PacketReader(socketInfo.DataBuffer);
 								var packetHeaderB = headerReader.ToArray();
 								var packetHeader = headerReader.ReadInt();
@@ -184,8 +182,7 @@ namespace MapleLib.PacketLib {
 
 								OnPacketReceived(new PacketReader(data), true);
 								WaitForData();
-							}
-							else {
+							} else {
 								_RIV.Crypt(data);
 								MapleCustomEncryption.Decrypt(data);
 								if (data.Length != 0 && OnPacketReceived != null)
@@ -196,21 +193,17 @@ namespace MapleLib.PacketLib {
 
 							break;
 					}
-				}
-				else {
+				} else {
 					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Warning] Not enough data");
 					WaitForData(socketInfo);
 				}
-			}
-			catch (ObjectDisposedException) {
+			} catch (ObjectDisposedException) {
 				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical,
 					"[Error] Session.OnDataReceived: Socket has been closed");
-			}
-			catch (SocketException se) {
+			} catch (SocketException se) {
 				if (se.ErrorCode != 10054)
 					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + se);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Session.OnDataReceived: " + e);
 			}
 		}

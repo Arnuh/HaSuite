@@ -84,8 +84,7 @@ namespace HaCreator.MapSimulator {
 					var textureFromCache = texturePool.GetTexture(canvasBitmapPath);
 					if (textureFromCache != null) {
 						source.MSTag = textureFromCache;
-					}
-					else {
+					} else {
 						source.MSTag = property.GetLinkedWzCanvasBitmap().ToTexture2D(device);
 
 						// add to cache
@@ -100,22 +99,19 @@ namespace HaCreator.MapSimulator {
 					var origin = property.GetCanvasOriginPosition();
 
 					frames.Add(new DXSpineObject(spineObject, x, y, origin));
-				}
-				else if (source.MSTag != null) {
+				} else if (source.MSTag != null) {
 					var texture = (Texture2D) source.MSTag;
 					var origin = property.GetCanvasOriginPosition();
 
 					frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture));
-				}
-				else // fallback
+				} else // fallback
 				{
 					var texture = Properties.Resources.placeholder.ToTexture2D(device);
 					var origin = property.GetCanvasOriginPosition();
 
 					frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture));
 				}
-			}
-			else if (source is WzSubProperty) // animated
+			} else if (source is WzSubProperty) // animated
 			{
 				WzImageProperty _frameProp;
 				var i = 0;
@@ -124,8 +120,7 @@ namespace HaCreator.MapSimulator {
 					if (_frameProp is WzSubProperty) // issue with 867119250
 					{
 						frames.AddRange(LoadFrames(texturePool, _frameProp, x, y, device, ref usedProps, null));
-					}
-					else {
+					} else {
 						WzCanvasProperty frameProp;
 
 						if (_frameProp is WzUOLProperty) // some could be UOL. Ex: 321100000 Mirror world: [Mirror World] Leafre
@@ -135,8 +130,7 @@ namespace HaCreator.MapSimulator {
 								frameProp = linkCanvas;
 							else
 								continue;
-						}
-						else {
+						} else {
 							frameProp = (WzCanvasProperty) _frameProp;
 						}
 
@@ -150,8 +144,7 @@ namespace HaCreator.MapSimulator {
 								var textureFromCache = texturePool.GetTexture(canvasBitmapPath);
 								if (textureFromCache != null) {
 									frameProp.MSTag = textureFromCache;
-								}
-								else {
+								} else {
 									frameProp.MSTag = frameProp.GetLinkedWzCanvasBitmap().ToTexture2D(device);
 
 									// add to cache
@@ -166,14 +159,12 @@ namespace HaCreator.MapSimulator {
 							var origin = frameProp.GetCanvasOriginPosition();
 
 							frames.Add(new DXSpineObject(spineObject, x, y, origin, delay));
-						}
-						else if (frameProp.MSTag != null) {
+						} else if (frameProp.MSTag != null) {
 							var texture = (Texture2D) frameProp.MSTag;
 							var origin = frameProp.GetCanvasOriginPosition();
 
 							frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture, delay));
-						}
-						else {
+						} else {
 							var texture = Properties.Resources.placeholder.ToTexture2D(device);
 							var origin = frameProp.GetCanvasOriginPosition();
 
@@ -255,14 +246,12 @@ namespace HaCreator.MapSimulator {
 			{
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
 				if (spineAtlasPath != null) spineAtlas = source[spineAtlasPath + ".atlas"];
-			}
-			else if (spineAniPath != null) {
+			} else if (spineAniPath != null) {
 				var spineSource = (WzImageProperty) source.Parent?.Parent["spine"]?[source.Name];
 
 				var spineAtlasPath = ((WzStringProperty) spineSource["spine"])?.GetString();
 				if (spineAtlasPath != null) spineAtlas = spineSource[spineAtlasPath + ".atlas"];
-			}
-			else // simply check if 'spine' WzStringProperty exist, fix for Adele town
+			} else // simply check if 'spine' WzStringProperty exist, fix for Adele town
 			{
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
 				if (spineAtlasPath != null) {
@@ -300,8 +289,7 @@ namespace HaCreator.MapSimulator {
 
 					if (spineAniPath != null) {
 						spineObject.state.SetAnimation(0, spineAniPath, true);
-					}
-					else {
+					} else {
 						var i = 0;
 						foreach (var animation in spineObject.spineAnimationItem.SkeletonData.Animations)
 							spineObject.state.SetAnimation(i++, animation.Name, true);
@@ -386,8 +374,7 @@ namespace HaCreator.MapSimulator {
 			var portalTypeProperty = (WzSubProperty) gameParent[portalInstance.pt];
 			if (portalTypeProperty == null) {
 				portalTypeProperty = (WzSubProperty) gameParent["pv"];
-			}
-			else {
+			} else {
 				// Support for older versions of MapleStory where 'pv' is a subproperty for the image frame than a collection of subproperty of frames
 				if (portalTypeProperty["0"] is WzCanvasProperty) {
 					frames.AddRange(LoadFrames(texturePool, portalTypeProperty, portalInstance.X, portalInstance.Y,
@@ -661,8 +648,7 @@ namespace HaCreator.MapSimulator {
 					// BaseClickableUIObject objUINpc = new BaseClickableUIObject(BtNpc, false, new Point(objUIBtMap.CanvasSnapshotWidth + objUIBtBig.CanvasSnapshotWidth + objUIBtMax.CanvasSnapshotWidth + objUIBtMin.CanvasSnapshotWidth, MAP_IMAGE_PADDING), device);
 
 					minimapItem.InitializeMinimapButtons(objUIBtMin, objUIBtMax, objUIBtBig, objUIBtMap);
-				}
-				else {
+				} else {
 					var BtMin = (WzSubProperty) uiBasicImage["BtMin"]; // mininise button
 					var BtMax = (WzSubProperty) uiBasicImage["BtMax"]; // maximise button
 					var BtMap = (WzSubProperty) minimapFrameProperty["BtMap"]; // world button

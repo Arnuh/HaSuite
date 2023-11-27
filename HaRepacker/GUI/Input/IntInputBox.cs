@@ -58,8 +58,7 @@ namespace HaRepacker.GUI.Input {
 				intResult = valueBox.Value;
 				DialogResult = DialogResult.OK;
 				Close();
-			}
-			else {
+			} else {
 				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}

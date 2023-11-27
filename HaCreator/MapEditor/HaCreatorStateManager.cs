@@ -154,8 +154,7 @@ namespace HaCreator.MapEditor {
 		private void MultiBoard_BackupCheck() {
 			try {
 				backupMan.BackupCheck();
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				MessageBox.Show(string.Format("Backup failed! Error:{0}\r\n{1}", e.Message, e.StackTrace));
 			}
 		}
@@ -168,14 +167,12 @@ namespace HaCreator.MapEditor {
 			ObjectInfo oi = null;
 			try {
 				oi = multiBoard.UserObjects.Add(bmp, name);
-			}
-			catch (NameAlreadyUsedException) {
+			} catch (NameAlreadyUsedException) {
 				MessageBox.Show(
 					"\"" + name + "\" could not be added because an object with the same name already exists.", "Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
-			}
-			finally {
+			} finally {
 				ww.EndWait();
 			}
 
@@ -245,43 +242,32 @@ namespace HaCreator.MapEditor {
 			try {
 				if (item is ObjectInstance) {
 					new ObjectInstanceEditor((ObjectInstance) item).ShowDialog();
-				}
-				else if (item is TileInstance) {
+				} else if (item is TileInstance) {
 					new TileInstanceEditor((TileInstance) item).ShowDialog();
-				}
-				else if (item is Chair) {
+				} else if (item is Chair) {
 					new GeneralInstanceEditor(item).ShowDialog();
-				}
-				else if (item is FootholdAnchor) {
+				} else if (item is FootholdAnchor) {
 					var selectedFootholds = FootholdLine.GetSelectedFootholds(item.Board);
 					if (selectedFootholds.Length > 0)
 						new FootholdEditor(selectedFootholds).ShowDialog();
 					else
 						new GeneralInstanceEditor(item).ShowDialog();
-				}
-				else if (item is RopeAnchor ropeItem) {
+				} else if (item is RopeAnchor ropeItem) {
 					new RopeInstanceEditor(ropeItem).ShowDialog();
-				}
-				else if (item is LifeInstance lifeItem) {
+				} else if (item is LifeInstance lifeItem) {
 					new LifeInstanceEditor(lifeItem).ShowDialog();
-				}
-				else if (item is ReactorInstance reactorItem) {
+				} else if (item is ReactorInstance reactorItem) {
 					new ReactorInstanceEditor(reactorItem).ShowDialog();
-				}
-				else if (item is BackgroundInstance backgroundItem) {
+				} else if (item is BackgroundInstance backgroundItem) {
 					new BackgroundInstanceEditor(backgroundItem).ShowDialog();
-				}
-				else if (item is PortalInstance portal) {
+				} else if (item is PortalInstance portal) {
 					new PortalInstanceEditor(portal).ShowDialog();
-				}
-				else if (item is ToolTipInstance tooltipItem) {
+				} else if (item is ToolTipInstance tooltipItem) {
 					new TooltipInstanceEditor(tooltipItem).ShowDialog();
-				}
-				else if (item is MirrorFieldData mirrorFieldItem) {
+				} else if (item is MirrorFieldData mirrorFieldItem) {
 					new MirrorFieldEditor(mirrorFieldItem).ShowDialog();
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				MessageBox.Show(string.Format("An error occurred while presenting the instance editor for {0}:\r\n{1}",
 					item.GetType().Name, e.ToString()));
 			}
@@ -304,8 +290,7 @@ namespace HaCreator.MapEditor {
 							if (bg.Z > highestZ)
 								highestZ = bg.Z;
 						item.Z = highestZ + 1;
-					}
-					else {
+					} else {
 						var highestZ = 0;
 						foreach (var layeredItem in multiBoard.SelectedBoard.BoardItems.TileObjs)
 							if (layeredItem.Z > highestZ)
@@ -369,8 +354,7 @@ namespace HaCreator.MapEditor {
 					MapLoader.GetMapDimensions(selectedBoard.MapInfo.Image, out VR, out mapCenter, out mapSize,
 						out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
 					selectedBoard.VRRectangle = new VRRectangle(selectedBoard, VR);
-				}
-				else {
+				} else {
 					selectedBoard.VRRectangle = new VRRectangle(selectedBoard,
 						new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100,
 							-selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200,
@@ -402,8 +386,7 @@ namespace HaCreator.MapEditor {
 					selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard,
 						new Microsoft.Xna.Framework.Rectangle(-minimapCenter.X, -minimapCenter.Y, minimapSize.X,
 							minimapSize.Y));
-				}
-				else {
+				} else {
 					selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard,
 						new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100,
 							-selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200,
@@ -472,8 +455,7 @@ namespace HaCreator.MapEditor {
 					ribbon.SetHasMinimap(multiBoard.SelectedBoard.MinimapRectangle != null);
 
 					ParseVisibleEditedTypes();
-				}
-				else {
+				} else {
 					multiBoard.SelectedBoard = null;
 				}
 
@@ -525,8 +507,7 @@ namespace HaCreator.MapEditor {
 			// No need to lock, SerializeBoard locks only the critical areas to cut down on locked time
 			try {
 				File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard(true));
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				MessageBox.Show(string.Format("Could not save: {0}\r\n\r\n{1}", e.Message, e.StackTrace));
 			}
 		}
@@ -614,8 +595,7 @@ namespace HaCreator.MapEditor {
 			if (multiBoard.SelectedBoard.RegenerateMinimap()) {
 				MessageBox.Show("Minimap regenerated successfully", "Success", MessageBoxButtons.OK,
 					MessageBoxIcon.Information);
-			}
-			else {
+			} else {
 				MessageBox.Show(
 					"An error occured during minimap regeneration. The error has been logged. If possible, save the map report it via github.",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -652,8 +632,7 @@ namespace HaCreator.MapEditor {
 					newVisibleTypes ^= type;
 					newEditedTypes ^= type;
 				}
-			}
-			else {
+			} else {
 				newVisibleTypes ^= type;
 			}
 		}
@@ -866,58 +845,46 @@ namespace HaCreator.MapEditor {
 				sb.Append("[Tile]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append(((TileInfo) item.BaseInfo).tS).Append(@"\")
 					.Append(((TileInfo) item.BaseInfo).u).Append(@"\").Append(((TileInfo) item.BaseInfo).no);
-			}
-			else if (item is ObjectInstance) {
+			} else if (item is ObjectInstance) {
 				sb.Append("[Object]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append(((ObjectInfo) item.BaseInfo).oS).Append(@"\")
 					.Append(((ObjectInfo) item.BaseInfo).l0).Append(@"\")
 					.Append(((ObjectInfo) item.BaseInfo).l1).Append(@"\").Append(((ObjectInfo) item.BaseInfo).l2);
-			}
-			else if (item is BackgroundInstance) {
+			} else if (item is BackgroundInstance) {
 				sb.Append("[Background]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append(((BackgroundInfo) item.BaseInfo).bS).Append(@"\")
 					.Append(((BackgroundInfo) item.BaseInfo).Type.ToString()).Append(@"\")
 					.Append(((BackgroundInfo) item.BaseInfo).no);
-			}
-			else if (item is PortalInstance) {
+			} else if (item is PortalInstance) {
 				sb.Append("[Portal]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Name: ").Append(((PortalInstance) item).pn)
 					.Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Type: ").Append(Tables.PortalTypeNames[((PortalInstance) item).pt]);
-			}
-			else if (item is MobInstance) {
+			} else if (item is MobInstance) {
 				sb.Append("[Mob]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Name: ").Append(((MobInfo) item.BaseInfo).Name)
 					.Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("ID: ").Append(((MobInfo) item.BaseInfo).ID);
-			}
-			else if (item is NpcInstance) {
+			} else if (item is NpcInstance) {
 				sb.Append("[Npc]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Name: ").Append(((NpcInfo) item.BaseInfo).Name)
 					.Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("ID: ").Append(((NpcInfo) item.BaseInfo).ID);
-			}
-			else if (item is ReactorInstance) {
+			} else if (item is ReactorInstance) {
 				sb.Append("[Reactor]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("ID: ").Append(((ReactorInfo) item.BaseInfo).ID);
-			}
-			else if (item is FootholdAnchor) {
+			} else if (item is FootholdAnchor) {
 				sb.Append("[Foothold]");
-			}
-			else if (item is RopeAnchor) {
+			} else if (item is RopeAnchor) {
 				var rope = (RopeAnchor) item;
 				sb.Append(rope.ParentRope.ladder ? "[Ladder]" : "[Rope]");
-			}
-			else if (item is Chair) {
+			} else if (item is Chair) {
 				sb.Append("[Chair]");
-			}
-			else if (item is ToolTipChar || item is ToolTipDot || item is ToolTipInstance) {
+			} else if (item is ToolTipChar || item is ToolTipDot || item is ToolTipInstance) {
 				sb.Append("[Tooltip]");
-			}
-			else if (item is INamedMisc misc) {
+			} else if (item is INamedMisc misc) {
 				sb.Append(misc.Name);
-			}
-			else if (item is MirrorFieldData mirrorFieldData) {
+			} else if (item is MirrorFieldData mirrorFieldData) {
 				sb.Append("[MirrorFieldData]").Append(Environment.NewLine);
 				sb.Append("Ground reflections for '").Append(mirrorFieldData.MirrorFieldDataType.ToString())
 					.Append("'");

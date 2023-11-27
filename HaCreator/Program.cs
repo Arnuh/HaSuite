@@ -57,7 +57,7 @@ namespace HaCreator {
 		private static void Main() {
 			// Startup
 #if !DEBUG
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 #endif
 
 			// Localisation

@@ -126,8 +126,7 @@ namespace MapleLib.WzLib.Serialization {
 						         property3.PngProperty.MagLevel, "\" basedata=\"", Convert.ToBase64String(pngbytes),
 						         "\">") +
 					         lineBreak);
-				}
-				else {
+				} else {
 					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name),
 						"\" width=\"", property3.PngProperty.Width, "\" height=\"", property3.PngProperty.Height,
 						"\">") + lineBreak);
@@ -138,22 +137,18 @@ namespace MapleLib.WzLib.Serialization {
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</canvas>" + lineBreak);
-			}
-			else if (prop is WzIntProperty) {
+			} else if (prop is WzIntProperty) {
 				var property4 = (WzIntProperty) prop;
 				tw.Write(string.Concat(depth, "<int name=\"", XmlUtil.SanitizeText(property4.Name), "\" value=\"",
 					property4.Value, "\"/>") + lineBreak);
-			}
-			else if (prop is WzDoubleProperty) {
+			} else if (prop is WzDoubleProperty) {
 				var property5 = (WzDoubleProperty) prop;
 				tw.Write(string.Concat(depth, "<double name=\"", XmlUtil.SanitizeText(property5.Name), "\" value=\"",
 					property5.Value, "\"/>") + lineBreak);
-			}
-			else if (prop is WzNullProperty) {
+			} else if (prop is WzNullProperty) {
 				var property6 = (WzNullProperty) prop;
 				tw.Write(depth + "<null name=\"" + XmlUtil.SanitizeText(property6.Name) + "\"/>" + lineBreak);
-			}
-			else if (prop is WzBinaryProperty) {
+			} else if (prop is WzBinaryProperty) {
 				var property7 = (WzBinaryProperty) prop;
 				if (bExportBase64Data)
 					tw.Write(string.Concat(new object[] {
@@ -163,14 +158,12 @@ namespace MapleLib.WzLib.Serialization {
 					}) + lineBreak);
 				else
 					tw.Write(depth + "<sound name=\"" + XmlUtil.SanitizeText(property7.Name) + "\"/>" + lineBreak);
-			}
-			else if (prop is WzStringProperty) {
+			} else if (prop is WzStringProperty) {
 				var property8 = (WzStringProperty) prop;
 				var str = XmlUtil.SanitizeText(property8.Value);
 				tw.Write(depth + "<string name=\"" + XmlUtil.SanitizeText(property8.Name) + "\" value=\"" + str +
 				         "\"/>" + lineBreak);
-			}
-			else if (prop is WzSubProperty) {
+			} else if (prop is WzSubProperty) {
 				var property9 = (WzSubProperty) prop;
 				tw.Write(depth + "<imgdir name=\"" + XmlUtil.SanitizeText(property9.Name) + "\">" + lineBreak);
 				var newDepth = depth + indent;
@@ -178,36 +171,30 @@ namespace MapleLib.WzLib.Serialization {
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</imgdir>" + lineBreak);
-			}
-			else if (prop is WzShortProperty) {
+			} else if (prop is WzShortProperty) {
 				var property10 = (WzShortProperty) prop;
 				tw.Write(string.Concat(depth, "<short name=\"", XmlUtil.SanitizeText(property10.Name), "\" value=\"",
 					property10.Value, "\"/>") + lineBreak);
-			}
-			else if (prop is WzLongProperty) {
+			} else if (prop is WzLongProperty) {
 				var long_prop = (WzLongProperty) prop;
 				tw.Write(string.Concat(depth, "<long name=\"", XmlUtil.SanitizeText(long_prop.Name), "\" value=\"",
 					long_prop.Value, "\"/>") + lineBreak);
-			}
-			else if (prop is WzUOLProperty) {
+			} else if (prop is WzUOLProperty) {
 				var property11 = (WzUOLProperty) prop;
 				tw.Write(depth + "<uol name=\"" + property11.Name + "\" value=\"" +
 				         XmlUtil.SanitizeText(property11.Value) + "\"/>" + lineBreak);
-			}
-			else if (prop is WzVectorProperty) {
+			} else if (prop is WzVectorProperty) {
 				var property12 = (WzVectorProperty) prop;
 				tw.Write(string.Concat(depth, "<vector name=\"", XmlUtil.SanitizeText(property12.Name), "\" x=\"",
 					property12.X.Value, "\" y=\"", property12.Y.Value, "\"/>") + lineBreak);
-			}
-			else if (prop is WzFloatProperty) {
+			} else if (prop is WzFloatProperty) {
 				var property13 = (WzFloatProperty) prop;
 				var str2 = Convert.ToString(property13.Value, formattingInfo);
 				if (!str2.Contains("."))
 					str2 = str2 + ".0";
 				tw.Write(depth + "<float name=\"" + XmlUtil.SanitizeText(property13.Name) + "\" value=\"" + str2 +
 				         "\"/>" + lineBreak);
-			}
-			else if (prop is WzConvexProperty) {
+			} else if (prop is WzConvexProperty) {
 				tw.Write(depth + "<extended name=\"" + XmlUtil.SanitizeText(prop.Name) + "\">" + lineBreak);
 
 				var property14 = (WzConvexProperty) prop;
@@ -216,8 +203,7 @@ namespace MapleLib.WzLib.Serialization {
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</extended>" + lineBreak);
-			}
-			else if (prop is WzLuaProperty propertyLua) {
+			} else if (prop is WzLuaProperty propertyLua) {
 				var parentName = propertyLua.Parent.Name;
 
 				tw.Write(depth);
@@ -294,8 +280,7 @@ namespace MapleLib.WzLib.Serialization {
 					foreach (var property in propertyCanvas.WzProperties)
 						WritePropertyToJsonBson(jsonCanvas, newDepth, property, exportFilePath);
 				}
-			}
-			else if (prop is WzIntProperty propertyInt) {
+			} else if (prop is WzIntProperty propertyInt) {
 				var jsonInt = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyInt.Name)},
@@ -308,8 +293,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyInt.Name),
 						jsonInt)); // add this json to the main json object parent
-			}
-			else if (prop is WzDoubleProperty propertyDouble) {
+			} else if (prop is WzDoubleProperty propertyDouble) {
 				var jsonDouble = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyDouble.Name)},
@@ -322,8 +306,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyDouble.Name),
 						jsonDouble)); // add this json to the main json object parent
-			}
-			else if (prop is WzNullProperty propertyNull) {
+			} else if (prop is WzNullProperty propertyNull) {
 				var jsonNull = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyNull.Name)},
@@ -335,8 +318,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyNull.Name),
 						jsonNull)); // add this json to the main json object parent
-			}
-			else if (prop is WzBinaryProperty propertyBin) {
+			} else if (prop is WzBinaryProperty propertyBin) {
 				var jsonBinary = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyBin.Name)},
@@ -353,8 +335,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyBin.Name),
 						jsonBinary)); // add this json to the main json object parent
-			}
-			else if (prop is WzStringProperty propertyStr) {
+			} else if (prop is WzStringProperty propertyStr) {
 				var str = XmlUtil.SanitizeText(propertyStr.Value);
 
 				var jsonString = new JObject {
@@ -369,8 +350,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyStr.Name),
 						jsonString)); // add this json to the main json object parent
-			}
-			else if (prop is WzSubProperty propertySub) {
+			} else if (prop is WzSubProperty propertySub) {
 				var jsonSub = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertySub.Name)},
@@ -386,8 +366,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertySub.Name),
 						jsonSub)); // add this json to the main json object parent
-			}
-			else if (prop is WzShortProperty propertyShort) {
+			} else if (prop is WzShortProperty propertyShort) {
 				var jsonShort = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyShort.Name)},
@@ -400,8 +379,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyShort.Name),
 						jsonShort)); // add this json to the main json object parent
-			}
-			else if (prop is WzLongProperty propertyLong) {
+			} else if (prop is WzLongProperty propertyLong) {
 				var jsonLong = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyLong.Name)},
@@ -414,8 +392,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyLong.Name),
 						jsonLong)); // add this json to the main json object parent
-			}
-			else if (prop is WzUOLProperty propertyUOL) {
+			} else if (prop is WzUOLProperty propertyUOL) {
 				var jsonUOL = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyUOL.Name)},
@@ -428,8 +405,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyUOL.Name),
 						jsonUOL)); // add this json to the main json object parent
-			}
-			else if (prop is WzVectorProperty propertyVector) {
+			} else if (prop is WzVectorProperty propertyVector) {
 				var jsonVector = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyVector.Name)},
@@ -443,8 +419,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyVector.Name),
 						jsonVector)); // add this json to the main json object parent
-			}
-			else if (prop is WzFloatProperty propertyFloat) {
+			} else if (prop is WzFloatProperty propertyFloat) {
 				var jsonfloat = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyFloat.Name)},
@@ -460,8 +435,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyFloat.Name),
 						jsonfloat)); // add this json to the main json object parent
-			}
-			else if (prop is WzConvexProperty propertyConvex) {
+			} else if (prop is WzConvexProperty propertyConvex) {
 				var jsonConvex = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyConvex.Name)},
@@ -476,8 +450,7 @@ namespace MapleLib.WzLib.Serialization {
 					    jPropertyName)) // making the assumption that only the first wz image will be used, everything is dropped since its not going to be read in wz anyway
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyConvex.Name),
 						jsonConvex)); // add this json to the main json object parent
-			}
-			else if (prop is WzLuaProperty propertyLua) {
+			} else if (prop is WzLuaProperty propertyLua) {
 				var parentName = propertyLua.Parent.Name;
 
 				var jsonLua = new JObject {
@@ -637,8 +610,7 @@ namespace MapleLib.WzLib.Serialization {
 				successfullyParsedImage = img.ParseImage(true);
 				img.Changed = true;
 				wzReader.Close();
-			}
-			else {
+			} else {
 				successfullyParsedImage = true;
 			}
 
@@ -692,8 +664,7 @@ namespace MapleLib.WzLib.Serialization {
 		private void ExportRecursion(WzObject currObj, string outPath) {
 			if (currObj is WzFile wzFile) {
 				ExportRecursion(wzFile.WzDirectory, outPath);
-			}
-			else if (currObj is WzDirectory directoryProperty) {
+			} else if (currObj is WzDirectory directoryProperty) {
 				outPath += EscapeInvalidFilePathNames(currObj.Name) + @"\";
 				if (!Directory.Exists(outPath))
 					Directory.CreateDirectory(outPath);
@@ -703,21 +674,18 @@ namespace MapleLib.WzLib.Serialization {
 
 				foreach (var subimg in directoryProperty.WzImages)
 					ExportRecursion(subimg, outPath + subimg.Name + @"\");
-			}
-			else if (currObj is WzCanvasProperty canvasProperty) {
+			} else if (currObj is WzCanvasProperty canvasProperty) {
 				var bmp = canvasProperty.GetLinkedWzCanvasBitmap();
 
 				var path = outPath + EscapeInvalidFilePathNames(currObj.Name) + ".png";
 
 				bmp.Save(path, ImageFormat.Png);
 				//curr++;
-			}
-			else if (currObj is WzBinaryProperty binProperty) {
+			} else if (currObj is WzBinaryProperty binProperty) {
 				var path = outPath + EscapeInvalidFilePathNames(currObj.Name) + ".mp3";
 
 				binProperty.SaveToFile(path);
-			}
-			else if (currObj is WzImage wzImage) {
+			} else if (currObj is WzImage wzImage) {
 				outPath += EscapeInvalidFilePathNames(currObj.Name) + @"\";
 				if (!Directory.Exists(outPath))
 
@@ -731,13 +699,11 @@ namespace MapleLib.WzLib.Serialization {
 				if (!parse) wzImage.UnparseImage();
 
 				curr++;
-			}
-			else if (currObj is IPropertyContainer container) {
+			} else if (currObj is IPropertyContainer container) {
 				outPath += EscapeInvalidFilePathNames(currObj.Name) + ".";
 
 				foreach (var subprop in container.WzProperties) ExportRecursion(subprop, outPath);
-			}
-			else if (currObj is WzUOLProperty property) {
+			} else if (currObj is WzUOLProperty property) {
 				var linkValue = property.LinkValue;
 
 				if (linkValue is WzCanvasProperty canvas) ExportRecursion(canvas, outPath);
@@ -986,13 +952,11 @@ namespace MapleLib.WzLib.Serialization {
 						result.Add(ParseXMLWzImg(subelement));
 					else
 						throw new InvalidDataException("unknown XML prop " + subelement.Name);
-			}
-			else if (mainElement.Name == "imgdir") {
+			} else if (mainElement.Name == "imgdir") {
 				total = 1;
 				result.Add(ParseXMLWzImg(mainElement));
 				curr++;
-			}
-			else {
+			} else {
 				throw new InvalidDataException("unknown main XML prop " + mainElement.Name);
 			}
 

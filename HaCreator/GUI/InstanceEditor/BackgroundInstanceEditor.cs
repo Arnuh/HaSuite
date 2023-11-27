@@ -80,8 +80,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			var baseInfo = (BackgroundInfo) item.BaseInfo;
 			if (baseInfo.WzSpineAnimationItem == null) {
 				groupBox_spine.Enabled = false; // disable editing
-			}
-			else {
+			} else {
 				groupBox_spine.Enabled = true; // editing
 
 				foreach (var ani in baseInfo.WzSpineAnimationItem.SkeletonData.Animations) {
@@ -166,8 +165,7 @@ namespace HaCreator.GUI.InstanceEditor {
 				if (!groupBox_spine.Enabled) {
 					item.SpineRandomStart = false;
 					item.SpineAni = null;
-				}
-				else {
+				} else {
 					item.SpineRandomStart = checkBox_spineRandomStart.Checked;
 
 					if (comboBox_spineAnimation.SelectedItem != null)
@@ -252,8 +250,7 @@ namespace HaCreator.GUI.InstanceEditor {
 
 				if (cyBox.Value < 0 || cxBox.Value < 0)
 					bDisableSaveButton = true;
-			}
-			else {
+			} else {
 				cxBox.Minimum = int.MaxValue * -1;
 				cyBox.Minimum = int.MaxValue * -1;
 			}

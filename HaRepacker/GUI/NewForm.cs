@@ -50,8 +50,7 @@ namespace HaRepacker.GUI {
 					MainForm.GetIndexByWzMapleVersion(Program.ConfigurationManager.ApplicationSettings.MapleVersion,
 						true);
 				versionBox.Value = 1;
-			}
-			finally {
+			} finally {
 				bIsLoading = false;
 			}
 		}
@@ -70,8 +69,7 @@ namespace HaRepacker.GUI {
 			if (wzMapleVersion == WzMapleVersion.CUSTOM) {
 				var customWzInputBox = new CustomWZEncryptionInputBox();
 				customWzInputBox.ShowDialog();
-			}
-			else {
+			} else {
 				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
 		}
@@ -123,11 +121,9 @@ namespace HaRepacker.GUI {
 				file.Name = name + ".wz";
 				file.WzDirectory.Name = name + ".wz";
 				panel.DataTree.Nodes.Add(new WzNode(file));
-			}
-			else if (listBox.Checked == true) {
+			} else if (listBox.Checked == true) {
 				new ListEditor(null, (WzMapleVersion) encryptionBox.SelectedIndex).Show();
-			}
-			else if (radioButton_hotfix.Checked == true) {
+			} else if (radioButton_hotfix.Checked == true) {
 				var img = new WzImage(name + ".wz");
 				img.MarkWzImageAsParsed();
 

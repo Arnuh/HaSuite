@@ -93,8 +93,7 @@ namespace Spine {
 				if (next != null) {
 					next.time = current.lastTime - next.delay;
 					if (next.time >= 0) SetCurrent(i, next);
-				}
-				else {
+				} else {
 					// End non-looping animation when it reaches its end time and there is no next entry.
 					if (!current.loop && current.lastTime >= current.endTime) ClearTrack(i);
 				}
@@ -120,8 +119,7 @@ namespace Spine {
 						current.animation.Apply(skeleton, current.lastTime, time, loop, events);
 					else
 						current.animation.Mix(skeleton, current.lastTime, time, loop, events, current.mix);
-				}
-				else {
+				} else {
 					var previousTime = previous.time;
 					if (!previous.loop && previousTime > previous.endTime) previousTime = previous.endTime;
 					previous.animation.Apply(skeleton, previousTime, previousTime, previous.loop, null);
@@ -234,8 +232,7 @@ namespace Spine {
 				while (last.next != null)
 					last = last.next;
 				last.next = entry;
-			}
-			else {
+			} else {
 				tracks[trackIndex] = entry;
 			}
 

@@ -86,8 +86,7 @@ namespace MapleLib.WzLib {
 		internal static void WritePropertyList(WzBinaryWriter writer, List<WzImageProperty> properties) {
 			if (properties.Count == 1 && properties[0] is WzLuaProperty) {
 				properties[0].WriteValue(writer);
-			}
-			else {
+			} else {
 				writer.Write((ushort) 0);
 				writer.WriteCompressedInt(properties.Count);
 				foreach (var imgProperty in properties) {

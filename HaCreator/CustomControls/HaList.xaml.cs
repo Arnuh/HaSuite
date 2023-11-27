@@ -91,8 +91,7 @@ namespace HaCreator.CustomControls {
 				if (IsEnabled && SelectedIndex != 0) SelectedIndex--;
 
 				e.Handled = true;
-			}
-			else if (e.Key == Key.Down) {
+			} else if (e.Key == Key.Down) {
 				if (IsEnabled && SelectedIndex != Items.Count - 1) SelectedIndex++;
 
 				e.Handled = true;

@@ -222,8 +222,7 @@ namespace MapleLib.WzLib.WzProperties {
 							compressedImageBytes = wzReader.ReadBytes(len);
 
 						ParsePng(true);
-					}
-					else {
+					} else {
 						reader.BaseStream.Position += len;
 					}
 				}
@@ -476,8 +475,7 @@ namespace MapleLib.WzLib.WzProperties {
 					}
 
 				png = bmp;
-			}
-			catch (InvalidDataException) {
+			} catch (InvalidDataException) {
 				png = null;
 			}
 		}
@@ -555,8 +553,7 @@ namespace MapleLib.WzLib.WzProperties {
 			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
 				SquishPNGWrapper.DecompressImage(decoded, width, height, rawData,
 					(int) SquishPNGWrapper.FlagsEnum.kDxt3);
-			}
-			else // otherwise decode here directly, fallback.
+			} else // otherwise decode here directly, fallback.
 			{
 				var colorTable = new Color[4];
 				var colorIdxTable = new int[16];
@@ -632,8 +629,7 @@ namespace MapleLib.WzLib.WzProperties {
 			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
 				SquishPNGWrapper.DecompressImage(decoded, width, height, rawData,
 					(int) SquishPNGWrapper.FlagsEnum.kDxt5);
-			}
-			else // otherwise decode here directly, fallback
+			} else // otherwise decode here directly, fallback
 			{
 				var colorTable = new Color[4];
 				var colorIdxTable = new int[16];
@@ -695,8 +691,7 @@ namespace MapleLib.WzLib.WzProperties {
 					(color[0].G * 2 + color[1].G + 1) / 3, (color[0].B * 2 + color[1].B + 1) / 3);
 				color[3] = Color.FromArgb(0xff, (color[0].R + color[1].R * 2 + 1) / 3,
 					(color[0].G + color[1].G * 2 + 1) / 3, (color[0].B + color[1].B * 2 + 1) / 3);
-			}
-			else {
+			} else {
 				color[2] = Color.FromArgb(0xff, (color[0].R + color[1].R) / 2, (color[0].G + color[1].G) / 2,
 					(color[0].B + color[1].B) / 2);
 				color[3] = Color.FromArgb(0xff, Color.Black);
@@ -737,8 +732,7 @@ namespace MapleLib.WzLib.WzProperties {
 			if (a0 > a1) {
 				for (var i = 2; i < 8; i++) // // use 7-alpha codebook
 					alpha[i] = (byte) (((8 - i) * a0 + (i - 1) * a1 + 3) / 7);
-			}
-			else {
+			} else {
 				for (var i = 2; i < 6; i++) // // use 5-alpha codebook
 					alpha[i] = (byte) (((6 - i) * a0 + (i - 1) * a1 + 2) / 5);
 
@@ -864,7 +858,8 @@ namespace MapleLib.WzLib.WzProperties {
 			Unknown,
 			B4G4R4A4,
 			B8G8R8A8,
-			R5G6B5 = 513,
+
+			R5G6B5 = 513
 			//DXT3 = 1026,
 			//DXT5 = 2050,
 		}

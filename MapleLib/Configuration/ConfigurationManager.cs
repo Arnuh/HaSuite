@@ -83,14 +83,12 @@ namespace MapleLib.Configuration {
 					_appSettings = JsonConvert.DeserializeObject<ApplicationSettings>(applicationFileContent);
 
 					return true;
-				}
-				catch (Exception) {
+				} catch (Exception) {
 					// delete all
 					try {
 						File.Delete(userFilePath);
 						File.Delete(applicationFilePath);
-					}
-					catch {
+					} catch {
 					} // throws if it cant access without admin
 				}
 			}
@@ -124,8 +122,7 @@ namespace MapleLib.Configuration {
 				}
 
 				return true;
-			}
-			catch {
+			} catch {
 			}
 
 			return false;

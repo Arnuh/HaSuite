@@ -41,13 +41,11 @@ namespace HaSharedLibrary {
 				if (bIsMP3File) {
 					mpegStream = new Mp3FileReader(byteStream);
 					wavePlayer.Init(mpegStream);
-				}
-				else {
+				} else {
 					waveFileStream = new WaveFileReader(byteStream);
 					wavePlayer.Init(waveFileStream);
 				}
-			}
-			catch (Exception) {
+			} catch (Exception) {
 				playbackSuccessfully = false;
 				//InvalidDataException
 				// Message = "Not a WAVE file - no RIFF header"

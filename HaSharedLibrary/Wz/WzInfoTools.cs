@@ -56,8 +56,7 @@ namespace HaSharedLibrary.Wz {
 				{
 					firstNonZeroIndex = i;
 					break;
-				}
-				else if (i == source.Length - 1) //all chars are 0, return 0
+				} else if (i == source.Length - 1) //all chars are 0, return 0
 				{
 					return "0";
 				}
@@ -228,8 +227,7 @@ namespace HaSharedLibrary.Wz {
 
 			if (fileManager.Is64Bit) {
 				return (WzImage) mapObject;
-			}
-			else {
+			} else {
 				var mapImage = (WzImage) mapObject?[mapcat]?[mapIdNamePadded];
 				return mapImage;
 			}

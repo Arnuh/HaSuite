@@ -113,8 +113,7 @@ namespace HaCreator.CustomControls {
 				mapNamesBox.Items.AddRange(maps.Cast<object>().ToArray<object>());
 
 				mapNamesBox_SelectedIndexChanged(null, null);
-			}
-			else {
+			} else {
 				var currentDispatcher = Dispatcher.CurrentDispatcher;
 
 				// new task
@@ -169,8 +168,7 @@ namespace HaCreator.CustomControls {
 
 				minimapBox.Image = new Bitmap(1, 1);
 				loadMapAvailable = mapNamesBox.SelectedItem != null;
-			}
-			else {
+			} else {
 				var mapid = selectedName.Substring(0, 9);
 
 				var mapImage = WzInfoTools.FindMapImage(mapid, Program.WzManager);
@@ -180,8 +178,7 @@ namespace HaCreator.CustomControls {
 
 					minimapBox.Image = (Image) new Bitmap(1, 1);
 					loadMapAvailable = false;
-				}
-				else {
+				} else {
 					using (var rsrc = new WzImageResource(mapImage)) {
 						if (mapImage["info"]["link"] != null) {
 							panel_linkWarning.Visible = true;
@@ -190,8 +187,7 @@ namespace HaCreator.CustomControls {
 
 							minimapBox.Image = new Bitmap(1, 1);
 							loadMapAvailable = false;
-						}
-						else {
+						} else {
 							panel_linkWarning.Visible = false;
 							panel_mapExistWarning.Visible = false;
 

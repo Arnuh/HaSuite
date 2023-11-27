@@ -72,7 +72,7 @@ namespace HaRepacker.GUI.Panels {
 #if DEBUG
 			toolStripStatusLabel_debugMode.Visibility = Visibility.Visible;
 #else
-            toolStripStatusLabel_debugMode.Visibility = Visibility.Collapsed;
+			toolStripStatusLabel_debugMode.Visibility = Visibility.Collapsed;
 #endif
 
 			// undo redo
@@ -264,8 +264,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is WzDirectory) && !(target.Tag is WzFile)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameInputBox.Show(Properties.Resources.MainAddImg, 0, out name)) {
+			} else if (!NameInputBox.Show(Properties.Resources.MainAddImg, 0, out name)) {
 				return;
 			}
 
@@ -282,8 +281,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!FloatingPointInputBox.Show(Properties.Resources.MainAddFloat, out name, out d)) {
+			} else if (!FloatingPointInputBox.Show(Properties.Resources.MainAddFloat, out name, out d)) {
 				return;
 			}
 
@@ -300,8 +298,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!BitmapInputBox.Show(Properties.Resources.MainAddCanvas, out name, out bitmaps)) {
+			} else if (!BitmapInputBox.Show(Properties.Resources.MainAddCanvas, out name, out bitmaps)) {
 				return;
 			}
 
@@ -338,11 +335,10 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!IntInputBox.Show(
-				         Properties.Resources.MainAddInt,
-				         "", 0,
-				         out name, out value)) {
+			} else if (!IntInputBox.Show(
+				           Properties.Resources.MainAddInt,
+				           "", 0,
+				           out name, out value)) {
 				return;
 			}
 
@@ -359,8 +355,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!LongInputBox.Show(Properties.Resources.MainAddInt, out name, out value)) {
+			} else if (!LongInputBox.Show(Properties.Resources.MainAddInt, out name, out value)) {
 				return;
 			}
 
@@ -376,8 +371,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameInputBox.Show(Properties.Resources.MainAddConvex, 0, out name)) {
+			} else if (!NameInputBox.Show(Properties.Resources.MainAddConvex, 0, out name)) {
 				return;
 			}
 
@@ -394,8 +388,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!FloatingPointInputBox.Show(Properties.Resources.MainAddDouble, out name, out d)) {
+			} else if (!FloatingPointInputBox.Show(Properties.Resources.MainAddDouble, out name, out d)) {
 				return;
 			}
 
@@ -411,8 +404,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameInputBox.Show(Properties.Resources.MainAddNull, 0, out name)) {
+			} else if (!NameInputBox.Show(Properties.Resources.MainAddNull, 0, out name)) {
 				return;
 			}
 
@@ -429,8 +421,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!SoundInputBox.Show(Properties.Resources.MainAddSound, out name, out path)) {
+			} else if (!SoundInputBox.Show(Properties.Resources.MainAddSound, out name, out path)) {
 				return;
 			}
 
@@ -447,8 +438,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameValueInputBox.Show(Properties.Resources.MainAddString, out name, out value)) {
+			} else if (!NameValueInputBox.Show(Properties.Resources.MainAddString, out name, out value)) {
 				return;
 			}
 
@@ -464,8 +454,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameInputBox.Show(Properties.Resources.MainAddSub, 0, out name)) {
+			} else if (!NameInputBox.Show(Properties.Resources.MainAddSub, 0, out name)) {
 				return;
 			}
 
@@ -482,10 +471,9 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!IntInputBox.Show(Properties.Resources.MainAddShort,
-				         "", 0,
-				         out name, out value)) {
+			} else if (!IntInputBox.Show(Properties.Resources.MainAddShort,
+				           "", 0,
+				           out name, out value)) {
 				return;
 			}
 
@@ -502,8 +490,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!NameValueInputBox.Show(Properties.Resources.MainAddLink, out name, out value)) {
+			} else if (!NameValueInputBox.Show(Properties.Resources.MainAddLink, out name, out value)) {
 				return;
 			}
 
@@ -520,8 +507,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
-			}
-			else if (!VectorInputBox.Show(Properties.Resources.MainAddVec, out name, out pt)) {
+			} else if (!VectorInputBox.Show(Properties.Resources.MainAddVec, out name, out pt)) {
 				return;
 			}
 
@@ -644,8 +630,7 @@ namespace HaRepacker.GUI.Panels {
 				try {
 					var previewWnd = new ImageAnimationPreviewWindow(selectedNodes, path_title);
 					previewWnd.Run();
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					MessageBox.Show("Error previewing animation. " + ex.ToString());
 				}
 			});
@@ -686,14 +671,12 @@ namespace HaRepacker.GUI.Panels {
 			if (DataTree.SelectedNode.Tag is WzFile) {
 				((WzFile) DataTree.SelectedNode.Tag).Header.Copyright = nameBox.Text;
 				((WzFile) DataTree.SelectedNode.Tag).Header.RecalculateFileStart();
-			}
-			else if (WzNode.CanNodeBeInserted((WzNode) DataTree.SelectedNode.Parent, nameBox.Text)) {
+			} else if (WzNode.CanNodeBeInserted((WzNode) DataTree.SelectedNode.Parent, nameBox.Text)) {
 				var text = nameBox.Text;
 				((WzNode) DataTree.SelectedNode).ChangeName(text);
 				nameBox.Text = text;
 				nameBox.ApplyButtonEnabled = false;
-			}
-			else {
+			} else {
 				Warning.Error(Properties.Resources.MainNodeExists);
 			}
 		}
@@ -719,14 +702,12 @@ namespace HaRepacker.GUI.Panels {
 			if (obj is WzVectorProperty vectorProperty) {
 				vectorProperty.X.Value = vectorPanel.X;
 				vectorProperty.Y.Value = vectorPanel.Y;
-			}
-			else if (obj is WzStringProperty stringProperty) {
+			} else if (obj is WzStringProperty stringProperty) {
 				if (!stringProperty.IsSpineAtlasResources)
 					stringProperty.Value = setText;
 				else
 					throw new NotSupportedException("Usage of textBoxProp for spine WzStringProperty.");
-			}
-			else if (obj is WzFloatProperty floatProperty) {
+			} else if (obj is WzFloatProperty floatProperty) {
 				float val;
 				if (!float.TryParse(setText, out val)) {
 					Warning.Error(string.Format(Properties.Resources.MainConversionError, setText));
@@ -734,8 +715,7 @@ namespace HaRepacker.GUI.Panels {
 				}
 
 				floatProperty.Value = val;
-			}
-			else if (obj is WzIntProperty intProperty) {
+			} else if (obj is WzIntProperty intProperty) {
 				int val;
 				if (!int.TryParse(setText, out val)) {
 					Warning.Error(string.Format(Properties.Resources.MainConversionError, setText));
@@ -743,8 +723,7 @@ namespace HaRepacker.GUI.Panels {
 				}
 
 				intProperty.Value = val;
-			}
-			else if (obj is WzLongProperty longProperty) {
+			} else if (obj is WzLongProperty longProperty) {
 				long val;
 				if (!long.TryParse(setText, out val)) {
 					Warning.Error(string.Format(Properties.Resources.MainConversionError, setText));
@@ -752,8 +731,7 @@ namespace HaRepacker.GUI.Panels {
 				}
 
 				longProperty.Value = val;
-			}
-			else if (obj is WzDoubleProperty doubleProperty) {
+			} else if (obj is WzDoubleProperty doubleProperty) {
 				double val;
 				if (!double.TryParse(setText, out val)) {
 					Warning.Error(string.Format(Properties.Resources.MainConversionError, setText));
@@ -761,8 +739,7 @@ namespace HaRepacker.GUI.Panels {
 				}
 
 				doubleProperty.Value = val;
-			}
-			else if (obj is WzShortProperty shortProperty) {
+			} else if (obj is WzShortProperty shortProperty) {
 				short val;
 				if (!short.TryParse(setText, out val)) {
 					Warning.Error(string.Format(Properties.Resources.MainConversionError, setText));
@@ -770,11 +747,9 @@ namespace HaRepacker.GUI.Panels {
 				}
 
 				shortProperty.Value = val;
-			}
-			else if (obj is WzUOLProperty UOLProperty) {
+			} else if (obj is WzUOLProperty UOLProperty) {
 				UOLProperty.Value = setText;
-			}
-			else if (obj is WzLuaProperty) {
+			} else if (obj is WzLuaProperty) {
 				throw new NotSupportedException("Moved to TextEditor_SaveButtonClicked()");
 			}
 		}
@@ -793,8 +768,7 @@ namespace HaRepacker.GUI.Panels {
 				var setText = textEditor.textEditor.Text;
 				var encBytes = luaProp.EncodeDecode(Encoding.ASCII.GetBytes(setText));
 				luaProp.Value = encBytes;
-			}
-			else if (obj is WzStringProperty stringProp) {
+			} else if (obj is WzStringProperty stringProp) {
 				//if (stringProp.IsSpineAtlasResources)
 				// {
 				var setText = textEditor.textEditor.Text;
@@ -879,8 +853,7 @@ namespace HaRepacker.GUI.Panels {
 				Bitmap bmp;
 				try {
 					bmp = (Bitmap) System.Drawing.Image.FromFile(dialog.FileName);
-				}
-				catch {
+				} catch {
 					Warning.Error(Properties.Resources.MainImageLoadError);
 					return;
 				}
@@ -913,8 +886,7 @@ namespace HaRepacker.GUI.Panels {
 
 					// TODO: changing _Inlink image crashes
 					// Mob2.wz/9400121/hit/0
-				}
-				else if
+				} else if
 					(selectedWzCanvas
 					 .HaveOutlinkProperty()) // if its an inlink property, remove that before updating base image.
 				{
@@ -965,7 +937,7 @@ namespace HaRepacker.GUI.Panels {
 
 				childOutlinkNode.DeleteWzNode(); // Delete '_outlink' node
 			}
-			
+
 			selectedWzCanvas.PngProperty.SetImage(linkedTarget.GetBitmap());
 
 			// Updates
@@ -1026,8 +998,7 @@ namespace HaRepacker.GUI.Panels {
 				WzBinaryProperty prop;
 				try {
 					prop = new WzBinaryProperty(((WzBinaryProperty) DataTree.SelectedNode.Tag).Name, dialog.FileName);
-				}
-				catch {
+				} catch {
 					Warning.Error(Properties.Resources.MainImageLoadError);
 					return;
 				}
@@ -1079,16 +1050,14 @@ namespace HaRepacker.GUI.Panels {
 
 				wzCanvasPropertyObjLocation = canvas.GetLinkedWzCanvasBitmap();
 				fileName = canvas.Name;
-			}
-			else {
+			} else {
 				var linkValue = ((WzUOLProperty) DataTree.SelectedNode.Tag).LinkValue;
 				if (linkValue is WzCanvasProperty) {
 					var canvas = (WzCanvasProperty) linkValue;
 
 					wzCanvasPropertyObjLocation = canvas.GetLinkedWzCanvasBitmap();
 					fileName = canvas.Name;
-				}
-				else {
+				} else {
 					return;
 				}
 			}
@@ -1198,8 +1167,7 @@ namespace HaRepacker.GUI.Panels {
 					Bitmap bmp;
 					try {
 						bmp = (Bitmap) System.Drawing.Image.FromFile(files[0]);
-					}
-					catch (Exception exp) {
+					} catch (Exception exp) {
 						return;
 					}
 
@@ -1223,14 +1191,11 @@ namespace HaRepacker.GUI.Panels {
 			if (obj is WzDirectory) {
 				Warning.Error(Properties.Resources.MainCopyDirError);
 				return null;
-			}
-			else if (obj is WzImage) {
+			} else if (obj is WzImage) {
 				return ((WzImage) obj).DeepClone();
-			}
-			else if (obj is WzImageProperty) {
+			} else if (obj is WzImageProperty) {
 				return ((WzImageProperty) obj).DeepClone();
-			}
-			else {
+			} else {
 				MapleLib.Helpers.ErrorLogger.Log(MapleLib.Helpers.ErrorLevel.MissingFeature,
 					"The current WZ object type cannot be cloned " + obj.ToString() + " " + obj.FullPath);
 				return null;
@@ -1324,14 +1289,12 @@ namespace HaRepacker.GUI.Panels {
 
 							if (bNoToAllComplete)
 								break;
-						}
-						else // not not in this 
+						} else // not not in this 
 						{
 							parent.AddNode(node, false);
 						}
 					}
-			}
-			finally {
+			} finally {
 				bPasteTaskActive = false;
 			}
 		}
@@ -1362,8 +1325,7 @@ namespace HaRepacker.GUI.Panels {
 			if (DataTree.SelectedNodes.Count <= 1) {
 				menuItem_Animate.Visibility =
 					Visibility.Collapsed; // set invisible regardless if none of the nodes are selected.
-			}
-			else {
+			} else {
 				var bIsAllCanvas = true;
 				// check if everything selected is WzUOLProperty and WzCanvasProperty
 				foreach (WzNode tree in DataTree.SelectedNodes) {
@@ -1429,8 +1391,7 @@ namespace HaRepacker.GUI.Panels {
 				         }
 				     }
 				 }*/
-			}
-			else if (obj is WzCanvasProperty canvasProp) {
+			} else if (obj is WzCanvasProperty canvasProp) {
 				bAnimateMoreButton = true; // flag
 
 				menuItem_changeImage.Visibility = Visibility.Visible;
@@ -1442,8 +1403,7 @@ namespace HaRepacker.GUI.Panels {
 					System.Drawing.Image img = canvasProp.GetLinkedWzCanvasBitmap();
 					if (img != null)
 						canvasPropBox.Image = ((Bitmap) img).ToWpfBitmap();
-				}
-				else {
+				} else {
 					canvasPropBox.Image = canvasProp.GetLinkedWzCanvasBitmap().ToWpfBitmap();
 				}
 
@@ -1451,8 +1411,7 @@ namespace HaRepacker.GUI.Panels {
 					canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
 
 				SetImageRenderView(canvasProp);
-			}
-			else if (obj is WzUOLProperty uolProperty) {
+			} else if (obj is WzUOLProperty uolProperty) {
 				bAnimateMoreButton = true; // flag
 
 				// Image
@@ -1468,8 +1427,7 @@ namespace HaRepacker.GUI.Panels {
 						canvasUOL.PngProperty.MagLevel, canvasUOL.PngProperty.IsIncorrectFormat2());
 
 					SetImageRenderView(canvasUOL);
-				}
-				else if
+				} else if
 					(linkValue is WzBinaryProperty binProperty) // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
 				{
 					mp3Player.Visibility = Visibility.Visible;
@@ -1483,8 +1441,7 @@ namespace HaRepacker.GUI.Panels {
 				textPropBox.Visibility = Visibility.Visible;
 				textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
 				textPropBox.Text = obj.ToString();
-			}
-			else if (bIsWzSoundProperty) {
+			} else if (bIsWzSoundProperty) {
 				bAnimateMoreButton = true; // flag
 
 				mp3Player.Visibility = Visibility.Visible;
@@ -1492,15 +1449,13 @@ namespace HaRepacker.GUI.Panels {
 
 				menuItem_changeSound.Visibility = Visibility.Visible;
 				menuItem_saveSound.Visibility = Visibility.Visible;
-			}
-			else if (bIsWzLuaProperty) {
+			} else if (bIsWzLuaProperty) {
 				textEditor.Visibility = Visibility.Visible;
 				textEditor.SetHighlightingDefinitionIndex(2); // javascript
 
 				textEditor.textEditor.Text = obj.ToString();
-			}
-			else if (bIsWzStringProperty || bIsWzIntProperty || bIsWzLongProperty || bIsWzDoubleProperty ||
-			         bIsWzFloatProperty || bIsWzShortProperty) {
+			} else if (bIsWzStringProperty || bIsWzIntProperty || bIsWzLongProperty || bIsWzDoubleProperty ||
+			           bIsWzFloatProperty || bIsWzShortProperty) {
 				// If text is a string property, expand the textbox
 				if (bIsWzStringProperty) {
 					var stringObj = (WzStringProperty) obj;
@@ -1524,15 +1479,13 @@ namespace HaRepacker.GUI.Panels {
 								// Create xna window
 								var Window = new SpineAnimationWindow(item, path_title);
 								Window.Run();
-							}
-							catch (Exception e) {
+							} catch (Exception e) {
 								Warning.Error("Error initialising/ rendering spine object. " + e.ToString());
 							}
 						});
 						thread.Start();
 						thread.Join();
-					}
-					else if (stringObj.Name.EndsWith(".json")) // Map001.wz/Back/BM3_3.img/spine/skeleton.json
+					} else if (stringObj.Name.EndsWith(".json")) // Map001.wz/Back/BM3_3.img/spine/skeleton.json
 					{
 						bAnimateMoreButton = true;
 						menuItem_exportFile.Visibility = Visibility.Visible;
@@ -1540,8 +1493,7 @@ namespace HaRepacker.GUI.Panels {
 						textEditor.Visibility = Visibility.Visible;
 						textEditor.SetHighlightingDefinitionIndex(20); // json
 						textEditor.textEditor.Text = obj.ToString();
-					}
-					else {
+					} else {
 						// Value
 						textPropBox.Visibility = Visibility.Visible;
 						textPropBox.Text = obj.ToString();
@@ -1556,13 +1508,11 @@ namespace HaRepacker.GUI.Panels {
 							else
 								toolStripStatusLabel_additionalInfo.Text =
 									string.Format(Properties.Resources.MainAdditionalInfo_PortalType, obj.GetString());
-						}
-						else {
+						} else {
 							textPropBox.AcceptsReturn = true;
 						}
 					}
-				}
-				else if (bIsWzLongProperty || bIsWzIntProperty || bIsWzShortProperty) {
+				} else if (bIsWzLongProperty || bIsWzIntProperty || bIsWzShortProperty) {
 					textPropBox.Visibility = Visibility.Visible;
 					textPropBox.AcceptsReturn = false;
 					textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
@@ -1583,8 +1533,7 @@ namespace HaRepacker.GUI.Panels {
 
 						// Set visibility
 						fieldLimitPanelHost.Visibility = Visibility.Visible;
-					}
-					else {
+					} else {
 						long value_ = 0; // long for others, in the case of negative value
 						if (bIsWzLongProperty)
 							value_ = ((WzLongProperty) obj).GetLong();
@@ -1594,8 +1543,7 @@ namespace HaRepacker.GUI.Panels {
 
 						textPropBox.Text = value_.ToString();
 					}
-				}
-				else if (bIsWzDoubleProperty || bIsWzFloatProperty) {
+				} else if (bIsWzDoubleProperty || bIsWzFloatProperty) {
 					textPropBox.Visibility = Visibility.Visible;
 					textPropBox.AcceptsReturn = false;
 					textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
@@ -1603,18 +1551,15 @@ namespace HaRepacker.GUI.Panels {
 					if (bIsWzFloatProperty)
 						textPropBox.Text = ((WzFloatProperty) obj).GetFloat().ToString();
 					else if (bIsWzDoubleProperty) textPropBox.Text = ((WzDoubleProperty) obj).GetDouble().ToString();
-				}
-				else {
+				} else {
 					textPropBox.AcceptsReturn = false;
 				}
-			}
-			else if (obj is WzVectorProperty property) {
+			} else if (obj is WzVectorProperty property) {
 				vectorPanel.Visibility = Visibility.Visible;
 
 				vectorPanel.X = property.X.Value;
 				vectorPanel.Y = property.Y.Value;
-			}
-			else {
+			} else {
 			}
 
 			// Animation button
@@ -1622,8 +1567,7 @@ namespace HaRepacker.GUI.Panels {
 				bAnimateMoreButton = true; // flag
 
 				menuItem_saveImageAnimation.Visibility = Visibility.Visible;
-			}
-			else {
+			} else {
 				menuItem_saveImageAnimation.Visibility = Visibility.Collapsed;
 			}
 
@@ -1703,8 +1647,7 @@ namespace HaRepacker.GUI.Panels {
 						    StringComparison.InvariantCultureIgnoreCase))) {
 					if (listSearchResults) {
 						searchResultsList.Add(prop.FullPath.Replace(";", @"\"));
-					}
-					else if (currentidx == searchidx) {
+					} else if (currentidx == searchidx) {
 						if (prop.HRTag == null)
 							((WzNode) prop.ParentImage.HRTag).Reparse();
 						var node = (WzNode) prop.HRTag;
@@ -1716,8 +1659,7 @@ namespace HaRepacker.GUI.Panels {
 						finished = true;
 						searchidx++;
 						return;
-					}
-					else {
+					} else {
 						currentidx++;
 					}
 				}
@@ -1735,8 +1677,7 @@ namespace HaRepacker.GUI.Panels {
 				if (0 <= subnode.Text.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase)) {
 					if (listSearchResults) {
 						searchResultsList.Add(subnode.FullPath.Replace(";", @"\"));
-					}
-					else if (currentidx == searchidx) {
+					} else if (currentidx == searchidx) {
 						//if (subnode.Style == null) subnode.Style = new ElementStyle();
 						subnode.BackColor = System.Drawing.Color.Yellow;
 						coloredNode = subnode;
@@ -1745,8 +1686,7 @@ namespace HaRepacker.GUI.Panels {
 						finished = true;
 						searchidx++;
 						return;
-					}
-					else {
+					} else {
 						currentidx++;
 					}
 				}
@@ -1755,15 +1695,13 @@ namespace HaRepacker.GUI.Panels {
 					var img = (WzImage) subnode.Tag;
 					if (img.Parsed) {
 						SearchWzProperties(img);
-					}
-					else if (extractImages) {
+					} else if (extractImages) {
 						img.ParseImage();
 						SearchWzProperties(img);
 					}
 
 					if (finished) return;
-				}
-				else {
+				} else {
 					SearchTV(subnode);
 				}
 			}

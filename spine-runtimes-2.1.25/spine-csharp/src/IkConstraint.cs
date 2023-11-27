@@ -119,8 +119,7 @@ namespace Spine {
 				parentParent.worldToLocal(targetX, targetY, out positionX, out positionY);
 				targetX = (positionX - parent.x) * parentParent.worldScaleX;
 				targetY = (positionY - parent.y) * parentParent.worldScaleY;
-			}
-			else {
+			} else {
 				targetX -= parent.x;
 				targetY -= parent.y;
 			}
@@ -128,8 +127,7 @@ namespace Spine {
 			if (child.parent == parent) {
 				positionX = child.x;
 				positionY = child.y;
-			}
-			else {
+			} else {
 				child.parent.localToWorld(child.x, child.y, out positionX, out positionY);
 				parent.worldToLocal(positionX, positionY, out positionX, out positionY);
 			}

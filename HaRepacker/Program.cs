@@ -131,8 +131,7 @@ namespace HaRepacker {
 				var user = WindowsIdentity.GetCurrent();
 				var principal = new WindowsPrincipal(user);
 				isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
-			}
-			catch (Exception) {
+			} catch (Exception) {
 				isAdmin = false;
 			}
 
