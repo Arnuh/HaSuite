@@ -40,6 +40,11 @@ namespace HaCreator.GUI {
 
 		#region Create new
 
+		/// <summary>
+		/// Creates a new default map to work from
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void newButton_Click(object sender, EventArgs e) {
 			var w = int.Parse(newWidth.Text);
 			var h = int.Parse(newHeight.Text);

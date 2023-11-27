@@ -216,20 +216,19 @@ namespace HaCreator.MapEditor {
 			return bmp.ToTexture2D(DxDevice);
 		}
 
-		public Board CreateBoard(Point mapSize, Point centerPoint,
-			ContextMenu menu) {
+		/// <summary>
+		/// Creates a new board object
+		/// </summary>
+		/// <param name="mapSize"></param>
+		/// <param name="centerPoint"></param>
+		/// <param name="menu"></param>
+		/// <param name="bIsNewMapDesign">Determines if this board is a new map design or editing an existing map.</param>
+		/// <returns></returns>
+		public Board CreateBoard(Point mapSize, Point centerPoint, ContextMenu menu, bool bIsNewMapDesign) {
 			lock (this) {
-				var newBoard = new Board(mapSize, centerPoint, this, menu,
-					ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
+				var newBoard = new Board(mapSize, centerPoint, this, bIsNewMapDesign, menu, ApplicationSettings.theoreticalVisibleTypes,
+					ApplicationSettings.theoreticalEditedTypes);
 				boards.Add(newBoard);
-				newBoard.CreateMapLayers();
-				return newBoard;
-			}
-		}
-
-		public Board CreateHiddenBoard(Point mapSize, Point centerPoint) {
-			lock (this) {
-				var newBoard = new Board(mapSize, centerPoint, this, null, ItemTypes.None, ItemTypes.None);
 				newBoard.CreateMapLayers();
 				return newBoard;
 			}
