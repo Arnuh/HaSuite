@@ -69,6 +69,13 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.ApplicationSettings.Width,
 				Program.ConfigurationManager.ApplicationSettings.Height);
 
+			// Drag and drop file
+			DragEnter += MainForm_DragEnter;
+			DragDrop += MainForm_DragDrop;
+
+			// Drag and drop at the data tree
+			MainPanel.DataTree.DragEnter += MainForm_DragEnter;
+			MainPanel.DataTree.DragDrop += MainForm_DragDrop;
 
 			// Set default selected main panel
 			UpdateSelectedMainPanelTab();
@@ -118,6 +125,30 @@ namespace HaRepacker.GUI {
 
 
 		#region Load, unload WZ files + Panels & TreeView management
+
+		/// <summary>
+		/// MainForm -- Drag the file from Windows Explorer
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		/// <exception cref="NotImplementedException"></exception>
+		private void MainForm_DragEnter(object sender, DragEventArgs e) {
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Move; // Allow the file to be copied
+		}
+
+		/// <summary>
+		/// MainForm -- Drop the file from Windows Explorer
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MainForm_DragDrop(object sender, DragEventArgs e) {
+			if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+				// process the drag and dropped files
+				OpenFileInternal(files);
+			}
+		}
 
 		public void Interop_AddLoadedWzFileToManager(WzFile f) {
 			InsertWzFileToPanel(f);
@@ -791,6 +822,109 @@ namespace HaRepacker.GUI {
 
 		#endregion
 
+		#region Open WZ File
+
+		private async void OpenFileInternal(string[] fileNames) {
+			var currentDispatcher = Dispatcher.CurrentDispatcher;
+
+			var MapleVersionEncryptionSelected = GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
+
+			var wzfilePathsToLoad = new List<string>();
+
+			foreach (var filePath in fileNames) {
+				var filePathLowerCase = filePath.ToLower();
+
+				if (filePathLowerCase.EndsWith("zlz.dll")) // ZLZ.dll encryption keys
+				{
+					var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
+					//similarly to find process architecture  
+					var assemblyArchitecture = executingAssemblyName.ProcessorArchitecture;
+
+					if (assemblyArchitecture == ProcessorArchitecture.X86) {
+						var form = new ZLZPacketEncryptionKeyForm();
+						var opened = form.OpenZLZDllFile();
+
+						if (opened)
+							form.Show();
+					} else {
+						MessageBox.Show(Properties.Resources.ExecutingAssemblyError, Properties.Resources.Warning, MessageBoxButtons.OK);
+					}
+
+					return;
+				}
+				// List.wz file (pre-bb maplestory enc)
+				else if (WzTool.IsListFile(filePath)) {
+					new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
+				}
+				// Other WZs
+				else if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) {
+					var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
+					if (img == null) {
+						MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
+						break;
+					}
+
+					AddLoadedWzObjectToMainPanel(img);
+				} else {
+					if (MapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
+						StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
+						return;
+					}
+
+					wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
+
+					// Check if there are any related files
+					string[] wzsWithRelatedFiles = {"Map", "Mob", "Skill", "Sound"};
+					var bWithRelated = false;
+					string relatedFileName = null;
+
+					foreach (var wz in wzsWithRelatedFiles)
+						if (filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) {
+							bWithRelated = true;
+							relatedFileName = wz;
+							break;
+						}
+
+					if (bWithRelated)
+						if (Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) {
+							var otherMapWzFiles = Directory.GetFiles(filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
+							foreach (var filePath_Others in otherMapWzFiles)
+								if (filePath_Others != filePath)
+									wzfilePathsToLoad.Add(filePath_Others);
+						}
+				}
+			}
+
+			// Show splash screen
+			MainPanel.OnSetPanelLoading();
+
+			// Try opening one, to see if the user is having the right priviledge
+
+			// Load all original WZ files 
+			await Task.Run(() => {
+				var loadedWzFiles = new List<WzFile>();
+				var loop = Parallel.ForEach(wzfilePathsToLoad, filePath => {
+					var f = Program.WzFileManager.LoadWzFile(filePath, MapleVersionEncryptionSelected);
+					if (f == null) {
+						// error should be thrown 
+					} else {
+						lock (loadedWzFiles) {
+							loadedWzFiles.Add(f);
+						}
+					}
+				});
+				while (!loop.IsCompleted) Thread.Sleep(100); //?
+
+				foreach (var wzFile in loadedWzFiles) // add later, once everything is loaded to memory
+					AddLoadedWzObjectToMainPanel(wzFile, currentDispatcher);
+			}); // load complete
+
+			// Hide panel splash sdcreen
+			MainPanel.OnSetPanelLoadingCompleted();
+		}
+
+		#endregion
+
 		#region Toolstrip Menu items
 
 		/// <summary>
@@ -798,116 +932,18 @@ namespace HaRepacker.GUI {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private async void openToolStripMenuItem_Click(object sender, EventArgs e) {
-			var currentDispatcher = Dispatcher.CurrentDispatcher;
-
-			var MapleVersionEncryptionSelected =
-				GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
-			if (MapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
-				StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
-				return;
-			}
-
+		private void openToolStripMenuItem_Click(object sender, EventArgs e) {
 			// Load WZ file
 			using (var dialog = new OpenFileDialog() {
 				       Title = Properties.Resources.SelectWz,
 				       Filter = $"{Properties.Resources.WzFilter}|*.wz;ZLZ.dll",
-				       Multiselect = true,
-				       InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
+				       Multiselect = true
 			       }) {
 				if (dialog.ShowDialog() != DialogResult.OK)
 					return;
 
-				var wzfilePathsToLoad = new List<string>();
-				foreach (var filePath in dialog.FileNames) {
-					UpdatePreviousLoadDirectory(filePath);
-					var filePathLowerCase = filePath.ToLower();
-
-					if (filePathLowerCase.EndsWith("zlz.dll")) // ZLZ.dll encryption keys
-					{
-						var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
-						//similarly to find process architecture  
-						var assemblyArchitecture = executingAssemblyName.ProcessorArchitecture;
-
-						if (assemblyArchitecture == ProcessorArchitecture.X86) {
-							var form = new ZLZPacketEncryptionKeyForm();
-							var opened = form.OpenZLZDllFile();
-
-							if (opened)
-								form.Show();
-						} else {
-							MessageBox.Show(Properties.Resources.ExecutingAssemblyError,
-								Properties.Resources.Warning, MessageBoxButtons.OK);
-						}
-
-						return;
-					}
-
-					// Other WZs
-					else if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) {
-						var img =
-							Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
-						if (img == null) {
-							MessageBox.Show(Properties.Resources.MainFileOpenFail,
-								Properties.Resources.Error);
-							break;
-						}
-
-						AddLoadedWzObjectToMainPanel(img);
-					} else if (WzTool.IsListFile(filePath)) {
-						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
-					} else {
-						wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
-
-						// Check if there are any related files
-						string[] wzsWithRelatedFiles = {"Map", "Mob", "Skill", "Sound"};
-						var bWithRelated = false;
-						string relatedFileName = null;
-
-						foreach (var wz in wzsWithRelatedFiles)
-							if (filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) {
-								bWithRelated = true;
-								relatedFileName = wz;
-								break;
-							}
-
-						if (bWithRelated)
-							if (Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) {
-								var otherMapWzFiles = Directory.GetFiles(
-									filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
-								foreach (var filePath_Others in otherMapWzFiles)
-									if (filePath_Others != filePath)
-										wzfilePathsToLoad.Add(filePath_Others);
-							}
-					}
-				}
-
-				// Show splash screen
-				MainPanel.OnSetPanelLoading();
-
-				// Try opening one, to see if the user is having the right priviledge
-
-				// Load all original WZ files 
-				await Task.Run(() => {
-					var loadedWzFiles = new List<WzFile>();
-					var loop = Parallel.ForEach(wzfilePathsToLoad, filePath => {
-						var f = Program.WzFileManager.LoadWzFile(filePath, MapleVersionEncryptionSelected);
-						if (f == null) {
-							// error should be thrown 
-						} else {
-							lock (loadedWzFiles) {
-								loadedWzFiles.Add(f);
-							}
-						}
-					});
-					while (!loop.IsCompleted) Thread.Sleep(100); //?
-
-					foreach (var wzFile in loadedWzFiles) // add later, once everything is loaded to memory
-						AddLoadedWzObjectToMainPanel(wzFile, currentDispatcher);
-				}); // load complete
-
-				// Hide panel splash sdcreen
-				MainPanel.OnSetPanelLoadingCompleted();
+				// Opens the selected file
+				OpenFileInternal(dialog.FileNames);
 			}
 		}
 

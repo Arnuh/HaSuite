@@ -20,8 +20,8 @@
                                           MouseDown="DxContainer_MouseDown"
                                           MouseMove="DxContainer_MouseMove"
                                           MouseUp="DxContainer_MouseUp"
-                                          MouseWheel="DxContainer_MouseWheel" 
-                                          AllowDrop="True"/>
+                                          MouseWheel="DxContainer_MouseWheel"
+                                          AllowDrop="True" />
         </WindowsFormsHost>
 
         <ScrollBar x:Name="vScrollBar" HorizontalAlignment="Right"
