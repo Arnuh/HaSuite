@@ -155,7 +155,7 @@ namespace HaCreator.GUI {
 					var xmlPathDir = Path.GetDirectoryName(xmlPath);
 					if (!Directory.Exists(xmlPathDir))
 						Directory.CreateDirectory(xmlPathDir);
-					var xmlSer = new WzClassicXmlSerializer(0, LineBreak.None, false);
+					var xmlSer = new WzClassicXmlSerializer(4, LineBreak.Windows, true);
 					xmlSer.SerializeImage(img, xmlPath);
 				} catch (Exception e) {
 					ShowErrorMessageThreadSafe(e, "XMLs");
