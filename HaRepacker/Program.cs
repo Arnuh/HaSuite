@@ -38,7 +38,7 @@ namespace HaRepacker {
 			private set { }
 		}
 
-		public const string pipeName = "HaRepacker";
+		public const string pipeName = "PheRepacker";
 
 		/// <summary>
 		/// The main entry point for the application.

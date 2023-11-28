@@ -144,7 +144,7 @@
             this.MaximizeBox = false;
             this.Name = "Initialization";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "HaCreator";
+            this.Text = "PheCreator";
             this.Load += new System.EventHandler(this.Initialization_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Initialization_KeyDown);
             this.ResumeLayout(false);

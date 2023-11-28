@@ -697,7 +697,7 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(393, 13);
             this.label20.TabIndex = 57;
-            this.label20.Text = "Note: certain settings require restarting HaCreator 2 in order to be applied.";
+            this.label20.Text = "Note: certain settings require restarting PheCreator in order to be applied.";
             // 
             // tabPage2
             // 

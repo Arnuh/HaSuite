@@ -25,7 +25,7 @@ namespace MapleLib.Configuration {
 	public class ConfigurationManager {
 		private const string SETTINGS_FILE_USER = "Settings.txt";
 		private const string SETTINGS_FILE_APPLICATION = "ApplicationSettings.txt";
-		public const string configPipeName = "HaRepacker";
+		public const string configPipeName = "PheRepacker";
 
 
 		private string folderPath;

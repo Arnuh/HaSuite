@@ -498,7 +498,7 @@ namespace HaCreator.Wz {
 					throw new Exception("Zero length foothold in saving");
 				}
 
-				// For starters, we search the footholds linking downards from us.
+				// For starters, we search the footholds linking downwards from us.
 				// This is because we are looking for the conventional foothold U scheme:
 				//
 				// |     |

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("haha01haha01's Map Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HaCreator")]
+[assembly: AssemblyProduct("PheCreator")]
 [assembly: AssemblyCopyright("Copyright © haha01haha01 2015")]
 [assembly: AssemblyTrademark("HaCreator™")]
 [assembly: AssemblyCulture("")]

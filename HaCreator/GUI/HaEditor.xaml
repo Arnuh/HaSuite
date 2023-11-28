@@ -13,7 +13,7 @@
 
         MouseWheel="OnMouseWheel"
         Closing="HaEditor2_Closing"
-        SizeChanged="WindowSizeChanged" Title="HaCreator resurrected">
+        SizeChanged="WindowSizeChanged" Title="PheCreator">
 
     <Grid>
         <Grid.RowDefinitions>

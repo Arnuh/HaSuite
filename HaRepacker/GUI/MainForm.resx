@@ -667,7 +667,7 @@
         <value>173, 22</value>
     </data>
     <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
-    <value>About HaRepacker</value>
+    <value>About PheRepacker</value>
   </data>
     <data name="AbortButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
         <value>NoControl</value>
@@ -2443,7 +2443,7 @@
         </value>
     </data>
     <data name="$this.Text" xml:space="preserve">
-    <value>Harepacker resurrected ~ Fork of HaRepacker ;)</value>
+    <value>PheRepacker</value>
   </data>
     <data name="&gt;&gt;fileToolStripMenuItem.Name" xml:space="preserve">
     <value>fileToolStripMenuItem</value>

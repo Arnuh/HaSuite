@@ -28,7 +28,7 @@ namespace HaCreator {
 		public static bool AbortThreads = false;
 		public static bool Restarting;
 
-		public const string APP_NAME = "HaCreator";
+		public const string APP_NAME = "PheCreator";
 
 		public static HaEditor HaEditorWindow = null;
 

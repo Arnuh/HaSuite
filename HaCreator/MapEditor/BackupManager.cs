@@ -122,7 +122,7 @@ namespace HaCreator.MapEditor {
 				if (!Directory.Exists(basePath))
 					return false;
 				if (MessageBox.Show(
-					    "HaCreator was shut down unexpectedly, and can attempt to recover from a backed up state automatically. Proceed?\r\n\r\n(To start from scratch, press \"No\")",
+					    "PheCreator was shut down unexpectedly, and can attempt to recover from a backed up state automatically. Proceed?\r\n\r\n(To start from scratch, press \"No\")",
 					    "Recovery", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No) {
 					ClearBackups();
 					return false;

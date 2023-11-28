@@ -53,32 +53,33 @@
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu KeyTip="M" Focusable="False">
                     <RibbonApplicationMenuItem x:Name="newBtn" Header="New" Command="ns:HaRibbon.New"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/new_icon.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/new_icon.png"
                                                KeyTip="N" Focusable="False" />
                     <RibbonApplicationMenuItem x:Name="openBtn" Header="Open map" Command="ns:HaRibbon.Open"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/Folder.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/Folder.png"
                                                KeyTip="O" Focusable="False" />
                     <RibbonApplicationMenuItem x:Name="exportBtn" Header="Save map" Command="ns:HaRibbon.Export"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/Save.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/Save.png"
                                                KeyTip="S" Focusable="False" />
                     <RibbonSeparator />
                     <RibbonApplicationMenuItem x:Name="saveBtn" Header="Save to WZ" Command="ns:HaRibbon.Save"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/export-icon.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/export-icon.png"
                                                Focusable="False" />
                     <RibbonApplicationMenuItem x:Name="repackBtn" Header="Repack WZ Files" Command="ns:HaRibbon.Repack"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/wz.ico"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/wz.ico"
                                                Focusable="False" />
                     <RibbonSeparator />
-                    <RibbonApplicationMenuItem x:Name="hrBtn" Header="Open HaRepacker" Command="ns:HaRibbon.HaRepacker"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/HaLogo32.png"
+                    <RibbonApplicationMenuItem x:Name="hrBtn" Header="Open PheRepacker"
+                                               Command="ns:HaRibbon.HaRepacker"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/HaLogo32.png"
                                                Focusable="False"
                                                IsEnabled="False" />
                     <RibbonSeparator />
                     <RibbonApplicationMenuItem x:Name="aboutBtn" Header="About" Command="ns:HaRibbon.About"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/About.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/About.png"
                                                Focusable="False" />
                     <RibbonApplicationMenuItem x:Name="helpBtn" Header="Help" Command="ns:HaRibbon.Help"
-                                               ImageSource="pack://application:,,,/HaCreator;component/Images/help_icon.png"
+                                               ImageSource="pack://application:,,,/PheCreator;component/Images/help_icon.png"
                                                KeyTip="H" Focusable="False" />
 
                     <RibbonApplicationMenu.FooterPaneContent>
@@ -88,10 +89,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <RibbonButton Label="Settings" Command="ns:HaRibbon.Settings"
-                                          SmallImageSource="pack://application:,,,/HaCreator;component/Images/Settings.png"
+                                          SmallImageSource="pack://application:,,,/PheCreator;component/Images/Settings.png"
                                           Grid.Column="0" Focusable="False" />
                             <RibbonButton Label="Exit" Command="ns:HaRibbon.Exit"
-                                          SmallImageSource="pack://application:,,,/HaCreator;component/Images/Exit.png"
+                                          SmallImageSource="pack://application:,,,/PheCreator;component/Images/Exit.png"
                                           Grid.Column="1" Focusable="False" />
                         </Grid>
                     </RibbonApplicationMenu.FooterPaneContent>
@@ -186,10 +187,10 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <RibbonButton x:Name="layerUpBtn"
-                                              SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_up.png"
+                                              SmallImageSource="pack://application:,,,/PheCreator;component/Images/arrow_up.png"
                                               Command="ns:HaRibbon.LayerUp" Grid.Column="0" Focusable="False" />
                                 <RibbonButton x:Name="layerDownBtn"
-                                              SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_down.png"
+                                              SmallImageSource="pack://application:,,,/PheCreator;component/Images/arrow_down.png"
                                               Command="ns:HaRibbon.LayerDown" Grid.Column="1" Focusable="False" />
                             </Grid>
                         </Grid>
@@ -219,15 +220,15 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <RibbonButton x:Name="platformUpBtn"
-                                              SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_up.png"
+                                              SmallImageSource="pack://application:,,,/PheCreator;component/Images/arrow_up.png"
                                               Command="ns:HaRibbon.PlatformUp" Grid.Column="0" Focusable="False" />
                                 <RibbonButton x:Name="platformDownBtn"
-                                              SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_down.png"
+                                              SmallImageSource="pack://application:,,,/PheCreator;component/Images/arrow_down.png"
                                               Command="ns:HaRibbon.PlatformDown" Grid.Column="1" Focusable="False" />
                             </Grid>
                         </Grid>
                         <RibbonButton x:Name="newPlatformBtn" Label="New Platform"
-                                      LargeImageSource="pack://application:,,,/HaCreator;component/Images/Settings_big.png"
+                                      LargeImageSource="pack://application:,,,/PheCreator;component/Images/Settings_big.png"
                                       Grid.Column="2" Command="ns:HaRibbon.NewPlatform" />
                     </Grid>
                 </RibbonGroup>
@@ -236,42 +237,42 @@
             <RibbonTab x:Name="toolsTab" Header="Tools" KeyTip="T">
                 <RibbonGroup x:Name="RibbonGroup_Tools" Header="Tools">
                     <RibbonButton Label="Settings"
-                                  LargeImageSource="pack://application:,,,/HaCreator;component/Images/Settings_big.png"
+                                  LargeImageSource="pack://application:,,,/PheCreator;component/Images/Settings_big.png"
                                   Command="ns:HaRibbon.Settings" Focusable="False" />
                     <RibbonButton Label="Manage User Objects"
-                                  LargeImageSource="pack://application:,,,/HaCreator;component/Images/UserObjs.png"
+                                  LargeImageSource="pack://application:,,,/PheCreator;component/Images/UserObjs.png"
                                   Command="ns:HaRibbon.UserObjs" Focusable="False" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="RibbonGroup_Physics" Header="Map Physics">
                     <RibbonButton Label="Edit"
-                                  LargeImageSource="pack://application:,,,/HaCreator;component/Images/box_edit-big.png"
+                                  LargeImageSource="pack://application:,,,/PheCreator;component/Images/box_edit-big.png"
                                   Command="ns:HaRibbon.PhysicsEdit" Focusable="False" />
                 </RibbonGroup>
 
                 <RibbonGroup x:Name="RibbonGroup_Options" Header="Options">
                     <RibbonToggleButton x:Name="minimapBtn" Label="Show Minimap"
-                                        LargeImageSource="pack://application:,,,/HaCreator;component/Images/Minimap.png"
+                                        LargeImageSource="pack://application:,,,/PheCreator;component/Images/Minimap.png"
                                         Command="ns:HaRibbon.Minimap" Focusable="False" />
                     <RibbonToggleButton x:Name="parallaxBtn" Label="Parallax BGs"
-                                        LargeImageSource="pack://application:,,,/HaCreator;component/Images/diagram_parallax.png"
+                                        LargeImageSource="pack://application:,,,/PheCreator;component/Images/diagram_parallax.png"
                                         Command="ns:HaRibbon.Parallax" Focusable="False" />
                     <RibbonToggleButton x:Name="snapBtn" Label="Snapping"
-                                        LargeImageSource="pack://application:,,,/HaCreator;component/Images/magnet_32.png"
+                                        LargeImageSource="pack://application:,,,/PheCreator;component/Images/magnet_32.png"
                                         Command="ns:HaRibbon.Snapping" Focusable="False" />
                     <RibbonToggleButton x:Name="randomBtn" Label="Random Tiles"
-                                        LargeImageSource="pack://application:,,,/HaCreator;component/Images/Untitled1.png"
+                                        LargeImageSource="pack://application:,,,/PheCreator;component/Images/Untitled1.png"
                                         Command="ns:HaRibbon.Random" Focusable="False" />
                     <RibbonToggleButton x:Name="infomodeBtn" Label="Info Mode"
-                                        LargeImageSource="pack://application:,,,/HaCreator;component/Images/About.png"
+                                        LargeImageSource="pack://application:,,,/PheCreator;component/Images/About.png"
                                         Command="ns:HaRibbon.InfoMode" Focusable="False" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Saving" Header="Saving">
                     <RibbonButton Label="Regenerate Minimap"
-                                  LargeImageSource="pack://application:,,,/HaCreator;component/Images/RegenMinimap.png"
+                                  LargeImageSource="pack://application:,,,/PheCreator;component/Images/RegenMinimap.png"
                                   Command="ns:HaRibbon.RegenMinimap" Focusable="False" />
                     <RibbonButton Label="Finalize Footholds"
-                                  LargeImageSource="pack://application:,,,/HaCreator;component/Images/Foothold.png"
+                                  LargeImageSource="pack://application:,,,/PheCreator;component/Images/Foothold.png"
                                   Command="ns:HaRibbon.Finalize" Focusable="False" />
                 </RibbonGroup>
 
@@ -279,7 +280,7 @@
                 <RibbonGroup x:Name="RibbonGroup_SimulatorSettings" Header="Map Simulator">
                     <StackPanel Orientation="Horizontal">
                         <RibbonButton Label="Preview"
-                                      LargeImageSource="pack://application:,,,/HaCreator;component/Images/Play.png"
+                                      LargeImageSource="pack://application:,,,/PheCreator;component/Images/Play.png"
                                       Command="ns:HaRibbon.MapSim" Focusable="False" />
 
                         <ComboBox x:Name="comboBox_Resolution" Width="100"

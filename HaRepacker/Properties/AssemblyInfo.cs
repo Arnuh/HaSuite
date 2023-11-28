@@ -6,13 +6,13 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HaRepacker Resurrected")]
-[assembly: AssemblyDescription("HaRepacker resurrected ~ forked from haha01haha01's Repacker")]
+[assembly: AssemblyTitle("PheRepacker")]
+[assembly: AssemblyDescription("PheRepacker ~ Originally haha01haha01's Repacker")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HaRepacker")]
+[assembly: AssemblyProduct("PheRepacker")]
 [assembly: AssemblyCopyright("Copyright © haha01haha01 2009, 2010, 2015")]
-[assembly: AssemblyTrademark("HaRepacker™, HaRepacker™ resurrected")]
+[assembly: AssemblyTrademark("HaRepacker™")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

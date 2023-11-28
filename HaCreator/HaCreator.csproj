@@ -9,7 +9,7 @@
         <OutputType>WinExe</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>HaCreator</RootNamespace>
-        <AssemblyName>HaCreator</AssemblyName>
+        <AssemblyName>PheCreator</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <FileUpgradeFlags>
@@ -728,9 +728,9 @@
         <EmbeddedResource Include="Properties\Resources.zh-CHT.resx"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\HaRepacker\Harepacker-resurrected.csproj">
+        <ProjectReference Include="..\HaRepacker\HaRepacker.csproj">
             <Project>{0b7155ef-1eb0-4fae-ba56-8064cbaf2bea}</Project>
-            <Name>Harepacker-resurrected</Name>
+            <Name>HaRepacker</Name>
         </ProjectReference>
         <ProjectReference Include="..\HaSharedLibrary\HaSharedLibrary.csproj">
             <Project>{5411388b-f3cb-4d52-9f55-abd15cfe966c}</Project>

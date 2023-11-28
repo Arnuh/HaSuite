@@ -146,7 +146,7 @@ namespace HaCreator.GUI {
 		public static readonly RoutedUICommand InfoMode = new RoutedUICommand("InfoMode", "InfoMode", typeof(HaRibbon),
 			new InputGestureCollection() { });
 
-		public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("HaRepacker", "HaRepacker",
+		public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("PheRepacker", "PheRepacker",
 			typeof(HaRibbon),
 			new InputGestureCollection() { });
 
