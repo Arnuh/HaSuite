@@ -868,19 +868,21 @@ namespace HaCreator.Wz {
 		public WzImage MapImage => image;
 
 		private int GetFootholdBelow(int x, int y) {
-			var bestDistance = double.MaxValue;
 			var bestFoothold = -1;
-			foreach (var fh in board.BoardItems.FootholdLines)
-				if (Math.Min(fh.FirstDot.X, fh.SecondDot.X) <= x && Math.Max(fh.FirstDot.X, fh.SecondDot.X) >= x) {
-					var fhY = fh.CalculateY(x);
-					if (fhY >= y && fhY - y < bestDistance) {
-						bestDistance = fhY - y;
-						bestFoothold = fh.num;
-						if (bestDistance == 0)
-							// Not going to find anything better than 0
-							return bestFoothold;
-					}
-				}
+			var y1 = int.MaxValue;
+			foreach (var fh in board.BoardItems.FootholdLines) {
+				if (fh.IsWall) continue;
+				var x1 = fh.FirstDot.X;
+				var x2 = fh.SecondDot.X;
+				if (x1 >= x2) continue;
+				if (x1 > x) continue;
+				if (x2 < x) continue;
+				var y2 = fh.FirstDot.Y + (x - x1) * (fh.SecondDot.Y - fh.FirstDot.Y) / (x2 - x1);
+				if (y2 < y) continue;
+				if (y2 >= y1) continue;
+				y1 = y2;
+				bestFoothold = fh.num;
+			}
 
 			if (bestFoothold == -1)
 				// 0 stands in the game for flying or nonexistant foothold; I do not know what are the results of putting an NPC there,
