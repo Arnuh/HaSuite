@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -831,67 +832,77 @@ namespace HaRepacker.GUI {
 
 			var wzfilePathsToLoad = new List<string>();
 
-			foreach (var filePath in fileNames) {
-				var filePathLowerCase = filePath.ToLower();
+			if (fileNames.All(s => s.ToLower().EndsWith(".xml"))) {
+				ImportXml(MapleVersionEncryptionSelected, fileNames);
+			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
+				ImportImg(MapleVersionEncryptionSelected, fileNames);
+			} else {
+				foreach (var filePath in fileNames) {
+					var filePathLowerCase = filePath.ToLower();
 
-				if (filePathLowerCase.EndsWith("zlz.dll")) // ZLZ.dll encryption keys
-				{
-					var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
-					//similarly to find process architecture  
-					var assemblyArchitecture = executingAssemblyName.ProcessorArchitecture;
+					if (filePathLowerCase.EndsWith("zlz.dll")) { // ZLZ.dll encryption keys
+						var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
+						//similarly to find process architecture  
+						var assemblyArchitecture = executingAssemblyName.ProcessorArchitecture;
 
-					if (assemblyArchitecture == ProcessorArchitecture.X86) {
-						var form = new ZLZPacketEncryptionKeyForm();
-						var opened = form.OpenZLZDllFile();
+						if (assemblyArchitecture == ProcessorArchitecture.X86) {
+							var form = new ZLZPacketEncryptionKeyForm();
+							var opened = form.OpenZLZDllFile();
 
-						if (opened)
-							form.Show();
-					} else {
-						MessageBox.Show(Properties.Resources.ExecutingAssemblyError, Properties.Resources.Warning, MessageBoxButtons.OK);
-					}
+							if (opened) {
+								form.Show();
+							}
+						} else {
+							MessageBox.Show(Properties.Resources.ExecutingAssemblyError, Properties.Resources.Warning, MessageBoxButtons.OK);
+						}
 
-					return;
-				}
-				// List.wz file (pre-bb maplestory enc)
-				else if (WzTool.IsListFile(filePath)) {
-					new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
-				}
-				// Other WZs
-				else if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) {
-					var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
-					if (img == null) {
-						MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
-						break;
-					}
-
-					AddLoadedWzObjectToMainPanel(img);
-				} else {
-					if (MapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
-						StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
 						return;
-					}
-
-					wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
-
-					// Check if there are any related files
-					string[] wzsWithRelatedFiles = {"Map", "Mob", "Skill", "Sound"};
-					var bWithRelated = false;
-					string relatedFileName = null;
-
-					foreach (var wz in wzsWithRelatedFiles)
-						if (filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) {
-							bWithRelated = true;
-							relatedFileName = wz;
+					} else if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
+						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
+						if (img == null) {
+							MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
 							break;
 						}
 
-					if (bWithRelated)
-						if (Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) {
-							var otherMapWzFiles = Directory.GetFiles(filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
-							foreach (var filePath_Others in otherMapWzFiles)
-								if (filePath_Others != filePath)
-									wzfilePathsToLoad.Add(filePath_Others);
+						AddLoadedWzObjectToMainPanel(img);
+					} else if (filePathLowerCase.EndsWith(".xml")) {
+						ImportXml(MapleVersionEncryptionSelected, new[] {filePath});
+					} else if (filePathLowerCase.EndsWith(".img")) {
+						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
+					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
+						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
+					} else {
+						if (MapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
+							StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
+							return;
 						}
+
+						wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
+
+						// Check if there are any related files
+						string[] wzsWithRelatedFiles = {"Map", "Mob", "Skill", "Sound"};
+						var bWithRelated = false;
+						string relatedFileName = null;
+
+						foreach (var wz in wzsWithRelatedFiles) {
+							if (filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) {
+								bWithRelated = true;
+								relatedFileName = wz;
+								break;
+							}
+						}
+
+						if (bWithRelated) {
+							if (Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) {
+								var otherMapWzFiles = Directory.GetFiles(filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
+								foreach (var filePath_Others in otherMapWzFiles) {
+									if (filePath_Others != filePath) {
+										wzfilePathsToLoad.Add(filePath_Others);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 
@@ -1670,12 +1681,20 @@ namespace HaRepacker.GUI {
 			MainPanel.DataTree.EndUpdate();
 		}
 
+		private bool IsChildHoldingSelectedNode() {
+			var selectedNode = MainPanel.DataTree.SelectedNode;
+			if (selectedNode == null) return false;
+			var tag = selectedNode.Tag;
+			return tag is WzDirectory ||
+			       tag is WzFile ||
+			       tag is IPropertyContainer;
+		}
+		
 		private void xMLToolStripMenuItem2_Click(object sender, EventArgs e) {
-			if (MainPanel.DataTree.SelectedNode == null || (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) &&
-			                                                !(MainPanel.DataTree.SelectedNode.Tag is WzFile) &&
-			                                                !(MainPanel.DataTree.SelectedNode
-				                                                .Tag is IPropertyContainer)))
+			if (!IsChildHoldingSelectedNode()) {
 				return;
+			}
+
 			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
 			if (!(wzFile is WzFile))
 				return;
@@ -1692,25 +1711,31 @@ namespace HaRepacker.GUI {
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
 
+			ImportXml(wzFile.MapleVersion, dialog.FileNames);
+		}
+
+		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
+
 			var deserializer =
-				new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion));
+				new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version));
 			yesToAll = false;
 			noToAll = false;
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(WzImporterThread));
+			runningThread = new Thread(WzImporterThread);
 			runningThread.Start(new object[] {
-				deserializer, dialog.FileNames, MainPanel.DataTree.SelectedNode, null
+				deserializer, fileNames, MainPanel.DataTree.SelectedNode, null
 			});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(deserializer);
+			new Thread(ProgressBarThread).Start(deserializer);
 		}
 
 		private void iMGToolStripMenuItem2_Click(object sender, EventArgs e) {
-			if (MainPanel.DataTree.SelectedNode == null || (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) &&
-			                                                !(MainPanel.DataTree.SelectedNode.Tag is WzFile) &&
-			                                                !(MainPanel.DataTree.SelectedNode
-				                                                .Tag is IPropertyContainer)))
+			if (!IsChildHoldingSelectedNode()) {
 				return;
+			}
 
 			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
 			if (!(wzFile is WzFile))
@@ -1728,11 +1753,18 @@ namespace HaRepacker.GUI {
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
 
-			var wzImageImportVersion = WzMapleVersion.BMS;
 			var input = WzMapleVersionInputBox.Show(Properties.Resources.InteractionWzMapleVersionTitle,
-				out wzImageImportVersion);
+				out var wzImageImportVersion);
 			if (!input)
 				return;
+
+			ImportImg(wzImageImportVersion, dialog.FileNames);
+		}
+
+		private void ImportImg(WzMapleVersion wzImageImportVersion, IEnumerable fileNames) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
 
 			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
 			var deserializer = new WzImgDeserializer(true);
@@ -1740,12 +1772,12 @@ namespace HaRepacker.GUI {
 			noToAll = false;
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(WzImporterThread));
+			runningThread = new Thread(WzImporterThread);
 			runningThread.Start(
 				new object[] {
-					deserializer, dialog.FileNames, MainPanel.DataTree.SelectedNode, iv
+					deserializer, fileNames, MainPanel.DataTree.SelectedNode, iv
 				});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(deserializer);
+			new Thread(ProgressBarThread).Start(deserializer);
 		}
 
 		private void searchToolStripMenuItem_Click(object sender, EventArgs e) {
