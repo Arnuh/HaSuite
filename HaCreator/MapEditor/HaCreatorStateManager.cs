@@ -441,11 +441,17 @@ namespace HaCreator.MapEditor {
 			lock (multiBoard) {
 				MultiBoard_ReturnToSelectionState();
 
-				if (tabs.SelectedItem != null) {
-					var selectedTab = (System.Windows.Controls.TabItem) tabs.SelectedItem;
+				var selectedTab = (System.Windows.Controls.TabItem) tabs.SelectedItem;
+				if (selectedTab == null && tabs.Items.Count > 0) {
+					// Client just auto selects index 0 but tabs.SelectedItem is null
+					// Hacky fixed...
+					selectedTab = (System.Windows.Controls.TabItem) tabs.Items[0];
+					// Try to fix any possible incorrect state issues.
+					tabs.SelectedIndex = 0;
+				}
 
+				if (selectedTab != null) {
 					multiBoard.SelectedBoard = ((TabItemContainer) selectedTab.Tag).Board;
-
 					ApplicationSettings.lastDefaultLayer = multiBoard.SelectedBoard.SelectedLayerIndex;
 
 					ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
