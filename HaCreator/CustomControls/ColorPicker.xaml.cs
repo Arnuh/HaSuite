@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
@@ -56,6 +57,7 @@ namespace WPFColorPickerLib {
 		public ColorPicker(Color initialColor) {
 			InitializeComponent();
 			selectedColor = initialColor;
+			ColorImage.Source = ImgSqaure1.Source;
 		}
 
 		#endregion
@@ -166,8 +168,7 @@ namespace WPFColorPickerLib {
 			if (imageX < 0 || imageY < 0 || imageX > ColorImage.Width - 1 ||
 			    imageY > ColorImage.Height - 1) return;
 			// Get the single pixel under the mouse into a bitmap and copy it to a byte array
-			var cb =
-				new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(imageX, imageY, 1, 1));
+			var cb = new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(imageX, imageY, 1, 1));
 			var pixels = new byte[4];
 			cb.CopyPixels(pixels, 4, 0);
 			// Update the mouse cursor position and the Selected Color
@@ -187,49 +188,47 @@ namespace WPFColorPickerLib {
 		/// </summary>
 		private void UpdateCursorEllipse(Color searchColor) {
 			// Scan the canvas image for a color which matches the search color
-			/*CroppedBitmap cb;
-			Color tempColor = new Color();
-			byte[] pixels = new byte[4];*/
-			var searchY = 0;
-			var searchX = 0;
-			/*searchColor.A = 255;*/
-			/*SD.Bitmap colorSwatch = Properties.Resources.ColorSwatchSquare1;
-			SD.Imaging.BitmapData data = colorSwatch.LockBits(new SD.Rectangle(0, 0, colorSwatch.Width, colorSwatch.Height), SD.Imaging.ImageLockMode.ReadWrite, SD.Imaging.PixelFormat.Format24bppRgb);
-			byte[] bytes = new byte[data.Stride * data.Height];
-			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-			for (int y = 0; y < colorSwatch.Height; y++)
-			{
-			    for (int x = 0; x < colorSwatch.Width; x++)
-			    {
-			        if (bytes[y * data.Stride + x] == searchColor.B &&
-			            bytes[y * data.Stride + x + 1] == searchColor.G &&
-			            bytes[y * data.Stride + x + 2] == searchColor.R)
-			        {
+			CroppedBitmap cb;
+			var pixels = new byte[4];
+			int searchY;
+			int searchX;
+			var colorSwatch = ColorImage.Source as BitmapSource;
+			if (colorSwatch.Format != PixelFormats.Bgra32) {
+				colorSwatch = new FormatConvertedBitmap(colorSwatch, PixelFormats.Bgra32, null, 0);
+			}
+
+			var bytesPerPixel = (colorSwatch.Format.BitsPerPixel + 7) / 8;
+			var stride = colorSwatch.PixelWidth * bytesPerPixel;
+			var bufferSize = colorSwatch.PixelHeight * stride;
+			var bytes = new byte[bufferSize];
+
+			colorSwatch.CopyPixels(new Int32Rect(0, 0, colorSwatch.PixelWidth, colorSwatch.PixelHeight), bytes, stride, 0);
+			for (var y = 0; y < colorSwatch.PixelHeight; y++) {
+				for (var x = 0; x < colorSwatch.PixelWidth; x++) {
+					if (bytes[y * bytesPerPixel + x] == searchColor.B &&
+					    bytes[y * bytesPerPixel + x + 1] == searchColor.G &&
+					    bytes[y * bytesPerPixel + x + 2] == searchColor.R) {
 			            searchX = x;
 			            searchY = y;
 			            goto end;
 			        }
 			    }
 			}
-			colorSwatch.UnlockBits(data);*/
-			/*for (searchY = 0; searchY <= canvasImage.Width - 1; searchY++)
-			{
-			  for (searchX = 0; searchX <= canvasImage.Height - 1; searchX++)
-			  {
-			    cb = new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(searchX, searchY, 1, 1));
-			    cb.CopyPixels(pixels, 4, 0);
-			    tempColor = Color.FromArgb(255, pixels[2], pixels[1], pixels[0]);
-			    if (tempColor == searchColor) break;
-			  }
-			  if (tempColor == searchColor) break;
+
+			for (searchY = 0; searchY <= canvasImage.Width - 1; searchY++) {
+				for (searchX = 0; searchX <= canvasImage.Height - 1; searchX++) {
+					cb = new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(searchX, searchY, 1, 1));
+					cb.CopyPixels(pixels, 4, 0);
+					if (pixels[2] == searchColor.R && pixels[1] == searchColor.G && pixels[0] == searchColor.B) {
+						goto end;
+					}
+				}
 			}
 			// Default to the top left if no match is found
-			if (tempColor != searchColor)
-			{
-			  searchX = 0;
-			  searchY = 0;
-			}*/
-/*        end:*/
+			searchX = 0;
+			searchY = 0;
+
+			end:
 			// Update the mouse cursor ellipse position
 			ellipsePixel.SetValue(Canvas.LeftProperty, (double) searchX - ellipsePixel.Width / 2.0);
 			ellipsePixel.SetValue(Canvas.TopProperty, (double) searchY - ellipsePixel.Width / 2.0);
@@ -272,7 +271,6 @@ namespace WPFColorPickerLib {
 				selectedColor = Color.FromArgb(a, r, g, b);
 				CreateAlphaLinearBrush();
 				UpdateInk();
-				UpdateCursorEllipse(SelectedColor);
 				AlphaSlider.Value = a;
 			}
 		}

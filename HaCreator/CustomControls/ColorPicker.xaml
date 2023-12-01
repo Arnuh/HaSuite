@@ -41,15 +41,15 @@
             <Label Content="Pick swatch type" Foreground="White" FontWeight="Bold"
                    VerticalAlignment="Center" />
             <Image x:Name="ImgSqaure1" Height="20" Width="20"
-                   Source="Images/ColorSwatchSquare1.png" Margin="45,0,0,0"
+                   Source="pack://application:,,,/PheCreator;component/Images/ColorSwatchSquare1.png" Margin="45,0,0,0"
                    ToolTip="Color Swatch Square 1"
                    MouseLeftButtonDown="Swatch_MouseLeftButtonDown" />
             <Image x:Name="ImgSqaure2" Height="20" Width="20"
-                   Source="Images/ColorSwatchSquare2.png" Margin="5,0,0,0"
+                   Source="pack://application:,,,/PheCreator;component/Images/ColorSwatchSquare2.png" Margin="5,0,0,0"
                    ToolTip="Color Swatch Square 2"
                    MouseLeftButtonDown="Swatch_MouseLeftButtonDown" />
             <Image x:Name="ImgCircle1" Height="20" Width="20"
-                   Source="Images/ColorSwatchCircle.png" Margin="5,0,0,0"
+                   Source="pack://application:,,,/PheCreator;component/Images/ColorSwatchCircle.png" Margin="5,0,0,0"
                    ToolTip="Color Swatch Circle"
                    MouseLeftButtonDown="Swatch_MouseLeftButtonDown" />
         </StackPanel>
