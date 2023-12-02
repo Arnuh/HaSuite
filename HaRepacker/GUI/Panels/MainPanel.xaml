@@ -322,9 +322,11 @@
                 <WindowsFormsHost x:Name="treeView_WinFormsHost" Grid.Row="0">
                     <local:TreeViewMS x:Name="DataTree"
                                       AllowDrop="True"
+                                      LabelEdit="True"
                                       AfterSelect="DataTree_AfterSelect"
                                       KeyDown="DataTree_KeyDown"
-                                      DoubleClick="DataTree_DoubleClick" />
+                                      DoubleClick="DataTree_DoubleClick"
+                                      AfterLabelEdit="DataTree_OnAfterLabelEdit" />
                 </WindowsFormsHost>
 
                 <!-- Find panel -->

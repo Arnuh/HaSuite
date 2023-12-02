@@ -1,38 +1,28 @@
-﻿using HaRepacker.Comparer;
-using HaRepacker.Converter;
-using HaRepacker.GUI.Input;
-using HaSharedLibrary.Render.DX;
+﻿using HaRepacker.GUI.Input;
 using HaSharedLibrary.GUI;
-using HaSharedLibrary.Util;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.Converters;
-using Microsoft.Xna.Framework;
-using Spine;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using static MapleLib.Configuration.UserSettings;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Net;
+using System.Windows.Forms;
+using Button = System.Windows.Controls.Button;
+using DataFormats = System.Windows.DataFormats;
+using DragEventArgs = System.Windows.DragEventArgs;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MessageBox = System.Windows.MessageBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels {
 	/// <summary>
@@ -169,6 +159,13 @@ namespace HaRepacker.GUI.Panels {
 			if (shift) filteredKeys = filteredKeys ^ System.Windows.Forms.Keys.Shift;
 
 			switch (filteredKeys) {
+				case Keys.F2:
+					if (DataTree.SelectedNode.IsEditing) { // Not really needed apparently
+						DataTree.SelectedNode.EndEdit(false);
+					} else {
+						DataTree.SelectedNode.BeginEdit();
+					}
+					break;
 				case System.Windows.Forms.Keys.F5:
 					StartAnimateSelectedCanvas();
 					break;
@@ -1883,6 +1880,13 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			return false;
+		}
+
+		private void DataTree_OnAfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+			// Handle renaming the actual wz node after an F2 edit.
+			if (string.IsNullOrEmpty(e.Label)) return;
+			var node = (WzNode) e.Node;
+			node.ChangeName(e.Label);
 		}
 	}
 }
