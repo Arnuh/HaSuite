@@ -232,6 +232,10 @@
                                       Grid.Column="2" Command="ns:HaRibbon.NewPlatform" />
                     </Grid>
                 </RibbonGroup>
+                <RibbonGroup>
+                    <CheckBox x:Name="blackBackgroundToggle" Content="Black Background"
+                              Click="BlackBackgroundToggle_OnClick" />
+                </RibbonGroup>
             </RibbonTab>
 
             <RibbonTab x:Name="toolsTab" Header="Tools" KeyTip="T">

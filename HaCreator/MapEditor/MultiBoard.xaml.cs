@@ -271,7 +271,7 @@ namespace HaCreator.MapEditor {
 				ResetDevice();
 			}
 
-			DxDevice.Clear(ClearOptions.Target, Color.White, 1.0f, 0); // Clear the window to black
+			DxDevice.Clear(ClearOptions.Target, UserSettings.blackBackground ? Color.Black : Color.White, 1.0f, 0);
 #if UseXNAZorder
             sprite.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
 #else

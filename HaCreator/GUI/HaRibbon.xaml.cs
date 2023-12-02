@@ -40,6 +40,7 @@ namespace HaCreator.GUI {
 #endif
 
 			PreviewMouseWheel += HaRibbon_PreviewMouseWheel;
+			blackBackgroundToggle.IsChecked = UserSettings.blackBackground;
 		}
 
 		private void HaRibbon_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
@@ -490,6 +491,7 @@ namespace HaCreator.GUI {
 		public event EmptyEvent MapPhysicsClicked;
 		public event EmptyEvent ShowMapPropertiesClicked;
 		public event EventHandler<System.Windows.Forms.KeyEventArgs> RibbonKeyDown;
+		public event ToggleEvent BlackBackgroundToggled;
 
 		public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors,
 			bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc,
@@ -572,6 +574,10 @@ namespace HaCreator.GUI {
 			var selectedItem = (RenderResolution) (comboBox_Resolution.SelectedItem as ComboBoxItem).Tag;
 			UserSettings.SimulateResolution =
 				selectedItem; // combo box selection. 800x600, 1024x768, 1280x720, 1920x1080
+		}
+
+		private void BlackBackgroundToggle_OnClick(object sender, RoutedEventArgs e) {
+			BlackBackgroundToggled?.Invoke(((CheckBox) e.OriginalSource).IsChecked.Value);
 		}
 	}
 }
