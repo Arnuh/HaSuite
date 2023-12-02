@@ -73,7 +73,7 @@ namespace HaRepacker.GUI.Input {
 		private void browseButton_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog() {
 				Title = Properties.Resources.SelectImage,
-				Filter = string.Format("{0}|*.jpg;*.bmp;*.png;*.gif;*.tiff", Properties.Resources.ImagesFilter)
+				Filter = $"{Properties.Resources.ImagesFilter}|*.jpg;*.bmp;*.png;*.gif;*.tiff"
 			};
 			if (dialog.ShowDialog() == DialogResult.OK)
 				// Set path
@@ -98,7 +98,6 @@ namespace HaRepacker.GUI.Input {
 
 				pictureBox.Size = img.Size;
 				pictureBox.Image = img;
-
 
 				if (IsPathGIF(FilePath))
 					using (Stream imageStreamSource = new FileStream(FilePath, FileMode.Open, FileAccess.Read)) {
@@ -134,6 +133,23 @@ namespace HaRepacker.GUI.Input {
 		/// <returns></returns>
 		private static bool IsPathGIF(string filePath) {
 			return filePath.ToLower().EndsWith("gif");
+		}
+
+		private void BitmapInputBox_DragEnter(object sender, DragEventArgs e) {
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void BitmapInputBox_DragDrop(object sender, DragEventArgs e) {
+			if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+			var data = (string[]) e.Data.GetData(DataFormats.FileDrop);
+			bmpResult.Clear();
+			foreach (var file in data) {
+				if (string.IsNullOrEmpty(nameBox.Text)) {
+					nameBox.Text = Path.GetFileNameWithoutExtension(file);
+				}
+
+				pathBox.Text = file;
+			}
 		}
 	}
 }
