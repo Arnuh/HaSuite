@@ -25,6 +25,8 @@ namespace HaCreator.MapEditor.Input {
 		private Point origin = new Point(0, 0);
 		private bool isDown;
 		private bool minimapBrowseOngoing;
+		private bool cameraPanning;
+		private Xna.Point cameraPanningStart;
 		private bool multiSelectOngoing;
 		private Xna.Point multiSelectStart;
 		private bool singleSelectStarting;
@@ -333,6 +335,16 @@ namespace HaCreator.MapEditor.Input {
 		public bool MinimapBrowseOngoing {
 			get => minimapBrowseOngoing;
 			set => minimapBrowseOngoing = value;
+		}
+
+		public bool CameraPanning {
+			get => cameraPanning;
+			set => cameraPanning = value;
+		}
+
+		public Xna.Point CameraPanningStart {
+			get => cameraPanningStart;
+			set => cameraPanningStart = value;
 		}
 
 		public bool MultiSelectOngoing {

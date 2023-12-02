@@ -16,7 +16,6 @@ using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
-using HaRepacker.Utils;
 
 namespace HaCreator.MapEditor.Input {
 	public class InputHandler {
@@ -101,7 +100,10 @@ namespace HaCreator.MapEditor.Input {
 			XNA.Point currPhysicalPos) {
 			lock (parentBoard) {
 				OnUserInteraction();
-				if (selectedBoard.Mouse.MinimapBrowseOngoing && selectedBoard.Mouse.State == MouseState.Selection) {
+				if (selectedBoard.Mouse.CameraPanning) {
+					selectedBoard.hScroll = selectedBoard.Mouse.CameraPanningStart.X - currPhysicalPos.X;
+					selectedBoard.vScroll = selectedBoard.Mouse.CameraPanningStart.Y - currPhysicalPos.Y;
+				} else if (selectedBoard.Mouse.MinimapBrowseOngoing && selectedBoard.Mouse.State == MouseState.Selection) {
 					HandleMinimapBrowse(selectedBoard, currPhysicalPos);
 				} else if (selectedBoard.Mouse.MultiSelectOngoing &&
 				           (Math.Abs(selectedBoard.Mouse.X - selectedBoard.Mouse.MultiSelectStart.X) > 1 ||

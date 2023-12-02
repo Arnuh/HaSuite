@@ -607,7 +607,10 @@ namespace HaCreator.MapEditor {
 				DxContainer_MouseMove(sender, e);
 
 			selectedBoard.Mouse.IsDown = true;
-			if (e.Button == System.Windows.Forms.MouseButtons.Left && LeftMouseDown != null) {
+			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
+				selectedBoard.Mouse.CameraPanning = true;
+				selectedBoard.Mouse.CameraPanningStart = new Point(e.X + selectedBoard.hScroll, e.Y + selectedBoard.vScroll);
+			} else if (e.Button == System.Windows.Forms.MouseButtons.Left && LeftMouseDown != null) {
 				bool selectedItemHigher;
 				var realPosition = new Point(e.X, e.Y);
 				lock (this) {
@@ -631,7 +634,9 @@ namespace HaCreator.MapEditor {
 				return;
 
 			selectedBoard.Mouse.IsDown = false;
-			if (e.Button == System.Windows.Forms.MouseButtons.Left && LeftMouseUp != null) {
+			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
+				selectedBoard.Mouse.CameraPanning = false;
+			} else if (e.Button == System.Windows.Forms.MouseButtons.Left && LeftMouseUp != null) {
 				var realPosition = new Point(e.X, e.Y);
 				bool selectedItemHigher;
 				lock (this) {
