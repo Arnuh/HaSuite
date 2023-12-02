@@ -837,6 +837,8 @@ namespace HaRepacker.GUI {
 				ImportXml(MapleVersionEncryptionSelected, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
 				ImportImg(MapleVersionEncryptionSelected, fileNames);
+			} else if (fileNames.All(s => s.ToLower().EndsWith(".png"))) {
+				ImportImages(fileNames);
 			} else {
 				foreach (var filePath in fileNames) {
 					var filePathLowerCase = filePath.ToLower();
@@ -872,7 +874,7 @@ namespace HaRepacker.GUI {
 					} else if (filePathLowerCase.EndsWith(".img")) {
 						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".png")) {
-						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
+						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
 						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
 					} else {
@@ -889,32 +891,30 @@ namespace HaRepacker.GUI {
 						string relatedFileName = null;
 
 						foreach (var wz in wzsWithRelatedFiles) {
-							if (filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) {
-								bWithRelated = true;
-								relatedFileName = wz;
-								break;
-							}
+							if (!filePathLowerCase.EndsWith(wz.ToLower() + ".wz")) continue;
+							bWithRelated = true;
+							relatedFileName = wz;
+							break;
 						}
 
-						if (bWithRelated) {
-							if (Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) {
-								var otherMapWzFiles = Directory.GetFiles(filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
-								foreach (var filePath_Others in otherMapWzFiles) {
-									if (filePath_Others != filePath) {
-										wzfilePathsToLoad.Add(filePath_Others);
-									}
-								}
+						if (!bWithRelated) continue;
+						if (!Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles) continue;
+						var otherMapWzFiles = Directory.GetFiles(filePath.Substring(0, filePath.LastIndexOf("\\")), relatedFileName + "*.wz");
+						foreach (var filePath_Others in otherMapWzFiles) {
+							if (filePath_Others != filePath) {
+								wzfilePathsToLoad.Add(filePath_Others);
 							}
 						}
 					}
 				}
 			}
 
+			if (wzfilePathsToLoad.Count == 0) return;
+			
 			// Show splash screen
 			MainPanel.OnSetPanelLoading();
-
+			
 			// Try opening one, to see if the user is having the right priviledge
-
 			// Load all original WZ files 
 			await Task.Run(() => {
 				var loadedWzFiles = new List<WzFile>();
@@ -1941,6 +1941,32 @@ namespace HaRepacker.GUI {
 					deserializer, fileNames, MainPanel.DataTree.SelectedNode, iv
 				});
 			new Thread(ProgressBarThread).Start(deserializer);
+		}
+
+		private void ImportImages(string[] files) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
+
+			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.B8G8R8A8, out var pixelFormat)) {
+				return;
+			}
+
+			var parent = (WzNode) MainPanel.DataTree.SelectedNode;
+
+			foreach (var file in files) {
+				var name = Path.GetFileNameWithoutExtension(file);
+				var img = (Bitmap) Image.FromFile(file);
+				var canvas = new WzCanvasProperty(name);
+				var pngProperty = new WzPngProperty();
+				pngProperty.PixFormat = pixelFormat;
+				pngProperty.SetImage(img);
+				canvas.PngProperty = pngProperty;
+				var node = new WzNode(canvas, true);
+				InsertWzNodeThreadSafe(node, parent);
+				node.AddObject(new WzVectorProperty(WzCanvasProperty.OriginPropertyName, new WzIntProperty("X", 0),
+					new WzIntProperty("Y", 0)), MainPanel.UndoRedoMan);
+			}
 		}
 
 		#endregion
