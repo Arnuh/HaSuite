@@ -30,6 +30,7 @@ using HaRepacker.GUI.Panels;
 using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Input;
 using HaRepacker.Comparer;
+using HaRepacker.Properties;
 using HaSharedLibrary;
 using MapleLib.WzLib.WzProperties;
 using Application = System.Windows.Forms.Application;
@@ -84,7 +85,7 @@ namespace HaRepacker.GUI {
 			if (usingPipes)
 				try {
 					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In);
-					Program.pipeThread = new Thread(new ThreadStart(PipeServer)) {
+					Program.pipeThread = new Thread(PipeServer) {
 						IsBackground = true
 					};
 					Program.pipeThread.Start();
@@ -115,7 +116,7 @@ namespace HaRepacker.GUI {
 			}
 
 			var manager = new ContextMenuManager(MainPanel, MainPanel.UndoRedoMan);
-			WzNode.ContextMenuBuilder = new WzNode.ContextMenuBuilderDelegate(manager.CreateMenu);
+			WzNode.ContextMenuBuilder = manager.CreateMenu;
 
 			// Focus on the tab control
 			tabControl_MainPanels.Focus();
@@ -855,9 +856,10 @@ namespace HaRepacker.GUI {
 						} else {
 							MessageBox.Show(Properties.Resources.ExecutingAssemblyError, Properties.Resources.Warning, MessageBoxButtons.OK);
 						}
-
 						return;
-					} else if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
+					}
+
+					if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
 						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
 						if (img == null) {
 							MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
@@ -868,6 +870,8 @@ namespace HaRepacker.GUI {
 					} else if (filePathLowerCase.EndsWith(".xml")) {
 						ImportXml(MapleVersionEncryptionSelected, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".img")) {
+						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
+					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
 						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
@@ -1189,121 +1193,6 @@ namespace HaRepacker.GUI {
 			MainPanel.PromptRemoveSelectedTreeNodes();
 		}
 
-		private void RunWzFilesExtraction(object param) {
-			ChangeApplicationState(false);
-
-			var wzFilesToDump = (string[]) ((object[]) param)[0];
-			var baseDir = (string) ((object[]) param)[1];
-			var version = GetWzMapleVersionByWzEncryptionBoxSelection((int) ((object[]) param)[2]);
-			var serializer = (IWzFileSerializer) ((object[]) param)[3];
-
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, wzFilesToDump.Length, true, true);
-
-			if (!Directory.Exists(baseDir)) Directory.CreateDirectory(baseDir);
-
-			foreach (var wzpath in wzFilesToDump) {
-				if (WzTool.IsListFile(wzpath)) {
-					Warning.Error(string.Format(Properties.Resources.MainListWzDetected, wzpath));
-					continue;
-				}
-
-				var f = new WzFile(wzpath, version);
-
-				var parseStatus = f.ParseWzFile();
-
-				serializer.SerializeFile(f, Path.Combine(baseDir, f.Name));
-				f.Dispose();
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-			}
-
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
-
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
-
-			threadDone = true;
-		}
-
-		private void RunWzImgDirsExtraction(object param) {
-			ChangeApplicationState(false);
-
-			var dirsToDump = (List<WzDirectory>) ((object[]) param)[0];
-			var imgsToDump = (List<WzImage>) ((object[]) param)[1];
-			var baseDir = (string) ((object[]) param)[2];
-			var serializer = (IWzImageSerializer) ((object[]) param)[3];
-
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, dirsToDump.Count + imgsToDump.Count, true, true);
-
-
-			if (!Directory.Exists(baseDir)) Directory.CreateDirectory(baseDir);
-
-			foreach (var img in imgsToDump) {
-				var escapedPath =
-					Path.Combine(baseDir, ProgressingWzSerializer.EscapeInvalidFilePathNames(img.Name));
-
-				serializer.SerializeImage(img, escapedPath);
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-			}
-
-			foreach (var dir in dirsToDump) {
-				var escapedPath =
-					Path.Combine(baseDir, ProgressingWzSerializer.EscapeInvalidFilePathNames(dir.Name));
-
-				serializer.SerializeDirectory(dir, escapedPath);
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-			}
-
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
-
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
-
-			threadDone = true;
-		}
-
-		private void RunWzObjExtraction(object param) {
-			ChangeApplicationState(false);
-
-#if DEBUG
-			var watch = new Stopwatch();
-			watch.Start();
-#endif
-			var objsToDump = (List<WzObject>) ((object[]) param)[0];
-			var path = (string) ((object[]) param)[1];
-			var serializers = (ProgressingWzSerializer) ((object[]) param)[2];
-
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-
-			if (serializers is IWzObjectSerializer serializer) {
-				UpdateProgressBar(MainPanel.mainProgressBar, objsToDump.Count, true, true);
-				foreach (var obj in objsToDump) {
-					serializer.SerializeObject(obj, path);
-					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-				}
-			} else if (serializers is WzNewXmlSerializer serializer_) {
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, true, true);
-				serializer_.ExportCombinedXml(objsToDump, path);
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-			}
-
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
-#if DEBUG
-			// test benchmark
-			watch.Stop();
-			Debug.WriteLine($"WZ files Extracted. Execution Time: {watch.ElapsedMilliseconds} ms");
-#endif
-
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
-
-			threadDone = true;
-		}
-
 		//yes I know this is a stupid way to synchronize threads, I'm just too lazy to use events or locks
 		private bool threadDone = false;
 		private Thread runningThread = null;
@@ -1324,17 +1213,17 @@ namespace HaRepacker.GUI {
 		}
 
 		private void xMLToolStripMenuItem_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectWz,
-				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+			var dialog = new OpenFileDialog {
+				Title = Resources.SelectWz,
+				Filter = $"{Resources.WzFilter}|*.wz",
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
-			var folderDialog = new FolderBrowserDialog() {
-				Description = Properties.Resources.SelectOutDir
+			var folderDialog = new FolderBrowserDialog {
+				Description = Resources.SelectOutDir
 			};
 			if (folderDialog.ShowDialog() != DialogResult.OK)
 				return;
@@ -1347,9 +1236,9 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.UserSettings.LineBreakType, false);
 
 			threadDone = false;
-			new Thread(new ParameterizedThreadStart(RunWzFilesExtraction)).Start((object) new object[]
+			new Thread(RunWzFilesExtraction).Start(new object[]
 				{dialog.FileNames, folderDialog.SelectedPath, encryptionBox.SelectedIndex, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1408,9 +1297,9 @@ namespace HaRepacker.GUI {
 		}
 
 		private void rawDataToolStripMenuItem_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectWz,
-				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+			var dialog = new OpenFileDialog {
+				Title = Resources.SelectWz,
+				Filter = $"{Resources.WzFilter}|*.wz",
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
@@ -1422,23 +1311,23 @@ namespace HaRepacker.GUI {
 
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
 
 			var serializer = new WzPngMp3Serializer();
 			threadDone = false;
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzFilesExtraction));
-			runningThread.Start((object) new object[]
+			runningThread = new Thread(RunWzFilesExtraction);
+			runningThread.Start(new object[]
 				{dialog.FileNames, outPath, encryptionBox.SelectedIndex, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		private void imgToolStripMenuItem_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectWz,
-				Filter = $"{Properties.Resources.WzFilter}|*.wz",
+			var dialog = new OpenFileDialog {
+				Title = Resources.SelectWz,
+				Filter = $"{Resources.WzFilter}|*.wz",
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
@@ -1451,17 +1340,17 @@ namespace HaRepacker.GUI {
 
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
 
 			var serializer = new WzImgSerializer();
 			threadDone = false;
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzFilesExtraction));
-			runningThread.Start((object) new object[]
+			runningThread = new Thread(RunWzFilesExtraction);
+			runningThread.Start(new object[]
 				{dialog.FileNames, outPath, encryptionBox.SelectedIndex, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1472,7 +1361,7 @@ namespace HaRepacker.GUI {
 		private void imgToolStripMenuItem1_Click(object sender, EventArgs e) {
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
@@ -1486,9 +1375,9 @@ namespace HaRepacker.GUI {
 
 			var serializer = new WzImgSerializer();
 			threadDone = false;
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzImgDirsExtraction));
-			runningThread.Start((object) new object[] {dirs, imgs, outPath, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			runningThread = new Thread(RunWzImgDirsExtraction);
+			runningThread.Start(new object[] {dirs, imgs, outPath, serializer});
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1499,7 +1388,7 @@ namespace HaRepacker.GUI {
 		private void pNGsToolStripMenuItem_Click(object sender, EventArgs e) {
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
@@ -1512,9 +1401,9 @@ namespace HaRepacker.GUI {
 			var serializer = new WzPngMp3Serializer();
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzObjExtraction));
-			runningThread.Start((object) new object[] {objs, outPath, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			runningThread = new Thread(RunWzObjExtraction);
+			runningThread.Start(new object[] {objs, outPath, serializer});
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 
@@ -1543,13 +1432,13 @@ namespace HaRepacker.GUI {
 		private void ExportBsonJsonInternal(bool isJson) {
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
 
-			var dlgResult = MessageBox.Show(Properties.Resources.MainWzExportJson_IncludeBase64,
-				Properties.Resources.MainWzExportJson_IncludeBase64_Title, MessageBoxButtons.YesNoCancel);
+			var dlgResult = MessageBox.Show(Resources.MainWzExportJson_IncludeBase64,
+				Resources.MainWzExportJson_IncludeBase64_Title, MessageBoxButtons.YesNoCancel);
 			if (dlgResult == DialogResult.Cancel)
 				return;
 			var bIncludeBase64BinData = dlgResult == DialogResult.Yes;
@@ -1568,10 +1457,10 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.UserSettings.LineBreakType, bIncludeBase64BinData, isJson);
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzImgDirsExtraction));
-			runningThread.Start((object) new object[] {dirs, imgs, outPath, serializer});
+			runningThread = new Thread(RunWzImgDirsExtraction);
+			runningThread.Start(new object[] {dirs, imgs, outPath, serializer});
 
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1582,7 +1471,7 @@ namespace HaRepacker.GUI {
 		private void privateServerToolStripMenuItem_Click(object sender, EventArgs e) {
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
@@ -1601,10 +1490,10 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.UserSettings.LineBreakType, false);
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzImgDirsExtraction));
-			runningThread.Start((object) new object[] {dirs, imgs, outPath, serializer});
+			runningThread = new Thread(RunWzImgDirsExtraction);
+			runningThread.Start(new object[] {dirs, imgs, outPath, serializer});
 
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1615,7 +1504,7 @@ namespace HaRepacker.GUI {
 		private void classicToolStripMenuItem_Click(object sender, EventArgs e) {
 			var outPath = GetOutputDirectory();
 			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
@@ -1634,10 +1523,10 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.UserSettings.LineBreakType, true);
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzImgDirsExtraction));
-			runningThread.Start((object) new object[] {dirs, imgs, outPath, serializer});
+			runningThread = new Thread(RunWzImgDirsExtraction);
+			runningThread.Start(new object[] {dirs, imgs, outPath, serializer});
 
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		/// <summary>
@@ -1646,9 +1535,9 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void newToolStripMenuItem1_Click(object sender, EventArgs e) {
-			var dialog = new SaveFileDialog() {
-				Title = Properties.Resources.SelectOutXml,
-				Filter = string.Format("{0}|*.xml", Properties.Resources.XmlFilter)
+			var dialog = new SaveFileDialog {
+				Title = Resources.SelectOutXml,
+				Filter = string.Format("{0}|*.xml", Resources.XmlFilter)
 			};
 			if (dialog.ShowDialog() != DialogResult.OK)
 				return;
@@ -1663,10 +1552,10 @@ namespace HaRepacker.GUI {
 				Program.ConfigurationManager.UserSettings.LineBreakType);
 			threadDone = false;
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzObjExtraction));
-			runningThread.Start((object) new object[] {objs, dialog.FileName, serializer});
+			runningThread = new Thread(RunWzObjExtraction);
+			runningThread.Start(new object[] {objs, dialog.FileName, serializer});
 
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			new Thread(ProgressBarThread).Start(serializer);
 		}
 
 		private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1714,24 +1603,6 @@ namespace HaRepacker.GUI {
 			ImportXml(wzFile.MapleVersion, dialog.FileNames);
 		}
 
-		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
-			if (!IsChildHoldingSelectedNode()) {
-				return;
-			}
-
-			var deserializer =
-				new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version));
-			yesToAll = false;
-			noToAll = false;
-			threadDone = false;
-
-			runningThread = new Thread(WzImporterThread);
-			runningThread.Start(new object[] {
-				deserializer, fileNames, MainPanel.DataTree.SelectedNode, null
-			});
-			new Thread(ProgressBarThread).Start(deserializer);
-		}
-
 		private void iMGToolStripMenuItem2_Click(object sender, EventArgs e) {
 			if (!IsChildHoldingSelectedNode()) {
 				return;
@@ -1759,25 +1630,6 @@ namespace HaRepacker.GUI {
 				return;
 
 			ImportImg(wzImageImportVersion, dialog.FileNames);
-		}
-
-		private void ImportImg(WzMapleVersion wzImageImportVersion, IEnumerable fileNames) {
-			if (!IsChildHoldingSelectedNode()) {
-				return;
-			}
-
-			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
-			var deserializer = new WzImgDeserializer(true);
-			yesToAll = false;
-			noToAll = false;
-			threadDone = false;
-
-			runningThread = new Thread(WzImporterThread);
-			runningThread.Start(
-				new object[] {
-					deserializer, fileNames, MainPanel.DataTree.SelectedNode, iv
-				});
-			new Thread(ProgressBarThread).Start(deserializer);
 		}
 
 		private void searchToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1992,10 +1844,6 @@ namespace HaRepacker.GUI {
 
 		private void InsertWzNodeThreadSafe(WzNode node, WzNode parent) {
 			MainPanel.Dispatcher.Invoke(() => { InsertWzNodeCallback(node, parent); });
-			/*  if (MainPanel.InvokeRequired)
-			      MainPanel.Invoke(new InsertWzNode(InsertWzNodeCallback), node, parent);
-			  else
-			      InsertWzNodeCallback(node, parent);*/
 		}
 
 		private bool yesToAll = false;
@@ -2026,7 +1874,80 @@ namespace HaRepacker.GUI {
 			throw new Exception("cant get here anyway");
 		}
 
-		private void WzImporterThread(object param) {
+		private void nXForamtToolStripMenuItem_Click(object sender, EventArgs e) {
+			var dialog = new OpenFileDialog() {
+				Title = Resources.SelectWz,
+				Filter = $"{Resources.WzFilter}|*.wz",
+				Multiselect = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
+			};
+
+			if (dialog.ShowDialog() != DialogResult.OK) {
+				return;
+			}
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
+
+			var outPath = GetOutputDirectory();
+			if (outPath == string.Empty) {
+				MessageBox.Show(Resources.MainWzExportError, Resources.Warning,
+					MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+
+			var serializer = new WzToNxSerializer();
+			threadDone = false;
+
+			runningThread = new Thread(RunWzFilesExtraction);
+			runningThread.Start(new object[]
+				{dialog.FileNames, outPath, encryptionBox.SelectedIndex, serializer});
+			new Thread(ProgressBarThread).Start(serializer);
+		}
+
+		#region Import Helpers
+
+		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
+
+			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version));
+			yesToAll = false;
+			noToAll = false;
+			threadDone = false;
+
+			runningThread = new Thread(WzDeserializeImportThread);
+			runningThread.Start(new object[] {
+				deserializer, fileNames, MainPanel.DataTree.SelectedNode, null
+			});
+			new Thread(ProgressBarThread).Start(deserializer);
+		}
+
+		private void ImportImg(WzMapleVersion wzImageImportVersion, IEnumerable fileNames) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
+
+			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
+			var deserializer = new WzImgDeserializer(true);
+			yesToAll = false;
+			noToAll = false;
+			threadDone = false;
+
+			runningThread = new Thread(WzDeserializeImportThread);
+			runningThread.Start(
+				new object[] {
+					deserializer, fileNames, MainPanel.DataTree.SelectedNode, iv
+				});
+			new Thread(ProgressBarThread).Start(deserializer);
+		}
+
+		#endregion
+
+		#region Import Threads
+
+		private void WzDeserializeImportThread(object param) {
 			ChangeApplicationState(false);
 
 			var arr = (object[]) param;
@@ -2036,43 +1957,46 @@ namespace HaRepacker.GUI {
 			var iv = (byte[]) arr[3];
 
 			var parentObj = (WzObject) parent.Tag;
-			if (parentObj is WzFile)
-				parentObj = ((WzFile) parentObj).WzDirectory;
+			if (parentObj is WzFile wzFile) {
+				parentObj = wzFile.WzDirectory;
+			}
+
 			UpdateProgressBar(MainPanel.mainProgressBar, files.Length, true, true);
 
 			foreach (var file in files) {
 				List<WzObject> objs;
 				try {
-					if (deserializer is WzXmlDeserializer) {
-						objs = ((WzXmlDeserializer) deserializer).ParseXML(file);
-					} else {
-						bool successfullyParsedImage;
+					if (deserializer is WzXmlDeserializer xmlDeserializer) {
+						objs = xmlDeserializer.ParseXML(file);
+					} else if (deserializer is WzImgDeserializer imgDeserializer) {
 						objs = new List<WzObject> {
-							((WzImgDeserializer) deserializer).WzImageFromIMGFile(file, iv, Path.GetFileName(file),
-								out successfullyParsedImage)
+							imgDeserializer.WzImageFromIMGFile(file, iv, Path.GetFileName(file), out var successfullyParsedImage)
 						};
 
 						if (!successfullyParsedImage) {
 							MessageBox.Show(
-								string.Format(Properties.Resources.MainErrorImportingWzImageFile, file),
-								Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+								string.Format(Resources.MainErrorImportingWzImageFile, file),
+								Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 							continue;
 						}
+					} else {
+						return;
 					}
 				} catch (ThreadAbortException) {
 					return;
 				} catch (Exception e) {
-					Warning.Error(string.Format(Properties.Resources.MainInvalidFileError, file, e.Message));
+					Warning.Error(string.Format(Resources.MainInvalidFileError, file, e.Message));
 					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 					continue;
 				}
 
-				foreach (var obj in objs)
+				foreach (var obj in objs) {
 					if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) ||
 					    (obj is WzImageProperty && parentObj is IPropertyContainer)) {
 						var node = new WzNode(obj, true);
 						InsertWzNodeThreadSafe(node, parent);
 					}
+				}
 
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
@@ -2082,34 +2006,125 @@ namespace HaRepacker.GUI {
 			threadDone = true;
 		}
 
-		private void nXForamtToolStripMenuItem_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectWz,
-				Filter = $"{Properties.Resources.WzFilter}|*.wz",
-				Multiselect = true,
-				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
-			};
+		#endregion
 
-			if (dialog.ShowDialog() != DialogResult.OK)
-				return;
+		#region Export Threads
 
-			foreach (var filePath in dialog.FileNames)
-				UpdatePreviousLoadDirectory(filePath);
+		private void RunWzFilesExtraction(object param) {
+			ChangeApplicationState(false);
 
-			var outPath = GetOutputDirectory();
-			if (outPath == string.Empty) {
-				MessageBox.Show(Properties.Resources.MainWzExportError, Properties.Resources.Warning,
-					MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				return;
+			var wzFilesToDump = (string[]) ((object[]) param)[0];
+			var baseDir = (string) ((object[]) param)[1];
+			var version = GetWzMapleVersionByWzEncryptionBoxSelection((int) ((object[]) param)[2]);
+			var serializer = (IWzFileSerializer) ((object[]) param)[3];
+
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, wzFilesToDump.Length, true, true);
+
+			if (!Directory.Exists(baseDir)) Directory.CreateDirectory(baseDir);
+
+			foreach (var wzpath in wzFilesToDump) {
+				if (WzTool.IsListFile(wzpath)) {
+					Warning.Error(string.Format(Resources.MainListWzDetected, wzpath));
+					continue;
+				}
+
+				var f = new WzFile(wzpath, version);
+
+				var parseStatus = f.ParseWzFile();
+
+				serializer.SerializeFile(f, Path.Combine(baseDir, f.Name));
+				f.Dispose();
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
 
-			var serializer = new WzToNxSerializer();
-			threadDone = false;
+			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 
-			runningThread = new Thread(new ParameterizedThreadStart(RunWzFilesExtraction));
-			runningThread.Start((object) new object[]
-				{dialog.FileNames, outPath, encryptionBox.SelectedIndex, serializer});
-			new Thread(new ParameterizedThreadStart(ProgressBarThread)).Start(serializer);
+			// Reset progress bar to 0
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+
+			threadDone = true;
 		}
+
+		private void RunWzImgDirsExtraction(object param) {
+			ChangeApplicationState(false);
+
+			var dirsToDump = (List<WzDirectory>) ((object[]) param)[0];
+			var imgsToDump = (List<WzImage>) ((object[]) param)[1];
+			var baseDir = (string) ((object[]) param)[2];
+			var serializer = (IWzImageSerializer) ((object[]) param)[3];
+
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, dirsToDump.Count + imgsToDump.Count, true, true);
+
+
+			if (!Directory.Exists(baseDir)) Directory.CreateDirectory(baseDir);
+
+			foreach (var img in imgsToDump) {
+				var escapedPath =
+					Path.Combine(baseDir, ProgressingWzSerializer.EscapeInvalidFilePathNames(img.Name));
+
+				serializer.SerializeImage(img, escapedPath);
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+			}
+
+			foreach (var dir in dirsToDump) {
+				var escapedPath =
+					Path.Combine(baseDir, ProgressingWzSerializer.EscapeInvalidFilePathNames(dir.Name));
+
+				serializer.SerializeDirectory(dir, escapedPath);
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+			}
+
+			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
+
+			// Reset progress bar to 0
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+
+			threadDone = true;
+		}
+
+		private void RunWzObjExtraction(object param) {
+			ChangeApplicationState(false);
+
+#if DEBUG
+			var watch = new Stopwatch();
+			watch.Start();
+#endif
+			var objsToDump = (List<WzObject>) ((object[]) param)[0];
+			var path = (string) ((object[]) param)[1];
+			var serializers = (ProgressingWzSerializer) ((object[]) param)[2];
+
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+
+			if (serializers is IWzObjectSerializer serializer) {
+				UpdateProgressBar(MainPanel.mainProgressBar, objsToDump.Count, true, true);
+				foreach (var obj in objsToDump) {
+					serializer.SerializeObject(obj, path);
+					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+				}
+			} else if (serializers is WzNewXmlSerializer serializer_) {
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, true, true);
+				serializer_.ExportCombinedXml(objsToDump, path);
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+			}
+
+			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
+#if DEBUG
+			// test benchmark
+			watch.Stop();
+			Debug.WriteLine($"WZ files Extracted. Execution Time: {watch.ElapsedMilliseconds} ms");
+#endif
+
+			// Reset progress bar to 0
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+
+			threadDone = true;
+		}
+
+		#endregion
 	}
 }
