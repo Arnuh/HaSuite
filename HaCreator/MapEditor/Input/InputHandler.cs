@@ -533,6 +533,12 @@ namespace HaCreator.MapEditor.Input {
 						if (ctrl)
 							parentBoard.OnSwitchTabRequested(shift);
 						break;
+					case Keys.F5:
+						UserSettings.blackBackground = !UserSettings.blackBackground;
+						break;
+					case Keys.F12:
+						UserSettings.displayFHSide = !UserSettings.displayFHSide;
+						break;
 				}
 
 				if (actions.Count > 0)
