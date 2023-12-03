@@ -333,9 +333,11 @@ namespace MapleLib.WzLib {
 			mapleStoryPatchVersion = (short) useMapleStoryPatchVersion;
 
 			versionHash = CheckAndGetVersionHash(useWzVersionHeader, mapleStoryPatchVersion);
-			if (versionHash ==
-			    0) // ugly hack, but that's the only way if the version number isnt known (nexon stores this in the .exe)
+
+			if (versionHash == 0) {
+				// ugly hack, but that's the only way if the version number isnt known (nexon stores this in the .exe)
 				return false;
+			}
 
 			reader.Hash = versionHash;
 			var fallbackOffsetPosition =
@@ -352,7 +354,7 @@ namespace MapleLib.WzLib {
 			}
 
 			// test the image and see if its correct by parsing it 
-			var bCloseTestDirectory = true;
+			var closeTestDirectory = true;
 			try {
 				var testImage = testDirectory.WzImages.FirstOrDefault();
 				if (testImage != null) {
@@ -374,11 +376,11 @@ namespace MapleLib.WzLib {
 							case 0x30:
 							case 0x6C: // idk
 							case 0xBC: // Map002.wz? KMST?
+							// v72 and v73 have a 79 and 193 check byte for mob.wz
+							// Idk what this is even for...  
 							default: {
 								var printError =
-									string.Format(
-										"[WzFile.cs] New Wz image header found. checkByte = {0}. File Name = {1}",
-										checkByte, Name);
+									$"[WzFile.cs] New Wz image header found. checkByte = {checkByte} for version {mapleStoryPatchVersion}. File Name = {Name}";
 
 								Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature, printError);
 								Debug.WriteLine(printError);
@@ -388,14 +390,15 @@ namespace MapleLib.WzLib {
 						}
 
 						reader.BaseStream.Position = fallbackOffsetPosition; // reset
+						return false;
 					} catch {
 						reader.BaseStream.Position = fallbackOffsetPosition; // reset
 						return false;
 					}
 
 					return true;
-				} else // if there's no image in the WZ file (new KMST Base.wz), test the directory instead
-				{
+				} else {
+					// if there's no image in the WZ file (new KMST Base.wz), test the directory instead
 					// coincidentally in msea v194 Map001.wz, the hash matches exactly using mapleStoryPatchVersion of 113, and it fails to decrypt later on (probably 1 in a million chance? o_O).
 					// damn, technical debt accumulating here
 					// also needs to check for 'Is64BitWzFile' as it may match TaiwanMS v113 (pre-bb) and return as false.
@@ -405,7 +408,7 @@ namespace MapleLib.WzLib {
 						return false;
 					} else {
 						wzDir = testDirectory;
-						bCloseTestDirectory = false;
+						closeTestDirectory = false;
 
 						return true;
 					}
