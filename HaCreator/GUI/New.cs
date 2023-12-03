@@ -89,9 +89,8 @@ namespace HaCreator.GUI {
 			if (numericUpDown1.Value == -1)
 				return;
 
-			var mapid =
-				(long) numericUpDown1.Value; // should be int, but anyway in case the future version uses more than 2.1b
-			var mapId_str = mapid.ToString();
+			var mapId = (int) numericUpDown1.Value;
+			var mapId_str = mapId.ToString();
 
 			var mapImage = WzInfoTools.FindMapImage(mapId_str, Program.WzManager);
 			if (mapImage == null) {
@@ -99,7 +98,7 @@ namespace HaCreator.GUI {
 				return;
 			}
 
-			var strMapProp = WzInfoTools.GetMapStringProp(mapId_str, Program.WzManager);
+			var strMapProp = WzInfoTools.GetMapStringProp(mapId, Program.WzManager);
 			var cloneMapName = WzInfoTools.GetMapName(strMapProp);
 			var cloneStreetName = WzInfoTools.GetMapStreetName(strMapProp);
 			var cloneCategoryName = WzInfoTools.GetMapCategoryName(strMapProp);

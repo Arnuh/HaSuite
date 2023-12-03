@@ -138,7 +138,6 @@ namespace HaCreator.GUI {
 			string mapName = null, streetName = "", categoryName = "";
 			WzSubProperty strMapProp = null;
 
-
 			if (HAMSelect.Checked) {
 				MapLoader.CreateMapFromHam(multiBoard, Tabs, File.ReadAllText(HAMBox.Text), rightClickHandler);
 				DialogResult = DialogResult.OK;
@@ -160,8 +159,7 @@ namespace HaCreator.GUI {
 
 				var selectedName = mapBrowser.SelectedItem;
 
-				if (selectedName.StartsWith("MapLogin")) // MapLogin, MapLogin1, MapLogin2, MapLogin3
-				{
+				if (selectedName.StartsWith("MapLogin")) { // MapLogin, MapLogin1, MapLogin2, MapLogin3
 					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
 					foreach (var uiWzDir in uiWzDirs) {
 						mapImage = (WzImage) uiWzDir?[selectedName + ".img"];
@@ -170,7 +168,7 @@ namespace HaCreator.GUI {
 					}
 
 					mapName = streetName = categoryName = selectedName;
-				} else if (mapBrowser.SelectedItem == "CashShopPreview") {
+				} else if (selectedName == "CashShopPreview") {
 					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
 					foreach (var uiWzDir in uiWzDirs) {
 						mapImage = (WzImage) uiWzDir?["CashShopPreview.img"];
@@ -183,12 +181,7 @@ namespace HaCreator.GUI {
 					var mapid_str = mapBrowser.SelectedItem.Substring(0, 9);
 					int.TryParse(mapid_str, out mapid);
 
-					mapImage = WzInfoTools.FindMapImage(mapid.ToString(), Program.WzManager);
-
-					strMapProp = WzInfoTools.GetMapStringProp(mapid_str, Program.WzManager);
-					mapName = WzInfoTools.GetMapName(strMapProp);
-					streetName = WzInfoTools.GetMapStreetName(strMapProp);
-					categoryName = WzInfoTools.GetMapCategoryName(strMapProp);
+					mapImage = GetMapLoadData(mapid, out strMapProp, out mapName, out streetName, out categoryName);
 				}
 			}
 
@@ -200,6 +193,16 @@ namespace HaCreator.GUI {
 
 			if (_bAutoCloseUponSelection)
 				Close();
+		}
+
+		public static WzImage GetMapLoadData(int mapId, out WzSubProperty strMapProp, out string mapName, out string streetName, out string categoryName) {
+			var mapImage = WzInfoTools.FindMapImage(mapId.ToString(), Program.WzManager);
+
+			strMapProp = WzInfoTools.GetMapStringProp(mapId, Program.WzManager);
+			mapName = WzInfoTools.GetMapName(strMapProp);
+			streetName = WzInfoTools.GetMapStreetName(strMapProp);
+			categoryName = WzInfoTools.GetMapCategoryName(strMapProp);
+			return mapImage;
 		}
 
 		private void MapBrowser_SelectionChanged() {

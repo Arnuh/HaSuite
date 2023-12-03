@@ -803,10 +803,18 @@ namespace HaCreator.Wz {
 			};
 
 			var menuItem4 = new System.Windows.Controls.MenuItem {
-				Header = "Close"
+				Header = "Reload Map"
 			};
 			menuItem4.Click += rightClickHandler[3];
 			menuItem4.Icon = new System.Windows.Controls.Image {
+				Source = BitmapHelper.Convert(Properties.Resources.mapEditMenu, System.Drawing.Imaging.ImageFormat.Png)
+			};
+
+			var menuItem5 = new System.Windows.Controls.MenuItem {
+				Header = "Close"
+			};
+			menuItem5.Click += rightClickHandler[4];
+			menuItem5.Icon = new System.Windows.Controls.Image {
 				Source = BitmapHelper.Convert(Properties.Resources.mapEditMenu, System.Drawing.Imaging.ImageFormat.Png)
 			};
 
@@ -814,6 +822,7 @@ namespace HaCreator.Wz {
 			menu.Items.Add(menuItem2);
 			menu.Items.Add(menuItem3);
 			menu.Items.Add(menuItem4);
+			menu.Items.Add(menuItem5);
 
 			return menu;
 		}

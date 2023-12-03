@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using MapleLib.WzLib;
 using HaCreator.Wz;
@@ -32,6 +33,9 @@ using HaCreator.MapEditor.Instance.Misc;
 using SystemWinCtl = System.Windows.Controls;
 using HaSharedLibrary;
 using MapleLib;
+using MapleLib.WzLib.WzProperties;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaCreator.MapEditor {
 	public class HaCreatorStateManager {
@@ -399,6 +403,26 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
+		private void ReloadMap(object sender, EventArgs e) {
+			var item = (System.Windows.Controls.MenuItem) sender;
+			if (item == null) {
+				return;
+			}
+
+			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var container = (TabItemContainer) tabItem.Tag;
+			var selectedBoard = container.Board;
+
+			var mapId = selectedBoard.MapInfo.id;
+			if (mapId == -1) return;
+
+			CloseMapTab(sender, e);
+
+			var mapImage = FieldSelector.GetMapLoadData(mapId, out var strMapProp, out var mapName, out var streetName, out var categoryName);
+			MapLoader.CreateMapFromImage(mapId, mapImage, mapName, streetName, categoryName, strMapProp, tabs,
+				multiBoard, MakeRightClickHandler());
+		}
+
 		/// <summary>
 		/// Context menu for closing of the map
 		/// </summary>
@@ -712,12 +736,13 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public System.Windows.RoutedEventHandler[] MakeRightClickHandler() {
-			return new System.Windows.RoutedEventHandler[] {
-				new System.Windows.RoutedEventHandler(MapEditInfo),
-				new System.Windows.RoutedEventHandler(MapAddVR),
-				new System.Windows.RoutedEventHandler(MapAddMinimap),
-				new System.Windows.RoutedEventHandler(CloseMapTab)
+		public RoutedEventHandler[] MakeRightClickHandler() {
+			return new RoutedEventHandler[] {
+				MapEditInfo,
+				MapAddVR,
+				MapAddMinimap,
+				ReloadMap,
+				CloseMapTab
 			};
 		}
 

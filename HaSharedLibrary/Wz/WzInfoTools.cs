@@ -96,13 +96,11 @@ namespace HaSharedLibrary.Wz {
 			return "";
 		}
 
-		public static WzSubProperty GetMapStringProp(string id, WzFileManager fileManager) {
-			id = RemoveLeadingZeros(id);
-
+		public static WzSubProperty GetMapStringProp(int id, WzFileManager fileManager) {
 			var mapImg = (WzImage) fileManager.FindWzImageByName("string", "Map.img");
 			if (mapImg != null)
 				foreach (WzSubProperty mapNameCategory in mapImg.WzProperties) {
-					var mapNameDirectory = (WzSubProperty) mapNameCategory[id];
+					var mapNameDirectory = (WzSubProperty) mapNameCategory[id.ToString()];
 					if (mapNameDirectory != null) return mapNameDirectory;
 				}
 
