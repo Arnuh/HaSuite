@@ -70,7 +70,7 @@ namespace MapleLib.WzLib {
 		public override WzFile WzFileParent => wzFile;
 
 		/// <summary>
-		/// Disposes the obejct
+		/// Disposes the object
 		/// </summary>
 		public override void Dispose() {
 			name = null;

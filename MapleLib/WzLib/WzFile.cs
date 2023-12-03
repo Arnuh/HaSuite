@@ -20,8 +20,6 @@ using System.Text.RegularExpressions;
 using System;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
-using System.Threading.Tasks;
-using MapleLib.PacketLib;
 using MapleLib.MapleCryptoLib;
 using System.Linq;
 using System.Diagnostics;
@@ -125,15 +123,17 @@ namespace MapleLib.WzLib {
 		public override void Dispose() {
 			_isUnloaded = true; // flag first
 
-			if (wzDir == null || wzDir.reader == null)
+			if (wzDir == null || wzDir.reader == null) {
+				Debug.WriteLine("WzFile.Dispose() : wzDir.reader is null");
 				return;
+			}
 
 			wzDir.reader.Close();
 			wzDir.reader = null;
 			Header = null;
 			path = null;
 			name = null;
-			WzDirectory.Dispose();
+			wzDir.Dispose();
 		}
 
 		private bool _isUnloaded = false;

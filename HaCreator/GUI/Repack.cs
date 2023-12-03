@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace HaCreator.GUI {
 		private void button_repack_Click(object sender, EventArgs e) {
 			button_repack.Enabled = false;
 
-			var t = new Thread(new ThreadStart(RepackerThread));
+			var t = new Thread(RepackerThread);
 			t.Start();
 		}
 
@@ -81,15 +82,16 @@ namespace HaCreator.GUI {
 		/// <summary>
 		/// On repacking completed
 		/// </summary>
-		/// <param name="bSaveFileInHaCreatorDirectory"></param>
-		private void FinishSuccess(bool bSaveFileInHaCreatorDirectory) {
+		/// <param name="saveFileInHaCreatorDirectory"></param>
+		private void FinishSuccess(bool saveFileInHaCreatorDirectory) {
 			MessageBox.Show("Repacked successfully. " +
-			                (!bSaveFileInHaCreatorDirectory ? "" : "Please replace the files in HaCreator\\Output."));
+			                (!saveFileInHaCreatorDirectory ? "" : "Please replace the files in HaCreator\\Output."));
 
-			if (!bSaveFileInHaCreatorDirectory)
+			if (!saveFileInHaCreatorDirectory) {
 				Program.Restarting = true;
-			else
+			} else {
 				button_repack.Enabled = true;
+			}
 
 			Close();
 		}
@@ -98,6 +100,8 @@ namespace HaCreator.GUI {
 			Invoke((Action) delegate {
 				ChangeRepackState("ERROR While saving " + saveStage + ", aborted.");
 				button_repack.Enabled = true;
+				Debug.WriteLine(e.Message);
+				Debug.WriteLine(e.StackTrace);
 				ShowErrorMessage(
 					"There has been an error while saving, it is likely because you do not have permissions to the destination folder or the files are in use.\r\n\r\nPress OK to see the error details.");
 				ShowErrorMessage(e.Message + "\r\n" + e.StackTrace);
@@ -111,35 +115,28 @@ namespace HaCreator.GUI {
 			var rootDir = Path.Combine(Program.WzManager.WzBaseDirectory, Program.APP_NAME);
 			var testDir = Path.Combine(rootDir, "Test");
 
-			var bSaveFileInHaCreatorDirectory = false;
+			var saveFileInHaCreatorDirectory = false;
 			try {
 				if (!Directory.Exists(testDir)) {
 					Directory.CreateDirectory(testDir);
 					Directory.Delete(testDir);
 				}
 			} catch (Exception e) {
-				if (e is UnauthorizedAccessException) bSaveFileInHaCreatorDirectory = true;
+				if (e is UnauthorizedAccessException) {
+					saveFileInHaCreatorDirectory = true;
+				}
 			}
 
-			if (bSaveFileInHaCreatorDirectory)
+			if (saveFileInHaCreatorDirectory) {
 				rootDir = Path.Combine(Directory.GetCurrentDirectory(), Program.APP_NAME);
+			}
 
 			// Prepare directories
-			var backupDir = Path.Combine(rootDir, "Backup");
-			var orgBackupDir = Path.Combine(rootDir, "Original");
 			var XMLDir = Path.Combine(rootDir, "XML");
 
 			try {
-				if (!Directory.Exists(backupDir))
-					Directory.CreateDirectory(backupDir);
-
-				if (!Directory.Exists(orgBackupDir))
-					Directory.CreateDirectory(orgBackupDir);
-
 				if (!Directory.Exists(XMLDir))
 					Directory.CreateDirectory(XMLDir);
-
-				foreach (var fi in new DirectoryInfo(backupDir).GetFiles()) fi.Delete();
 			} catch (Exception e) {
 				ShowErrorMessageThreadSafe(e, "backup files");
 				return;
@@ -149,40 +146,41 @@ namespace HaCreator.GUI {
 			// We have to save XMLs first, otherwise the WzImages will already be disposed when we reach this code
 			Invoke((Action) delegate { ChangeRepackState("Saving XMLs..."); });
 
-			foreach (var img in Program.WzManager.WzUpdatedImageList)
+			var xmlSer = new WzClassicXmlSerializer(4, LineBreak.Windows, true);
+			foreach (var img in Program.WzManager.WzUpdatedImageList) {
 				try {
 					var xmlPath = Path.Combine(XMLDir, img.FullPath);
 					var xmlPathDir = Path.GetDirectoryName(xmlPath);
 					if (!Directory.Exists(xmlPathDir))
 						Directory.CreateDirectory(xmlPathDir);
-					var xmlSer = new WzClassicXmlSerializer(4, LineBreak.Windows, true);
 					xmlSer.SerializeImage(img, xmlPath);
 				} catch (Exception e) {
 					ShowErrorMessageThreadSafe(e, "XMLs");
 					return;
 				}
+			}
 
 			// Save WZ Files
 			foreach (var wzf in toRepack) {
 				// Check if this wz file is selected and can be saved
-				var bCanSave = false;
-				foreach (string checkedItemName in checkedListBox_changedFiles.CheckedItems)
+				var canSave = false;
+				foreach (string checkedItemName in checkedListBox_changedFiles.CheckedItems) {
 					// no uncheckedItems list :(
 					if (checkedItemName == wzf.Name) {
-						bCanSave = true;
+						canSave = true;
 						break;
 					}
+				}
 
-				if (!bCanSave)
+				if (!canSave) {
 					continue;
-
-				// end
+				}
 
 				Invoke((Action) delegate { ChangeRepackState("Saving " + wzf.Name + "..."); });
 				var orgFile = wzf.FilePath;
 
 				string tmpFile;
-				if (!bSaveFileInHaCreatorDirectory) {
+				if (!saveFileInHaCreatorDirectory) {
 					tmpFile = orgFile + "$tmp";
 				} else {
 					var folderPath = Path.Combine(rootDir, "Output");
@@ -200,28 +198,32 @@ namespace HaCreator.GUI {
 					}
 				}
 
+				var fileName = wzf.Name;
 				try {
 					wzf.SaveToDisk(tmpFile);
 					wzf.Dispose();
 
-					if (!bSaveFileInHaCreatorDirectory) // only replace the original file if its saving in the maplestory folder
-					{
+					if (!saveFileInHaCreatorDirectory) { // only replace the original file if its saving in the maplestory folder
 						// Move the original Wz file to a backup name
 						var currentDateTimeString = DateTime.Now.ToString().Replace(":", "_").Replace("/", "_");
-						File.Move(orgFile, orgFile + string.Format("_BAK_{0}.wz", currentDateTimeString));
+						File.Move(orgFile, $"{orgFile}_BAK_{currentDateTimeString}.wz");
 
 						// Move the newly created WZ file as the new file 
 						File.Move(tmpFile, orgFile);
 					}
 				} catch (Exception e) {
-					ShowErrorMessageThreadSafe(e, wzf.Name);
+					// At this point its too late to do anything
+					// wz is closed and can't be edited anymore..
+					Debug.WriteLine($"orgFile: {orgFile}");
+					Debug.WriteLine($"tmpFile: {tmpFile}");
+					ShowErrorMessageThreadSafe(e, fileName);
 					return;
 				}
 			}
 
 			Invoke((Action) delegate {
 				ChangeRepackState("Finished");
-				FinishSuccess(bSaveFileInHaCreatorDirectory);
+				FinishSuccess(saveFileInHaCreatorDirectory);
 			});
 		}
 	}

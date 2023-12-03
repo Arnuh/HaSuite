@@ -7,6 +7,7 @@
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using MapleLib.WzLib;
 using HaCreator.MapEditor;
@@ -265,6 +266,11 @@ namespace HaCreator.GUI {
 			Application.DoEvents();
 		}
 
+		private void UpdateUI_CurrentLoading(string text) {
+			textBox2.Text = text;
+			Application.DoEvents();
+		}
+
 		/// <summary>
 		/// On loading initialization.cs
 		/// </summary>
@@ -344,6 +350,7 @@ namespace HaCreator.GUI {
 			foreach (var mapid in Program.InfoManager.Maps.Keys) {
 				var mapImage = WzInfoTools.FindMapImage(mapid, Program.WzManager);
 				if (mapImage == null) continue;
+				UpdateUI_CurrentLoading(mapImage.Name);
 
 				mapImage.ParseImage();
 				if (mapImage["info"]["link"] != null) {
