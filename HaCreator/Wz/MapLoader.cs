@@ -439,8 +439,7 @@ namespace HaCreator.Wz {
 						var piece = InfoTool.GetOptionalInt(fhProp["piece"]);
 						var force = InfoTool.GetOptionalInt(fhProp["force"]);
 						if (a.X != b.X || a.Y != b.Y) {
-							var fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece,
-								force);
+							var fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force);
 							fh.num = num;
 							fh.prev = prev;
 							fh.next = next;

@@ -15,22 +15,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using HaCreator.Collections;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Text;
-using HaCreator.MapSimulator;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
@@ -39,7 +32,6 @@ using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
-
 
 namespace HaCreator.MapEditor {
 	public partial class MultiBoard : UserControl {
@@ -261,6 +253,10 @@ namespace HaCreator.MapEditor {
 		public void DrawDot(SpriteBatch sprite, int x, int y, Color color, int dotSize) {
 			var dotW = UserSettings.DotWidth * dotSize;
 			FillRectangle(sprite, new Rectangle(x - dotW, y - dotW, dotW * 2, dotW * 2), color);
+		}
+
+		public void DrawString(SpriteBatch sprite, string str, int x, int y) {
+			fontEngine.DrawString(sprite, new System.Drawing.Point(x, y), Color.Black, str, 1000);
 		}
 
 		public void RenderFrame() {
@@ -988,6 +984,7 @@ namespace HaCreator.MapEditor {
 		public static Color InactiveColor;
 		public static Color RopeInactiveColor;
 		public static Color FootholdInactiveColor;
+		public static Color FootholdSideInactiveColor;
 		public static Color ChairInactiveColor;
 		public static Color ToolTipInactiveColor;
 		public static Color MiscInactiveColor;
@@ -1008,6 +1005,7 @@ namespace HaCreator.MapEditor {
 			InactiveColor = CreateTransparency(Color.White, alpha);
 			RopeInactiveColor = CreateTransparency(UserSettings.RopeColor, alpha);
 			FootholdInactiveColor = CreateTransparency(UserSettings.FootholdColor, alpha);
+			FootholdSideInactiveColor = CreateTransparency(UserSettings.FootholdSideColor, alpha);
 			ChairInactiveColor = CreateTransparency(UserSettings.ChairColor, alpha);
 			ToolTipInactiveColor = CreateTransparency(UserSettings.ToolTipColor, alpha);
 			MiscInactiveColor = CreateTransparency(UserSettings.MiscColor, alpha);

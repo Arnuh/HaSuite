@@ -29,6 +29,7 @@ namespace HaCreator {
 		public static XNA.Color SelectedColor = new XNA.Color(0, 0, 255, 250);
 		public static XNA.Color VRColor = new XNA.Color(0, 0, 255, 255);
 		public static XNA.Color FootholdColor = XNA.Color.Red;
+		public static XNA.Color FootholdSideColor = XNA.Color.LimeGreen;
 		public static XNA.Color RopeColor = XNA.Color.Green;
 		public static XNA.Color ChairColor = XNA.Color.Orange;
 		public static XNA.Color ToolTipColor = XNA.Color.SkyBlue;
@@ -74,6 +75,7 @@ namespace HaCreator {
 		public static int BackupIdleTime = 5000;
 		public static int BackupMaxTime = 60000;
 		public static bool blackBackground = false;
+		public static bool displayFHSide = true;
 	}
 
 	public static class ApplicationSettings {

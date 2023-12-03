@@ -37,6 +37,7 @@ namespace HaCreator.GUI {
 			selectedColorPicker.Color = XNAToSystemColor(UserSettings.SelectedColor);
 			vrColorPicker.Color = XNAToSystemColor(UserSettings.VRColor);
 			fhColorPicker.Color = XNAToSystemColor(UserSettings.FootholdColor);
+			fhSideColorPicker.Color = XNAToSystemColor(UserSettings.FootholdSideColor);
 			rlColorPicker.Color = XNAToSystemColor(UserSettings.RopeColor);
 			seatColorPicker.Color = XNAToSystemColor(UserSettings.ChairColor);
 			ttColorPicker.Color = XNAToSystemColor(UserSettings.ToolTipColor);
@@ -101,6 +102,7 @@ namespace HaCreator.GUI {
 			UserSettings.SelectedColor = SystemToXNAColor(selectedColorPicker.Color);
 			UserSettings.VRColor = SystemToXNAColor(vrColorPicker.Color);
 			UserSettings.FootholdColor = SystemToXNAColor(fhColorPicker.Color);
+			UserSettings.FootholdSideColor = SystemToXNAColor(fhSideColorPicker.Color);
 			UserSettings.RopeColor = SystemToXNAColor(rlColorPicker.Color);
 			UserSettings.ChairColor = SystemToXNAColor(seatColorPicker.Color);
 			UserSettings.ToolTipColor = SystemToXNAColor(ttColorPicker.Color);

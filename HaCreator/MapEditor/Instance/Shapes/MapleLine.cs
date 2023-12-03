@@ -10,15 +10,12 @@ using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
 	//it is important to remember that if the line is connecting mouse and a MapleDot, the mouse is ALWAYS the second dot.
 	public abstract class MapleLine {
-		private Board board;
+		protected Board board;
 		protected MapleDot firstDot;
 		protected MapleDot secondDot;
 		private bool beforeConnecting;

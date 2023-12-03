@@ -26,8 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -77,6 +76,8 @@
             this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.footholdSideLabel = new System.Windows.Forms.Label();
+            this.fhSideColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label44 = new System.Windows.Forms.Label();
             this.minimapColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label43 = new System.Windows.Forms.Label();
@@ -120,33 +121,33 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.okayButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label45 = new System.Windows.Forms.Label();
             this.openAI_apiKey_textBox = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobrx1Box)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.npcrx1Box)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.npcrx0Box)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.reacttimeBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobtimeBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.snapdistBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollbaseBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollexpBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrolldistBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollfactBox)).BeginInit();
+            this.okayButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize) (this.linewBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.dotwBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobrx0Box)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobrx1Box)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.npcrx1Box)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.npcrx0Box)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.reacttimeBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobtimeBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.snapdistBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollbaseBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollexpBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrolldistBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollfactBox)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fontSize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.inactiveaBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.fontSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.rInput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.inactiveaBox)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.movementBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.movementBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.zShiftBox)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -180,46 +181,22 @@
             // linewBox
             // 
             this.linewBox.Location = new System.Drawing.Point(77, 39);
-            this.linewBox.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.linewBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.linewBox.Maximum = new decimal(new int[] {255, 0, 0, 0});
+            this.linewBox.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.linewBox.Name = "linewBox";
             this.linewBox.Size = new System.Drawing.Size(39, 22);
             this.linewBox.TabIndex = 7;
-            this.linewBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.linewBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // dotwBox
             // 
             this.dotwBox.Location = new System.Drawing.Point(75, 11);
-            this.dotwBox.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.dotwBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.dotwBox.Maximum = new decimal(new int[] {255, 0, 0, 0});
+            this.dotwBox.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.dotwBox.Name = "dotwBox";
             this.dotwBox.Size = new System.Drawing.Size(39, 22);
             this.dotwBox.TabIndex = 9;
-            this.dotwBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.dotwBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label5
             // 
@@ -269,7 +246,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 142);
+            this.label14.Location = new System.Drawing.Point(10, 164);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(34, 13);
             this.label14.TabIndex = 27;
@@ -278,7 +255,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(10, 164);
+            this.label15.Location = new System.Drawing.Point(10, 186);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(34, 13);
             this.label15.TabIndex = 29;
@@ -287,7 +264,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(10, 186);
+            this.label16.Location = new System.Drawing.Point(10, 208);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(45, 13);
             this.label16.TabIndex = 31;
@@ -296,7 +273,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 208);
+            this.label17.Location = new System.Drawing.Point(10, 230);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(63, 13);
             this.label17.TabIndex = 33;
@@ -305,7 +282,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(10, 230);
+            this.label18.Location = new System.Drawing.Point(10, 252);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(91, 13);
             this.label18.TabIndex = 35;
@@ -314,7 +291,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(10, 296);
+            this.label21.Location = new System.Drawing.Point(10, 319);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(112, 13);
             this.label21.TabIndex = 41;
@@ -323,7 +300,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(10, 274);
+            this.label22.Location = new System.Drawing.Point(10, 297);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(118, 13);
             this.label22.TabIndex = 39;
@@ -332,7 +309,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(10, 252);
+            this.label23.Location = new System.Drawing.Point(10, 275);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(72, 13);
             this.label23.TabIndex = 37;
@@ -341,19 +318,11 @@
             // mobrx0Box
             // 
             this.mobrx0Box.Location = new System.Drawing.Point(108, 10);
-            this.mobrx0Box.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.mobrx0Box.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.mobrx0Box.Name = "mobrx0Box";
             this.mobrx0Box.Size = new System.Drawing.Size(48, 22);
             this.mobrx0Box.TabIndex = 55;
-            this.mobrx0Box.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.mobrx0Box.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label28
             // 
@@ -367,19 +336,11 @@
             // mobrx1Box
             // 
             this.mobrx1Box.Location = new System.Drawing.Point(108, 36);
-            this.mobrx1Box.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.mobrx1Box.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.mobrx1Box.Name = "mobrx1Box";
             this.mobrx1Box.Size = new System.Drawing.Size(48, 22);
             this.mobrx1Box.TabIndex = 57;
-            this.mobrx1Box.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.mobrx1Box.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label29
             // 
@@ -393,19 +354,11 @@
             // npcrx1Box
             // 
             this.npcrx1Box.Location = new System.Drawing.Point(108, 88);
-            this.npcrx1Box.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.npcrx1Box.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.npcrx1Box.Name = "npcrx1Box";
             this.npcrx1Box.Size = new System.Drawing.Size(48, 22);
             this.npcrx1Box.TabIndex = 61;
-            this.npcrx1Box.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.npcrx1Box.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label30
             // 
@@ -419,19 +372,11 @@
             // npcrx0Box
             // 
             this.npcrx0Box.Location = new System.Drawing.Point(108, 62);
-            this.npcrx0Box.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.npcrx0Box.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.npcrx0Box.Name = "npcrx0Box";
             this.npcrx0Box.Size = new System.Drawing.Size(48, 22);
             this.npcrx0Box.TabIndex = 59;
-            this.npcrx0Box.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.npcrx0Box.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label31
             // 
@@ -445,19 +390,11 @@
             // reacttimeBox
             // 
             this.reacttimeBox.Location = new System.Drawing.Point(108, 140);
-            this.reacttimeBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.reacttimeBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.reacttimeBox.Name = "reacttimeBox";
             this.reacttimeBox.Size = new System.Drawing.Size(48, 22);
             this.reacttimeBox.TabIndex = 65;
-            this.reacttimeBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.reacttimeBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label32
             // 
@@ -471,19 +408,11 @@
             // mobtimeBox
             // 
             this.mobtimeBox.Location = new System.Drawing.Point(108, 114);
-            this.mobtimeBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.mobtimeBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.mobtimeBox.Name = "mobtimeBox";
             this.mobtimeBox.Size = new System.Drawing.Size(48, 22);
             this.mobtimeBox.TabIndex = 63;
-            this.mobtimeBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.mobtimeBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label33
             // 
@@ -507,11 +436,7 @@
             // 
             this.snapdistBox.DecimalPlaces = 3;
             this.snapdistBox.Location = new System.Drawing.Point(108, 239);
-            this.snapdistBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.snapdistBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.snapdistBox.Name = "snapdistBox";
             this.snapdistBox.Size = new System.Drawing.Size(48, 22);
             this.snapdistBox.TabIndex = 67;
@@ -529,11 +454,7 @@
             // 
             this.scrollbaseBox.DecimalPlaces = 3;
             this.scrollbaseBox.Location = new System.Drawing.Point(108, 291);
-            this.scrollbaseBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.scrollbaseBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.scrollbaseBox.Name = "scrollbaseBox";
             this.scrollbaseBox.Size = new System.Drawing.Size(48, 22);
             this.scrollbaseBox.TabIndex = 71;
@@ -551,11 +472,7 @@
             // 
             this.scrollexpBox.DecimalPlaces = 3;
             this.scrollexpBox.Location = new System.Drawing.Point(108, 317);
-            this.scrollexpBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.scrollexpBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.scrollexpBox.Name = "scrollexpBox";
             this.scrollexpBox.Size = new System.Drawing.Size(48, 22);
             this.scrollexpBox.TabIndex = 73;
@@ -572,34 +489,18 @@
             // scrolldistBox
             // 
             this.scrolldistBox.Location = new System.Drawing.Point(108, 265);
-            this.scrolldistBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.scrolldistBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.scrolldistBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
+            this.scrolldistBox.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.scrolldistBox.Name = "scrolldistBox";
             this.scrolldistBox.Size = new System.Drawing.Size(48, 22);
             this.scrolldistBox.TabIndex = 74;
-            this.scrolldistBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.scrolldistBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // scrollfactBox
             // 
             this.scrollfactBox.DecimalPlaces = 3;
             this.scrollfactBox.Location = new System.Drawing.Point(108, 343);
-            this.scrollfactBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.scrollfactBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.scrollfactBox.Name = "scrollfactBox";
             this.scrollfactBox.Size = new System.Drawing.Size(48, 22);
             this.scrollfactBox.TabIndex = 76;
@@ -695,13 +596,15 @@
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(10, 433);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(393, 13);
+            this.label20.Size = new System.Drawing.Size(389, 13);
             this.label20.TabIndex = 57;
             this.label20.Text = "Note: certain settings require restarting PheCreator in order to be applied.";
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.footholdSideLabel);
+            this.tabPage2.Controls.Add(this.fhSideColorPicker);
             this.tabPage2.Controls.Add(this.label44);
             this.tabPage2.Controls.Add(this.minimapColorPicker);
             this.tabPage2.Controls.Add(this.label43);
@@ -756,10 +659,29 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphics";
             // 
+            // footholdSideLabel
+            // 
+            this.footholdSideLabel.Location = new System.Drawing.Point(10, 142);
+            this.footholdSideLabel.Name = "footholdSideLabel";
+            this.footholdSideLabel.Size = new System.Drawing.Size(100, 13);
+            this.footholdSideLabel.TabIndex = 76;
+            this.footholdSideLabel.Text = "Foothold Side";
+            // 
+            // fhSideColorPicker
+            // 
+            this.fhSideColorPicker.Color = System.Drawing.Color.White;
+            this.fhSideColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.fhSideColorPicker.Location = new System.Drawing.Point(130, 141);
+            this.fhSideColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.fhSideColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.fhSideColorPicker.Name = "fhSideColorPicker";
+            this.fhSideColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.fhSideColorPicker.TabIndex = 75;
+            // 
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(10, 406);
+            this.label44.Location = new System.Drawing.Point(10, 429);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(89, 13);
             this.label44.TabIndex = 73;
@@ -769,7 +691,7 @@
             // 
             this.minimapColorPicker.Color = System.Drawing.Color.White;
             this.minimapColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.minimapColorPicker.Location = new System.Drawing.Point(127, 405);
+            this.minimapColorPicker.Location = new System.Drawing.Point(130, 428);
             this.minimapColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.minimapColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.minimapColorPicker.Name = "minimapColorPicker";
@@ -779,7 +701,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(10, 384);
+            this.label43.Location = new System.Drawing.Point(10, 407);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(40, 13);
             this.label43.TabIndex = 71;
@@ -789,7 +711,7 @@
             // 
             this.originColorPicker.Color = System.Drawing.Color.White;
             this.originColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.originColorPicker.Location = new System.Drawing.Point(127, 383);
+            this.originColorPicker.Location = new System.Drawing.Point(130, 406);
             this.originColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.originColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.originColorPicker.Name = "originColorPicker";
@@ -799,7 +721,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(10, 362);
+            this.label24.Location = new System.Drawing.Point(10, 385);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(76, 13);
             this.label24.TabIndex = 67;
@@ -808,7 +730,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(10, 318);
+            this.label41.Location = new System.Drawing.Point(10, 341);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(30, 13);
             this.label41.TabIndex = 65;
@@ -817,7 +739,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(10, 340);
+            this.label42.Location = new System.Drawing.Point(10, 363);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(48, 13);
             this.label42.TabIndex = 66;
@@ -827,7 +749,7 @@
             // 
             this.miscSelectedColorPicker.Color = System.Drawing.Color.White;
             this.miscSelectedColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.miscSelectedColorPicker.Location = new System.Drawing.Point(127, 361);
+            this.miscSelectedColorPicker.Location = new System.Drawing.Point(130, 384);
             this.miscSelectedColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.miscSelectedColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.miscSelectedColorPicker.Name = "miscSelectedColorPicker";
@@ -838,7 +760,7 @@
             // 
             this.miscFillColorPicker.Color = System.Drawing.Color.White;
             this.miscFillColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.miscFillColorPicker.Location = new System.Drawing.Point(127, 339);
+            this.miscFillColorPicker.Location = new System.Drawing.Point(130, 362);
             this.miscFillColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.miscFillColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.miscFillColorPicker.Name = "miscFillColorPicker";
@@ -849,7 +771,7 @@
             // 
             this.miscColorPicker.Color = System.Drawing.Color.White;
             this.miscColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.miscColorPicker.Location = new System.Drawing.Point(127, 317);
+            this.miscColorPicker.Location = new System.Drawing.Point(130, 340);
             this.miscColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.miscColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.miscColorPicker.Name = "miscColorPicker";
@@ -859,7 +781,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(178, 88);
+            this.label40.Location = new System.Drawing.Point(178, 91);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(54, 13);
             this.label40.TabIndex = 63;
@@ -867,29 +789,17 @@
             // 
             // fontSize
             // 
-            this.fontSize.Location = new System.Drawing.Point(271, 86);
-            this.fontSize.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.fontSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.fontSize.Location = new System.Drawing.Point(280, 89);
+            this.fontSize.Maximum = new decimal(new int[] {255, 0, 0, 0});
+            this.fontSize.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.fontSize.Name = "fontSize";
             this.fontSize.Size = new System.Drawing.Size(39, 22);
             this.fontSize.TabIndex = 64;
-            this.fontSize.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.fontSize.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // fontName
             // 
-            this.fontName.Location = new System.Drawing.Point(271, 60);
+            this.fontName.Location = new System.Drawing.Point(280, 61);
             this.fontName.Name = "fontName";
             this.fontName.Size = new System.Drawing.Size(80, 22);
             this.fontName.TabIndex = 62;
@@ -897,7 +807,7 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(178, 61);
+            this.label39.Location = new System.Drawing.Point(178, 64);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(70, 13);
             this.label39.TabIndex = 61;
@@ -914,30 +824,18 @@
             // 
             // rInput
             // 
-            this.rInput.Location = new System.Drawing.Point(271, 34);
-            this.rInput.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.rInput.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.rInput.Location = new System.Drawing.Point(280, 34);
+            this.rInput.Maximum = new decimal(new int[] {255, 0, 0, 0});
+            this.rInput.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.rInput.Name = "rInput";
             this.rInput.Size = new System.Drawing.Size(39, 22);
             this.rInput.TabIndex = 60;
-            this.rInput.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.rInput.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(178, 10);
+            this.label6.Location = new System.Drawing.Point(178, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(96, 13);
             this.label6.TabIndex = 57;
@@ -945,25 +843,13 @@
             // 
             // inactiveaBox
             // 
-            this.inactiveaBox.Location = new System.Drawing.Point(271, 8);
-            this.inactiveaBox.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.inactiveaBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.inactiveaBox.Location = new System.Drawing.Point(280, 8);
+            this.inactiveaBox.Maximum = new decimal(new int[] {255, 0, 0, 0});
+            this.inactiveaBox.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.inactiveaBox.Name = "inactiveaBox";
             this.inactiveaBox.Size = new System.Drawing.Size(39, 22);
             this.inactiveaBox.TabIndex = 58;
-            this.inactiveaBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.inactiveaBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label8
             // 
@@ -978,7 +864,7 @@
             // 
             this.ttLineColorPicker.Color = System.Drawing.Color.White;
             this.ttLineColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttLineColorPicker.Location = new System.Drawing.Point(127, 295);
+            this.ttLineColorPicker.Location = new System.Drawing.Point(130, 318);
             this.ttLineColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttLineColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttLineColorPicker.Name = "ttLineColorPicker";
@@ -989,7 +875,7 @@
             // 
             this.ttcSelectColorPicker.Color = System.Drawing.Color.White;
             this.ttcSelectColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttcSelectColorPicker.Location = new System.Drawing.Point(127, 273);
+            this.ttcSelectColorPicker.Location = new System.Drawing.Point(130, 296);
             this.ttcSelectColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttcSelectColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttcSelectColorPicker.Name = "ttcSelectColorPicker";
@@ -1000,7 +886,7 @@
             // 
             this.ttcColorPicker.Color = System.Drawing.Color.White;
             this.ttcColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttcColorPicker.Location = new System.Drawing.Point(127, 251);
+            this.ttcColorPicker.Location = new System.Drawing.Point(130, 274);
             this.ttcColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttcColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttcColorPicker.Name = "ttcColorPicker";
@@ -1011,7 +897,7 @@
             // 
             this.ttSelectColorPicker.Color = System.Drawing.Color.White;
             this.ttSelectColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttSelectColorPicker.Location = new System.Drawing.Point(127, 229);
+            this.ttSelectColorPicker.Location = new System.Drawing.Point(130, 251);
             this.ttSelectColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttSelectColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttSelectColorPicker.Name = "ttSelectColorPicker";
@@ -1022,7 +908,7 @@
             // 
             this.ttFillColorPicker.Color = System.Drawing.Color.White;
             this.ttFillColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttFillColorPicker.Location = new System.Drawing.Point(127, 207);
+            this.ttFillColorPicker.Location = new System.Drawing.Point(130, 229);
             this.ttFillColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttFillColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttFillColorPicker.Name = "ttFillColorPicker";
@@ -1033,7 +919,7 @@
             // 
             this.ttColorPicker.Color = System.Drawing.Color.White;
             this.ttColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.ttColorPicker.Location = new System.Drawing.Point(127, 185);
+            this.ttColorPicker.Location = new System.Drawing.Point(130, 207);
             this.ttColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.ttColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.ttColorPicker.Name = "ttColorPicker";
@@ -1044,7 +930,7 @@
             // 
             this.seatColorPicker.Color = System.Drawing.Color.White;
             this.seatColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.seatColorPicker.Location = new System.Drawing.Point(127, 163);
+            this.seatColorPicker.Location = new System.Drawing.Point(130, 185);
             this.seatColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.seatColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.seatColorPicker.Name = "seatColorPicker";
@@ -1055,7 +941,7 @@
             // 
             this.rlColorPicker.Color = System.Drawing.Color.White;
             this.rlColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.rlColorPicker.Location = new System.Drawing.Point(127, 141);
+            this.rlColorPicker.Location = new System.Drawing.Point(130, 163);
             this.rlColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.rlColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.rlColorPicker.Name = "rlColorPicker";
@@ -1066,7 +952,7 @@
             // 
             this.fhColorPicker.Color = System.Drawing.Color.White;
             this.fhColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.fhColorPicker.Location = new System.Drawing.Point(127, 119);
+            this.fhColorPicker.Location = new System.Drawing.Point(130, 119);
             this.fhColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.fhColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.fhColorPicker.Name = "fhColorPicker";
@@ -1077,7 +963,7 @@
             // 
             this.vrColorPicker.Color = System.Drawing.Color.White;
             this.vrColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.vrColorPicker.Location = new System.Drawing.Point(127, 97);
+            this.vrColorPicker.Location = new System.Drawing.Point(130, 97);
             this.vrColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.vrColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.vrColorPicker.Name = "vrColorPicker";
@@ -1088,7 +974,7 @@
             // 
             this.selectedColorPicker.Color = System.Drawing.Color.White;
             this.selectedColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.selectedColorPicker.Location = new System.Drawing.Point(127, 75);
+            this.selectedColorPicker.Location = new System.Drawing.Point(130, 75);
             this.selectedColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.selectedColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.selectedColorPicker.Name = "selectedColorPicker";
@@ -1099,7 +985,7 @@
             // 
             this.dragFillColorPicker.Color = System.Drawing.Color.White;
             this.dragFillColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.dragFillColorPicker.Location = new System.Drawing.Point(127, 53);
+            this.dragFillColorPicker.Location = new System.Drawing.Point(130, 53);
             this.dragFillColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.dragFillColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.dragFillColorPicker.Name = "dragFillColorPicker";
@@ -1110,7 +996,7 @@
             // 
             this.dragColorPicker.Color = System.Drawing.Color.White;
             this.dragColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.dragColorPicker.Location = new System.Drawing.Point(127, 31);
+            this.dragColorPicker.Location = new System.Drawing.Point(130, 31);
             this.dragColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.dragColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.dragColorPicker.Name = "dragColorPicker";
@@ -1121,7 +1007,7 @@
             // 
             this.tabColorPicker.Color = System.Drawing.Color.White;
             this.tabColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.tabColorPicker.Location = new System.Drawing.Point(127, 9);
+            this.tabColorPicker.Location = new System.Drawing.Point(130, 9);
             this.tabColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
             this.tabColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
             this.tabColorPicker.Name = "tabColorPicker";
@@ -1181,11 +1067,7 @@
             // 
             this.movementBox.DecimalPlaces = 3;
             this.movementBox.Location = new System.Drawing.Point(140, 397);
-            this.movementBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
+            this.movementBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
             this.movementBox.Name = "movementBox";
             this.movementBox.Size = new System.Drawing.Size(58, 22);
             this.movementBox.TabIndex = 85;
@@ -1202,24 +1084,12 @@
             // zShiftBox
             // 
             this.zShiftBox.Location = new System.Drawing.Point(108, 166);
-            this.zShiftBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.zShiftBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.zShiftBox.Maximum = new decimal(new int[] {2147483647, 0, 0, 0});
+            this.zShiftBox.Minimum = new decimal(new int[] {1, 0, 0, 0});
             this.zShiftBox.Name = "zShiftBox";
             this.zShiftBox.Size = new System.Drawing.Size(48, 22);
             this.zShiftBox.TabIndex = 82;
-            this.zShiftBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.zShiftBox.Value = new decimal(new int[] {1, 0, 0, 0});
             // 
             // label25
             // 
@@ -1236,9 +1106,7 @@
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(362, 45);
             this.label19.TabIndex = 79;
-            this.label19.Text = "The formula for scrolling speed is (ScrollBase^(d*ScrollExponent))*ScrollFactor, " +
-    "where d is the distance between the mouse and the autoscroll bounds set by Scrol" +
-    "lDistance.";
+            this.label19.Text = "The formula for scrolling speed is (ScrollBase^(d*ScrollExponent))*ScrollFactor, " + "where d is the distance between the mouse and the autoscroll bounds set by Scrol" + "lDistance.";
             // 
             // label10
             // 
@@ -1246,8 +1114,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(362, 32);
             this.label10.TabIndex = 78;
-            this.label10.Text = "Auto-Scroll will start when a selected object gets out of the bounds set by <Scro" +
-    "ll Distance>. The bigger the number is, the sooner autoscroll will start.";
+            this.label10.Text = "Auto-Scroll will start when a selected object gets out of the bounds set by <Scro" + "ll Distance>. The bigger the number is, the sooner autoscroll will start.";
             // 
             // label9
             // 
@@ -1255,8 +1122,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(339, 38);
             this.label9.TabIndex = 77;
-            this.label9.Text = "It is not recommended to change anything here unless you know what are you doing." +
-    "";
+            this.label9.Text = "It is not recommended to change anything here unless you know what are you doing." + "";
             // 
             // tabPage4
             // 
@@ -1270,26 +1136,6 @@
             this.tabPage4.Size = new System.Drawing.Size(563, 467);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "API";
-            // 
-            // okayButton
-            // 
-            this.okayButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.okayButton.Location = new System.Drawing.Point(2, 500);
-            this.okayButton.Name = "okayButton";
-            this.okayButton.Size = new System.Drawing.Size(278, 28);
-            this.okayButton.TabIndex = 78;
-            this.okayButton.Text = "OK";
-            this.okayButton.Click += new System.EventHandler(this.okButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.cancelButton.Location = new System.Drawing.Point(287, 500);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(278, 28);
-            this.cancelButton.TabIndex = 79;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // linkLabel1
             // 
@@ -1319,6 +1165,26 @@
             this.openAI_apiKey_textBox.Size = new System.Drawing.Size(454, 22);
             this.openAI_apiKey_textBox.TabIndex = 24;
             // 
+            // okayButton
+            // 
+            this.okayButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.okayButton.Location = new System.Drawing.Point(2, 500);
+            this.okayButton.Name = "okayButton";
+            this.okayButton.Size = new System.Drawing.Size(278, 28);
+            this.okayButton.TabIndex = 78;
+            this.okayButton.Text = "Ok";
+            this.okayButton.Click += new System.EventHandler(this.okButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.cancelButton.Location = new System.Drawing.Point(287, 500);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(278, 28);
+            this.cancelButton.TabIndex = 79;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
             // UserSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1332,37 +1198,41 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "UserSettingsForm";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
-            ((System.ComponentModel.ISupportInitialize)(this.linewBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobrx1Box)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.npcrx1Box)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.npcrx0Box)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.reacttimeBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mobtimeBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.snapdistBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollbaseBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollexpBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrolldistBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollfactBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.linewBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.dotwBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobrx0Box)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobrx1Box)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.npcrx1Box)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.npcrx0Box)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.reacttimeBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.mobtimeBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.snapdistBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollbaseBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollexpBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrolldistBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.scrollfactBox)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fontSize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.rInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.inactiveaBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.fontSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.rInput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.inactiveaBox)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.movementBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.movementBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.zShiftBox)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
-
         }
+
+        private System.Windows.Forms.Label footholdSideLabel;
+
+        private HaCreator.CustomControls.AlphaColorPicker fhSideColorPicker;
 
         #endregion
 
@@ -1412,20 +1282,20 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button okayButton;
         private System.Windows.Forms.Button cancelButton;
-        private CustomControls.AlphaColorPicker ttcColorPicker;
-        private CustomControls.AlphaColorPicker ttSelectColorPicker;
-        private CustomControls.AlphaColorPicker ttFillColorPicker;
-        private CustomControls.AlphaColorPicker ttColorPicker;
-        private CustomControls.AlphaColorPicker seatColorPicker;
-        private CustomControls.AlphaColorPicker rlColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttcColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttSelectColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttFillColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker seatColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker rlColorPicker;
         private CustomControls.AlphaColorPicker fhColorPicker;
         private CustomControls.AlphaColorPicker vrColorPicker;
         private CustomControls.AlphaColorPicker selectedColorPicker;
         private CustomControls.AlphaColorPicker dragFillColorPicker;
         private CustomControls.AlphaColorPicker dragColorPicker;
-        private CustomControls.AlphaColorPicker tabColorPicker;
-        private CustomControls.AlphaColorPicker ttLineColorPicker;
-        private CustomControls.AlphaColorPicker ttcSelectColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker tabColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttLineColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker ttcSelectColorPicker;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label10;
@@ -1451,13 +1321,13 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Label label42;
-        private CustomControls.AlphaColorPicker miscSelectedColorPicker;
-        private CustomControls.AlphaColorPicker miscFillColorPicker;
-        private CustomControls.AlphaColorPicker miscColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker miscSelectedColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker miscFillColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker miscColorPicker;
         private System.Windows.Forms.Label label43;
-        private CustomControls.AlphaColorPicker originColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker originColorPicker;
         private System.Windows.Forms.Label label44;
-        private CustomControls.AlphaColorPicker minimapColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker minimapColorPicker;
         private System.Windows.Forms.CheckBox autoBackupBox;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.LinkLabel linkLabel1;

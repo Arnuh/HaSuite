@@ -132,21 +132,20 @@ namespace HaCreator.Wz {
 		}
 
 		private void SaveMiniMap() {
-			if (board.MiniMap != null && board.MinimapRectangle != null) {
-				var miniMap = new WzSubProperty();
-				var canvas = new WzCanvasProperty {
-					PngProperty = new WzPngProperty()
-				};
-				canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.B4G4R4A4;
-				canvas.PngProperty.SetImage(board.MiniMap);
-				miniMap["canvas"] = canvas;
-				miniMap["width"] = InfoTool.SetInt(board.MinimapRectangle.Width);
-				miniMap["height"] = InfoTool.SetInt(board.MinimapRectangle.Height);
-				miniMap["centerX"] = InfoTool.SetInt(-board.MinimapPosition.X);
-				miniMap["centerY"] = InfoTool.SetInt(-board.MinimapPosition.Y);
-				miniMap["mag"] = InfoTool.SetInt(4);
-				image["miniMap"] = miniMap;
-			}
+			if (board.MiniMap == null || board.MinimapRectangle == null) return;
+			var miniMap = new WzSubProperty();
+			var canvas = new WzCanvasProperty {
+				PngProperty = new WzPngProperty()
+			};
+			canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.B4G4R4A4;
+			canvas.PngProperty.SetImage(board.MiniMap);
+			miniMap["canvas"] = canvas;
+			miniMap["width"] = InfoTool.SetInt(board.MinimapRectangle.Width);
+			miniMap["height"] = InfoTool.SetInt(board.MinimapRectangle.Height);
+			miniMap["centerX"] = InfoTool.SetInt(-board.MinimapPosition.X);
+			miniMap["centerY"] = InfoTool.SetInt(-board.MinimapPosition.Y);
+			miniMap["mag"] = InfoTool.SetInt(4);
+			image["miniMap"] = miniMap;
 		}
 
 		public void SaveLayers() {
@@ -203,7 +202,7 @@ namespace HaCreator.Wz {
 					} else if (item is TileInstance instance1) {
 						tiles.Add(instance1);
 					} else {
-						throw new Exception("Unkown type in layered lists");
+						throw new Exception("Unknown type in layered lists");
 					}
 
 				layerProp["obj"] = objParent;
@@ -266,9 +265,6 @@ namespace HaCreator.Wz {
 		}
 
 		public void SavePortals() {
-			var portalInstanceSorted = new List<PortalInstance>(board.BoardItems.Portals);
-
-
 			var portalParent = new WzSubProperty();
 			for (var i = 0; i < board.BoardItems.Portals.Count; i++) {
 				var portalInst = board.BoardItems.Portals[i];
@@ -342,8 +338,6 @@ namespace HaCreator.Wz {
 				Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
 				retainTooltipStrings = false;
 			}
-
-			var caughtNumbers = new HashSet<int>();
 
 			// Check if the tooltips' original numbers can still be used
 			if (retainTooltipStrings)
@@ -452,23 +446,18 @@ namespace HaCreator.Wz {
 				// Save all footholds in the platform (same layer and zM)
 				if (line.LayerNumber != layer || line.PlatformNumber != zM) continue;
 
-				var orientation = GetFootholdOrientation(line);
-				var prev = GetFootholdPrevNext(line, orientation, FootholdDirection.Prev);
-				var next = GetFootholdPrevNext(line, orientation, FootholdDirection.Next);
-				var anchor1 = (FootholdAnchor) (orientation == FootholdOrientation.PrevFirstNextSecond
-					? line.FirstDot
-					: line.SecondDot);
-				var anchor2 = (FootholdAnchor) (orientation == FootholdOrientation.PrevFirstNextSecond
-					? line.SecondDot
-					: line.FirstDot);
+				var anchor1 = line.FirstDot;
+				var anchor2 = line.SecondDot;
+				line.next = line.nextOverride?.num ?? ((FootholdAnchor) line.SecondDot).GetOtherLine(line)?.num ?? 0;
+				line.prev = line.prevOverride?.num ?? ((FootholdAnchor) line.FirstDot).GetOtherLine(line)?.num ?? 0;
 
 				var fhProp = new WzSubProperty();
 				fhProp["x1"] = InfoTool.SetInt(anchor1.X);
 				fhProp["y1"] = InfoTool.SetInt(anchor1.Y);
 				fhProp["x2"] = InfoTool.SetInt(anchor2.X);
 				fhProp["y2"] = InfoTool.SetInt(anchor2.Y);
-				fhProp["prev"] = InfoTool.SetInt(prev);
-				fhProp["next"] = InfoTool.SetInt(next);
+				fhProp["prev"] = InfoTool.SetInt(line.prev);
+				fhProp["next"] = InfoTool.SetInt(line.next);
 				fhProp["cantThrough"] = InfoTool.SetOptionalBool(line.CantThrough);
 				fhProp["forbidFallDown"] = InfoTool.SetOptionalBool(line.ForbidFallDown);
 				fhProp["piece"] = InfoTool.SetOptionalInt(line.Piece);
@@ -479,152 +468,11 @@ namespace HaCreator.Wz {
 			}
 		}
 
-		private FootholdOrientation GetFootholdOrientation(FootholdLine line) {
-			FootholdOrientation result;
-			if (TryGetSimpleFootholdOrientation(line, out result)) {
-				return result;
-			} else {
-				// Vertical foothold, search for near nonvertical foothold as orientation reference
-
-				// Obtain vertical orientation of the foothold
-				FootholdAnchor top, bottom;
-				if (line.FirstDot.Y < line.SecondDot.Y) {
-					top = (FootholdAnchor) line.FirstDot;
-					bottom = (FootholdAnchor) line.SecondDot;
-				} else if (line.FirstDot.Y > line.SecondDot.Y) {
-					bottom = (FootholdAnchor) line.FirstDot;
-					top = (FootholdAnchor) line.SecondDot;
-				} else {
-					throw new Exception("Zero length foothold in saving");
-				}
-
-				// For starters, we search the footholds linking downwards from us.
-				// This is because we are looking for the conventional foothold U scheme:
-				//
-				// |     |
-				// |     |
-				// |_ _ _|
-				//
-				// or the Z/S schemes:
-				//_ _ _                _ _ _
-				//     |              |
-				//     |              |
-				//     |_ _ _ or _ _ _|
-				var referenceEnumerator = new FootholdEnumerator(line, top);
-				foreach (var reference in referenceEnumerator)
-					if (!reference.IsWall)
-						// We found a suiting foothold reference, find what is our orientation
-						return GetVerticalFootholdOrientationByReference(line, top, reference,
-							referenceEnumerator.CurrentAnchor);
-
-				// If downard-search failed, search upwards, to resolve the n scheme:
-				//  _ _ _
-				// |     |
-				// |     |
-				// |     |
-				//
-				// Note that the order of searches is important; we MUST search downwards before upwards, to resolve schemes such as the tower scheme:
-				//
-				// |           |
-				// |           |
-				// |_ _     _ _|
-				// |           |
-				// |           |
-				// |_ _ _ _ _ _|
-				//
-				// If we searched upwards-first, the footholds between the two tower "floors" would be treated as n scheme footholds, while they should be U schemed.
-
-				referenceEnumerator = new FootholdEnumerator(line, bottom);
-				foreach (var reference in referenceEnumerator)
-					if (!reference.IsWall)
-						// We found a suiting foothold reference, find what is our orientation
-						return GetVerticalFootholdOrientationByReference(line, bottom, reference,
-							referenceEnumerator.CurrentAnchor);
-
-				// If all else failed, we are dealing with a pure-wall foothold platform (i.e. a foothold graph consisting only of vertical footholds)
-				// In this case, we arbitrarily select the Normal orientation, since there's no more actual logic we can perform to know what is the correct orientation.
-				return FootholdOrientation.PrevFirstNextSecond;
-			}
-		}
-
-		private FootholdOrientation GetNonverticalFootholdOrientation(FootholdLine line) {
-			if (line.FirstDot.X < line.SecondDot.X)
-				// Normal foothold orientation
-				return FootholdOrientation.PrevFirstNextSecond;
-			else // (line.FirstDot.X > line.SecondDot.X)
-				// Inverted foothold orientation
-				return FootholdOrientation.NextFirstPrevSecond;
-		}
-
-		private bool TryGetSimpleFootholdOrientation(FootholdLine line, out FootholdOrientation result) {
-			if (line.prevOverride != null && line.FirstDot.connectedLines.Contains(line.prevOverride)) {
-				result = FootholdOrientation.PrevFirstNextSecond;
-				return true;
-			} else if (line.prevOverride != null && line.SecondDot.connectedLines.Contains(line.prevOverride)) {
-				result = FootholdOrientation.NextFirstPrevSecond;
-				return true;
-			} else if (line.nextOverride != null && line.FirstDot.connectedLines.Contains(line.nextOverride)) {
-				result = FootholdOrientation.NextFirstPrevSecond;
-				return true;
-			} else if (line.nextOverride != null && line.SecondDot.connectedLines.Contains(line.nextOverride)) {
-				result = FootholdOrientation.PrevFirstNextSecond;
-				return true;
-			} else if (!line.IsWall) {
-				result = GetNonverticalFootholdOrientation(line);
-				return true;
-			} else {
-				// Result doesn't really matter here since we're returning false
-				result = FootholdOrientation.PrevFirstNextSecond;
-				return false;
-			}
-		}
-
-		private FootholdOrientation GetVerticalFootholdOrientationByReference(FootholdLine line, FootholdAnchor anchor,
-			FootholdLine reference, FootholdAnchor referenceAnchor) {
-			var referenceOrientation = GetNonverticalFootholdOrientation(reference);
-			var leadingAnchorIsFirst = referenceAnchor == reference.FirstDot;
-			var firstIsPrev = referenceOrientation == FootholdOrientation.PrevFirstNextSecond;
-			var startAnchorIsFirst = anchor == line.FirstDot;
-
-			// LAIF | FIP | RESULT (leadingAnchorIsPrev "LAIP")
-			//  1   |  1  |   1
-			//  1   |  0  |   0
-			//  0   |  1  |   0
-			//  0   |  0  |   1
-
-			// LAIP | SAIF | RESULT (Orientation: 0 normal, 1 inverted)
-			//  1   |  1   |   0
-			//  1   |  0   |   1
-			//  0   |  1   |   1
-			//  0   |  0   |   0
-
-			return !(leadingAnchorIsFirst ^ firstIsPrev) ^ startAnchorIsFirst
-				? FootholdOrientation.NextFirstPrevSecond
-				: FootholdOrientation.PrevFirstNextSecond;
-		}
-
-		private int GetFootholdPrevNext(FootholdLine line, FootholdOrientation orientation, FootholdDirection dir) {
-			var overrideLine = dir == FootholdDirection.Prev ? line.prevOverride : line.nextOverride;
-			if (overrideLine != null && (line.FirstDot.connectedLines.Contains(overrideLine) ||
-			                             line.SecondDot.connectedLines.Contains(overrideLine))) {
-				return overrideLine.num;
-			} else {
-				var anchor =
-					(FootholdAnchor) ((orientation == FootholdOrientation.PrevFirstNextSecond) ^
-					                  (dir == FootholdDirection.Next)
-						? line.FirstDot
-						: line.SecondDot);
-				if (anchor.connectedLines.Count < 2)
-					return 0;
-				else
-					return anchor.GetOtherLine(line).num;
-			}
-		}
-
 		public void SaveFootholds() {
 			var fhParent = new WzSubProperty();
 			board.BoardItems.FootholdLines.ForEach(x => x.saved = false);
 			board.BoardItems.FootholdLines.Sort(FootholdLine.FHSorter);
+			
 			var fhIndex = 1;
 			foreach (var line in board.BoardItems.FootholdLines) line.num = fhIndex++;
 
@@ -684,16 +532,14 @@ namespace HaCreator.Wz {
 			var swimParent = new WzSubProperty();
 
 			foreach (var item in board.BoardItems.MiscItems)
-				if (item is Clock) {
-					var clock = (Clock) item;
+				if (item is Clock clock) {
 					var clockProp = new WzSubProperty();
-					clockProp["x"] = InfoTool.SetInt(item.Left);
-					clockProp["y"] = InfoTool.SetInt(item.Top);
-					clockProp["width"] = InfoTool.SetInt(item.Width);
-					clockProp["height"] = InfoTool.SetInt(item.Height);
+					clockProp["x"] = InfoTool.SetInt(clock.Left);
+					clockProp["y"] = InfoTool.SetInt(clock.Top);
+					clockProp["width"] = InfoTool.SetInt(clock.Width);
+					clockProp["height"] = InfoTool.SetInt(clock.Height);
 					image["clock"] = clockProp;
-				} else if (item is ShipObject) {
-					var ship = (ShipObject) item;
+				} else if (item is ShipObject ship) {
 					var shipInfo = (ObjectInfo) ship.BaseInfo;
 					var shipProp = new WzSubProperty();
 					shipProp["shipObj"] = InfoTool.SetString("Map/Obj/" + shipInfo.oS + ".img/" + shipInfo.l0 + "/" +
@@ -706,11 +552,9 @@ namespace HaCreator.Wz {
 					shipProp["shipKind"] = InfoTool.SetInt(ship.ShipKind);
 					shipProp["f"] = InfoTool.SetBool(ship.Flip);
 					image["shipObj"] = shipProp;
-				} else if (item is Area) {
-					var area = (Area) item;
+				} else if (item is Area area) {
 					areaParent[area.Identifier] = PackRectangle(area);
-				} else if (item is Healer) {
-					var healer = (Healer) item;
+				} else if (item is Healer healer) {
 					var healerInfo = (ObjectInfo) healer.BaseInfo;
 					var healerProp = new WzSubProperty();
 					healerProp["healer"] = InfoTool.SetString("Map/Obj/" + healerInfo.oS + ".img/" + healerInfo.l0 +
@@ -723,8 +567,7 @@ namespace HaCreator.Wz {
 					healerProp["fall"] = InfoTool.SetInt(healer.fall);
 					healerProp["rise"] = InfoTool.SetInt(healer.rise);
 					image["healer"] = healerProp;
-				} else if (item is Pulley) {
-					var pulley = (Pulley) item;
+				} else if (item is Pulley pulley) {
 					var pulleyInfo = (ObjectInfo) pulley.BaseInfo;
 					var pulleyProp = new WzSubProperty();
 					pulleyProp["pulley"] = InfoTool.SetString("Map/Obj/" + pulleyInfo.oS + ".img/" + pulleyInfo.l0 +
@@ -732,15 +575,13 @@ namespace HaCreator.Wz {
 					pulleyProp["x"] = InfoTool.SetInt(pulley.X);
 					pulleyProp["y"] = InfoTool.SetInt(pulley.Y);
 					image["pulley"] = pulleyProp;
-				} else if (item is BuffZone) {
-					var buff = (BuffZone) item;
+				} else if (item is BuffZone buff) {
 					var buffProp = PackRectangle(buff);
 					buffProp["ItemID"] = InfoTool.SetInt(buff.ItemID);
 					buffProp["Interval"] = InfoTool.SetInt(buff.Interval);
 					buffProp["Duration"] = InfoTool.SetInt(buff.Duration);
 					buffParent[buff.ZoneName] = buffProp;
-				} else if (item is SwimArea) {
-					var swim = (SwimArea) item;
+				} else if (item is SwimArea swim) {
 					swimParent[swim.Identifier] = PackRectangle(swim);
 				}
 
@@ -843,7 +684,9 @@ namespace HaCreator.Wz {
 		/// Saves the additional unsupported properties read from the map image.
 		/// </summary>
 		private void SaveAdditionals() {
-			foreach (var prop in board.MapInfo.additionalNonInfoProps) image.AddProperty(prop);
+			foreach (var prop in board.MapInfo.additionalNonInfoProps) {
+				image.AddProperty(prop);
+			}
 		}
 
 		public void SaveMapImage() {
@@ -917,7 +760,7 @@ namespace HaCreator.Wz {
 		}
 
 		public void ActualizeFootholds() {
-			board.BoardItems.FHAnchors.Sort(new Comparison<FootholdAnchor>(FootholdAnchor.FHAnchorSorter));
+			board.BoardItems.FHAnchors.Sort(FootholdAnchor.FHAnchorSorter);
 
 			// Merge foothold anchors
 			// This sorts out all foothold inconsistencies in all non-edU tiles
@@ -1083,20 +926,5 @@ namespace HaCreator.Wz {
 	internal enum Direction {
 		Left,
 		Right
-	}
-
-	internal enum Dots {
-		FirstDot,
-		SecondDot
-	}
-
-	internal enum FootholdDirection {
-		Prev,
-		Next
-	}
-
-	internal enum FootholdOrientation {
-		PrevFirstNextSecond = 0, // "Normal"
-		NextFirstPrevSecond = 1 // "Inverted"
 	}
 }

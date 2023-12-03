@@ -99,6 +99,7 @@ namespace HaCreator.MapEditor {
 			this.ribbon.RibbonKeyDown += multiBoard.DxContainer_KeyDown;
 			this.ribbon.MapPhysicsClicked += Ribbon_EditMapPhysicsClicked;
 			this.ribbon.BlackBackgroundToggled += Ribbon_BlackBackgroundToggled;
+			this.ribbon.FhSideToggled += Ribbon_FhSideToggled;
 
 			// Debug
 			this.ribbon.ShowMapPropertiesClicked += Ribbon_ShowMapPropertiesClicked;
@@ -814,6 +815,10 @@ namespace HaCreator.MapEditor {
 
 		private void Ribbon_BlackBackgroundToggled(bool pressed) {
 			UserSettings.blackBackground = pressed;
+		}
+
+		private void Ribbon_FhSideToggled(bool pressed) {
+			UserSettings.displayFHSide = pressed;
 		}
 
 		#endregion

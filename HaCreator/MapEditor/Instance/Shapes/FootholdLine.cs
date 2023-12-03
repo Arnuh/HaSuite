@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -69,14 +70,47 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override ItemTypes Type => ItemTypes.Footholds;
 
+		public virtual XNA.Color GetColorSide(SelectionInfo sel) {
+			if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel)) {
+				return Selected ? UserSettings.SelectedColor : UserSettings.FootholdSideColor;
+			} else {
+				return MultiBoard.FootholdSideInactiveColor;
+			}
+		}
+
+		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+			base.Draw(sprite, color, xShift, yShift);
+
+#if DEBUG
+			board.ParentControl.DrawString(sprite, $"{num}, P: {prev}, N: {next}",
+				MultiBoard.VirtualToPhysical(firstDot.X, board.CenterPoint.X, board.hScroll, 0),
+				MultiBoard.VirtualToPhysical(firstDot.Y - 20, board.CenterPoint.Y, board.vScroll, 0));
+#endif
+			if (!UserSettings.displayFHSide) return;
+			var xOffset = 1;
+			var yOffset = 1;
+
+			if (firstDot.X < secondDot.X) {
+				xOffset *= -1;
+				yOffset *= -1;
+			} else if (firstDot.Y > secondDot.Y) {
+				xOffset *= -1;
+				yOffset *= -1;
+			}
+
+			// The side the line is on means it blocks you from that direction.
+			board.ParentControl.DrawLine(sprite, new XNA.Vector2(firstDot.X + xShift + xOffset, firstDot.Y + yShift + yOffset),
+				new XNA.Vector2(secondDot.X + xShift + xOffset, secondDot.Y + yShift + yOffset), GetColorSide(board.GetUserSelectionInfo()));
+		}
+
 		public bool FhEquals(FootholdLine obj) {
-			return (((FootholdLine) obj).FirstDot.X == FirstDot.X && ((FootholdLine) obj).SecondDot.X == SecondDot.X
-			                                                      && ((FootholdLine) obj).FirstDot.Y == FirstDot.Y &&
-			                                                      ((FootholdLine) obj).SecondDot.Y == SecondDot.Y)
-			       || (((FootholdLine) obj).FirstDot.X == SecondDot.X &&
-			           ((FootholdLine) obj).SecondDot.X == FirstDot.X
-			           && ((FootholdLine) obj).FirstDot.Y == SecondDot.Y &&
-			           ((FootholdLine) obj).SecondDot.Y == FirstDot.Y);
+			return (obj.FirstDot.X == FirstDot.X && obj.SecondDot.X == SecondDot.X
+			                                     && obj.FirstDot.Y == FirstDot.Y &&
+			                                     obj.SecondDot.Y == SecondDot.Y)
+			       || (obj.FirstDot.X == SecondDot.X &&
+			           obj.SecondDot.X == FirstDot.X
+			           && obj.FirstDot.Y == SecondDot.Y &&
+			           obj.SecondDot.Y == FirstDot.Y);
 		}
 
 		public static bool Exists(int x1, int y1, int x2, int y2, Board board) {
@@ -139,30 +173,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public static int FHSorter(FootholdLine a, FootholdLine b) {
-			if (a.FirstDot.X > b.FirstDot.X) {
-				return 1;
-			} else if (a.FirstDot.X < b.FirstDot.X) {
-				return -1;
-			} else {
-				if (a.FirstDot.Y > b.FirstDot.Y) {
-					return 1;
-				} else if (a.FirstDot.Y < b.FirstDot.Y) {
-					return -1;
-				} else {
-					if (a.SecondDot.X > b.SecondDot.X) {
-						return 1;
-					} else if (a.SecondDot.X < b.SecondDot.X) {
-						return -1;
-					} else {
-						if (a.SecondDot.Y > b.SecondDot.Y)
-							return 1;
-						else if (a.SecondDot.Y < b.SecondDot.Y)
-							return -1;
-						else
-							return 0;
-					}
-				}
-			}
+			if (a.num == 0 && b.num != 0) return 1;
+			if (a.num != 0 && b.num == 0) return -1;
+			if (a.num > b.num) return 1;
+			if (a.num < b.num) return -1;
+			return 0;
 		}
 
 		public FootholdAnchor GetOtherAnchor(FootholdAnchor first) {

@@ -235,6 +235,8 @@
                 <RibbonGroup>
                     <CheckBox x:Name="blackBackgroundToggle" Content="Black Background"
                               Click="BlackBackgroundToggle_OnClick" />
+                    <CheckBox x:Name="fhSideToggle" Content="Display FH Side" Click="FhSideToggle_OnClick"
+                              ToolTip="Displays a colored line indicating what side of the fh is solid" />
                 </RibbonGroup>
             </RibbonTab>
 
