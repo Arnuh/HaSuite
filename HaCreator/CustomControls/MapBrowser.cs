@@ -14,7 +14,6 @@ using MapleLib.WzLib.WzProperties;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using HaCreator.GUI;
 using HaSharedLibrary.Wz;
 
 namespace HaCreator.CustomControls {
@@ -109,37 +108,33 @@ namespace HaCreator.CustomControls {
 
 			// Clear 
 			mapNamesBox.Items.Clear();
+			// AddRange does Begin/End Update for a smooth UI experience.
 			if (tosearch == string.Empty) {
-				mapNamesBox.Items.AddRange(maps.Cast<object>().ToArray<object>());
+				mapNamesBox.Items.AddRange(maps.ToArray<object>());
 
 				mapNamesBox_SelectedIndexChanged(null, null);
 			} else {
 				var currentDispatcher = Dispatcher.CurrentDispatcher;
-
-				// new task
+				
 				_existingSearchTaskToken = new CancellationTokenSource();
 				var cancellationToken = _existingSearchTaskToken.Token;
 
 				var t = Task.Run(() => {
-					Thread.Sleep(500); // average key typing speed
-
 					var mapsFiltered = new List<string>();
 					foreach (var map in maps) {
 						if (_existingSearchTaskToken.IsCancellationRequested)
-							return; // stop immediately
+							return;
 
 						if (map.ToLower().Contains(tosearch))
 							mapsFiltered.Add(map);
 					}
 
 					currentDispatcher.BeginInvoke(new Action(() => {
-						foreach (var map in mapsFiltered) {
-							if (_existingSearchTaskToken.IsCancellationRequested)
-								return; // stop immediately
-
-							mapNamesBox.Items.Add(map);
+						if (_existingSearchTaskToken.IsCancellationRequested) {
+							return;
 						}
 
+						mapNamesBox.Items.AddRange(mapsFiltered.ToArray<object>());
 						if (mapNamesBox.Items.Count > 0)
 							mapNamesBox.SelectedIndex = 0; // set default selection to reduce clicks
 					}));
