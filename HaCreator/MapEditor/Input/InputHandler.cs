@@ -535,9 +535,11 @@ namespace HaCreator.MapEditor.Input {
 						break;
 					case Keys.F5:
 						UserSettings.blackBackground = !UserSettings.blackBackground;
+						parentBoard.HaCreatorStateManager.Ribbon.blackBackgroundToggle.IsChecked = UserSettings.blackBackground;
 						break;
 					case Keys.F12:
 						UserSettings.displayFHSide = !UserSettings.displayFHSide;
+						parentBoard.HaCreatorStateManager.Ribbon.fhSideToggle.IsChecked = UserSettings.displayFHSide;
 						break;
 				}
 
