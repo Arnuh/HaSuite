@@ -9,9 +9,11 @@ using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
@@ -122,6 +124,19 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 					return true;
 
 			return false;
+		}
+
+		public void Flip() {
+			var temp = FirstDot;
+			var tempLines = FirstDot == null ? new List<MapleLine>() : new List<MapleLine>(FirstDot.connectedLines);
+			var tempLines2 = SecondDot == null ? new List<MapleLine>() : new List<MapleLine>(SecondDot.connectedLines);
+			FirstDot = SecondDot;
+			SecondDot = temp;
+
+			FirstDot?.connectedLines.Clear();
+			FirstDot?.connectedLines.AddRange(tempLines2);
+			SecondDot?.connectedLines.Clear();
+			SecondDot?.connectedLines.AddRange(tempLines);
 		}
 
 		public static FootholdLine[] GetSelectedFootholds(Board board) {

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using XNA = Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
@@ -330,12 +331,33 @@ namespace HaCreator.MapEditor.Input {
 
 						break;
 					case Keys.F:
-						if (ctrl)
-							foreach (var item in selectedBoard.SelectedItems)
+						if (ctrl) {
+							var anchors = new List<FootholdAnchor>();
+							foreach (var item in selectedBoard.SelectedItems) {
 								if (item is IFlippable flippable) {
 									flippable.Flip = !flippable.Flip;
 									actions.Add(UndoRedoManager.ItemFlipped(flippable));
+								} else if (item is FootholdAnchor anchor) {
+									anchors.Add(anchor);
 								}
+							}
+
+							var anchorsToIgnore = new List<FootholdLine>();
+							foreach (var anchor1 in anchors) {
+								foreach (var anchor2 in anchors) {
+									if (anchor1 == anchor2) continue;
+									var line = anchor1.GetLineWith(anchor2);
+									if (line == null) continue;
+									if (anchorsToIgnore.Contains(line)) continue;
+									line.Flip();
+									anchorsToIgnore.Add(line);
+									actions.Add(UndoRedoManager.FootholdFlipped(line));
+									break;
+								}
+							}
+
+							anchors.Clear();
+						}
 
 						break;
 					case Keys.Add:
@@ -641,14 +663,12 @@ namespace HaCreator.MapEditor.Input {
 				} else if (selectedBoard.Mouse.State == MouseState.Selection) {
 					//handle drag-drop, multiple selection and all that
 					var ctrlDown = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-					if (item == null && selectedItem == null) //drag-selection is starting
-					{
+					if (item == null && selectedItem == null) { //drag-selection is starting
 						if (!ctrlDown) ClearSelectedItems(selectedBoard);
 
 						selectedBoard.Mouse.MultiSelectOngoing = true;
 						selectedBoard.Mouse.MultiSelectStart = virtualPosition;
-					} else //Single click on item
-					{
+					} else { //Single click on item
 						BoardItem itemToSelect = null;
 						var itemAlreadySelected = false;
 

@@ -18,6 +18,7 @@ namespace HaCreator.MapEditor.UndoRedo {
 		ItemFlipped,
 		LineRemoved,
 		LineAdded,
+		FootholdFlipped,
 		ToolTipLinked,
 		ToolTipUnlinked,
 		BackgroundMoved,

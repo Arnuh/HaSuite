@@ -124,6 +124,16 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			return null;
 		}
 
+		public FootholdLine GetLineWith(FootholdAnchor anchor) {
+			foreach (FootholdLine line in connectedLines) {
+				if (line.FirstDot == anchor || line.SecondDot == anchor) {
+					return line;
+				}
+			}
+
+			return null;
+		}
+
 		public new class SerializationForm : BoardItem.SerializationForm {
 			public int layer, zm;
 			public bool user;

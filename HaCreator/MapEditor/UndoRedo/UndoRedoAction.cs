@@ -73,6 +73,13 @@ namespace HaCreator.MapEditor.UndoRedo {
 						throw new Exception("wrong type at undoredo, lineadded");
 					((MapleLine) ParamC).Remove(false, null);
 					break;
+				case UndoRedoType.FootholdFlipped:
+					if (ParamA is FootholdAnchor anchor1 && ParamB is FootholdAnchor anchor2) {
+						var line = anchor1.GetLineWith(anchor2);
+						line?.Flip();
+					}
+
+					break;
 				case UndoRedoType.ToolTipLinked:
 					((ToolTipInstance) item).CharacterToolTip = null;
 					((ToolTipChar) ParamA).BoundTooltip = null;

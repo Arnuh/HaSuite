@@ -8,9 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Shapes;
 using Microsoft.Xna.Framework;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapEditor.UndoRedo {
 	public class UndoRedoManager {
@@ -66,6 +68,10 @@ namespace HaCreator.MapEditor.UndoRedo {
 			return new UndoRedoAction(null, UndoRedoType.LineAdded, a, b, line);
 		}
 
+		public static UndoRedoAction FootholdFlipped(FootholdLine item) {
+			return new UndoRedoAction(null, UndoRedoType.FootholdFlipped, item.FirstDot, item.SecondDot);
+		}
+		
 		public static UndoRedoAction ToolTipLinked(ToolTipInstance tt, ToolTipChar ttc) {
 			return new UndoRedoAction(tt, UndoRedoType.ToolTipLinked, ttc, null);
 		}
