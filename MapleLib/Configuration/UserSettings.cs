@@ -18,7 +18,7 @@ namespace MapleLib.Configuration {
 		public int Indentation = 4;
 
 		[JsonProperty(PropertyName = "LineBreakType")] [JsonConverter(typeof(StringEnumConverter))]
-		public LineBreak LineBreakType = LineBreak.None;
+		public LineBreak LineBreakType = LineBreak.Windows;
 
 		[JsonProperty(PropertyName = "DefaultXmlFolder")]
 		public string DefaultXmlFolder = "";
