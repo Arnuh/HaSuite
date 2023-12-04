@@ -534,8 +534,8 @@ namespace HaCreator.MapEditor.Input {
 							parentBoard.OnSwitchTabRequested(shift);
 						break;
 					case Keys.F5:
-						UserSettings.blackBackground = !UserSettings.blackBackground;
-						parentBoard.HaCreatorStateManager.Ribbon.blackBackgroundToggle.IsChecked = UserSettings.blackBackground;
+						UserSettings.altBackground = !UserSettings.altBackground;
+						parentBoard.HaCreatorStateManager.Ribbon.altBackgroundToggle.IsChecked = UserSettings.altBackground;
 						break;
 					case Keys.F12:
 						UserSettings.displayFHSide = !UserSettings.displayFHSide;

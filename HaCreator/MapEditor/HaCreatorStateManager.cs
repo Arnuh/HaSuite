@@ -102,7 +102,7 @@ namespace HaCreator.MapEditor {
 			this.ribbon.ExportClicked += Ribbon_ExportClicked;
 			this.ribbon.RibbonKeyDown += multiBoard.DxContainer_KeyDown;
 			this.ribbon.MapPhysicsClicked += Ribbon_EditMapPhysicsClicked;
-			this.ribbon.BlackBackgroundToggled += Ribbon_BlackBackgroundToggled;
+			this.ribbon.AltBackgroundToggled += Ribbon_AltBackgroundToggled;
 			this.ribbon.FhSideToggled += Ribbon_FhSideToggled;
 
 			// Debug
@@ -838,8 +838,8 @@ namespace HaCreator.MapEditor {
 			editor.ShowDialog();
 		}
 
-		private void Ribbon_BlackBackgroundToggled(bool pressed) {
-			UserSettings.blackBackground = pressed;
+		private void Ribbon_AltBackgroundToggled(bool pressed) {
+			UserSettings.altBackground = pressed;
 		}
 
 		private void Ribbon_FhSideToggled(bool pressed) {

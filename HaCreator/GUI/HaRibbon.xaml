@@ -233,8 +233,9 @@
                     </Grid>
                 </RibbonGroup>
                 <RibbonGroup>
-                    <CheckBox x:Name="blackBackgroundToggle" Content="Black Background"
-                              Click="BlackBackgroundToggle_OnClick" />
+                    <CheckBox x:Name="altBackgroundToggle" Content="Alt Background Color"
+                              Click="AltBackgroundToggle_OnClick"
+                              ToolTip="Use an alternative background color which is configurable in settings" />
                     <CheckBox x:Name="fhSideToggle" Content="Display FH Side" Click="FhSideToggle_OnClick"
                               ToolTip="Displays a colored line indicating what side of the fh is solid" />
                 </RibbonGroup>

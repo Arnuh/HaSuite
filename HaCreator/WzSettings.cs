@@ -74,7 +74,8 @@ namespace HaCreator {
 		public static bool BackupEnabled = true;
 		public static int BackupIdleTime = 5000;
 		public static int BackupMaxTime = 60000;
-		public static bool blackBackground = false;
+		public static bool altBackground = false;
+		public static XNA.Color altBackgroundColor = XNA.Color.Black;
 		public static bool displayFHSide = true;
 	}
 

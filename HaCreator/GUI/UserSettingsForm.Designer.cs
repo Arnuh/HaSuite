@@ -76,6 +76,8 @@
             this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.altBackgroundLabel = new System.Windows.Forms.Label();
+            this.altBackgroundColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.footholdSideLabel = new System.Windows.Forms.Label();
             this.fhSideColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label44 = new System.Windows.Forms.Label();
@@ -603,6 +605,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.altBackgroundLabel);
+            this.tabPage2.Controls.Add(this.altBackgroundColorPicker);
             this.tabPage2.Controls.Add(this.footholdSideLabel);
             this.tabPage2.Controls.Add(this.fhSideColorPicker);
             this.tabPage2.Controls.Add(this.label44);
@@ -658,6 +662,25 @@
             this.tabPage2.Size = new System.Drawing.Size(563, 467);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphics";
+            // 
+            // altBackgroundLabel
+            // 
+            this.altBackgroundLabel.Location = new System.Drawing.Point(178, 120);
+            this.altBackgroundLabel.Name = "altBackgroundLabel";
+            this.altBackgroundLabel.Size = new System.Drawing.Size(100, 13);
+            this.altBackgroundLabel.TabIndex = 78;
+            this.altBackgroundLabel.Text = "Alt Background";
+            // 
+            // altBackgroundColorPicker
+            // 
+            this.altBackgroundColorPicker.Color = System.Drawing.Color.White;
+            this.altBackgroundColorPicker.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            this.altBackgroundColorPicker.Location = new System.Drawing.Point(280, 119);
+            this.altBackgroundColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.altBackgroundColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.altBackgroundColorPicker.Name = "altBackgroundColorPicker";
+            this.altBackgroundColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.altBackgroundColorPicker.TabIndex = 77;
             // 
             // footholdSideLabel
             // 
@@ -1229,6 +1252,9 @@
             this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
         }
+
+        private HaCreator.CustomControls.AlphaColorPicker altBackgroundColorPicker;
+        private System.Windows.Forms.Label altBackgroundLabel;
 
         private System.Windows.Forms.Label footholdSideLabel;
 

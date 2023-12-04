@@ -40,7 +40,7 @@ namespace HaCreator.GUI {
 #endif
 
 			PreviewMouseWheel += HaRibbon_PreviewMouseWheel;
-			blackBackgroundToggle.IsChecked = UserSettings.blackBackground;
+			altBackgroundToggle.IsChecked = UserSettings.altBackground;
 			fhSideToggle.IsChecked = UserSettings.displayFHSide;
 		}
 
@@ -492,7 +492,7 @@ namespace HaCreator.GUI {
 		public event EmptyEvent MapPhysicsClicked;
 		public event EmptyEvent ShowMapPropertiesClicked;
 		public event EventHandler<System.Windows.Forms.KeyEventArgs> RibbonKeyDown;
-		public event ToggleEvent BlackBackgroundToggled;
+		public event ToggleEvent AltBackgroundToggled;
 		public event ToggleEvent FhSideToggled;
 
 		public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors,
@@ -578,8 +578,8 @@ namespace HaCreator.GUI {
 				selectedItem; // combo box selection. 800x600, 1024x768, 1280x720, 1920x1080
 		}
 
-		private void BlackBackgroundToggle_OnClick(object sender, RoutedEventArgs e) {
-			BlackBackgroundToggled?.Invoke(((CheckBox) e.OriginalSource).IsChecked.Value);
+		private void AltBackgroundToggle_OnClick(object sender, RoutedEventArgs e) {
+			AltBackgroundToggled?.Invoke(((CheckBox) e.OriginalSource).IsChecked.Value);
 		}
 
 		private void FhSideToggle_OnClick(object sender, RoutedEventArgs e) {
