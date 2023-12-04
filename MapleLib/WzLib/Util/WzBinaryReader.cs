@@ -15,11 +15,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using MapleLib.MapleCryptoLib;
-using MapleLib.PacketLib;
 
 namespace MapleLib.WzLib.Util {
 	public class WzBinaryReader : BinaryReader {
@@ -222,15 +220,6 @@ namespace MapleLib.WzLib.Util {
 
 			BaseStream.Position -= numberOfBytes;
 #endif
-		}
-
-		#endregion
-
-		#region Overrides
-
-		public override void Close() {
-			// debug here
-			base.Close();
 		}
 
 		#endregion

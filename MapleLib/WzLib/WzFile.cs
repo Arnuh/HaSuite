@@ -24,6 +24,7 @@ using MapleLib.MapleCryptoLib;
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using MapleLib.ClientLib;
 
 namespace MapleLib.WzLib {
@@ -123,8 +124,8 @@ namespace MapleLib.WzLib {
 		public override void Dispose() {
 			_isUnloaded = true; // flag first
 
-			if (wzDir == null || wzDir.reader == null) {
-				Debug.WriteLine("WzFile.Dispose() : wzDir.reader is null");
+			if (wzDir?.reader == null) {
+				MessageBox.Show("WzDirectory reader is null", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -539,10 +540,10 @@ namespace MapleLib.WzLib {
 			wzDir.WzIv = WzIv;
 
 			// MapleStory UserKey
-			var bIsWzUserKeyDefault = MapleCryptoConstants.IsDefaultMapleStoryUserKey(); // check if its saving to the same UserKey.
+			var IsWzUserKeyDefault = MapleCryptoConstants.IsDefaultMapleStoryUserKey(); // check if its saving to the same UserKey.
 			// Save WZ as 64-bit wz format
-			var bSaveAs64BitWz = Is64BitWzFile;
-			if (override_saveAs64BitWZ != null) bSaveAs64BitWz = (bool) override_saveAs64BitWZ;
+			var saveAs64BitWz = Is64BitWzFile;
+			if (override_saveAs64BitWZ != null) saveAs64BitWz = (bool) override_saveAs64BitWZ;
 
 			CreateWZVersionHash();
 			wzDir.SetVersionHash(versionHash);
@@ -550,14 +551,13 @@ namespace MapleLib.WzLib {
 			Debug.WriteLine("----------------------------------------");
 			Debug.WriteLine($"Saving Wz File {Name}");
 			Debug.WriteLine($"wzVersionHeader: {wzVersionHeader}");
-			Debug.WriteLine($"bSaveAs64BitWz: {bSaveAs64BitWz}");
+			Debug.WriteLine($"saveAs64BitWz: {saveAs64BitWz}");
 			Debug.WriteLine("----------------------------------------");
 
 			try {
 				var tempFile = Path.GetFileNameWithoutExtension(path) + ".TEMP";
-				File.Create(tempFile).Close();
 				using (var fs = new FileStream(tempFile, FileMode.Append, FileAccess.Write)) {
-					wzDir.GenerateDataFile(bIsWzIvSimilar ? null : WzIv, bIsWzUserKeyDefault, fs);
+					wzDir.GenerateDataFile(bIsWzIvSimilar ? null : WzIv, IsWzUserKeyDefault, fs);
 				}
 
 				WzTool.StringCache.Clear();
@@ -565,7 +565,7 @@ namespace MapleLib.WzLib {
 				using (var wzWriter = new WzBinaryWriter(File.Create(path), WzIv)) {
 					wzWriter.Hash = versionHash;
 
-					var totalLen = wzDir.GetImgOffsets(wzDir.GetOffsets(Header.FStart + (!bSaveAs64BitWz ? 2u : 0)));
+					var totalLen = wzDir.GetImgOffsets(wzDir.GetOffsets(Header.FStart + (!saveAs64BitWz ? 2u : 0)));
 					Header.FSize = totalLen - Header.FStart;
 					for (var i = 0; i < 4; i++) wzWriter.Write((byte) Header.Ident[i]);
 
@@ -576,7 +576,7 @@ namespace MapleLib.WzLib {
 					var extraHeaderLength = Header.FStart - wzWriter.BaseStream.Position;
 					if (extraHeaderLength > 0) wzWriter.Write(new byte[(int) extraHeaderLength]);
 
-					if (!bSaveAs64BitWz) // 64 bit doesnt have a version number.
+					if (!saveAs64BitWz) // 64 bit doesnt have a version number.
 						wzWriter.Write((ushort) wzVersionHeader);
 
 					wzWriter.Header = Header;
