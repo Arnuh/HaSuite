@@ -96,6 +96,12 @@ namespace HaCreator.GUI {
 			Close();
 		}
 
+		private void FinishError(Exception e, string fileName) {
+			ShowErrorMessageThreadSafe(e, fileName);
+			Program.Restarting = true;
+			Close();
+		}
+
 		private void ShowErrorMessageThreadSafe(Exception e, string saveStage) {
 			Invoke((Action) delegate {
 				ChangeRepackState("ERROR While saving " + saveStage + ", aborted.");
@@ -212,11 +218,7 @@ namespace HaCreator.GUI {
 						File.Move(tmpFile, orgFile);
 					}
 				} catch (Exception e) {
-					// At this point its too late to do anything
-					// wz is closed and can't be edited anymore..
-					Debug.WriteLine($"orgFile: {orgFile}");
-					Debug.WriteLine($"tmpFile: {tmpFile}");
-					ShowErrorMessageThreadSafe(e, fileName);
+					FinishError(e, fileName);
 					return;
 				}
 			}
