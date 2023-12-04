@@ -198,12 +198,14 @@ namespace HaCreator.MapEditor {
 
 			// Render the minimap itself
 			if (miniMap != null && UserSettings.useMiniMap) {
+				var scale = parent.Scale;
 				// Area for the image itself
-				var minimapImageArea = new Rectangle((miniMapPos.X + centerPoint.X) / _mag,
-					(miniMapPos.Y + centerPoint.Y) / _mag, miniMap.Width, miniMap.Height);
+				var minimapImageArea = new Rectangle((int) ((miniMapPos.X + (double) centerPoint.X) / _mag / scale),
+					(int) ((miniMapPos.Y + (double) centerPoint.Y) / _mag / scale), (int) (miniMap.Width / scale), (int) (miniMap.Height / scale));
 
 				// Render gray area
-				parent.FillRectangle(sprite, minimapArea, Color.Gray);
+				var mapArea = new Rectangle(minimapArea.X, minimapArea.Y, (int) (minimapArea.Width / scale), (int) (minimapArea.Height / scale));
+				parent.FillRectangle(sprite, mapArea, Color.Gray);
 				// Render minimap
 				if (miniMapTexture == null)
 					miniMapTexture = miniMap.ToTexture2D(parent.GraphicsDevice);
@@ -212,8 +214,9 @@ namespace HaCreator.MapEditor {
 					SpriteEffects.None, 0.99999f);
 				// Render current location on minimap
 				parent.DrawRectangle(sprite,
-					new Rectangle(hScroll / _mag, vScroll / _mag, parent.CurrentDXWindowSize.Width / _mag,
-						(int) parent.CurrentDXWindowSize.Height / _mag), Color.Blue);
+					new Rectangle((int) (hScroll / (double) _mag / scale), (int) (vScroll / (double) _mag / scale),
+						(int) (parent.CurrentDXWindowSize.Width / (double) _mag / scale),
+						(int) (parent.CurrentDXWindowSize.Height / (double) _mag / scale)), Color.Blue);
 
 				// Render minimap borders
 				parent.DrawRectangle(sprite, minimapImageArea, Color.Black);

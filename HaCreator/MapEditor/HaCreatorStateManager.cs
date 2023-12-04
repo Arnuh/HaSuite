@@ -48,6 +48,7 @@ namespace HaCreator.MapEditor {
 		private readonly SystemWinCtl.TextBlock textblock_CursorY;
 		private readonly SystemWinCtl.TextBlock textblock_RCursorX;
 		private readonly SystemWinCtl.TextBlock textblock_RCursorY;
+		private readonly SystemWinCtl.TextBlock textblock_Scale;
 		private readonly SystemWinCtl.TextBlock textblock_selectedItem;
 
 		private readonly InputHandler input;
@@ -60,7 +61,7 @@ namespace HaCreator.MapEditor {
 			InputHandler input, System.Windows.Controls.ScrollViewer editorPanel,
 			SystemWinCtl.TextBlock textblock_CursorX, SystemWinCtl.TextBlock textblock_CursorY,
 			SystemWinCtl.TextBlock textblock_RCursorX, SystemWinCtl.TextBlock textblock_RCursorY,
-			SystemWinCtl.TextBlock textblock_selectedItem) {
+			SystemWinCtl.TextBlock textblock_Scale, SystemWinCtl.TextBlock textblock_selectedItem) {
 			this.multiBoard = multiBoard;
 			multiBoard.HaCreatorStateManager = this;
 
@@ -74,6 +75,7 @@ namespace HaCreator.MapEditor {
 			this.textblock_CursorY = textblock_CursorY;
 			this.textblock_RCursorX = textblock_RCursorX;
 			this.textblock_RCursorY = textblock_RCursorY;
+			this.textblock_Scale = textblock_Scale;
 			this.textblock_selectedItem = textblock_selectedItem;
 
 			backupMan = new BackupManager(multiBoard, input, this, tabs);
@@ -201,6 +203,8 @@ namespace HaCreator.MapEditor {
 
 			textblock_RCursorX.Text = newPos.X.ToString();
 			textblock_RCursorY.Text = newPos.Y.ToString();
+
+			textblock_Scale.Text = selectedBoard.ParentControl.Scale.ToString();
 		}
 
 		/// <summary>

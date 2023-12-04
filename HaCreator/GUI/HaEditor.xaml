@@ -112,6 +112,10 @@
                         <TextBlock x:Name="textblock_RCursorX" Text="0" />
                         <TextBlock Text=", Y = " />
                         <TextBlock x:Name="textblock_RCursorY" Text="0" />
+
+                        <TextBlock Text="|" Margin="20,0,20,0" />
+                        <TextBlock Text="Scale: " />
+                        <TextBlock x:Name="textblock_Scale" Text="1" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,0">
