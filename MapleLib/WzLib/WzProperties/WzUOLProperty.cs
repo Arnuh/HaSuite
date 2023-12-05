@@ -18,10 +18,11 @@
 
 #define UOLRES
 
-using System.IO;
 using System.Collections.Generic;
-using MapleLib.WzLib.Util;
 using System.Drawing;
+using System.IO;
+using MapleLib.Helpers;
+using MapleLib.WzLib.Util;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -138,15 +139,15 @@ namespace MapleLib.WzLib.WzProperties {
 			get {
 				if (linkVal == null) {
 					var paths = val.Split('/');
-					linkVal = (WzObject) parent;
+					linkVal = parent;
 					var fullPath = parent.FullPath;
 
 					foreach (var path in paths)
 						if (path == "..") {
-							linkVal = (WzObject) linkVal.Parent;
+							linkVal = linkVal.Parent;
 						} else {
 							if (linkVal is WzImageProperty property) {
-								linkVal = property;
+								linkVal = property[path];
 							} else if (linkVal is WzImage image) {
 								linkVal = image[path];
 							} else if (linkVal is WzDirectory directory) {
@@ -155,7 +156,7 @@ namespace MapleLib.WzLib.WzProperties {
 								else
 									linkVal = directory[path + ".img"];
 							} else {
-								Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical,
+								ErrorLogger.Log(ErrorLevel.Critical,
 									"UOL got nexon'd at property: " + FullPath);
 								return null;
 							}
