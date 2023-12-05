@@ -22,6 +22,8 @@ using System.Drawing;
 using HaSharedLibrary.Wz;
 using MapleLib;
 using System.Windows.Shapes;
+using HaRepacker;
+using Path = System.IO.Path;
 
 namespace HaCreator.GUI {
 	public partial class Initialization : Form {
@@ -73,7 +75,19 @@ namespace HaCreator.GUI {
 					? wzPath
 					: ApplicationSettings.MapleFoldersList + "," + wzPath;
 
-			var fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
+			WzMapleVersion fileVersion;
+			short version = -1;
+			if (versionBox.SelectedIndex == 3) {
+				var testFile = File.Exists(Path.Combine(wzPath, "Data.wz")) ? "Data.wz" : "Item.wz";
+				try {
+					fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out version);
+				} catch (Exception ex) {
+					Warning.Error("Error initializing " + testFile + " (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
+					return;
+				}
+			} else {
+				fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
+			}
 			if (InitializeWzFiles(wzPath, fileVersion)) {
 				Hide();
 				Application.DoEvents();
@@ -454,8 +468,9 @@ namespace HaCreator.GUI {
 				foreach (WzSubProperty mob in mobStringImage.WzProperties) {
 					var nameProp = (WzStringProperty) mob["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
-
-					Program.InfoManager.Mobs.Add(WzInfoTools.AddLeadingZeros(mob.Name, 7), name);
+					var id = WzInfoTools.AddLeadingZeros(mob.Name, 7);
+					if (Program.InfoManager.Mobs.ContainsKey(id)) continue;
+					Program.InfoManager.Mobs.Add(id, name);
 				}
 			}
 		}
@@ -482,8 +497,9 @@ namespace HaCreator.GUI {
 				foreach (WzSubProperty npc in npcImage.WzProperties) {
 					var nameProp = (WzStringProperty) npc["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
-
-					Program.InfoManager.NPCs.Add(WzInfoTools.AddLeadingZeros(npc.Name, 7), name);
+					var id = WzInfoTools.AddLeadingZeros(npc.Name, 7);
+					if (Program.InfoManager.NPCs.ContainsKey(id)) continue;
+					Program.InfoManager.NPCs.Add(id, name);
 				}
 			}
 		}
