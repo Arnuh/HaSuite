@@ -1,4 +1,6 @@
-﻿namespace HaCreator.GUI
+﻿using System.Windows.Forms;
+
+namespace HaCreator.GUI
 {
     partial class About
     {
@@ -43,7 +45,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(424, 32);
             this.label1.TabIndex = 0;
-            this.label1.Text = "PheCreator $VER";
+            this.label1.Text = $"PheCreator {Application.ProductVersion}";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2

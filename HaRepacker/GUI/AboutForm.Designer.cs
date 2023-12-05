@@ -1,4 +1,6 @@
-﻿namespace HaRepacker.GUI
+﻿using System.Windows.Forms;
+
+namespace HaRepacker.GUI
 {
     partial class AboutForm
     {
@@ -26,8 +28,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,6 +42,7 @@
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            this.label1.Text = this.label1.Text.Replace("$VER", Application.ProductVersion);
             // 
             // label2
             // 
@@ -82,7 +84,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "AboutForm";
             this.ResumeLayout(false);
-
         }
 
         #endregion
