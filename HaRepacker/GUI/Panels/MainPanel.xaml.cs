@@ -618,8 +618,17 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			var selectedNodes = new List<WzNode>();
-			foreach (WzNode node in DataTree.SelectedNodes) selectedNodes.Add(node);
+			var selectedNodes = new List<WzObject>();
+			if (DataTree.SelectedNodes.Count == 1 && !int.TryParse(DataTree.SelectedNode.Name, out _)) {
+				var obj = (WzObject) DataTree.SelectedNode.Tag;
+				for (var i = 0;; i++) {
+					var child = obj[i.ToString()];
+					if (child == null) break;
+					selectedNodes.Add(child);
+				}
+			} else {
+				foreach (WzNode node in DataTree.SelectedNodes) selectedNodes.Add((WzObject) node.Tag);
+			}
 
 			var path_title = ((WzNode) DataTree.SelectedNodes[0]).Parent?.FullPath ?? "Animate";
 

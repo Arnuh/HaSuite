@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace HaRepacker.GUI.Panels {
 		private float UserScreenScaleFactor = 1.0f;
 
 		// Rendering objects
-		private readonly List<WzNode> selectedAnimationNodes;
+		private readonly List<WzObject> selectedAnimationNodes;
 		private BaseDXDrawableItem dxDrawableItem = null;
 
 		// Debug
@@ -49,7 +50,7 @@ namespace HaRepacker.GUI.Panels {
 		/// Constructor
 		/// </summary>
 		/// <param name="selectedAnimationNodes"></param>
-		public ImageAnimationPreviewWindow(List<WzNode> selectedAnimationNodes, string title_path) {
+		public ImageAnimationPreviewWindow(List<WzObject> selectedAnimationNodes, string title_path) {
 			this.selectedAnimationNodes = selectedAnimationNodes;
 
 			IsMouseVisible = true;
@@ -106,8 +107,7 @@ namespace HaRepacker.GUI.Panels {
 			// Animation frames
 			var animationFrames = new List<IDXObject>();
 			// WzNodes to DXObject
-			foreach (var selNode in selectedAnimationNodes) {
-				var obj = (WzObject) selNode.Tag;
+			foreach (var obj in selectedAnimationNodes) {
 				var isUOLProperty = obj is WzUOLProperty;
 
 				if (obj is WzCanvasProperty || isUOLProperty) {
