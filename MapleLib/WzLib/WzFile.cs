@@ -125,7 +125,7 @@ namespace MapleLib.WzLib {
 			_isUnloaded = true; // flag first
 
 			if (wzDir?.reader == null) {
-				MessageBox.Show("WzDirectory reader is null", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Debug.WriteLine("WzFile.Dispose() : wzDir.reader is null");
 				return;
 			}
 
