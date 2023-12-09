@@ -34,43 +34,6 @@ namespace MapleLib.PacketLib {
 			return hexed.ToString();
 		}
 
-
-		/// <summary>
-		/// Converts an array of bytes to readable hex representation
-		/// Extension method for PacketWriter 
-		/// </summary>
-		/// <param name="bytes"></param>
-		/// <returns></returns>
-		public static string ToString(this PacketReader reader) {
-			var bytes = reader.ToArray();
-
-			var hexed = new StringBuilder();
-			for (var i = 0; i < bytes.Length; i++) {
-				hexed.Append(ToString(bytes[i]));
-				hexed.Append(' ');
-			}
-
-			return hexed.ToString();
-		}
-
-		/// <summary>
-		/// Converts an array of bytes to readable hex representation
-		/// Extension method for PacketWriter 
-		/// </summary>
-		/// <param name="bytes"></param>
-		/// <returns></returns>
-		public static string ToString(this PacketWriter writer) {
-			var bytes = writer.ToArray();
-
-			var hexed = new StringBuilder();
-			for (var i = 0; i < bytes.Length; i++) {
-				hexed.Append(ToString(bytes[i]));
-				hexed.Append(' ');
-			}
-
-			return hexed.ToString();
-		}
-
 		public static string ByteArrayToString(byte[] ba) {
 			var hex = new StringBuilder(ba.Length * 3);
 			foreach (var b in ba)

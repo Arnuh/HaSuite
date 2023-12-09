@@ -808,12 +808,9 @@ namespace HaRepacker.GUI {
 					};
 					currentDispatcher.BeginInvoke(action);
 
-
-					var writer = new PacketWriter(4);
-					writer.WriteBytes(bytes);
-					MessageBox.Show("Found the encryption key to the WZ file:\r\n" + HexTool.ToString(writer.ToArray()),
+					MessageBox.Show("Found the encryption key to the WZ file:\r\n" + HexTool.ToString(bytes),
 						"Success");
-					Debug.WriteLine("Found key. Key = " + HexTool.ToString(writer.ToArray()));
+					Debug.WriteLine($"Found key. Key = {HexTool.ToString(bytes)}");
 
 					break;
 				}
