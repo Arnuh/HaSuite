@@ -82,7 +82,7 @@ namespace HaRepacker.GUI {
 			// Set default selected main panel
 			UpdateSelectedMainPanelTab();
 
-			if (usingPipes)
+			if (usingPipes) {
 				try {
 					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In);
 					Program.pipeThread = new Thread(PipeServer) {
@@ -94,22 +94,20 @@ namespace HaRepacker.GUI {
 						try {
 							using (var clientPipe =
 							       new NamedPipeClientStream(".", Program.pipeName, PipeDirection.Out)) {
-								clientPipe.Connect(0);
+								clientPipe.Connect(1000);
 								using (var sw = new StreamWriter(clientPipe)) {
 									sw.WriteLine(wzPathToLoad);
 								}
-
-								clientPipe.WaitForPipeDrain();
 							}
 
 							Environment.Exit(0);
 						} catch (TimeoutException) {
 						}
 				}
+			}
 
 			if (wzPathToLoad != null && File.Exists(wzPathToLoad)) {
-				short version;
-				var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out version);
+				var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
 				SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
 
 				LoadWzFileCallback(wzPathToLoad);
@@ -161,17 +159,17 @@ namespace HaRepacker.GUI {
 		private void LoadWzFileCallback(string path) {
 			try {
 				var loadedWzFile = Program.WzFileManager.LoadWzFile(path,
-					(WzMapleVersion) GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex));
-				if (loadedWzFile != null) {
-					var node = new WzNode(loadedWzFile);
+					GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex));
+				if (loadedWzFile == null) return;
 
-					MainPanel.DataTree.BeginUpdate();
+				var node = new WzNode(loadedWzFile);
 
-					MainPanel.DataTree.Nodes.Add(node);
-					SortNodesRecursively(node);
-					MainPanel.DataTree.EndUpdate();
-				}
-			} catch {
+				MainPanel.DataTree.BeginUpdate();
+
+				MainPanel.DataTree.Nodes.Add(node);
+				SortNodesRecursively(node);
+				MainPanel.DataTree.EndUpdate();
+			} catch (Exception ex) {
 				Warning.Error(string.Format(Properties.Resources.MainCouldntOpenWZ, path));
 			}
 		}
@@ -489,9 +487,9 @@ namespace HaRepacker.GUI {
 		#endregion
 
 		private string OnPipeRequest(string requestPath) {
-			if (File.Exists(requestPath)) LoadWzFileCallback(requestPath);
-
-			SetWindowStateThreadSafe(FormWindowState.Normal);
+			if (File.Exists(requestPath)) {
+				MainPanel.Dispatcher.Invoke(() => { LoadWzFileCallback(requestPath); });
+			}
 			return "OK";
 		}
 
