@@ -824,14 +824,14 @@ namespace HaRepacker.GUI {
 		private async void OpenFileInternal(string[] fileNames) {
 			var currentDispatcher = Dispatcher.CurrentDispatcher;
 
-			var MapleVersionEncryptionSelected = GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
+			var mapleVersionEncryptionSelected = GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
 
 			var wzfilePathsToLoad = new List<string>();
 
 			if (fileNames.All(s => s.ToLower().EndsWith(".xml"))) {
-				ImportXml(MapleVersionEncryptionSelected, fileNames);
+				ImportXml(mapleVersionEncryptionSelected, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
-				ImportImg(MapleVersionEncryptionSelected, fileNames);
+				ImportImg(mapleVersionEncryptionSelected, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".png"))) {
 				ImportImages(fileNames);
 			} else {
@@ -857,7 +857,7 @@ namespace HaRepacker.GUI {
 					}
 
 					if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
-						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, MapleVersionEncryptionSelected);
+						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, mapleVersionEncryptionSelected);
 						if (img == null) {
 							MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
 							break;
@@ -865,15 +865,15 @@ namespace HaRepacker.GUI {
 
 						AddLoadedWzObjectToMainPanel(img);
 					} else if (filePathLowerCase.EndsWith(".xml")) {
-						ImportXml(MapleVersionEncryptionSelected, new[] {filePath});
+						ImportXml(mapleVersionEncryptionSelected, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".img")) {
-						ImportImg(MapleVersionEncryptionSelected, new[] {filePath});
+						ImportImg(mapleVersionEncryptionSelected, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
-						new ListEditor(filePath, MapleVersionEncryptionSelected).Show();
+						new ListEditor(filePath, mapleVersionEncryptionSelected).Show();
 					} else {
-						if (MapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
+						if (mapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
 							StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
 							return;
 						}
@@ -914,7 +914,7 @@ namespace HaRepacker.GUI {
 			await Task.Run(() => {
 				var loadedWzFiles = new List<WzFile>();
 				var loop = Parallel.ForEach(wzfilePathsToLoad, filePath => {
-					var f = Program.WzFileManager.LoadWzFile(filePath, MapleVersionEncryptionSelected);
+					var f = Program.WzFileManager.LoadWzFile(filePath, mapleVersionEncryptionSelected);
 					if (f == null) {
 						// error should be thrown 
 					} else {
@@ -1920,10 +1920,11 @@ namespace HaRepacker.GUI {
 		}
 
 		private void ImportImg(WzMapleVersion wzImageImportVersion, IEnumerable fileNames) {
-			if (!IsChildHoldingSelectedNode()) {
+			var selectedNode = MainPanel.DataTree.SelectedNode;
+			if (selectedNode != null && !IsChildHoldingSelectedNode()) {
 				return;
 			}
-
+			
 			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
 			var deserializer = new WzImgDeserializer(true);
 			yesToAll = false;
@@ -1933,7 +1934,7 @@ namespace HaRepacker.GUI {
 			runningThread = new Thread(WzDeserializeImportThread);
 			runningThread.Start(
 				new object[] {
-					deserializer, fileNames, MainPanel.DataTree.SelectedNode, iv
+					deserializer, fileNames, selectedNode, iv
 				});
 			new Thread(ProgressBarThread).Start(deserializer);
 		}
@@ -1977,7 +1978,7 @@ namespace HaRepacker.GUI {
 			var parent = (WzNode) arr[2];
 			var iv = (byte[]) arr[3];
 
-			var parentObj = (WzObject) parent.Tag;
+			var parentObj = (WzObject) parent?.Tag;
 			if (parentObj is WzFile wzFile) {
 				parentObj = wzFile.WzDirectory;
 			}
@@ -2012,11 +2013,18 @@ namespace HaRepacker.GUI {
 				}
 
 				foreach (var obj in objs) {
-					if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) ||
-					    (obj is WzImageProperty && parentObj is IPropertyContainer)) {
-						var node = new WzNode(obj, true);
-						InsertWzNodeThreadSafe(node, parent);
+					if (parent == null) {
+						AddLoadedWzObjectToMainPanel(obj, MainPanel.Dispatcher);
+						continue;
 					}
+
+					if (((!(obj is WzDirectory) && !(obj is WzImage)) || !(parentObj is WzDirectory)) &&
+					    (!(obj is WzImageProperty) || !(parentObj is IPropertyContainer))) {
+						continue;
+					}
+
+					var node = new WzNode(obj, true);
+					InsertWzNodeThreadSafe(node, parent);
 				}
 
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
