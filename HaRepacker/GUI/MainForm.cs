@@ -683,57 +683,53 @@ namespace HaRepacker.GUI {
 		/// Find needles in a haystack o_O
 		/// </summary>
 		/// <param name="currentDispatcher"></param>
-		private void StartWzKeyBruteforcing(Dispatcher currentDispatcher) {
-			// Generate WZ keys via a test WZ file
-			using (var dialog = new OpenFileDialog() {
-				       Title = Properties.Resources.SelectWz,
-				       Filter = string.Format("{0}|TamingMob.wz",
-					       Properties.Resources.WzFilter), // Use the smallest possible file
-				       Multiselect = false
-			       }) {
-				if (dialog.ShowDialog() != DialogResult.OK)
-					return;
-
-				// Show splash screen
-				MainPanel.OnSetPanelLoading(currentDispatcher);
-				MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(System.Windows.Visibility.Visible);
-
-
-				// Reset variables
-				wzKeyBruteforceTries = 0;
-				wzKeyBruteforceStartTime = DateTime.Now;
-				wzKeyBruteforceCompleted = false;
-
-
-				var processorCount =
-					Environment.ProcessorCount *
-					3; // 8 core = 16 (with ht, smt) , multiply by 3 seems to be the magic number. it falls off after 4
-				var cpuIds = new List<int>();
-				for (var cpuId_ = 0; cpuId_ < processorCount; cpuId_++) cpuIds.Add(cpuId_);
-
-				// UI update thread
-				if (aTimer_wzKeyBruteforce != null) {
-					aTimer_wzKeyBruteforce.Stop();
-					aTimer_wzKeyBruteforce = null;
-				}
-
-				aTimer_wzKeyBruteforce = new System.Timers.Timer();
-				aTimer_wzKeyBruteforce.Elapsed += new ElapsedEventHandler(OnWzIVKeyUIUpdateEvent);
-				aTimer_wzKeyBruteforce.Interval = 5000;
-				aTimer_wzKeyBruteforce.Enabled = true;
-
-
-				// Key finder thread
-				Task.Run(() => {
-					Thread.Sleep(3000); // delay 3 seconds before starting
-
-					var parallelOption = new ParallelOptions {
-						MaxDegreeOfParallelism = processorCount
-					};
-					var loop = Parallel.ForEach(cpuIds, parallelOption,
-						cpuId => { WzKeyBruteforceComputeTask(cpuId, processorCount, dialog, currentDispatcher); });
-				});
+		private void StartWzKeyBruteforcing(string fileName, Dispatcher currentDispatcher) {
+			if (!fileName.ToLower().Contains("tamingmob.wz") && !fileName.ToLower().Contains("data.wz")) {
+				// Suggest to use a smaller file
+				MessageBox.Show("You may be using a file that is large and could slow the process down.", "Error");
+				return;
 			}
+
+			// Show splash screen
+			MainPanel.OnSetPanelLoading(currentDispatcher);
+			MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(System.Windows.Visibility.Visible);
+
+
+			// Reset variables
+			wzKeyBruteforceTries = 0;
+			wzKeyBruteforceStartTime = DateTime.Now;
+			wzKeyBruteforceCompleted = false;
+
+
+			var processorCount =
+				Environment.ProcessorCount *
+				2; // 8 core = 16 (with ht, smt)
+			// can * 3 but I noticed timer was no longer updating.
+			var cpuIds = new List<int>();
+			for (var cpuId_ = 0; cpuId_ < processorCount; cpuId_++) cpuIds.Add(cpuId_);
+
+			// UI update thread
+			if (aTimer_wzKeyBruteforce != null) {
+				aTimer_wzKeyBruteforce.Stop();
+				aTimer_wzKeyBruteforce = null;
+			}
+
+			aTimer_wzKeyBruteforce = new System.Timers.Timer();
+			aTimer_wzKeyBruteforce.Elapsed += new ElapsedEventHandler(OnWzIVKeyUIUpdateEvent);
+			aTimer_wzKeyBruteforce.Interval = 5000;
+			aTimer_wzKeyBruteforce.Enabled = true;
+
+
+			// Key finder thread
+			Task.Run(() => {
+				Thread.Sleep(3000); // delay 3 seconds before starting
+
+				var parallelOption = new ParallelOptions {
+					MaxDegreeOfParallelism = processorCount
+				};
+				var loop = Parallel.ForEach(cpuIds, parallelOption,
+					cpuId => { WzKeyBruteforceComputeTask(cpuId, processorCount, fileName, currentDispatcher); });
+			});
 		}
 
 		/// <summary>
@@ -760,9 +756,9 @@ namespace HaRepacker.GUI {
 		/// </summary>
 		/// <param name="cpuId_"></param>
 		/// <param name="processorCount"></param>
-		/// <param name="dialog"></param>
+		/// <param name="filePath"></param>
 		/// <param name="currentDispatcher"></param>
-		private void WzKeyBruteforceComputeTask(int cpuId_, int processorCount, OpenFileDialog dialog,
+		private void WzKeyBruteforceComputeTask(int cpuId_, int processorCount, string filePath,
 			Dispatcher currentDispatcher) {
 			var cpuId = cpuId_;
 
@@ -793,7 +789,7 @@ namespace HaRepacker.GUI {
 					}
 				}
 
-				var tryDecrypt = WzTool.TryBruteforcingWzIVKey(dialog.FileName, bytes);
+				var tryDecrypt = WzTool.TryBruteforcingWzIVKey(filePath, bytes);
 				//Debug.WriteLine("{0} = {1}", cpuId, HexTool.ToString(new PacketWriter(bytes).ToArray()));
 				if (tryDecrypt) {
 					wzKeyBruteforceCompleted = true;
@@ -874,7 +870,7 @@ namespace HaRepacker.GUI {
 						new ListEditor(filePath, mapleVersionEncryptionSelected).Show();
 					} else {
 						if (mapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
-							StartWzKeyBruteforcing(currentDispatcher); // find needles in a haystack
+							StartWzKeyBruteforcing(filePath, currentDispatcher); // find needles in a haystack
 							return;
 						}
 
