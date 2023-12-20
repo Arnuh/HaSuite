@@ -426,9 +426,6 @@
         <Compile Include="CustomControls\ColorDialog.xaml.cs">
             <DependentUpon>ColorDialog.xaml</DependentUpon>
         </Compile>
-        <Compile Include="CustomControls\ColorPicker.xaml.cs">
-            <DependentUpon>ColorPicker.xaml</DependentUpon>
-        </Compile>
         <Compile Include="CustomControls\ImageViewer.cs">
             <SubType>UserControl</SubType>
         </Compile>
@@ -813,10 +810,6 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </Page>
-        <Page Include="CustomControls\ColorPicker.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Resource Include="Images\HaLogo32.png"/>
@@ -852,6 +845,9 @@
         </PackageReference>
         <PackageReference Include="OpenAI">
             <Version>1.7.2</Version>
+        </PackageReference>
+        <PackageReference Include="PixiEditor.ColorPicker">
+            <Version>3.4.1</Version>
         </PackageReference>
         <PackageReference Include="SharpDX">
             <Version>4.2.0</Version>

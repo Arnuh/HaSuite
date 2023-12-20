@@ -1,19 +1,10 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
-using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace WPFColorPickerLib {
 	/// <summary>
 	/// Holds a ColorPicker control, and exposes the ColorPicker SelectedColor.
 	/// 
-	/// Enhanced by Mark Treadwell (1/2/10) to include:
-	///  - Added ability to set ColorPicker initial color via constructor or property
-	///  - Use of Button's IsDefault and IsCancel properties
-	///  - Setting tab behavior
 	/// </summary>
 	public partial class ColorDialog : Window {
 		#region Constructors
@@ -31,7 +22,8 @@ namespace WPFColorPickerLib {
 		/// <param name="initialColor">Color to set the ColorPicker to.</param>
 		public ColorDialog(Color initialColor) {
 			InitializeComponent();
-			colorPicker.InitialColor = initialColor;
+			colorPicker.SelectedColor = initialColor;
+			colorPicker.SecondaryColor = initialColor;
 		}
 
 		#endregion
@@ -43,7 +35,7 @@ namespace WPFColorPickerLib {
 		/// </summary>
 		public Color SelectedColor {
 			get => colorPicker.SelectedColor;
-			set => colorPicker.InitialColor = value;
+			set => colorPicker.SelectedColor = value;
 		}
 
 		#endregion
