@@ -149,6 +149,7 @@ namespace HaRepacker.GUI {
 
 					if (wzf.FilePath != null && wzf.FilePath.ToLower() == dialog.FileName.ToLower()) {
 						wzf.SaveToDisk(dialog.FileName + "$tmp", bSaveAs64BitWzFile, wzMapleVersionSelected);
+						_mainPanel.MainForm.UnloadWzFile(wzf);
 						try {
 							File.Delete(dialog.FileName);
 							File.Move(dialog.FileName + "$tmp", dialog.FileName);
@@ -157,9 +158,8 @@ namespace HaRepacker.GUI {
 						}
 					} else {
 						wzf.SaveToDisk(dialog.FileName, bSaveAs64BitWzFile, wzMapleVersionSelected);
+						_mainPanel.MainForm.UnloadWzFile(wzf);
 					}
-
-					_mainPanel.MainForm.UnloadWzFile(wzf);
 
 					// Reload the new file
 					var loadedWzFile = Program.WzFileManager.LoadWzFile(dialog.FileName, wzMapleVersionSelected);
