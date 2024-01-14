@@ -28,8 +28,7 @@ namespace HaRepacker.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveForm));
             this.encryptionBox = new System.Windows.Forms.ComboBox();
             this.saveButton = new System.Windows.Forms.Button();
@@ -92,7 +91,6 @@ namespace HaRepacker.GUI
             this.Load += new System.EventHandler(this.SaveForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
