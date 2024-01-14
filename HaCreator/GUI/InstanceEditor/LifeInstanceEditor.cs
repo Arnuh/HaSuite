@@ -6,15 +6,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
+using static HaCreator.GUI.InstanceEditor.EditorTools;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class LifeInstanceEditor : EditorBase {
@@ -34,10 +31,10 @@ namespace HaCreator.GUI.InstanceEditor {
 			rx1Box.Value = item.rx1Shift;
 			yShiftBox.Value = item.yShift;
 
-			LoadOptionalInt(item.Info, infoEnable, infoBox);
-			LoadOptionalInt(item.Team, teamEnable, teamBox);
-			LoadOptionalInt(item.MobTime, mobTimeEnable, mobTimeBox);
-			LoadOptionalStr(item.LimitedName, limitedNameEnable, limitedNameBox);
+			LoadOptionalInt(item.Info, infoBox, infoEnable, Defaults.Life.Info);
+			LoadOptionalInt(item.Team, teamBox, teamEnable, Defaults.Life.Team);
+			LoadOptionalInt(item.MobTime, mobTimeBox, mobTimeEnable, Defaults.Life.MobTime);
+			LoadOptionalString(item.LimitedName, limitedNameBox, limitedNameEnable, Defaults.Life.LimitedName);
 
 			hideBox.Checked = item.Hide;
 			flipBox.Checked = item.Flip;
@@ -63,11 +60,11 @@ namespace HaCreator.GUI.InstanceEditor {
 				item.rx0Shift = (int) rx0Box.Value;
 				item.rx1Shift = (int) rx1Box.Value;
 				item.yShift = (int) yShiftBox.Value;
-				item.MobTime = GetOptionalInt(mobTimeEnable, mobTimeBox);
-				item.Info = GetOptionalInt(infoEnable, infoBox);
-				item.Team = GetOptionalInt(teamEnable, teamBox);
+				item.MobTime = GetOptionalInt(mobTimeBox, mobTimeEnable, Defaults.Life.MobTime);
+				item.Info = GetOptionalInt(infoBox, infoEnable, Defaults.Life.Info);
+				item.Team = GetOptionalInt(teamBox, teamEnable, Defaults.Life.Team);
 				//item.TypeStr = GetOptionalStr(typeEnable, typeBox);
-				item.LimitedName = GetOptionalStr(limitedNameEnable, limitedNameBox);
+				item.LimitedName = GetOptionalString(limitedNameBox, limitedNameEnable, Defaults.Life.LimitedName);
 
 				item.Hide = hideBox.Checked;
 				item.Flip = flipBox.Checked;
@@ -79,34 +76,6 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void enablingCheckBoxCheckChanged(object sender, EventArgs e) {
 			var cbx = (CheckBox) sender;
 			((Control) cbx.Tag).Enabled = cbx.Checked;
-		}
-
-		private void LoadOptionalInt(int? value, CheckBox cbx, NumericUpDown box) {
-			if (value == null) {
-				cbx.Checked = false;
-			} else {
-				cbx.Checked = true;
-				box.Value = (int) value;
-			}
-		}
-
-		private void LoadOptionalStr(string value, CheckBox cbx, TextBox box) {
-			if (value == null) {
-				cbx.Checked = false;
-			} else {
-				cbx.Checked = true;
-				box.Text = value;
-			}
-		}
-
-		private int? GetOptionalInt(CheckBox cbx, NumericUpDown box) {
-			if (cbx.Checked) return (int) box.Value;
-			else return null;
-		}
-
-		private string GetOptionalStr(CheckBox cbx, TextBox box) {
-			if (cbx.Checked) return box.Text;
-			else return null;
 		}
 	}
 }

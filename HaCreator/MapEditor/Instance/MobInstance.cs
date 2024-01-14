@@ -31,7 +31,7 @@ namespace HaCreator.MapEditor.Instance {
 		/// <param name="info"></param>
 		/// <param name="team"></param>
 		public MobInstance(MobInfo baseInfo, Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift,
-			string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+			string limitedname, int mobTime, bool flip, bool hide, int info, int team)
 			: base(baseInfo, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide, info, team) {
 			this.baseInfo = baseInfo;
 		}

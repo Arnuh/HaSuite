@@ -6,19 +6,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using MapleLib.WzLib.WzStructure.Data;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
-using HaCreator.MapSimulator;
 using System.Windows.Controls;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Info.Default;
 using Spine;
 using HaSharedLibrary.Render.DX;
 
@@ -163,15 +159,15 @@ namespace HaCreator.GUI.InstanceEditor {
 
 				// Spine
 				if (!groupBox_spine.Enabled) {
-					item.SpineRandomStart = false;
-					item.SpineAni = null;
+					item.SpineRandomStart = Defaults.Background.SpineRandomStart;
+					item.SpineAni = Defaults.Background.SpineAni;
 				} else {
 					item.SpineRandomStart = checkBox_spineRandomStart.Checked;
 
 					if (comboBox_spineAnimation.SelectedItem != null)
 						item.SpineAni = ((comboBox_spineAnimation.SelectedItem as ComboBoxItem).Tag as Animation).Name;
 					else
-						item.SpineAni = null;
+						item.SpineAni = Defaults.Background.SpineAni;
 				}
 			}
 

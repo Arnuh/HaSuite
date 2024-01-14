@@ -14,15 +14,15 @@ namespace HaCreator.MapEditor.Instance {
 		private int _rx0Shift;
 		private int _rx1Shift;
 		private int _yShift;
-		private int? mobTime;
+		private int mobTime;
 		private string limitedname;
-		private MapleBool flip;
-		private MapleBool hide;
-		private int? info; //no idea
-		private int? team; //for carnival
+		private bool flip;
+		private bool hide;
+		private int info; //no idea
+		private int team;
 
 		public LifeInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0Shift, int rx1Shift,
-			int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+			int yShift, string limitedname, int mobTime, bool flip, bool hide, int info, int team)
 			: base(board, x, y, -1) {
 			this.limitedname = limitedname;
 			_rx0Shift = rx0Shift;
@@ -73,7 +73,7 @@ namespace HaCreator.MapEditor.Instance {
 			return c;
 		}
 
-		public MapleBool Hide {
+		public bool Hide {
 			get => hide;
 			set => hide = value;
 		}
@@ -101,27 +101,27 @@ namespace HaCreator.MapEditor.Instance {
 			set => _yShift = value;
 		}
 
-		public int? MobTime {
+		public int MobTime {
 			get => mobTime;
 			set => mobTime = value;
 		}
 
-		public int? Info {
+		public int Info {
 			get => info;
 			set => info = value;
 		}
 
-		public int? Team {
+		public int Team {
 			get => team;
 			set => team = value;
 		}
 
 		public new class SerializationForm : BoardItem.SerializationForm {
 			public int rx0, rx1, yshift;
-			public int? mobtime;
+			public int mobtime;
 			public string limitedname;
-			public MapleBool flip, hide;
-			public int? info, team;
+			public bool flip, hide;
+			public int info, team;
 		}
 
 		public override object Serialize() {
@@ -149,6 +149,7 @@ namespace HaCreator.MapEditor.Instance {
 			_rx1Shift = json.rx1;
 			_yShift = json.yshift;
 			mobTime = json.mobtime;
+			limitedname = json.limitedname;
 			flip = json.flip;
 			hide = json.hide;
 			info = json.info;

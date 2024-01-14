@@ -19,10 +19,10 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
 	public class FootholdLine : MapleLine, IContainsLayerInfo, ISerializable {
-		private MapleBool _cantThrough;
-		private MapleBool _forbidFallDown;
-		private int? _piece;
-		private int? _force;
+		private bool _cantThrough;
+		private bool _forbidFallDown;
+		private int _piece;
+		private double _force;
 
 		// internal use variables
 		public int prev = 0;
@@ -34,32 +34,23 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot)
 			: base(board, firstDot, secondDot) {
-			_cantThrough = null;
-			_forbidFallDown = null;
-			_piece = null;
-			_force = null;
+			_cantThrough = false;
+			_forbidFallDown = false;
+			_piece = 0;
+			_force = 0;
 		}
 
 		public FootholdLine(Board board, MapleDot firstDot)
 			: base(board, firstDot) {
-			_cantThrough = null;
-			_forbidFallDown = null;
-			_piece = null;
-			_force = null;
+			_cantThrough = false;
+			_forbidFallDown = false;
+			_piece = 0;
+			_force = 0;
 		}
 
-		public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown,
-			MapleBool cantThrough, int? piece, int? force)
+		public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, bool forbidFallDown,
+			bool cantThrough, int piece, double force)
 			: base(board, firstDot, secondDot) {
-			_cantThrough = cantThrough;
-			_forbidFallDown = forbidFallDown;
-			_piece = piece;
-			_force = force;
-		}
-
-		public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece,
-			int? force)
-			: base(board, firstDot) {
 			_cantThrough = cantThrough;
 			_forbidFallDown = forbidFallDown;
 			_piece = piece;
@@ -157,22 +148,22 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public bool IsWall => FirstDot.X == SecondDot.X;
 
-		public int? Force {
+		public double Force {
 			get => _force;
 			set => _force = value;
 		}
 
-		public int? Piece {
+		public int Piece {
 			get => _piece;
 			set => _piece = value;
 		}
 
-		public MapleBool ForbidFallDown {
+		public bool ForbidFallDown {
 			get => _forbidFallDown;
 			set => _forbidFallDown = value;
 		}
 
-		public MapleBool CantThrough {
+		public bool CantThrough {
 			get => _cantThrough;
 			set => _cantThrough = value;
 		}
@@ -207,8 +198,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		#region ISerializable Implementation
 
 		public class SerializationForm {
-			public MapleBool cantthrough, forbidfalldown;
-			public int? piece, force;
+			public bool cantthrough, forbidfalldown;
+			public int piece;
+			public double force;
 		}
 
 		public bool ShouldSelectSerialized => true;

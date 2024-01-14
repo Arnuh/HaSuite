@@ -36,7 +36,10 @@ namespace HaCreator.GUI.InstanceEditor {
 				}
 
 			if (indeterminate) forceEnable.CheckState = CheckState.Indeterminate;
-			else if (forceEnable.Checked = force != null) forceInt.Value = (int) force;
+			else {
+				forceEnable.Checked = force != 0;
+				if (forceEnable.Checked) forceInt.Value = (int) force;
+			}
 
 			indeterminate = false;
 			for (var i = 1; i < footholds.Length; i++)
@@ -46,7 +49,10 @@ namespace HaCreator.GUI.InstanceEditor {
 				}
 
 			if (indeterminate) pieceEnable.CheckState = CheckState.Indeterminate;
-			else if (pieceEnable.Checked = force != null) pieceInt.Value = (int) piece;
+			else {
+				pieceEnable.Checked = force != 0;
+				if (pieceEnable.Checked) pieceInt.Value = (int) piece;
+			}
 
 			indeterminate = false;
 			for (var i = 1; i < footholds.Length; i++)
@@ -82,12 +88,12 @@ namespace HaCreator.GUI.InstanceEditor {
 
 			lock (footholds[0].Board.ParentControl) {
 				if (forceEnable.CheckState != CheckState.Indeterminate) {
-					var force = forceEnable.Checked ? (int?) forceInt.Value : (int?) null;
+					var force = forceEnable.Checked ? decimal.ToDouble(forceInt.Value) : 0.0;
 					foreach (var line in footholds) line.Force = force;
 				}
 
 				if (pieceEnable.CheckState != CheckState.Indeterminate) {
-					var piece = pieceEnable.Checked ? (int?) pieceInt.Value : (int?) null;
+					var piece = pieceEnable.Checked ? (int) pieceInt.Value : 0;
 					foreach (var line in footholds) line.Piece = piece;
 				}
 

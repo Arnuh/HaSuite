@@ -18,12 +18,12 @@ namespace HaCreator.MapEditor.Instance.Misc {
 	public class ShipObject : BoardItem, IFlippable, INamedMisc, ISerializable {
 		private ObjectInfo baseInfo; //shipObj
 		private bool flip;
-		private int? x0;
-		private int? zVal;
+		private int x0;
+		private int zVal;
 		private int tMove;
 		private int shipKind;
 
-		public ShipObject(ObjectInfo baseInfo, Board board, int x, int y, int? zVal, int? x0, int tMove, int shipKind,
+		public ShipObject(ObjectInfo baseInfo, Board board, int x, int y, int zVal, int x0, int tMove, int shipKind,
 			bool flip)
 			: base(board, x, y, -1) {
 			this.baseInfo = baseInfo;
@@ -36,12 +36,12 @@ namespace HaCreator.MapEditor.Instance.Misc {
 				X -= Width - 2 * Origin.X;
 		}
 
-		public int? X0 {
+		public int X0 {
 			get => x0;
 			set => x0 = value;
 		}
 
-		public int? zValue {
+		public int zValue {
 			get => zVal;
 			set => zVal = value;
 		}
@@ -98,7 +98,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 		public new class SerializationForm : BoardItem.SerializationForm {
 			public string os, l0, l1, l2;
 			public bool flip;
-			public int? x0, zval;
+			public int x0, zval;
 			public int tmove, shipkind;
 		}
 

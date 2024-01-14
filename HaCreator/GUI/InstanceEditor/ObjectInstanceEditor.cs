@@ -6,16 +6,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
-using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
+using static HaCreator.GUI.InstanceEditor.EditorTools;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class ObjectInstanceEditor : EditorBase {
@@ -37,19 +33,19 @@ namespace HaCreator.GUI.InstanceEditor {
 			zInput.Value = item.Z;
 			rBox.Checked = item.r;
 			flipBox.Checked = item.Flip;
-			hideBox.Checked = !item.hide.HasValue ? false : item.hide.Value;
+			hideBox.Checked = item.hide != Defaults.Object.Hide;
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-			if (item.Name != null) {
+			if (Defaults.Object.Name.Equals(item.Name)) {
 				nameEnable.Checked = true;
 				nameBox.Text = item.Name;
 			}
 
 			flowBox.Checked = item.flow;
-			SetOptionalInt(rxInt, rxBox, item.rx);
-			SetOptionalInt(ryInt, ryBox, item.ry);
-			SetOptionalInt(cxInt, cxBox, item.cx);
-			SetOptionalInt(cyInt, cyBox, item.cy);
-			if (item.tags == null) {
+			LoadOptionalInt(item.rx, rxInt, rxBox, Defaults.Object.RX);
+			LoadOptionalInt(item.ry, ryInt, ryBox, Defaults.Object.RY);
+			LoadOptionalInt(item.cx, cxInt, cxBox, Defaults.Object.CX);
+			LoadOptionalInt(item.cy, cyInt, cyBox, Defaults.Object.CY);
+			if (!Defaults.Object.Tags.Equals(item.tags)) {
 				tagsEnable.Checked = false;
 			} else {
 				tagsEnable.Checked = true;
@@ -60,13 +56,6 @@ namespace HaCreator.GUI.InstanceEditor {
 				questEnable.Checked = true;
 				foreach (var info in item.QuestInfo)
 					questList.Items.Add(info);
-			}
-		}
-
-		private void SetOptionalInt(NumericUpDown intinput, CheckBox checkbox, int? num) {
-			if (num != null) {
-				checkbox.Checked = true;
-				intinput.Value = (int) num;
 			}
 		}
 
@@ -91,17 +80,17 @@ namespace HaCreator.GUI.InstanceEditor {
 
 				if (actions.Count > 0)
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
-				item.Name = nameEnable.Checked ? nameBox.Text : null;
+				item.Name = nameEnable.Checked ? nameBox.Text : Defaults.Object.Name;
 				item.flow = flowBox.Checked;
 				item.reactor = reactorBox.Checked;
 				item.r = rBox.Checked;
 				item.Flip = flipBox.Checked;
 				item.hide = hideBox.Checked;
-				item.rx = GetOptionalInt(rxInt, rxBox);
-				item.ry = GetOptionalInt(ryInt, ryBox);
-				item.cx = GetOptionalInt(cxInt, cxBox);
-				item.cy = GetOptionalInt(cyInt, cyBox);
-				item.tags = tagsEnable.Checked ? tagsBox.Text : null;
+				item.rx = GetOptionalInt(rxInt, rxBox, Defaults.Object.RX);
+				item.ry = GetOptionalInt(ryInt, ryBox, Defaults.Object.RY);
+				item.cx = GetOptionalInt(cxInt, cxBox, Defaults.Object.CX);
+				item.cy = GetOptionalInt(cyInt, cyBox, Defaults.Object.CY);
+				item.tags = tagsEnable.Checked ? tagsBox.Text : Defaults.Object.Tags;
 				if (questEnable.Checked) {
 					var questInfo = new List<ObjectInstanceQuest>();
 					foreach (ObjectInstanceQuest info in questList.Items) questInfo.Add(info);
@@ -112,10 +101,6 @@ namespace HaCreator.GUI.InstanceEditor {
 			}
 
 			Close();
-		}
-
-		private int? GetOptionalInt(NumericUpDown intinput, CheckBox checkbox) {
-			return checkbox.Checked ? (int?) intinput.Value : null;
 		}
 
 		private void enablingCheckBox_CheckChanged(object sender, EventArgs e) {

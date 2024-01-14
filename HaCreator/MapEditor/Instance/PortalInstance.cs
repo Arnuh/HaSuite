@@ -23,18 +23,18 @@ namespace HaCreator.MapEditor.Instance {
 		private string _tn;
 		private int _tm;
 		private string _script;
-		private int? _delay;
-		private MapleBool _hideTooltip;
-		private MapleBool _onlyOnce;
-		private int? _horizontalImpact;
-		private int? _verticalImpact;
+		private int _delay;
+		private bool _hideTooltip;
+		private bool _onlyOnce;
+		private int _horizontalImpact;
+		private int _verticalImpact;
 		private string _image;
-		private int? _hRange;
-		private int? _vRange;
+		private int _hRange;
+		private int _vRange;
 
 		public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, string pt, string tn, int tm,
-			string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact,
-			int? verticalImpact, string image, int? hRange, int? vRange)
+			string script, int delay, bool hideTooltip, bool onlyOnce, int horizontalImpact,
+			int verticalImpact, string image, int hRange, int vRange)
 			: base(board, x, y, -1) {
 			this.baseInfo = baseInfo;
 			_pn = pn;
@@ -108,37 +108,37 @@ namespace HaCreator.MapEditor.Instance {
 			set => _script = value;
 		}
 
-		public int? delay {
+		public int delay {
 			get => _delay;
 			set => _delay = value;
 		}
 
-		public MapleBool hideTooltip {
+		public bool hideTooltip {
 			get => _hideTooltip;
 			set => _hideTooltip = value;
 		}
 
-		public MapleBool onlyOnce {
+		public bool onlyOnce {
 			get => _onlyOnce;
 			set => _onlyOnce = value;
 		}
 
-		public int? horizontalImpact {
+		public int horizontalImpact {
 			get => _horizontalImpact;
 			set => _horizontalImpact = value;
 		}
 
-		public int? verticalImpact {
+		public int verticalImpact {
 			get => _verticalImpact;
 			set => _verticalImpact = value;
 		}
 
-		public int? hRange {
+		public int hRange {
 			get => _hRange;
 			set => _hRange = value;
 		}
 
-		public int? vRange {
+		public int vRange {
 			get => _vRange;
 			set => _vRange = value;
 		}
@@ -147,11 +147,11 @@ namespace HaCreator.MapEditor.Instance {
 			public string pn, pt, tn;
 			public int tm;
 			public string script;
-			public int? delay;
-			public MapleBool hidett, onlyonce;
-			public int? himpact, vimpact;
+			public int delay;
+			public bool hidett, onlyonce;
+			public int himpact, vimpact;
 			public string image;
-			public int? hrange, vrange;
+			public int hrange, vrange;
 		}
 
 		public override object Serialize() {

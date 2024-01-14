@@ -5,22 +5,17 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
 using HaCreator.MapEditor;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using HaCreator.GUI.InstanceEditor;
+using HaCreator.MapEditor.Info.Default;
 using MapleLib.WzLib.WzStructure.Data.MapStructure;
 using HaCreator.Wz;
+using static HaCreator.GUI.InstanceEditor.EditorTools;
 
 namespace HaCreator.GUI {
 	public partial class InfoEditor : EditorBase {
@@ -112,46 +107,42 @@ namespace HaCreator.GUI {
 			mobRate.Value = (decimal) info.mobRate;
 
 			//LoadOptionalInt(info.link, linkBox);
-			LoadOptionalInt(info.timeLimit, timeLimit, timeLimitEnable);
-			LoadOptionalInt(info.lvLimit, lvLimit, lvLimitEnable);
-			LoadOptionalInt(info.lvForceMove, lvForceMove, lvForceMoveUse);
-			LoadOptionalString(info.onFirstUserEnter, firstUserEnter, firstUserEnable);
-			LoadOptionalString(info.onUserEnter, userEnter, userEnterEnable);
-			LoadOptionalString(info.mapName, mapName, mapNameEnable);
-			LoadOptionalString(info.mapDesc, mapDesc, mapDescEnable);
-			LoadOptionalString(info.streetName, streetNameBox, streetNameEnable);
-			LoadOptionalString(info.effect, effectBox, effectEnable);
-			LoadOptionalInt(info.moveLimit, moveLimit, moveLimitEnable);
-			LoadOptionalInt(info.dropExpire, dropExpire, dropExpireEnable);
-			LoadOptionalFloat(info.dropRate, dropRate, dropRateEnable);
-			LoadOptionalFloat(info.recovery, recovery, recoveryEnable);
+			LoadOptionalInt(info.timeLimit, timeLimit, timeLimitEnable, Defaults.Info.TimeLimit);
+			LoadOptionalInt(info.lvLimit, lvLimit, lvLimitEnable, Defaults.Info.LvLimit);
+			LoadOptionalInt(info.lvForceMove, lvForceMove, lvForceMoveUse, Defaults.Info.LvForceMove);
+			LoadOptionalString(info.onFirstUserEnter, firstUserEnter, firstUserEnable, Defaults.Info.OnFirstUserEnter);
+			LoadOptionalString(info.onUserEnter, userEnter, userEnterEnable, Defaults.Info.OnUserEnter);
+			LoadOptionalString(info.mapName, mapName, mapNameEnable, Defaults.Info.MapName);
+			LoadOptionalString(info.mapDesc, mapDesc, mapDescEnable, Defaults.Info.MapDesc);
+			LoadOptionalString(info.streetName, streetNameBox, streetNameEnable, Defaults.Info.StreetName);
+			LoadOptionalString(info.effect, effectBox, effectEnable, Defaults.Info.Effect);
+			LoadOptionalInt(info.moveLimit, moveLimit, moveLimitEnable, Defaults.Info.MoveLimit);
+			LoadOptionalInt(info.dropExpire, dropExpire, dropExpireEnable, Defaults.Info.DropExpire);
+			LoadOptionalFloat(info.dropRate, dropRate, dropRateEnable, Defaults.Info.DropRate);
+			LoadOptionalFloat(info.recovery, recovery, recoveryEnable, Defaults.Info.Recovery);
 			reactorShuffle.Checked = info.reactorShuffle;
-			LoadOptionalString(info.reactorShuffleName, reactorNameBox, reactorNameShuffle);
-			LoadOptionalFloat(info.fs, fsBox, fsEnable);
-			LoadOptionalInt(info.createMobInterval, createMobInterval, massEnable);
-			LoadOptionalInt(info.fixedMobCapacity, fixedMobCapacity, massEnable);
-			LoadOptionalInt(info.decHP, decHP, hpDecEnable);
-			LoadOptionalInt(info.decInterval, decInterval, decIntervalEnable);
-			LoadOptionalInt(info.protectItem, protectItem, protectEnable);
-
-			// Help
-			helpEnable.Checked = info.help != null;
-			if (info.help != null)
-				helpBox.Text = info.help.Replace(@"\n", "\r\n");
+			LoadOptionalString(info.reactorShuffleName, reactorNameBox, reactorNameShuffle, Defaults.Info.ReactorShuffleName);
+			LoadOptionalFloat(info.fs, fsBox, fsEnable, Defaults.Info.FS);
+			LoadOptionalInt(info.createMobInterval, createMobInterval, massEnable, Defaults.Info.CreateMobInterval);
+			LoadOptionalInt(info.fixedMobCapacity, fixedMobCapacity, massEnable, Defaults.Info.FixedMobCapacity);
+			LoadOptionalInt(info.decHP, decHP, hpDecEnable, Defaults.Info.DecHP);
+			LoadOptionalInt(info.decInterval, decInterval, decIntervalEnable, Defaults.Info.DecInterval);
+			LoadOptionalInt(info.protectItem, protectItem, protectEnable, Defaults.Info.ProtectItem);
+			LoadOptionalString(info.help.Replace(@"\n", "\r\n"), helpBox, helpEnable, Defaults.Info.Help);
 
 			// Time mobs
 			if (info.timeMob != null) {
 				var tMob = (TimeMob) info.timeMob;
 				summonMobEnable.Checked = true;
-				LoadOptionalInt(tMob.startHour, timedMobStart, timedMobEnable);
-				LoadOptionalInt(tMob.endHour, timedMobEnd, timedMobEnable);
+				LoadOptionalInt(tMob.startHour, timedMobStart, timedMobEnable, 0);
+				LoadOptionalInt(tMob.endHour, timedMobEnd, timedMobEnable, 0);
 				timedMobId.Value = tMob.id;
 				timedMobMessage.Text = tMob.message.Replace(@"\n", "\r\n");
 			}
 
 			// Lie detector
 			if (info.autoLieDetector != null) {
-				var ald = (AutoLieDetector) info.autoLieDetector;
+				var ald = info.autoLieDetector;
 				autoLieDetectorEnable.Checked = true;
 				autoLieStart.Value = ald.startHour;
 				autoLieEnd.Value = ald.endHour;
@@ -249,33 +240,6 @@ namespace HaCreator.GUI {
 			}
 		}
 
-		private void LoadOptionalInt(int? source, NumericUpDown target, CheckBox checkBox) {
-			checkBox.Checked = source != null;
-			if (source != null) target.Value = source.Value;
-		}
-
-		private int? GetOptionalInt(NumericUpDown textbox, CheckBox checkBox) {
-			return checkBox.Checked ? (int?) textbox.Value : null;
-		}
-
-		private void LoadOptionalFloat(float? source, NumericUpDown target, CheckBox checkBox) {
-			checkBox.Checked = source != null;
-			if (source != null) target.Value = (decimal) source.Value;
-		}
-
-		private float? GetOptionalFloat(NumericUpDown textbox, CheckBox checkBox) {
-			return checkBox.Checked ? (float?) textbox.Value : null;
-		}
-
-		private void LoadOptionalString(string source, TextBox target, CheckBox checkBox) {
-			checkBox.Checked = source != null;
-			if (source != null) target.Text = source;
-		}
-
-		private string GetOptionalString(TextBox textbox, CheckBox checkBox) {
-			return checkBox.Checked ? textbox.Text : null;
-		}
-
 		private void bgmBox_SelectedIndexChanged(object sender, EventArgs e) {
 			soundPlayer1.SoundProperty = Program.InfoManager.BGMs[(string) bgmBox.SelectedItem];
 		}
@@ -313,35 +277,35 @@ namespace HaCreator.GUI {
 				}
 
 				info.returnMap = cannotReturnCBX.Checked ? info.id : (int) returnBox.Value;
-				info.forcedReturn = returnHereCBX.Checked ? 999999999 : (int) forcedRet.Value;
+				info.forcedReturn = returnHereCBX.Checked ? Defaults.Info.InvalidMap : (int) forcedRet.Value;
 				info.mobRate = (float) mobRate.Value;
-				info.timeLimit = GetOptionalInt(timeLimit, timeLimitEnable);
-				info.lvLimit = GetOptionalInt(lvLimit, lvLimitEnable);
-				info.lvForceMove = GetOptionalInt(lvForceMove, lvForceMoveUse);
-				info.onFirstUserEnter = GetOptionalString(firstUserEnter, firstUserEnable);
-				info.onUserEnter = GetOptionalString(userEnter, userEnterEnable);
-				info.mapName = GetOptionalString(mapName, mapNameEnable);
-				info.mapDesc = GetOptionalString(mapDesc, mapDescEnable);
-				info.streetName = GetOptionalString(streetNameBox, streetNameEnable);
-				info.effect = GetOptionalString(effectBox, effectEnable);
-				info.moveLimit = GetOptionalInt(moveLimit, moveLimitEnable);
-				info.dropExpire = GetOptionalInt(dropExpire, dropExpireEnable);
-				info.dropRate = GetOptionalFloat(dropRate, dropRateEnable);
-				info.recovery = GetOptionalFloat(recovery, recoveryEnable);
+				info.timeLimit = GetOptionalInt(timeLimit, timeLimitEnable, Defaults.Info.TimeLimit);
+				info.lvLimit = GetOptionalInt(lvLimit, lvLimitEnable, Defaults.Info.LvLimit);
+				info.lvForceMove = GetOptionalInt(lvForceMove, lvForceMoveUse, Defaults.Info.LvForceMove);
+				info.onFirstUserEnter = GetOptionalString(firstUserEnter, firstUserEnable, Defaults.Info.OnFirstUserEnter);
+				info.onUserEnter = GetOptionalString(userEnter, userEnterEnable, Defaults.Info.OnUserEnter);
+				info.mapName = GetOptionalString(mapName, mapNameEnable, Defaults.Info.MapName);
+				info.mapDesc = GetOptionalString(mapDesc, mapDescEnable, Defaults.Info.MapDesc);
+				info.streetName = GetOptionalString(streetNameBox, streetNameEnable, Defaults.Info.StreetName);
+				info.effect = GetOptionalString(effectBox, effectEnable, Defaults.Info.Effect);
+				info.moveLimit = GetOptionalInt(moveLimit, moveLimitEnable, Defaults.Info.MoveLimit);
+				info.dropExpire = GetOptionalInt(dropExpire, dropExpireEnable, Defaults.Info.DropExpire);
+				info.dropRate = GetOptionalFloat(dropRate, dropRateEnable, Defaults.Info.DropRate);
+				info.recovery = GetOptionalFloat(recovery, recoveryEnable, Defaults.Info.Recovery);
 				info.reactorShuffle = reactorShuffle.Checked;
-				info.reactorShuffleName = GetOptionalString(reactorNameBox, reactorNameShuffle);
-				info.fs = GetOptionalFloat(fsBox, fsEnable);
-				info.createMobInterval = GetOptionalInt(createMobInterval, massEnable);
-				info.fixedMobCapacity = GetOptionalInt(fixedMobCapacity, massEnable);
-				info.decHP = GetOptionalInt(decHP, hpDecEnable);
-				info.decInterval = GetOptionalInt(decInterval, decIntervalEnable);
-				info.protectItem = GetOptionalInt(protectItem, protectEnable);
+				info.reactorShuffleName = GetOptionalString(reactorNameBox, reactorNameShuffle, Defaults.Info.ReactorShuffleName);
+				info.fs = GetOptionalFloat(fsBox, fsEnable, Defaults.Info.FS);
+				info.createMobInterval = GetOptionalInt(createMobInterval, massEnable, Defaults.Info.CreateMobInterval);
+				info.fixedMobCapacity = GetOptionalInt(fixedMobCapacity, massEnable, Defaults.Info.FixedMobCapacity);
+				info.decHP = GetOptionalInt(decHP, hpDecEnable, Defaults.Info.DecHP);
+				info.decInterval = GetOptionalInt(decInterval, decIntervalEnable, Defaults.Info.DecInterval);
+				info.protectItem = GetOptionalInt(protectItem, protectEnable, Defaults.Info.ProtectItem);
 
 				if (helpEnable.Checked) info.help = helpBox.Text.Replace("\r\n", @"\n");
 				if (summonMobEnable.Checked)
 					info.timeMob = new TimeMob(
-						GetOptionalInt(timedMobStart, timedMobEnable),
-						GetOptionalInt(timedMobEnd, timedMobEnable),
+						GetOptionalInt(timedMobStart, timedMobEnable, 0),
+						GetOptionalInt(timedMobEnd, timedMobEnable, 0),
 						(int) timedMobId.Value,
 						timedMobMessage.Text.Replace("\r\n", @"\n"));
 				if (autoLieDetectorEnable.Checked)

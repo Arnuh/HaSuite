@@ -19,6 +19,7 @@ using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.Collections;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapSimulator;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Wz;
@@ -172,21 +173,22 @@ namespace HaCreator.Wz {
 						obj["x"] = InfoTool.SetInt(objInst.UnflippedX);
 						obj["y"] = InfoTool.SetInt(objInst.Y);
 						obj["z"] = InfoTool.SetInt(objInst.Z);
-						obj["zM"] = InfoTool.SetInt(objInst.PlatformNumber);
 						obj["oS"] = InfoTool.SetString(objInfo.oS);
 						obj["l0"] = InfoTool.SetString(objInfo.l0);
 						obj["l1"] = InfoTool.SetString(objInfo.l1);
 						obj["l2"] = InfoTool.SetString(objInfo.l2);
-						obj["name"] = InfoTool.SetOptionalString(objInst.Name);
-						obj["r"] = InfoTool.SetOptionalBool(objInst.r);
-						obj["hide"] = InfoTool.SetOptionalBool(objInst.hide);
-						obj["reactor"] = InfoTool.SetOptionalBool(objInst.reactor);
-						obj["flow"] = InfoTool.SetOptionalBool(objInst.flow);
-						obj["rx"] = InfoTool.SetOptionalTranslatedInt(objInst.rx);
-						obj["ry"] = InfoTool.SetOptionalTranslatedInt(objInst.ry);
-						obj["cx"] = InfoTool.SetOptionalTranslatedInt(objInst.cx);
-						obj["cy"] = InfoTool.SetOptionalTranslatedInt(objInst.cy);
-						obj["tags"] = InfoTool.SetOptionalString(objInst.tags);
+						obj["f"] = InfoTool.SetBool(objInst.Flip);
+						obj["zM"] = InfoTool.SetInt(objInst.PlatformNumber);
+						obj["name"] = InfoTool.SetOptionalString(objInst.Name, Defaults.Object.Name);
+						obj["r"] = objInst.r.SetOptionalBool(Defaults.Object.R);
+						obj["hide"] = objInst.hide.SetOptionalBool(Defaults.Object.Hide);
+						obj["reactor"] = objInst.reactor.SetOptionalBool(Defaults.Object.Reactor);
+						obj["flow"] = objInst.flow.SetOptionalBool(Defaults.Object.Flow);
+						obj["rx"] = objInst.rx.SetOptionalInt(Defaults.Object.RX);
+						obj["ry"] = objInst.ry.SetOptionalInt(Defaults.Object.RY);
+						obj["cx"] = objInst.cx.SetOptionalInt(Defaults.Object.CX);
+						obj["cy"] = objInst.cy.SetOptionalInt(Defaults.Object.CY);
+						obj["tags"] = InfoTool.SetOptionalString(objInst.tags, Defaults.Object.Tags);
 						if (objInst.QuestInfo != null) {
 							var questParent = new WzSubProperty();
 							foreach (var objQuest in objInst.QuestInfo)
@@ -194,8 +196,6 @@ namespace HaCreator.Wz {
 
 							obj["quest"] = questParent;
 						}
-
-						obj["f"] = InfoTool.SetBool(objInst.Flip);
 
 						objParent[objIndex.ToString()] = obj;
 						objIndex++;
@@ -276,15 +276,15 @@ namespace HaCreator.Wz {
 				portal["tm"] = InfoTool.SetInt(portalInst.tm);
 				portal["tn"] = InfoTool.SetString(portalInst.tn);
 				portal["pn"] = InfoTool.SetString(portalInst.pn);
-				portal["image"] = InfoTool.SetOptionalString(portalInst.image);
-				portal["script"] = InfoTool.SetOptionalString(portalInst.script);
-				portal["verticalImpact"] = InfoTool.SetOptionalInt(portalInst.verticalImpact);
-				portal["horizontalImpact"] = InfoTool.SetOptionalInt(portalInst.horizontalImpact);
-				portal["hRange"] = InfoTool.SetOptionalInt(portalInst.hRange);
-				portal["vRange"] = InfoTool.SetOptionalInt(portalInst.vRange);
-				portal["delay"] = InfoTool.SetOptionalInt(portalInst.delay);
-				portal["hideTooltip"] = InfoTool.SetOptionalBool(portalInst.hideTooltip);
-				portal["onlyOnce"] = InfoTool.SetOptionalBool(portalInst.onlyOnce);
+				portal["script"] = InfoTool.SetOptionalString(portalInst.script, Defaults.Portal.Script);
+				portal["verticalImpact"] = portalInst.verticalImpact.SetOptionalInt(Defaults.Portal.VerticalImpact);
+				portal["horizontalImpact"] = portalInst.horizontalImpact.SetOptionalInt(Defaults.Portal.HorizontalImpact);
+				portal["hRange"] = portalInst.hRange.SetOptionalInt(Defaults.Portal.HRange);
+				portal["vRange"] = portalInst.vRange.SetOptionalInt(Defaults.Portal.VRange);
+				portal["delay"] = portalInst.delay.SetOptionalInt(Defaults.Portal.Delay);
+				portal["hideTooltip"] = portalInst.hideTooltip.SetOptionalBool(Defaults.Portal.HideTooltip);
+				portal["onlyOnce"] = portalInst.onlyOnce.SetOptionalBool(Defaults.Portal.OnlyOnce);
+				portal["image"] = InfoTool.SetOptionalString(portalInst.image, Defaults.Portal.Image);
 
 				portalParent[i.ToString()] = portal;
 			}
@@ -301,7 +301,7 @@ namespace HaCreator.Wz {
 				reactor["x"] = InfoTool.SetInt(reactorInst.UnflippedX);
 				reactor["y"] = InfoTool.SetInt(reactorInst.Y);
 				reactor["reactorTime"] = InfoTool.SetInt(reactorInst.ReactorTime);
-				reactor["name"] = InfoTool.SetOptionalString(reactorInst.Name);
+				reactor["name"] = InfoTool.SetOptionalString(reactorInst.Name, Defaults.Reactor.Name);
 				reactor["id"] = InfoTool.SetString(((ReactorInfo) reactorInst.BaseInfo).ID);
 				reactor["f"] = InfoTool.SetBool(reactorInst.Flip);
 
@@ -385,8 +385,8 @@ namespace HaCreator.Wz {
 					}
 				} else {
 					var strTooltipProp = new WzSubProperty();
-					strTooltipProp["Title"] = InfoTool.SetOptionalString(ttInst.Title);
-					strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc);
+					strTooltipProp["Title"] = InfoTool.SetString(ttInst.Title);
+					strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc, Defaults.ToolTip.Desc);
 					strTooltipParent[tooltipPropStr] = strTooltipProp;
 				}
 			}
@@ -421,17 +421,14 @@ namespace HaCreator.Wz {
 				bgProp["cy"] = InfoTool.SetInt(bgInst.cy);
 				bgProp["a"] = InfoTool.SetInt(bgInst.a);
 				bgProp["type"] = InfoTool.SetInt((int) bgInst.type);
-				bgProp["front"] = InfoTool.SetOptionalBool(bgInst.front);
+				bgProp["front"] = bgInst.front.SetOptionalBool(Defaults.Background.Front);
 				if (bgInst.screenMode != (int) RenderResolution.Res_All) // 0
 					bgProp["screenMode"] = InfoTool.SetInt(bgInst.screenMode);
 
-				if (bgInst.SpineAni != null) // dont put anything if null
-					bgProp["spineAni"] = InfoTool.SetOptionalString(bgInst.SpineAni); // dont put anything if null
-				if (bgInst.SpineRandomStart) // dont put anything if false
-					bgProp["spineRandomStart"] =
-						InfoTool.SetOptionalBool(bgInst.SpineRandomStart); // dont put anything if false
+				bgProp["spineAni"] = InfoTool.SetOptionalString(bgInst.SpineAni, Defaults.Background.SpineAni);
+				bgProp["spineRandomStart"] = bgInst.SpineRandomStart.SetOptionalBool(Defaults.Background.SpineRandomStart);
 
-				bgProp["f"] = InfoTool.SetOptionalBool(bgInst.Flip);
+				bgProp["f"] = bgInst.Flip.SetOptionalBool(Defaults.Background.Flip);
 				bgProp["bS"] = InfoTool.SetString(bgInfo.bS);
 				bgProp["ani"] = InfoTool.SetBool(bgInfo.Type == BackgroundInfoType.Animation);
 				bgProp["no"] = InfoTool.SetInt(int.Parse(bgInfo.no));
@@ -458,10 +455,10 @@ namespace HaCreator.Wz {
 				fhProp["y2"] = InfoTool.SetInt(anchor2.Y);
 				fhProp["prev"] = InfoTool.SetInt(line.prev);
 				fhProp["next"] = InfoTool.SetInt(line.next);
-				fhProp["cantThrough"] = InfoTool.SetOptionalBool(line.CantThrough);
-				fhProp["forbidFallDown"] = InfoTool.SetOptionalBool(line.ForbidFallDown);
-				fhProp["piece"] = InfoTool.SetOptionalInt(line.Piece);
-				fhProp["force"] = InfoTool.SetOptionalInt(line.Force);
+				fhProp["cantThrough"] = line.CantThrough.SetOptionalBool(Defaults.Foothold.CantThrough);
+				fhProp["forbidFallDown"] = line.ForbidFallDown.SetOptionalBool(Defaults.Foothold.ForbidFalldown);
+				fhProp["piece"] = line.Piece.SetOptionalInt(Defaults.Foothold.Piece);
+				fhProp["force"] = line.Force.SetOptionalDouble(Defaults.Foothold.Force);
 				prop[line.num.ToString()] = fhProp;
 
 				line.saved = true;
@@ -510,15 +507,15 @@ namespace HaCreator.Wz {
 				lifeProp["x"] = InfoTool.SetInt(lifeInst.UnflippedX);
 				lifeProp["y"] = InfoTool.SetInt(lifeInst.Y - lifeInst.yShift);
 				lifeProp["cy"] = InfoTool.SetInt(lifeInst.Y);
-				lifeProp["mobTime"] = InfoTool.SetOptionalInt(lifeInst.MobTime);
-				lifeProp["info"] = InfoTool.SetOptionalInt(lifeInst.Info);
-				lifeProp["team"] = InfoTool.SetOptionalInt(lifeInst.Team);
+				lifeProp["mobTime"] = lifeInst.MobTime.SetOptionalInt(Defaults.Life.MobTime);
+				lifeProp["info"] = lifeInst.Info.SetOptionalInt(Defaults.Life.Info);
+				lifeProp["team"] = lifeInst.Team.SetOptionalInt(Defaults.Life.Team);
 				lifeProp["rx0"] = InfoTool.SetInt(lifeInst.X - lifeInst.rx0Shift);
 				lifeProp["rx1"] = InfoTool.SetInt(lifeInst.X + lifeInst.rx1Shift);
-				lifeProp["f"] = InfoTool.SetOptionalBool(lifeInst.Flip);
-				lifeProp["hide"] = InfoTool.SetOptionalBool(lifeInst.Hide);
+				lifeProp["f"] = lifeInst.Flip.SetOptionalBool(Defaults.Life.F);
+				lifeProp["hide"] = lifeInst.Hide.SetOptionalBool(Defaults.Life.Hide);
 				lifeProp["type"] = InfoTool.SetString(mob ? "m" : "n");
-				lifeProp["limitedname"] = InfoTool.SetOptionalString(lifeInst.LimitedName);
+				lifeProp["limitedname"] = InfoTool.SetOptionalString(lifeInst.LimitedName, Defaults.Life.LimitedName);
 				lifeProp["fh"] = InfoTool.SetInt(GetFootholdBelow(lifeInst.X, lifeInst.Y));
 				lifeParent[i.ToString()] = lifeProp;
 			}
@@ -546,8 +543,8 @@ namespace HaCreator.Wz {
 					                                         shipInfo.l1 + "/" + shipInfo.l2);
 					shipProp["x"] = InfoTool.SetInt(ship.UnflippedX);
 					shipProp["y"] = InfoTool.SetInt(ship.Y);
-					shipProp["z"] = InfoTool.SetOptionalInt(ship.zValue);
-					shipProp["x0"] = InfoTool.SetOptionalInt(ship.X0);
+					shipProp["z"] = ship.zValue.SetOptionalInt(Defaults.ShipObj.ZValue);
+					shipProp["x0"] = ship.X0.SetOptionalInt(Defaults.ShipObj.X0);
 					shipProp["tMove"] = InfoTool.SetInt(ship.TimeMove);
 					shipProp["shipKind"] = InfoTool.SetInt(ship.ShipKind);
 					shipProp["f"] = InfoTool.SetBool(ship.Flip);
@@ -666,9 +663,9 @@ namespace HaCreator.Wz {
 						itemProp["gradient"] = InfoTool.SetInt(mirrorFieldData.ReflectionInfo.Gradient);
 						itemProp["alpha"] = InfoTool.SetInt(mirrorFieldData.ReflectionInfo.Alpha);
 						itemProp["objectForOverlay"] =
-							InfoTool.SetString(mirrorFieldData.ReflectionInfo.ObjectForOverlay);
-						itemProp["reflection"] = InfoTool.SetBool(mirrorFieldData.ReflectionInfo.Reflection);
-						itemProp["alphaTest"] = InfoTool.SetOptionalBool(mirrorFieldData.ReflectionInfo.AlphaTest);
+							InfoTool.SetOptionalString(mirrorFieldData.ReflectionInfo.ObjectForOverlay, Defaults.MirrorData.ObjectForOverlay);
+						itemProp["reflection"] = mirrorFieldData.ReflectionInfo.Reflection.SetOptionalBool(Defaults.MirrorData.Reflection);
+						itemProp["alphaTest"] = mirrorFieldData.ReflectionInfo.AlphaTest.SetOptionalBool(Defaults.MirrorData.AlphaTest);
 
 						targetObjectWzProperty.WzProperties.Add(itemProp);
 					} else {

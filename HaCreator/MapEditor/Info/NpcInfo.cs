@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.MapEditor.Info {
 	public class NpcInfo : MapleExtractableInfo {
@@ -84,12 +85,12 @@ namespace HaCreator.MapEditor.Info {
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
 			if (Image == null) ParseImage();
-			return new NpcInstance(this, board, x, y, UserSettings.Npcrx0Offset, UserSettings.Npcrx1Offset, 8, null, 0,
-				flip, false, null, null);
+			return new NpcInstance(this, board, x, y, UserSettings.Npcrx0Offset, UserSettings.Npcrx1Offset, 8, Defaults.Life.LimitedName, Defaults.Life.MobTime,
+				flip, Defaults.Life.Hide, Defaults.Life.Info, Defaults.Life.Team);
 		}
 
 		public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift,
-			string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) {
+			string limitedname, int mobTime, bool flip, bool hide, int info, int team) {
 			if (Image == null) ParseImage();
 			return new NpcInstance(this, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide,
 				info, team);

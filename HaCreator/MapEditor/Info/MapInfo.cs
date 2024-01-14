@@ -18,13 +18,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
-using MapleLib.WzLib.WzStructure;
 using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using MapleLib.Helpers;
 using MapleLib.WzLib.WzStructure.Data.MapStructure;
 
@@ -51,69 +48,66 @@ namespace MapleLib.WzLib.WzStructure {
 		public string bgm = "Bgm00/GoPicnic";
 		public string mapMark = "None";
 		public long fieldLimit = 0; // FieldLimitType a | FieldLimitType b | etc
-		public int returnMap = 999999999;
-		public int forcedReturn = 999999999;
+		public int returnMap = Defaults.Info.InvalidMap;
+		public int forcedReturn = Defaults.Info.InvalidMap;
 		public bool cloud = false;
 		public bool swim = false;
 		public bool hideMinimap = false;
 		public bool town = false;
-		public float mobRate = 1.5f;
+		public float mobRate = Defaults.Info.MobRate;
 
 		//Optional
-		//public int link = -1;
-		public int? VRTop = null, VRBottom = null, VRLeft = null, VRRight = null;
-		public int? timeLimit = null;
-		public int? lvLimit = null;
-		public FieldType? fieldType = null;
-		public string onFirstUserEnter = null;
-		public string onUserEnter = null;
-		public MapleBool fly = null;
-		public MapleBool noMapCmd = null;
-		public MapleBool partyOnly = null;
-		public MapleBool reactorShuffle = null;
-		public string reactorShuffleName = null;
-		public MapleBool personalShop = null;
-		public MapleBool entrustedShop = null;
-		public string effect = null; //Bubbling; 610030550 and many others
-		public int? lvForceMove = null; //limit FROM value
-		public TimeMob? timeMob = null;
-		public string help = null; //help string
-		public MapleBool snow = null;
-		public MapleBool rain = null;
-		public int? dropExpire = null; //in seconds
-		public int? decHP = null;
-		public int? decInterval = null;
-		public AutoLieDetector autoLieDetector = null;
-		public MapleBool expeditionOnly = null;
-		public float? fs = null; //slip on ice speed, default 0.2
-		public int? protectItem = null; //ID, item protecting from cold
-		public int? createMobInterval = null; //used for massacre pqs
-		public int? fixedMobCapacity = null; //mob capacity to target (used for massacre pqs)
+		public bool VRLimit = Defaults.Info.VRLimit; //use vr's as limits?
+		public int VRTop = 0, VRBottom = 0, VRLeft = 0, VRRight = 0;
+		public int timeLimit = Defaults.Info.TimeLimit;
+		public int lvLimit = Defaults.Info.LvLimit;
+		public FieldType fieldType = Defaults.Info.FieldTypeDefault;
+		public string onFirstUserEnter = Defaults.Info.OnFirstUserEnter;
+		public string onUserEnter = Defaults.Info.OnUserEnter;
+		public bool fly = Defaults.Info.Fly;
+		public bool noMapCmd = Defaults.Info.NoMapCmd;
+		public bool partyOnly = Defaults.Info.PartyOnly;
+		public bool reactorShuffle = Defaults.Info.ReactorShuffle;
+		public string reactorShuffleName = Defaults.Info.ReactorShuffleName;
+		public bool personalShop = Defaults.Info.PersonalShop;
+		public bool entrustedShop = Defaults.Info.EntrustedShop;
+		public string effect = Defaults.Info.Effect; //Bubbling; 610030550 and many others
+		public int lvForceMove = Defaults.Info.LvForceMove; //limit FROM value
+		public TimeMob? timeMob;
+		public string help = Defaults.Info.Help; //help string
+		public bool snow = Defaults.Info.Snow;
+		public bool rain = Defaults.Info.Rain;
+		public int dropExpire = Defaults.Info.DropExpire; //in seconds
+		public int decHP = Defaults.Info.DecHP;
+		public int decInterval = Defaults.Info.DecInterval;
+		public AutoLieDetector autoLieDetector;
+		public bool expeditionOnly = Defaults.Info.ExpeditionOnly;
+		public float fs = Defaults.Info.FS; //slip on ice speed, default 0.2
+		public int protectItem = Defaults.Info.ProtectItem; //ID, item protecting from cold
+		public int createMobInterval = Defaults.Info.CreateMobInterval; //used for massacre pqs
+		public int fixedMobCapacity = Defaults.Info.FixedMobCapacity; //mob capacity to target (used for massacre pqs)
+		public bool miniMapOnOff = Defaults.Info.MiniMapOnOff;
+		public bool noRegenMap = Defaults.Info.NoRegenMap; //610030400
+		public List<int> allowedItem = null;
+		public float recovery = Defaults.Info.Recovery; //recovery rate, like in sauna (3)
+		public bool blockPBossChange = Defaults.Info.BlockPBossChange; //something with monster carnival
+		public bool everlast = Defaults.Info.Everlast; //something with bonus stages of PQs
+		public bool damageCheckFree = Defaults.Info.DamageCheckFree; //something with fishing event
+		public float dropRate = Defaults.Info.DropRate;
+		public bool scrollDisable = Defaults.Info.ScrollDisable;
+		public bool needSkillForFly = Defaults.Info.NeedSkillForFly;
+		public bool zakum2Hack = Defaults.Info.Zakum2Hack; //JQ hack protection
+		public bool allMoveCheck = Defaults.Info.AllMoveCheck; //another JQ hack protection
+		public bool consumeItemCoolTime = Defaults.Info.ConsumeItemCoolTime; //cool time of consume item
+		public bool zeroSideOnly = Defaults.Info.ZeroSideOnly; // true if its zero's temple map
+		public int moveLimit = Defaults.Info.MoveLimit;
 
-		public MapleBool
-			mirror_Bottom =
-				null; // Mirror Bottom (Reflection for objects near VRBottom of the field, arcane river maps)
+		public bool mirror_Bottom = Defaults.Info.MirrorBottom; // Mirror Bottom (Reflection for objects near VRBottom of the field, arcane river maps)
 
 		//Unknown optional
-		public int? moveLimit = null;
-		public string mapDesc = null;
-		public string mapName = null;
-		public string streetName = null;
-		public MapleBool miniMapOnOff = null;
-		public MapleBool noRegenMap = null; //610030400
-		public List<int> allowedItem = null;
-		public float? recovery = null; //recovery rate, like in sauna (3)
-		public MapleBool blockPBossChange = null; //something with monster carnival
-		public MapleBool everlast = null; //something with bonus stages of PQs
-		public MapleBool damageCheckFree = null; //something with fishing event
-		public float? dropRate = null;
-		public MapleBool scrollDisable = null;
-		public MapleBool needSkillForFly = null;
-		public MapleBool zakum2Hack = null; //JQ hack protection
-		public MapleBool allMoveCheck = null; //another JQ hack protection
-		public MapleBool VRLimit = null; //use vr's as limits?
-		public MapleBool consumeItemCoolTime = null; //cool time of consume item
-		public MapleBool zeroSideOnly = null; // true if its zero's temple map
+		public string mapDesc = "";
+		public string mapName = "";
+		public string streetName = "";
 
 		//Special
 		public List<WzImageProperty> additionalProps = new List<WzImageProperty>();
@@ -141,15 +135,15 @@ namespace MapleLib.WzLib.WzStructure {
 		/// <param name="strCategoryName"></param>
 		public MapInfo(WzImage image, string strMapName, string strStreetName, string strCategoryName) {
 			this.image = image;
-			int? startHour;
-			int? endHour;
+			int startHour;
+			int endHour;
 			this.strMapName = strMapName;
 			this.strStreetName = strStreetName;
 			this.strCategoryName = strCategoryName;
-			var file = (WzFile) image.WzFileParent;
+			var file = image.WzFileParent;
 			var loggerSuffix = ", map " + image.Name + (file != null
 				? " of version " + Enum.GetName(typeof(WzMapleVersion), file.MapleVersion) + ", v" +
-				  file.Version.ToString()
+				  file.Version
 				: "");
 
 			foreach (var prop in image["info"].WzProperties)
@@ -158,16 +152,16 @@ namespace MapleLib.WzLib.WzStructure {
 						bgm = InfoTool.GetString(prop);
 						break;
 					case "cloud":
-						cloud = InfoTool.GetBool(prop);
+						cloud = prop.GetBool();
 						break;
 					case "swim":
-						swim = InfoTool.GetBool(prop);
+						swim = prop.GetBool();
 						break;
 					case "forcedReturn":
-						forcedReturn = InfoTool.GetInt(prop);
+						forcedReturn = prop.GetInt();
 						break;
 					case "hideMinimap":
-						hideMinimap = InfoTool.GetBool(prop);
+						hideMinimap = prop.GetBool();
 						break;
 					case "mapDesc":
 						mapDesc = InfoTool.GetString(prop);
@@ -237,7 +231,7 @@ namespace MapleLib.WzLib.WzStructure {
 						var ft = InfoTool.GetInt(prop);
 						if (!Enum.IsDefined(typeof(FieldType), ft)) {
 							ErrorLogger.Log(ErrorLevel.IncorrectStructure,
-								"Invalid fieldType " + ft.ToString() + loggerSuffix);
+								"Invalid fieldType " + ft + loggerSuffix);
 							ft = 0;
 						}
 
@@ -265,14 +259,15 @@ namespace MapleLib.WzLib.WzStructure {
 						lvForceMove = InfoTool.GetInt(prop);
 						break;
 					case "timeMob":
-						startHour = InfoTool.GetOptionalInt(prop["startHour"]);
-						endHour = InfoTool.GetOptionalInt(prop["endHour"]);
-						var id = InfoTool.GetOptionalInt(prop["id"]);
-						var message = InfoTool.GetOptionalString(prop["message"]);
-						if (id == null || message == null || (startHour == null) ^ (endHour == null))
+						startHour = prop["startHour"].GetOptionalInt(Defaults.TimeMob.StartHour);
+						endHour = prop["endHour"].GetOptionalInt(Defaults.TimeMob.EndHour);
+						var id = prop["id"].GetInt();
+						var message = prop["message"].GetOptionalString(Defaults.TimeMob.Message);
+						if (message == null) {
 							ErrorLogger.Log(ErrorLevel.IncorrectStructure, "timeMob" + loggerSuffix);
-						else
-							timeMob = new TimeMob((int?) startHour, (int?) endHour, (int) id, message);
+						} else {
+							timeMob = new TimeMob(startHour, endHour, id, message);
+						}
 
 						break;
 					case "help":
@@ -294,16 +289,11 @@ namespace MapleLib.WzLib.WzStructure {
 						decInterval = InfoTool.GetInt(prop);
 						break;
 					case "autoLieDetector":
-						startHour = InfoTool.GetOptionalInt(prop["startHour"]);
-						endHour = InfoTool.GetOptionalInt(prop["endHour"]);
-						var interval = InfoTool.GetOptionalInt(prop["interval"]);
-						var propInt = InfoTool.GetOptionalInt(prop["prop"]);
-						if (startHour == null || endHour == null || interval == null || propInt == null)
-							ErrorLogger.Log(ErrorLevel.IncorrectStructure, "autoLieDetector" + loggerSuffix);
-						else
-							autoLieDetector = new AutoLieDetector((int) startHour, (int) endHour, (int) interval,
-								(int) propInt);
-
+						startHour = InfoTool.GetInt(prop["startHour"]);
+						endHour = InfoTool.GetInt(prop["endHour"]);
+						var interval = InfoTool.GetInt(prop["interval"]);
+						var propInt = InfoTool.GetInt(prop["prop"]);
+						autoLieDetector = new AutoLieDetector(startHour, endHour, interval, propInt);
 						break;
 					case "expeditionOnly":
 						expeditionOnly = InfoTool.GetBool(prop);
@@ -586,77 +576,87 @@ namespace MapleLib.WzLib.WzStructure {
 		/// <param name="VR"></param>
 		public void Save(WzImage dest, Rectangle? VR) {
 			var info = new WzSubProperty();
-			info["bgm"] = InfoTool.SetString(bgm);
+			info["version"] = InfoTool.SetInt(version);
 			info["cloud"] = InfoTool.SetBool(cloud);
-			info["swim"] = InfoTool.SetBool(swim);
+			info["town"] = InfoTool.SetBool(town);
+			info["mobRate"] = InfoTool.SetFloat(mobRate);
+			info["bgm"] = InfoTool.SetString(bgm);
+			info["returnMap"] = InfoTool.SetInt(returnMap);
 			info["forcedReturn"] = InfoTool.SetInt(forcedReturn);
 			info["hideMinimap"] = InfoTool.SetBool(hideMinimap);
-			info["mapDesc"] = InfoTool.SetOptionalString(mapDesc);
-			info["mapName"] = InfoTool.SetOptionalString(mapDesc);
+			info["moveLimit"] = moveLimit.SetOptionalInt(Defaults.Info.MoveLimit);
 			info["mapMark"] = InfoTool.SetString(mapMark);
-			info["mobRate"] = InfoTool.SetFloat(mobRate);
-			info["moveLimit"] = InfoTool.SetOptionalInt(moveLimit);
-			info["returnMap"] = InfoTool.SetInt(returnMap);
-			info["town"] = InfoTool.SetBool(town);
-			info["version"] = InfoTool.SetInt(version);
 			info["fieldLimit"] = InfoTool.SetInt((int) fieldLimit);
-			info["timeLimit"] = InfoTool.SetOptionalInt(timeLimit);
-			info["lvLimit"] = InfoTool.SetOptionalInt(lvLimit);
+			info["swim"] = swim.SetOptionalBool(Defaults.Info.Swim);
 
-			info["VRTop"] = InfoTool.SetOptionalInt(VRTop);
-			info["VRBottom"] = InfoTool.SetOptionalInt(VRBottom);
-			info["VRLeft"] = InfoTool.SetOptionalInt(VRLeft);
-			info["VRRight"] = InfoTool.SetOptionalInt(VRRight);
+			if (VR.HasValue) {
+				info["VRLeft"] = InfoTool.SetInt(VR.Value.Left);
+				info["VRRight"] = InfoTool.SetInt(VR.Value.Right);
+				info["VRTop"] = InfoTool.SetInt(VR.Value.Top);
+				info["VRBottom"] = InfoTool.SetInt(VR.Value.Bottom);
+			} else {
+				// ?
+				info["VRTop"] = VRTop.SetOptionalInt(0);
+				info["VRBottom"] = VRBottom.SetOptionalInt(0);
+				info["VRLeft"] = VRLeft.SetOptionalInt(0);
+				info["VRRight"] = VRRight.SetOptionalInt(0);
+			}
 
-			info["onFirstUserEnter"] = InfoTool.SetOptionalString(onFirstUserEnter);
-			info["onUserEnter"] = InfoTool.SetOptionalString(onUserEnter);
-			info["fly"] = InfoTool.SetOptionalBool(fly);
-			info["noMapCmd"] = InfoTool.SetOptionalBool(noMapCmd);
-			info["partyOnly"] = InfoTool.SetOptionalBool(partyOnly);
-			info["fieldType"] = InfoTool.SetOptionalInt((int?) fieldType);
-			info["miniMapOnOff"] = InfoTool.SetOptionalBool(miniMapOnOff);
-			info["reactorShuffle"] = InfoTool.SetOptionalBool(reactorShuffle);
-			info["reactorShuffleName"] = InfoTool.SetOptionalString(reactorShuffleName);
-			info["personalShop"] = InfoTool.SetOptionalBool(personalShop);
-			info["entrustedShop"] = InfoTool.SetOptionalBool(entrustedShop);
-			info["effect"] = InfoTool.SetOptionalString(effect);
-			info["lvForceMove"] = InfoTool.SetOptionalInt(lvForceMove);
-			info["mirror_Bottom"] = InfoTool.SetOptionalBool(mirror_Bottom);
+			info["VRLimit"] = VRLimit.SetOptionalBool(Defaults.Info.VRLimit);
+
+			info["mapDesc"] = InfoTool.SetOptionalString(mapDesc, Defaults.Info.MapDesc);
+			info["mapName"] = InfoTool.SetOptionalString(mapName, Defaults.Info.MapName);
+			info["streetName"] = InfoTool.SetOptionalString(streetName, Defaults.Info.StreetName);
+			info["timeLimit"] = timeLimit.SetOptionalInt(Defaults.Info.TimeLimit);
+			info["lvLimit"] = lvLimit.SetOptionalInt(Defaults.Info.LvLimit);
+			info["onFirstUserEnter"] = InfoTool.SetOptionalString(onFirstUserEnter, Defaults.Info.OnFirstUserEnter);
+			info["onUserEnter"] = InfoTool.SetOptionalString(onUserEnter, Defaults.Info.OnUserEnter);
+			info["fly"] = fly.SetOptionalBool(Defaults.Info.Fly);
+			info["noMapCmd"] = noMapCmd.SetOptionalBool(Defaults.Info.NoMapCmd);
+			info["partyOnly"] = partyOnly.SetOptionalBool(Defaults.Info.PartyOnly);
+			info["fieldType"] = ((int) fieldType).SetOptionalInt((int) Defaults.Info.FieldTypeDefault);
+			info["miniMapOnOff"] = miniMapOnOff.SetOptionalBool(Defaults.Info.MiniMapOnOff);
+			info["reactorShuffle"] = reactorShuffle.SetOptionalBool(Defaults.Info.ReactorShuffle);
+			info["reactorShuffleName"] = InfoTool.SetOptionalString(reactorShuffleName, Defaults.Info.ReactorShuffleName);
+			info["personalShop"] = personalShop.SetOptionalBool(Defaults.Info.PersonalShop);
+			info["entrustedShop"] = entrustedShop.SetOptionalBool(Defaults.Info.EntrustedShop);
+			info["effect"] = InfoTool.SetOptionalString(effect, Defaults.Info.Effect);
+			info["lvForceMove"] = lvForceMove.SetOptionalInt(Defaults.Info.LvForceMove);
+			info["mirror_Bottom"] = mirror_Bottom.SetOptionalBool(Defaults.Info.MirrorBottom);
 
 			// Time mob
 			if (timeMob != null) {
 				var prop = new WzSubProperty();
-				prop["startHour"] = InfoTool.SetOptionalInt(timeMob.Value.startHour);
-				prop["endHour"] = InfoTool.SetOptionalInt(timeMob.Value.endHour);
-				prop["id"] = InfoTool.SetOptionalInt(timeMob.Value.id);
-				prop["message"] = InfoTool.SetOptionalString(timeMob.Value.message);
+				prop["startHour"] = timeMob.Value.startHour.SetOptionalInt(Defaults.TimeMob.StartHour);
+				prop["endHour"] = timeMob.Value.endHour.SetOptionalInt(Defaults.TimeMob.EndHour);
+				prop["id"] = InfoTool.SetInt(timeMob.Value.id);
+				prop["message"] = InfoTool.SetOptionalString(timeMob.Value.message, Defaults.TimeMob.Message);
 				info["timeMob"] = prop;
 			}
 
-			info["help"] = InfoTool.SetOptionalString(help);
-			info["snow"] = InfoTool.SetOptionalBool(snow);
-			info["rain"] = InfoTool.SetOptionalBool(rain);
-			info["dropExpire"] = InfoTool.SetOptionalInt(dropExpire);
-			info["decHP"] = InfoTool.SetOptionalInt(decHP);
-			info["decInterval"] = InfoTool.SetOptionalInt(decInterval);
+			info["help"] = InfoTool.SetOptionalString(help, Defaults.Info.Help);
+			info["snow"] = snow.SetOptionalBool(Defaults.Info.Snow);
+			info["rain"] = rain.SetOptionalBool(Defaults.Info.Rain);
+			info["dropExpire"] = dropExpire.SetOptionalInt(Defaults.Info.DropExpire);
+			info["decHP"] = decHP.SetOptionalInt(Defaults.Info.DecHP);
+			info["decInterval"] = decInterval.SetOptionalInt(Defaults.Info.DecInterval);
 
 			// Lie detector
 			if (autoLieDetector != null) {
 				var prop = new WzSubProperty();
-				prop["startHour"] = InfoTool.SetOptionalInt(autoLieDetector.startHour);
-				prop["endHour"] = InfoTool.SetOptionalInt(autoLieDetector.endHour);
-				prop["interval"] = InfoTool.SetOptionalInt(autoLieDetector.interval);
-				prop["prop"] = InfoTool.SetOptionalInt(autoLieDetector.prop);
+				prop["startHour"] = InfoTool.SetInt(autoLieDetector.startHour);
+				prop["endHour"] = InfoTool.SetInt(autoLieDetector.endHour);
+				prop["interval"] = InfoTool.SetInt(autoLieDetector.interval);
+				prop["prop"] = InfoTool.SetInt(autoLieDetector.prop);
 				info["autoLieDetector"] = prop;
 			}
 
-			info["expeditionOnly"] = InfoTool.SetOptionalBool(expeditionOnly);
-			info["fs"] = InfoTool.SetOptionalFloat(fs);
-			info["protectItem"] = InfoTool.SetOptionalInt(protectItem);
-			info["createMobInterval"] = InfoTool.SetOptionalInt(createMobInterval);
-			info["fixedMobCapacity"] = InfoTool.SetOptionalInt(fixedMobCapacity);
-			info["streetName"] = InfoTool.SetOptionalString(streetName);
-			info["noRegenMap"] = InfoTool.SetOptionalBool(noRegenMap);
+			info["expeditionOnly"] = expeditionOnly.SetOptionalBool(Defaults.Info.ExpeditionOnly);
+			info["fs"] = InfoTool.SetOptionalFloat(fs, Defaults.Info.FS);
+			info["protectItem"] = protectItem.SetOptionalInt(Defaults.Info.ProtectItem);
+			info["createMobInterval"] = createMobInterval.SetOptionalInt(Defaults.Info.CreateMobInterval);
+			info["fixedMobCapacity"] = fixedMobCapacity.SetOptionalInt(Defaults.Info.FixedMobCapacity);
+			info["noRegenMap"] = noRegenMap.SetOptionalBool(Defaults.Info.NoRegenMap);
 			if (allowedItem != null) {
 				var prop = new WzSubProperty();
 				for (var i = 0; i < allowedItem.Count; i++) prop[i.ToString()] = InfoTool.SetInt(allowedItem[i]);
@@ -664,26 +664,18 @@ namespace MapleLib.WzLib.WzStructure {
 				info["allowedItem"] = prop;
 			}
 
-			info["recovery"] = InfoTool.SetOptionalFloat(recovery);
-			info["blockPBossChange"] = InfoTool.SetOptionalBool(blockPBossChange);
-			info["everlast"] = InfoTool.SetOptionalBool(everlast);
-			info["damageCheckFree"] = InfoTool.SetOptionalBool(damageCheckFree);
-			info["dropRate"] = InfoTool.SetOptionalFloat(dropRate);
-			info["scrollDisable"] = InfoTool.SetOptionalBool(scrollDisable);
-			info["needSkillForFly"] = InfoTool.SetOptionalBool(needSkillForFly);
-			info["zakum2Hack"] = InfoTool.SetOptionalBool(zakum2Hack);
-			info["allMoveCheck"] = InfoTool.SetOptionalBool(allMoveCheck);
-			info["VRLimit"] = InfoTool.SetOptionalBool(VRLimit);
-			info["consumeItemCoolTime"] = InfoTool.SetOptionalBool(consumeItemCoolTime);
-			info["zeroSideOnly"] = InfoTool.SetOptionalBool(zeroSideOnly);
+			info["recovery"] = InfoTool.SetOptionalFloat(recovery, Defaults.Info.Recovery);
+			info["blockPBossChange"] = blockPBossChange.SetOptionalBool(Defaults.Info.BlockPBossChange);
+			info["everlast"] = everlast.SetOptionalBool(Defaults.Info.Everlast);
+			info["damageCheckFree"] = damageCheckFree.SetOptionalBool(Defaults.Info.DamageCheckFree);
+			info["dropRate"] = InfoTool.SetOptionalFloat(dropRate, Defaults.Info.DropRate);
+			info["scrollDisable"] = scrollDisable.SetOptionalBool(Defaults.Info.ScrollDisable);
+			info["needSkillForFly"] = needSkillForFly.SetOptionalBool(Defaults.Info.NeedSkillForFly);
+			info["zakum2Hack"] = zakum2Hack.SetOptionalBool(Defaults.Info.Zakum2Hack);
+			info["allMoveCheck"] = allMoveCheck.SetOptionalBool(Defaults.Info.AllMoveCheck);
+			info["consumeItemCoolTime"] = consumeItemCoolTime.SetOptionalBool(Defaults.Info.ConsumeItemCoolTime);
+			info["zeroSideOnly"] = zeroSideOnly.SetOptionalBool(Defaults.Info.ZeroSideOnly);
 			foreach (var prop in additionalProps) info.AddProperty(prop);
-
-			if (VR.HasValue) {
-				info["VRLeft"] = InfoTool.SetInt(VR.Value.Left);
-				info["VRRight"] = InfoTool.SetInt(VR.Value.Right);
-				info["VRTop"] = InfoTool.SetInt(VR.Value.Top);
-				info["VRBottom"] = InfoTool.SetInt(VR.Value.Bottom);
-			}
 
 			// Add back all unsupported properties
 			info.AddProperties(unsupportedInfoProperties);

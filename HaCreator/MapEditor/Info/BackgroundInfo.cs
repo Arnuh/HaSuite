@@ -179,12 +179,13 @@ namespace HaCreator.MapEditor.Info {
 		public BoardItem CreateInstance(Board board, int x, int y, int z, int rx, int ry, int cx, int cy,
 			BackgroundType type, int a, bool front, bool flip, int screenMode,
 			string spineAni, bool spineRandomStart) {
-			if (spineAni ==
-			    null) // if one isnt set already, via pre-existing object in map. It probably means its created via BackgroundPanel
+			if (!string.IsNullOrEmpty(spineAni)) // if one isnt set already, via pre-existing object in map. It probably means its created via BackgroundPanel
 				// attempt to get one
+			{
 				if (wzSpineAnimationItem != null && wzSpineAnimationItem.SkeletonData.Animations.Count > 0)
 					spineAni = wzSpineAnimationItem.SkeletonData.Animations[0]
 						.Name; // actually we should allow the user to select, but nexon only places 1 animation for now
+			}
 
 			return new BackgroundInstance(this, board, x, y, z, rx, ry, cx, cy, type, a, front, flip, screenMode,
 				spineAni, spineRandomStart);

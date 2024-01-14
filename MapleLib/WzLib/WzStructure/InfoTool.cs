@@ -23,19 +23,19 @@ namespace MapleLib.WzLib.WzStructure {
 		#region String
 
 		public static string GetString(this WzImageProperty source) {
-			return source == null ? null : source.GetString();
+			return source.GetString();
 		}
 
 		public static WzStringProperty SetString(string value) {
 			return new WzStringProperty("", value);
 		}
 
-		public static string GetOptionalString(this WzImageProperty source) {
-			return source == null ? null : source.GetString();
+		public static string GetOptionalString(this WzImageProperty source, string def) {
+			return source?.GetString() ?? def;
 		}
 
-		public static WzStringProperty SetOptionalString(string value) {
-			return value == null ? null : SetString(value);
+		public static WzStringProperty SetOptionalString(string value, string def) {
+			return value != def ? SetString(value) : null;
 		}
 
 		#endregion
@@ -44,11 +44,19 @@ namespace MapleLib.WzLib.WzStructure {
 		#region Double
 
 		public static double GetDouble(this WzImageProperty source) {
-			return source == null ? 0 : source.GetDouble();
+			return source.GetDouble();
 		}
 
 		public static WzDoubleProperty SetDouble(double value) {
 			return new WzDoubleProperty("", value);
+		}
+
+		public static double GetOptionalDouble(this WzImageProperty source, double def) {
+			return source?.GetDouble() ?? def;
+		}
+
+		public static WzDoubleProperty SetOptionalDouble(this double value, double def) {
+			return Math.Abs(value - def) > double.Epsilon ? SetDouble(value) : null;
 		}
 
 		#endregion
@@ -56,37 +64,20 @@ namespace MapleLib.WzLib.WzStructure {
 
 		#region Integer
 
-		public static int GetInt(this WzImageProperty source, int default_ = 0) {
-			return source == null ? default_ : source.GetInt();
+		public static int GetInt(this WzImageProperty source) {
+			return source.GetInt();
 		}
 
 		public static WzIntProperty SetInt(int value) {
 			return new WzIntProperty("", value);
 		}
 
-		public static int? GetOptionalInt(this WzImageProperty source, int? default_ = null) {
-			return source == null ? (int?) default_ : source.GetInt();
+		public static int GetOptionalInt(this WzImageProperty source, int def) {
+			return source?.GetInt() ?? def;
 		}
 
-		public static WzIntProperty SetOptionalInt(int? value) {
-			return value.HasValue ? SetInt(value.Value) : null;
-		}
-
-		#endregion
-
-		#region Translated Integer
-
-		public static int? GetOptionalTranslatedInt(this WzImageProperty source) {
-			var str = GetOptionalString(source);
-			if (str == null) return null;
-			return int.Parse(str);
-		}
-
-		public static WzStringProperty SetOptionalTranslatedInt(int? value) {
-			if (value.HasValue)
-				return SetString(value.Value.ToString());
-			else
-				return null;
+		public static WzIntProperty SetOptionalInt(this int value, int def) {
+			return value != def ? SetInt(value) : null;
 		}
 
 		#endregion
@@ -173,12 +164,12 @@ namespace MapleLib.WzLib.WzStructure {
 			return new WzLongProperty("", value);
 		}
 
-		public static long? GetOptionalLong(this WzImageProperty source) {
-			return source == null ? (long?) null : source.GetLong();
+		public static long? GetOptionalLong(this WzImageProperty source, long def) {
+			return source?.GetLong() ?? def;
 		}
 
-		public static WzLongProperty SetOptionalLong(long? value) {
-			return value.HasValue ? SetLong(value.Value) : null;
+		public static WzLongProperty SetOptionalLong(this long value, long def) {
+			return value != def ? SetLong(value) : null;
 		}
 
 		#endregion
@@ -186,22 +177,20 @@ namespace MapleLib.WzLib.WzStructure {
 		#region Boolean
 
 		public static bool GetBool(this WzImageProperty source) {
-			if (source == null)
-				return false;
-			return source.GetInt() == 1;
+			return source.GetInt() != 0;
 		}
 
 		public static WzIntProperty SetBool(bool value) {
 			return new WzIntProperty("", value ? 1 : 0);
 		}
 
-		public static MapleBool GetOptionalBool(this WzImageProperty source) {
-			if (source == null) return MapleBool.NotExist;
-			else return source.GetInt() == 1;
+		public static bool GetOptionalBool(this WzImageProperty source, bool def) {
+			if (source == null) return def;
+			return source.GetInt() != 0;
 		}
 
-		public static WzIntProperty SetOptionalBool(this MapleBool value) {
-			return value.HasValue ? SetBool(value.Value) : null;
+		public static WzIntProperty SetOptionalBool(this bool value, bool def) {
+			return value != def ? SetBool(value) : null;
 		}
 
 		#endregion
@@ -210,19 +199,19 @@ namespace MapleLib.WzLib.WzStructure {
 		#region Float
 
 		public static float GetFloat(this WzImageProperty source) {
-			return source == null ? 0 : source.GetFloat();
+			return source.GetFloat();
 		}
 
 		public static WzFloatProperty SetFloat(float value) {
 			return new WzFloatProperty("", value);
 		}
 
-		public static float? GetOptionalFloat(this WzImageProperty source) {
-			return source == null ? (float?) null : source.GetFloat();
+		public static float? GetOptionalFloat(this WzImageProperty source, float def) {
+			return source?.GetFloat() ?? def;
 		}
 
-		public static WzFloatProperty SetOptionalFloat(float? value) {
-			return value.HasValue ? SetFloat(value.Value) : null;
+		public static WzFloatProperty SetOptionalFloat(float value, float def) {
+			return Math.Abs(value - def) > float.Epsilon ? SetFloat(value) : null;
 		}
 
 		#endregion

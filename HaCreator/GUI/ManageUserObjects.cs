@@ -139,10 +139,10 @@ namespace HaCreator.GUI {
 					if (prop == null)
 						continue;
 					foreach (var obj in prop.WzProperties)
-						if (InfoTool.GetOptionalString(obj["oS"]) == UserObjectsManager.oS &&
-						    InfoTool.GetOptionalString(obj["l0"]) == Program.APP_NAME &&
-						    InfoTool.GetOptionalString(obj["l1"]) == UserObjectsManager.l1 &&
-						    InfoTool.GetOptionalString(obj["l2"]) == l2) {
+						if (InfoTool.GetString(obj["oS"]) == UserObjectsManager.oS &&
+						    InfoTool.GetString(obj["l0"]) == Program.APP_NAME &&
+						    InfoTool.GetString(obj["l1"]) == UserObjectsManager.l1 &&
+						    InfoTool.GetString(obj["l2"]) == l2) {
 							result.Add(WzInfoTools.RemoveExtension(mapImg.Name));
 							fastForwardToNext = true;
 							break;

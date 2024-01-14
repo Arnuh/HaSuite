@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HaCreator.MapEditor.Info.Default;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Info {
@@ -39,12 +40,12 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public static TileInfo Get(string tS, string u, string no) {
-			var mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
+			var mag = Program.InfoManager.TileSets[tS]["info"]["mag"].GetOptionalInt(Defaults.Tile.Mag);
 			return Get(tS, u, no, mag);
 		}
 
 		public static TileInfo GetWithDefaultNo(string tS, string u, string no, string defaultNo) {
-			var mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
+			var mag = Program.InfoManager.TileSets[tS]["info"]["mag"].GetOptionalInt(Defaults.Tile.Mag);
 			var prop = Program.InfoManager.TileSets[tS][u];
 			var tileInfoProp = prop[no];
 			if (tileInfoProp == null) tileInfoProp = prop[defaultNo];
@@ -55,20 +56,19 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		// Optimized version, for cases where you already know the mag (e.g. mass loading tiles of the same tileSet)
-		public static TileInfo Get(string tS, string u, string no, int? mag) {
+		public static TileInfo Get(string tS, string u, string no, int mag) {
 			var tileInfoProp = Program.InfoManager.TileSets[tS][u][no];
 			if (tileInfoProp.HCTag == null)
 				tileInfoProp.HCTag = Load((WzCanvasProperty) tileInfoProp, tS, u, no, mag);
 			return (TileInfo) tileInfoProp.HCTag;
 		}
 
-		private static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag) {
-			var zProp = parentObject["z"];
-			var z = zProp == null ? 0 : InfoTool.GetInt(zProp);
+		private static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int mag) {
+			var z = parentObject["z"].GetOptionalInt(Defaults.Tile.Z);
 			var result = new TileInfo(
 				parentObject.GetLinkedWzCanvasBitmap(),
 				WzInfoTools.PointFToSystemPoint(parentObject.GetCanvasOriginPosition()),
-				tS, u, no, mag.HasValue ? mag.Value : 1, z, parentObject);
+				tS, u, no, mag, z, parentObject);
 			var footholds = (WzConvexProperty) parentObject["foothold"];
 			if (footholds != null)
 				foreach (WzVectorProperty foothold in footholds.WzProperties)

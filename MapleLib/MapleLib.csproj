@@ -272,8 +272,6 @@
         <Compile Include="WzLib\WzStructure\Enums\WzDirectoryType.cs"/>
         <Compile Include="WzLib\WzStructure\Foothold.cs"/>
         <Compile Include="WzLib\WzStructure\InfoTool.cs"/>
-        <Compile Include="WzLib\WzStructure\MapInfo.cs"/>
-        <Compile Include="WzLib\WzStructure\MapleBool.cs"/>
         <Compile Include="WzSettings.cs"/>
     </ItemGroup>
     <ItemGroup>

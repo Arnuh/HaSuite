@@ -28,6 +28,7 @@ using HaSharedLibrary.Util;
 using HaCreator.GUI;
 using HaCreator.MapSimulator;
 using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info.Default;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Render;
 using HaSharedLibrary.Wz;
@@ -208,7 +209,7 @@ namespace HaCreator.Wz {
 			for (var layer = 0; layer <= MapConstants.MaxMapLayers; layer++) {
 				var layerProp = (WzSubProperty) mapImage[layer.ToString()];
 				if (layerProp == null)
-					continue; // most maps only have 7 layers.
+					continue;
 
 				var tSprop = layerProp["info"]?["tS"];
 				string tS = null;
@@ -220,21 +221,22 @@ namespace HaCreator.Wz {
 					var x = InfoTool.GetInt(obj["x"]);
 					var y = InfoTool.GetInt(obj["y"]);
 					var z = InfoTool.GetInt(obj["z"]);
-					var zM = InfoTool.GetInt(obj["zM"]);
 					var oS = InfoTool.GetString(obj["oS"]);
 					var l0 = InfoTool.GetString(obj["l0"]);
 					var l1 = InfoTool.GetString(obj["l1"]);
 					var l2 = InfoTool.GetString(obj["l2"]);
-					var name = InfoTool.GetOptionalString(obj["name"]);
-					var r = InfoTool.GetOptionalBool(obj["r"]);
-					var hide = InfoTool.GetOptionalBool(obj["hide"]);
-					var reactor = InfoTool.GetOptionalBool(obj["reactor"]);
-					var flow = InfoTool.GetOptionalBool(obj["flow"]);
-					var rx = InfoTool.GetOptionalTranslatedInt(obj["rx"]);
-					var ry = InfoTool.GetOptionalTranslatedInt(obj["ry"]);
-					var cx = InfoTool.GetOptionalTranslatedInt(obj["cx"]);
-					var cy = InfoTool.GetOptionalTranslatedInt(obj["cy"]);
-					var tags = InfoTool.GetOptionalString(obj["tags"]);
+					var flip = obj["f"].GetBool();
+					var zM = InfoTool.GetInt(obj["zM"]);
+					var name = obj["name"].GetOptionalString(Defaults.Object.Name);
+					var r = obj["r"].GetOptionalBool(Defaults.Object.R);
+					var hide = obj["hide"].GetOptionalBool(Defaults.Object.Hide);
+					var reactor = obj["reactor"].GetOptionalBool(Defaults.Object.Reactor);
+					var flow = obj["flow"].GetOptionalBool(Defaults.Object.Flow);
+					var rx = obj["rx"].GetOptionalInt(Defaults.Object.RX);
+					var ry = obj["ry"].GetOptionalInt(Defaults.Object.RY);
+					var cx = obj["cx"].GetOptionalInt(Defaults.Object.CX);
+					var cy = obj["cy"].GetOptionalInt(Defaults.Object.CY);
+					var tags = obj["tags"].GetOptionalString(Defaults.Object.Tags);
 
 					var questParent = obj["quest"];
 					List<ObjectInstanceQuest> questInfo = null;
@@ -244,7 +246,6 @@ namespace HaCreator.Wz {
 							questInfo.Add(new ObjectInstanceQuest(int.Parse(info.Name), (QuestState) info.Value));
 					}
 
-					var flip = InfoTool.GetBool(obj["f"]);
 					var objInfo = ObjectInfo.Get(oS, l0, l1, l2);
 					if (objInfo == null)
 						continue;
@@ -278,8 +279,7 @@ namespace HaCreator.Wz {
 			if (lifeParent == null)
 				return;
 
-			if (InfoTool.GetOptionalBool(lifeParent["isCategory"]) ==
-			    true) // cant handle this for now.  Azwan 262021001.img TODO
+			if (lifeParent["isCategory"].GetOptionalBool(false)) // cant handle this for now.  Azwan 262021001.img TODO
 				// - 170
 				// -- 5
 				// -- 4
@@ -290,22 +290,24 @@ namespace HaCreator.Wz {
 				// - 130
 				// - 85
 				// - 45
+			{
 				return;
+			}
 
 			foreach (WzSubProperty life in lifeParent.WzProperties) {
 				var id = InfoTool.GetString(life["id"]);
 				var x = InfoTool.GetInt(life["x"]);
 				var y = InfoTool.GetInt(life["y"]);
 				var cy = InfoTool.GetInt(life["cy"]);
-				var mobTime = InfoTool.GetOptionalInt(life["mobTime"]);
-				var info = InfoTool.GetOptionalInt(life["info"]);
-				var team = InfoTool.GetOptionalInt(life["team"]);
+				var mobTime = life["mobTime"].GetOptionalInt(Defaults.Life.MobTime);
+				var info = life["info"].GetOptionalInt(Defaults.Life.Info);
+				var team = life["team"].GetOptionalInt(Defaults.Life.Team);
 				var rx0 = InfoTool.GetInt(life["rx0"]);
 				var rx1 = InfoTool.GetInt(life["rx1"]);
-				var flip = InfoTool.GetOptionalBool(life["f"]);
-				var hide = InfoTool.GetOptionalBool(life["hide"]);
+				var flip = life["f"].GetOptionalBool(Defaults.Life.F);
+				var hide = life["hide"].GetOptionalBool(Defaults.Life.Hide);
 				var type = InfoTool.GetString(life["type"]);
-				var limitedname = InfoTool.GetOptionalString(life["limitedname"]);
+				var limitedname = life["limitedname"].GetOptionalString(Defaults.Life.LimitedName);
 
 				switch (type) {
 					case "m":
@@ -335,7 +337,7 @@ namespace HaCreator.Wz {
 				var x = InfoTool.GetInt(reactor["x"]);
 				var y = InfoTool.GetInt(reactor["y"]);
 				var reactorTime = InfoTool.GetInt(reactor["reactorTime"]);
-				var name = InfoTool.GetOptionalString(reactor["name"]);
+				var name = InfoTool.GetOptionalString(reactor["name"], Defaults.Reactor.Name);
 				var id = InfoTool.GetString(reactor["id"]);
 				var flip = InfoTool.GetBool(reactor["f"]);
 				mapBoard.BoardItems.Reactors.Add((ReactorInstance) Program.InfoManager.Reactors[id]
@@ -410,7 +412,7 @@ namespace HaCreator.Wz {
 					return true;
 				else if (l.num == nextnum) return false;
 
-			throw new Exception("Could not match anchor to foothold");
+			return false;
 		}
 
 		public static void LoadFootholds(WzImage mapImage, Board mapBoard) {
@@ -434,15 +436,16 @@ namespace HaCreator.Wz {
 						var num = int.Parse(fhProp.Name);
 						var next = InfoTool.GetInt(fhProp["next"]);
 						var prev = InfoTool.GetInt(fhProp["prev"]);
-						var cantThrough = InfoTool.GetOptionalBool(fhProp["cantThrough"]);
-						var forbidFallDown = InfoTool.GetOptionalBool(fhProp["forbidFallDown"]);
-						var piece = InfoTool.GetOptionalInt(fhProp["piece"]);
-						var force = InfoTool.GetOptionalInt(fhProp["force"]);
+						var cantThrough = fhProp["cantThrough"].GetOptionalBool(Defaults.Foothold.CantThrough);
+						var forbidFallDown = fhProp["forbidFallDown"].GetOptionalBool(Defaults.Foothold.ForbidFalldown);
+						var piece = fhProp["piece"].GetOptionalInt(Defaults.Foothold.Piece);
+						var force = fhProp["force"].GetOptionalDouble(Defaults.Foothold.Force);
 						if (a.X != b.X || a.Y != b.Y) {
-							var fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force);
-							fh.num = num;
-							fh.prev = prev;
-							fh.next = next;
+							var fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force) {
+								num = num,
+								prev = prev,
+								next = next
+							};
 							mapBoard.BoardItems.FootholdLines.Add(fh);
 							fhs[num] = fh;
 							anchors.Add(a);
@@ -451,7 +454,7 @@ namespace HaCreator.Wz {
 					}
 				}
 
-				anchors.Sort(new Comparison<FootholdAnchor>(FootholdAnchor.FHAnchorSorter));
+				anchors.Sort(FootholdAnchor.FHAnchorSorter);
 				for (var i = 0; i < anchors.Count - 1; i++) {
 					a = anchors[i];
 					b = anchors[i + 1];
@@ -506,15 +509,15 @@ namespace HaCreator.Wz {
 				var tm = InfoTool.GetInt(portal["tm"]);
 				var tn = InfoTool.GetString(portal["tn"]);
 				var pn = InfoTool.GetString(portal["pn"]);
-				var image = InfoTool.GetOptionalString(portal["image"]);
-				var script = InfoTool.GetOptionalString(portal["script"]);
-				var verticalImpact = InfoTool.GetOptionalInt(portal["verticalImpact"]);
-				var horizontalImpact = InfoTool.GetOptionalInt(portal["horizontalImpact"]);
-				var hRange = InfoTool.GetOptionalInt(portal["hRange"]);
-				var vRange = InfoTool.GetOptionalInt(portal["vRange"]);
-				var delay = InfoTool.GetOptionalInt(portal["delay"]);
-				var hideTooltip = InfoTool.GetOptionalBool(portal["hideTooltip"]);
-				var onlyOnce = InfoTool.GetOptionalBool(portal["onlyOnce"]);
+				var image = portal["image"].GetOptionalString(Defaults.Portal.Image);
+				var script = portal["script"].GetOptionalString(Defaults.Portal.Script);
+				var verticalImpact = portal["verticalImpact"].GetOptionalInt(Defaults.Portal.VerticalImpact);
+				var horizontalImpact = portal["horizontalImpact"].GetOptionalInt(Defaults.Portal.HorizontalImpact);
+				var hRange = portal["hRange"].GetOptionalInt(Defaults.Portal.HRange);
+				var vRange = portal["vRange"].GetOptionalInt(Defaults.Portal.VRange);
+				var delay = portal["delay"].GetOptionalInt(Defaults.Portal.Delay);
+				var hideTooltip = portal["hideTooltip"].GetOptionalBool(Defaults.Portal.HideTooltip);
+				var onlyOnce = portal["onlyOnce"].GetOptionalBool(Defaults.Portal.OnlyOnce);
 
 				mapBoard.BoardItems.Portals.Add(PortalInfo.GetPortalInfoByType(pt).CreateInstance(mapBoard, x, y, pn,
 					tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange,
@@ -549,8 +552,8 @@ namespace HaCreator.Wz {
 				if ((tooltipString == null) ^ (tooltipProp == null))
 					continue;
 
-				var title = InfoTool.GetOptionalString(tooltipString["Title"]);
-				var desc = InfoTool.GetOptionalString(tooltipString["Desc"]);
+				var title = InfoTool.GetString(tooltipString["Title"]);
+				var desc = tooltipString["Desc"].GetOptionalString(Defaults.ToolTip.Desc);
 				var x1 = InfoTool.GetInt(tooltipProp["x1"]);
 				var x2 = InfoTool.GetInt(tooltipProp["x2"]);
 				var y1 = InfoTool.GetInt(tooltipProp["y1"]);
@@ -585,23 +588,23 @@ namespace HaCreator.Wz {
 				var cy = InfoTool.GetInt(bgProp["cy"]);
 				var a = InfoTool.GetInt(bgProp["a"]);
 				var type = (BackgroundType) InfoTool.GetInt(bgProp["type"]);
-				var front = InfoTool.GetBool(bgProp["front"]);
-				var screenMode = InfoTool.GetInt(bgProp["screenMode"], (int) RenderResolution.Res_All);
-				var spineAni = InfoTool.GetString(bgProp["spineAni"]);
-				var spineRandomStart = InfoTool.GetBool(bgProp["spineRandomStart"]);
-				bool? flip_t = InfoTool.GetOptionalBool(bgProp["f"]);
-				var flip = flip_t.HasValue ? flip_t.Value : false;
+				var flip = bgProp["f"].GetOptionalBool(Defaults.Background.Flip);
 				var bS = InfoTool.GetString(bgProp["bS"]);
 				var ani = InfoTool.GetBool(bgProp["ani"]);
 				var no = InfoTool.GetInt(bgProp["no"]).ToString();
+				var front = InfoTool.GetBool(bgProp["front"]);
+				var screenMode = bgProp["screenMode"].GetOptionalInt((int) RenderResolution.Res_All);
+				var spineAni = bgProp["spineAni"].GetOptionalString(Defaults.Background.SpineAni);
+				var spineRandomStart = bgProp["spineRandomStart"].GetOptionalBool(Defaults.Background.SpineRandomStart);
 
 				BackgroundInfoType infoType;
-				if (spineAni != null)
+				if (!string.IsNullOrEmpty(spineAni)) {
 					infoType = BackgroundInfoType.Spine;
-				else if (ani)
+				} else if (ani) {
 					infoType = BackgroundInfoType.Animation;
-				else
+				} else {
 					infoType = BackgroundInfoType.Background;
+				}
 
 				var bgInfo = BackgroundInfo.Get(mapBoard.ParentControl.GraphicsDevice, bS, infoType, no);
 				if (bgInfo == null)
@@ -647,11 +650,11 @@ namespace HaCreator.Wz {
 				var shipInstance = new ShipObject(objInfo, mapBoard,
 					InfoTool.GetInt(ship["x"]),
 					InfoTool.GetInt(ship["y"]),
-					InfoTool.GetOptionalInt(ship["z"]),
-					InfoTool.GetOptionalInt(ship["x0"]),
+					ship["z"].GetOptionalInt(Defaults.ShipObj.ZValue),
+					ship["x0"].GetOptionalInt(Defaults.ShipObj.X0),
 					InfoTool.GetInt(ship["tMove"]),
 					InfoTool.GetInt(ship["shipKind"]),
-					InfoTool.GetBool(ship["f"]));
+					ship["f"].GetBool());
 				mapBoard.BoardItems.Add(shipInstance, false);
 			}
 
@@ -751,9 +754,9 @@ namespace HaCreator.Wz {
 						var offset = InfoTool.GetVector(prop_items["offset"]);
 						var gradient = (ushort) InfoTool.GetOptionalInt(prop_items["gradient"], 0);
 						var alpha = (ushort) InfoTool.GetOptionalInt(prop_items["alpha"], 0);
-						var objectForOverlay = InfoTool.GetOptionalString(prop_items["objectForOverlay"]);
-						bool reflection = InfoTool.GetOptionalBool(prop_items["reflection"]);
-						bool alphaTest = InfoTool.GetOptionalBool(prop_items["alphaTest"]);
+						var objectForOverlay = prop_items["objectForOverlay"].GetOptionalString(Defaults.MirrorData.ObjectForOverlay);
+						var reflection = prop_items["reflection"].GetOptionalBool(Defaults.MirrorData.Reflection);
+						var alphaTest = prop_items["alphaTest"].GetOptionalBool(Defaults.MirrorData.AlphaTest);
 
 						var rectangle = new Rectangle(
 							rectBoundary.X - offset.X.Value,

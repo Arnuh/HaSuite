@@ -6,23 +6,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 using HaCreator.MapEditor;
-using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
-using System.Collections;
-using HaCreator.GUI;
 using MapleLib.WzLib.WzStructure;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.UndoRedo;
 using HaCreator.CustomControls;
+using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.GUI.EditorPanels {
 	public partial class TilePanel : UserControl {
@@ -69,7 +61,7 @@ namespace HaCreator.GUI.EditorPanels {
 				if (!Program.InfoManager.TileSets.ContainsKey(selectedSetName))
 					return;
 				var tileSetImage = Program.InfoManager.TileSets[selectedSetName];
-				var mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
+				var mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"], Defaults.Tile.Mag);
 				foreach (WzSubProperty tCat in tileSetImage.WzProperties) {
 					if (tCat.Name == "info")
 						continue;

@@ -353,17 +353,19 @@ namespace HaCreator.MapSimulator {
 			PortalInstance portalInstance, GraphicsDevice device, ref List<WzObject> usedProps) {
 			var portalInfo = (PortalInfo) portalInstance.BaseInfo;
 
-			if (portalInstance.pt == PortalType.PORTALTYPE_STARTPOINT ||
-			    portalInstance.pt == PortalType.PORTALTYPE_INVISIBLE ||
-			    //portalInstance.pt == PortalType.PORTALTYPE_CHANGABLE_INVISIBLE ||
-			    portalInstance.pt == PortalType.PORTALTYPE_SCRIPT_INVISIBLE ||
-			    portalInstance.pt == PortalType.PORTALTYPE_SCRIPT ||
-			    portalInstance.pt == PortalType.PORTALTYPE_COLLISION ||
-			    portalInstance.pt == PortalType.PORTALTYPE_COLLISION_SCRIPT ||
+			if (portalInstance.pt == PortalType.StartPoint ||
+			    portalInstance.pt == PortalType.Invisible ||
+			    //portalInstance.pt == PortalType.Changeable_Invisible ||
+			    portalInstance.pt == PortalType.ScriptInvisible ||
+			    portalInstance.pt == PortalType.Script ||
+			    portalInstance.pt == PortalType.Collision ||
+			    portalInstance.pt == PortalType.CollisionScript ||
 			    portalInstance.pt ==
-			    PortalType.PORTALTYPE_COLLISION_CUSTOM_IMPACT || // springs in Mechanical grave 350040240
-			    portalInstance.pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP) // vertical spring actually
+			    PortalType.CollisionCustomImpact || // springs in Mechanical grave 350040240
+			    portalInstance.pt == PortalType.CollisionVerticalJump) // vertical spring actually
+			{
 				return null;
+			}
 
 			var
 				frames = new List<IDXObject>(); // All frames "stand", "speak" "blink" "hair", "angry", "wink" etc

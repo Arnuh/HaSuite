@@ -18,6 +18,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HaCreator.MapEditor.Info.Default;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Info {
@@ -147,14 +148,15 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
-			var instance = new ObjectInstance(this, layer, board, x, y, z, layer.zMDefault, false, false,
-				false, false, null, null, null, null, null, null, null, flip);
+			var instance = new ObjectInstance(this, layer, board, x, y, z, layer.zMDefault, Defaults.Object.R, Defaults.Object.Hide,
+				Defaults.Object.Reactor, Defaults.Object.Flow, Defaults.Object.RX, Defaults.Object.RY, Defaults.Object.CX,
+				Defaults.Object.CY, Defaults.Object.Name, Defaults.Object.Tags, null, flip);
 			ParseOffsets(instance, board, x, y);
 			return instance;
 		}
 
-		public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, MapleBool r,
-			MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name,
+		public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, bool r,
+			bool hide, bool reactor, bool flow, int rx, int ry, int cx, int cy, string name,
 			string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets) {
 			var instance = new ObjectInstance(this, layer, board, x, y, z, zM, r, hide, reactor, flow, rx,
 				ry, cx, cy, name, tags, questInfo, flip);

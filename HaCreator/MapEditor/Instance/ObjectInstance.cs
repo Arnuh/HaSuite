@@ -20,17 +20,17 @@ namespace HaCreator.MapEditor.Instance {
 	public class ObjectInstance : LayeredItem, IFlippable, ISnappable {
 		private ObjectInfo baseInfo;
 		private bool flip;
-		private MapleBool _r;
+		private bool _r;
 		private string name;
-		private MapleBool _hide;
-		private MapleBool _reactor;
-		private MapleBool _flow;
-		private int? _rx, _ry, _cx, _cy;
+		private bool _hide;
+		private bool _reactor;
+		private bool _flow;
+		private int _rx, _ry, _cx, _cy;
 		private string _tags;
 		private List<ObjectInstanceQuest> questInfo;
 
-		public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM, MapleBool r,
-			MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name,
+		public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM, bool r,
+			bool hide, bool reactor, bool flow, int rx, int ry, int cx, int cy, string name,
 			string tags, List<ObjectInstanceQuest> questInfo, bool flip)
 			: base(board, layer, zM, x, y, z) {
 			this.baseInfo = baseInfo;
@@ -149,42 +149,42 @@ namespace HaCreator.MapEditor.Instance {
 			set => _tags = value;
 		}
 
-		public MapleBool r {
+		public bool r {
 			get => _r;
 			set => _r = value;
 		}
 
-		public MapleBool hide {
+		public bool hide {
 			get => _hide;
 			set => _hide = value;
 		}
 
-		public MapleBool flow {
+		public bool flow {
 			get => _flow;
 			set => _flow = value;
 		}
 
-		public MapleBool reactor {
+		public bool reactor {
 			get => _reactor;
 			set => _reactor = value;
 		}
 
-		public int? rx {
+		public int rx {
 			get => _rx;
 			set => _rx = value;
 		}
 
-		public int? ry {
+		public int ry {
 			get => _ry;
 			set => _ry = value;
 		}
 
-		public int? cx {
+		public int cx {
 			get => _cx;
 			set => _cx = value;
 		}
 
-		public int? cy {
+		public int cy {
 			get => _cy;
 			set => _cy = value;
 		}
@@ -197,10 +197,10 @@ namespace HaCreator.MapEditor.Instance {
 		public new class SerializationForm : LayeredItem.SerializationForm {
 			public string os, l0, l1, l2;
 			public bool flip;
-			public MapleBool r;
+			public bool r;
 			public string name;
-			public MapleBool hide, reactor, flow;
-			public int? rx, ry, cx, cy;
+			public bool hide, reactor, flow;
+			public int rx, ry, cx, cy;
 			public string tags;
 			public ObjectInstanceQuest[] quest;
 		}

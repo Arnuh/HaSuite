@@ -12,6 +12,7 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.MapEditor.Info {
 	public class MobInfo : MapleExtractableInfo {
@@ -83,12 +84,12 @@ namespace HaCreator.MapEditor.Info {
 			if (Image == null)
 				ParseImage();
 
-			return new MobInstance(this, board, x, y, UserSettings.Mobrx0Offset, UserSettings.Mobrx1Offset, 20, null,
-				UserSettings.defaultMobTime, flip, false, null, null);
+			return new MobInstance(this, board, x, y, UserSettings.Mobrx0Offset, UserSettings.Mobrx1Offset, 20, Defaults.Life.LimitedName,
+				UserSettings.defaultMobTime, flip, Defaults.Life.Hide, Defaults.Life.Info, Defaults.Life.Team);
 		}
 
 		public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift,
-			string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) {
+			string limitedname, int mobTime, bool flip, bool hide, int info, int team) {
 			if (Image == null)
 				ParseImage();
 
