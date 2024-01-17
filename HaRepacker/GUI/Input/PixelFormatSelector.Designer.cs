@@ -55,11 +55,11 @@ namespace HaRepacker.GUI.Input {
 			// 
 			this.formatSelector.FormattingEnabled = true;
 			this.formatSelector.Items.AddRange(new object[] {"B4G4R4A4", "B8G8R8A8", "R5G6B5"});
-			this.formatSelector.SelectedIndex = 1;
 			this.formatSelector.Location = new System.Drawing.Point(12, 12);
 			this.formatSelector.Name = "formatSelector";
 			this.formatSelector.Size = new System.Drawing.Size(290, 21);
 			this.formatSelector.TabIndex = 0;
+			this.formatSelector.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.format_OnKeyPress);
 			// 
 			// PixelFormatSelector
 			// 

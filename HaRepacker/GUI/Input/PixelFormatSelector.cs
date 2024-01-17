@@ -12,13 +12,25 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private int _pixFormatResult;
-		private readonly int _defaultPixFormat;
 
 		private PixelFormatSelector(int defaultPixFormat) {
 			InitializeComponent();
 			StartPosition = FormStartPosition.CenterParent;
 			DialogResult = DialogResult.Cancel;
-			_defaultPixFormat = defaultPixFormat;
+			switch ((WzPngProperty.WzPixelFormat) defaultPixFormat) {
+				case WzPngProperty.WzPixelFormat.Unknown:
+				case WzPngProperty.WzPixelFormat.B4G4R4A4:
+					formatSelector.SelectedIndex = 0;
+					break;
+				case WzPngProperty.WzPixelFormat.B8G8R8A8:
+					formatSelector.SelectedIndex = 1;
+					break;
+				case WzPngProperty.WzPixelFormat.R5G6B5:
+					formatSelector.SelectedIndex = 2;
+					break;
+				default:
+					throw new ArgumentException("Invalid pixel format used.");
+			}
 		}
 
 		private void okButton_Click(object sender, EventArgs e) {
@@ -33,8 +45,7 @@ namespace HaRepacker.GUI.Input {
 					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.R5G6B5;
 					break;
 				default:
-					_pixFormatResult = _defaultPixFormat;
-					break;
+					throw new ArgumentException("Invalid pixel format selected.");
 			}
 
 			DialogResult = DialogResult.OK;
@@ -44,6 +55,13 @@ namespace HaRepacker.GUI.Input {
 		private void cancelButton_Click(object sender, EventArgs e) {
 			DialogResult = DialogResult.Cancel;
 			Close();
+		}
+
+
+		private void format_OnKeyPress(object sender, KeyPressEventArgs e) {
+			if (e.KeyChar == 13) {
+				okButton_Click(sender, e);
+			}
 		}
 	}
 }
