@@ -349,6 +349,15 @@ namespace HaCreator.GUI {
 			var wzPath = pathBox.Text;
 
 			var fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
+			if (versionBox.SelectedIndex == 3) {
+				var testFile = !File.Exists(Path.Combine(wzPath, "String.wz")) ? "Data.wz" : "String.wz";
+				try {
+					fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out _);
+				} catch (Exception ex) {
+					Warning.Error($"Error initializing ${testFile} (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
+					return;
+				}
+			}
 			if (!InitializeWzFiles(wzPath, fileVersion)) return;
 
 			var mb = new MultiBoard();
