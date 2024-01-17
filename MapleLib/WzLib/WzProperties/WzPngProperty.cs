@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -154,7 +155,6 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Wz PNG format to Microsoft.Xna.Framework.Graphics.SurfaceFormat
 		/// https://github.com/Kagamia/WzComparerR2/search?q=wzlibextension
 		/// </summary>
-		/// <param name="pngform"></param>
 		/// <returns></returns>
 		public SurfaceFormat GetXNASurfaceFormat() {
 			switch (PixFormat) {
@@ -166,6 +166,30 @@ namespace MapleLib.WzLib.WzProperties {
 				case 1026: return SurfaceFormat.Dxt3;
 				case 2050: return SurfaceFormat.Dxt5;
 				default: return SurfaceFormat.Bgra32;
+			}
+		}
+
+		/// <summary>
+		/// Wz PNG format to System.Drawing.Imaging.PixelFormat
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="ArgumentException"></exception>
+		private PixelFormat GetBitmapPixelFormat() {
+			switch (pixFormat) {
+				case 1:
+				case 2:
+				case 3:
+					return PixelFormat.Format32bppArgb;
+				case 257:
+					return PixelFormat.Format16bppArgb1555;
+				case 513:
+				case 517:
+					return PixelFormat.Format16bppRgb565;
+				case 1026:
+				case 2050:
+					return PixelFormat.Format32bppArgb;
+				default:
+					throw new ArgumentException($"Unknown pixFormat {pixFormat}");
 			}
 		}
 
@@ -395,36 +419,28 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 
 			try {
-				Bitmap bmp = null;
+				var bitmapFormat = GetBitmapPixelFormat();
+				
 				var rect_ = new Rectangle(0, 0, width, height);
+				var bmp = new Bitmap(width, height, bitmapFormat);
+				var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, bitmapFormat);
 
 				switch (pixFormat) {
 					case 1: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
 						DecompressImage_PixelDataBgra4444(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					case 2: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
 						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
 						bmp.UnlockBits(bmpData);
 						break;
 					}
 					case 3: {
 						// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
 						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					case 257: { // http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppArgb1555);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppArgb1555);
 						// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
 
 						CopyBmpDataWithStride(rawBytes, bmp.Width * 2, bmpData);
@@ -433,31 +449,19 @@ namespace MapleLib.WzLib.WzProperties {
 						break;
 					}
 					case 513: { // nexon wizet logo
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
-
 						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
 						bmp.UnlockBits(bmpData);
 						break;
 					}
 					case 517: {
-						bmp = new Bitmap(width, height, PixelFormat.Format16bppRgb565);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
-
 						DecompressImage_PixelDataForm517(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					case 1026: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
 						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					case 2050: {
-						bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-						var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
 						DecompressImageDXT5(rawBytes, Width, Height, bmp, bmpData);
 						break;
 					}
@@ -768,6 +772,14 @@ namespace MapleLib.WzLib.WzProperties {
 			var buf = GetRawImageArray();
 			var rect = new Rectangle(0, 0, width, height);
 
+			var bitmapFormat = GetBitmapPixelFormat();
+			if (bmp.PixelFormat != bitmapFormat) {
+				// This currently happens when you load a bitmap from file
+				// Should probably fix it in the caller?
+				Debug.WriteLine($"WzPngProperty.CompressPng: {bmp.PixelFormat} != {bitmapFormat}");
+				png = bmp = bmp.Clone(rect, bitmapFormat);
+			}
+
 			switch (pixFormat) {
 				case 1:
 					CompressImage_PixelDataBgra4444(buf, bmp);
@@ -776,7 +788,7 @@ namespace MapleLib.WzLib.WzProperties {
 					WriteImage_PixelData(buf, bmp);
 					break;
 				case 513: {
-					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
+					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					Marshal.Copy(bmpData.Scan0, buf, 0, buf.Length);
 					bmp.UnlockBits(bmpData);
 					break;
