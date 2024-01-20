@@ -106,8 +106,10 @@ namespace HaCreator.GUI {
 			var type = GetIdBoxMapType();
 			var saver = new MapSaver(board);
 
-			// Regenerate minimap first
-			board.RegenerateMinimap();
+			if (UserSettings.AutoRegenerateMinimap) {
+				// Regenerate minimap first
+				board.RegenerateMinimap();
+			}
 
 			if (type == MapType.RegularMap) {
 				var newId = int.Parse(idBox_mapId.Text);

@@ -30,6 +30,7 @@ namespace HaCreator.GUI {
 			fixFh.Checked = UserSettings.FixFootholdMispositions;
 			invertUpDownBox.Checked = UserSettings.InverseUpDown;
 			autoBackupBox.Checked = UserSettings.BackupEnabled;
+			autoRegenerateMinimap.Checked = UserSettings.AutoRegenerateMinimap;
 
 			tabColorPicker.Color = UserSettings.TabColor;
 			dragColorPicker.Color = XNAToSystemColor(UserSettings.SelectSquare);
@@ -97,6 +98,7 @@ namespace HaCreator.GUI {
 			UserSettings.FixFootholdMispositions = fixFh.Checked;
 			UserSettings.InverseUpDown = invertUpDownBox.Checked;
 			UserSettings.BackupEnabled = autoBackupBox.Checked;
+			UserSettings.AutoRegenerateMinimap = autoRegenerateMinimap.Checked;
 
 			UserSettings.TabColor = tabColorPicker.Color;
 			UserSettings.SelectSquare = SystemToXNAColor(dragColorPicker.Color);

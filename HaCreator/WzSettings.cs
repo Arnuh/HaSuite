@@ -77,6 +77,7 @@ namespace HaCreator {
 		public static bool altBackground = false;
 		public static XNA.Color altBackgroundColor = XNA.Color.Black;
 		public static bool displayFHSide = true;
+		public static bool AutoRegenerateMinimap = false;
 	}
 
 	public static class ApplicationSettings {

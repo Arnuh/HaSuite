@@ -69,6 +69,7 @@
             this.label38 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.autoRegenerateMinimap = new System.Windows.Forms.CheckBox();
             this.autoBackupBox = new System.Windows.Forms.CheckBox();
             this.invertUpDownBox = new System.Windows.Forms.CheckBox();
             this.fixFh = new System.Windows.Forms.CheckBox();
@@ -531,6 +532,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.autoRegenerateMinimap);
             this.tabPage1.Controls.Add(this.autoBackupBox);
             this.tabPage1.Controls.Add(this.invertUpDownBox);
             this.tabPage1.Controls.Add(this.fixFh);
@@ -547,6 +549,15 @@
             this.tabPage1.Size = new System.Drawing.Size(563, 467);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
+            // 
+            // autoRegenerateMinimap
+            // 
+            this.autoRegenerateMinimap.Location = new System.Drawing.Point(10, 177);
+            this.autoRegenerateMinimap.Name = "autoRegenerateMinimap";
+            this.autoRegenerateMinimap.Size = new System.Drawing.Size(207, 17);
+            this.autoRegenerateMinimap.TabIndex = 65;
+            this.autoRegenerateMinimap.Text = "Automatically Regenerate Minimap";
+            this.autoRegenerateMinimap.UseVisualStyleBackColor = true;
             // 
             // autoBackupBox
             // 
@@ -1253,6 +1264,8 @@
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.CheckBox autoRegenerateMinimap;
+
         private HaCreator.CustomControls.AlphaColorPicker altBackgroundColorPicker;
         private System.Windows.Forms.Label altBackgroundLabel;
 
@@ -1314,11 +1327,11 @@
         private HaCreator.CustomControls.AlphaColorPicker ttColorPicker;
         private HaCreator.CustomControls.AlphaColorPicker seatColorPicker;
         private HaCreator.CustomControls.AlphaColorPicker rlColorPicker;
-        private CustomControls.AlphaColorPicker fhColorPicker;
-        private CustomControls.AlphaColorPicker vrColorPicker;
-        private CustomControls.AlphaColorPicker selectedColorPicker;
-        private CustomControls.AlphaColorPicker dragFillColorPicker;
-        private CustomControls.AlphaColorPicker dragColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker fhColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker vrColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker selectedColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker dragFillColorPicker;
+        private HaCreator.CustomControls.AlphaColorPicker dragColorPicker;
         private HaCreator.CustomControls.AlphaColorPicker tabColorPicker;
         private HaCreator.CustomControls.AlphaColorPicker ttLineColorPicker;
         private HaCreator.CustomControls.AlphaColorPicker ttcSelectColorPicker;
