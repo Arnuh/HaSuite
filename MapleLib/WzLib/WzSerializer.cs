@@ -1028,8 +1028,12 @@ namespace MapleLib.WzLib.Serialization {
 					if (!element.HasAttribute("basedata"))
 						throw new NoBase64DataException("no base64 data in canvas element with name " + canvas.Name);
 					canvas.PngProperty = new WzPngProperty();
-					if (element.HasAttribute("pixFormat"))
+					if (element.HasAttribute("pixFormat")) {
 						canvas.PngProperty.PixFormat = Convert.ToInt32(element.GetAttribute("pixFormat"));
+					} else {
+						canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.B8G8R8A8;
+					}
+
 					if (element.HasAttribute("magLevel"))
 						canvas.PngProperty.MagLevel = Convert.ToInt32(element.GetAttribute("magLevel"));
 					var pngstream =
