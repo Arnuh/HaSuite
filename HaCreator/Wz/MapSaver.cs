@@ -445,8 +445,8 @@ namespace HaCreator.Wz {
 
 				var anchor1 = line.FirstDot;
 				var anchor2 = line.SecondDot;
-				line.next = line.nextOverride?.num ?? ((FootholdAnchor) line.SecondDot).GetOtherLine(line)?.num ?? 0;
-				line.prev = line.prevOverride?.num ?? ((FootholdAnchor) line.FirstDot).GetOtherLine(line)?.num ?? 0;
+				line.next = ((FootholdAnchor) line.SecondDot).GetOtherLine(line)?.num ?? 0;
+				line.prev = ((FootholdAnchor) line.FirstDot).GetOtherLine(line)?.num ?? 0;
 
 				var fhProp = new WzSubProperty();
 				fhProp["x1"] = InfoTool.SetInt(anchor1.X);

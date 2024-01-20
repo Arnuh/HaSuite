@@ -27,8 +27,6 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		// internal use variables
 		public int prev = 0;
 		public int next = 0;
-		public FootholdLine prevOverride = null;
-		public FootholdLine nextOverride = null;
 		public int num;
 		public bool saved;
 
@@ -210,10 +208,6 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			// We add the dots to make sure they are serialized (we might have been added as a prev/next override of another line)
 			result.Add(FirstDot);
 			result.Add(SecondDot);
-			if (prevOverride != null)
-				result.Add(prevOverride);
-			if (nextOverride != null)
-				result.Add(nextOverride);
 			return result;
 		}
 
@@ -228,17 +222,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		private const string FIRSTDOT_KEY = "dot1";
 		private const string SECONDDOT_KEY = "dot2";
-		private const string PREVOVERRIDE_KEY = "prevOverride";
-		private const string NEXTOVERRIDE_KEY = "nextOverride";
 
 		public IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, long> refDict) {
 			var result = new Dictionary<string, object>();
 			result[FIRSTDOT_KEY] = refDict[(FootholdAnchor) FirstDot];
 			result[SECONDDOT_KEY] = refDict[(FootholdAnchor) SecondDot];
-			if (prevOverride != null)
-				result[PREVOVERRIDE_KEY] = refDict[prevOverride];
-			if (nextOverride != null)
-				result[NEXTOVERRIDE_KEY] = refDict[nextOverride];
 			return result;
 		}
 
@@ -253,10 +241,6 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict) {
 			firstDot = (FootholdAnchor) refDict[(long) bindSer[FIRSTDOT_KEY]];
 			secondDot = (FootholdAnchor) refDict[(long) bindSer[SECONDDOT_KEY]];
-			if (bindSer.ContainsKey(PREVOVERRIDE_KEY))
-				prevOverride = (FootholdLine) refDict[(long) bindSer[PREVOVERRIDE_KEY]];
-			if (bindSer.ContainsKey(NEXTOVERRIDE_KEY))
-				prevOverride = (FootholdLine) refDict[(long) bindSer[NEXTOVERRIDE_KEY]];
 			firstDot.connectedLines.Add(this);
 			secondDot.connectedLines.Add(this);
 			firstDot.PointMoved += OnFirstDotMoved;

@@ -403,18 +403,6 @@ namespace HaCreator.Wz {
 			}
 		}
 
-		private static bool IsAnchorPrevOfFoothold(FootholdAnchor a, FootholdLine x) {
-			var prevnum = x.prev;
-			var nextnum = x.next;
-
-			foreach (FootholdLine l in a.connectedLines)
-				if (l.num == prevnum)
-					return true;
-				else if (l.num == nextnum) return false;
-
-			return false;
-		}
-
 		public static void LoadFootholds(WzImage mapImage, Board mapBoard) {
 			var anchors = new List<FootholdAnchor>();
 			var footholdParent = (WzSubProperty) mapImage["foothold"];
@@ -466,14 +454,6 @@ namespace HaCreator.Wz {
 				}
 
 				foreach (var anchor in anchors) {
-					if (anchor.connectedLines.Count > 2)
-						foreach (FootholdLine line in anchor.connectedLines)
-							if (IsAnchorPrevOfFoothold(anchor, line)) {
-								if (fhs.ContainsKey(line.prev)) line.prevOverride = fhs[line.prev];
-							} else {
-								if (fhs.ContainsKey(line.next)) line.nextOverride = fhs[line.next];
-							}
-
 					mapBoard.BoardItems.FHAnchors.Add(anchor);
 				}
 
@@ -592,7 +572,7 @@ namespace HaCreator.Wz {
 				var bS = InfoTool.GetString(bgProp["bS"]);
 				var ani = InfoTool.GetBool(bgProp["ani"]);
 				var no = InfoTool.GetInt(bgProp["no"]).ToString();
-				var front = InfoTool.GetBool(bgProp["front"]);
+				var front = bgProp["front"].GetOptionalBool(Defaults.Background.Front);
 				var screenMode = bgProp["screenMode"].GetOptionalInt((int) RenderResolution.Res_All);
 				var spineAni = bgProp["spineAni"].GetOptionalString(Defaults.Background.SpineAni);
 				var spineRandomStart = bgProp["spineRandomStart"].GetOptionalBool(Defaults.Background.SpineRandomStart);
