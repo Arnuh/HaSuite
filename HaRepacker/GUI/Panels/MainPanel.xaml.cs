@@ -907,8 +907,9 @@ namespace HaRepacker.GUI.Panels {
 					childInlinkNode.DeleteWzNode(); // Delete '_inlink' node
 				}
 
-				if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.B8G8R8A8, out var pixelFormat))
+				if (!PixelFormatSelector.Show(selectedWzCanvas.PngProperty.PixFormat, out var pixelFormat)) {
 					return;
+				}
 
 				selectedWzCanvas.PngProperty.PixFormat = pixelFormat;
 				selectedWzCanvas.PngProperty.SetImage(bmp);
