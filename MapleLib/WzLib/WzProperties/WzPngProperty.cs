@@ -53,9 +53,11 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Inherited Members
 
 		public override void SetValue(object value) {
-			if (value is Bitmap)
-				SetImage((Bitmap) value);
-			else compressedImageBytes = (byte[]) value;
+			if (value is Bitmap bitmap) {
+				SetImage(bitmap);
+			} else {
+				compressedImageBytes = (byte[]) value;
+			}
 		}
 
 		public override WzImageProperty DeepClone() {
@@ -214,6 +216,16 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 		}
 
+		public void SetImage(Bitmap png) {
+			this.png = png;
+			CompressPng(png);
+		}
+
+		public Bitmap GetImage(bool saveInMemory) {
+			if (png == null) ParsePng(saveInMemory);
+			return png;
+		}
+
 		/// <summary>
 		/// Creates a blank WzPngProperty
 		/// </summary>
@@ -227,31 +239,22 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <param name="parseNow"></param>
 		internal WzPngProperty(WzBinaryReader reader, bool parseNow) {
 			// Read compressed bytes
+			wzReader = reader;
 			width = reader.ReadCompressedInt();
 			height = reader.ReadCompressedInt();
 			pixFormat = reader.ReadCompressedInt();
 			magLevel = reader.ReadCompressedInt();
 			reader.BaseStream.Position += 4;
 			offs = reader.BaseStream.Position;
-			var len = reader.ReadInt32() - 1;
-			reader.BaseStream.Position += 1;
-
-			lock (reader) // lock WzBinaryReader, allowing it to be loaded from multiple threads at once
-			{
-				if (len > 0) {
-					if (parseNow) {
-						if (wzReader == null) // when saving the WZ file to a new encryption
-							compressedImageBytes = reader.ReadBytes(len);
-						else // when opening the Wz property
-							compressedImageBytes = wzReader.ReadBytes(len);
-
-						ParsePng(true);
-					} else {
-						reader.BaseStream.Position += len;
-					}
+			if (parseNow) {
+				GetCompressedBytes(true);
+			} else {
+				lock (reader) { // lock WzBinaryReader, allowing it to be loaded from multiple threads at once
+					var len = reader.ReadInt32() - 1;
+					reader.BaseStream.Position += 1;
+					if (len <= 0) return;
+					reader.BaseStream.Position += len;
 				}
-
-				wzReader = reader;
 			}
 		}
 
@@ -260,70 +263,95 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Parsing Methods
 
 		public byte[] GetCompressedBytes(bool saveInMemory) {
-			if (compressedImageBytes == null) {
-				lock (wzReader) // lock WzBinaryReader, allowing it to be loaded from multiple threads at once
-				{
-					var pos = wzReader.BaseStream.Position;
-					wzReader.BaseStream.Position = offs;
-					var len = wzReader.ReadInt32() - 1;
-					if (len <= 0) // possibility an image written with the wrong wzIv 
-						throw new Exception("The length of the image is negative. WzPngProperty. Wrong WzIV?");
-
-					wzReader.BaseStream.Position += 1;
-
-					if (len > 0)
-						compressedImageBytes = wzReader.ReadBytes(len);
-					wzReader.BaseStream.Position = pos;
+			if (compressedImageBytes != null) return compressedImageBytes;
+			lock (wzReader) { // lock WzBinaryReader, allowing it to be loaded from multiple threads at once
+				var pos = wzReader.BaseStream.Position;
+				wzReader.BaseStream.Position = offs;
+				var len = wzReader.ReadInt32() - 1;
+				if (len <= 0) { // possibility an image written with the wrong wzIv 
+					throw new Exception("The length of the image is negative. WzPngProperty. Wrong WzIV?");
 				}
 
-				if (!saveInMemory) {
-					//were removing the referance to compressedBytes, so a backup for the ret value is needed
-					var returnBytes = compressedImageBytes;
-					compressedImageBytes = null;
-					return returnBytes;
-				}
+				wzReader.BaseStream.Position += 1;
+
+				compressedImageBytes = wzReader.ReadBytes(len);
+				wzReader.BaseStream.Position = pos;
 			}
 
-			return compressedImageBytes;
+			if (saveInMemory) return compressedImageBytes;
+			// we're removing the reference to compressedBytes, so a backup for the ret value is needed
+			var returnBytes = compressedImageBytes;
+			compressedImageBytes = null;
+			return returnBytes;
 		}
 
-		public void SetImage(Bitmap png) {
-			this.png = png;
-			CompressPng(png);
-		}
+		internal byte[] Decompress(byte[] compressedBuffer, byte[] decompressedBuffer) {
+			using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
+				DeflateStream zlib;
 
-		public Bitmap GetImage(bool saveInMemory) {
-			if (png == null) ParsePng(saveInMemory);
+				var header = reader.ReadUInt16();
+				listWzUsed = header != 0x9C78 && header != 0xDA78 && header != 0x0178 && header != 0x5E78;
+				// If the first 2 bytes aren't a zlib header, then it's probably compressed by List.wz
+				if (listWzUsed) {
+					// Go back since we checked for header
+					reader.BaseStream.Position -= 2;
+					var dataStream = new MemoryStream();
+					var endOfPng = compressedBuffer.Length;
 
-			return png;
-		}
+					// Read image into zlib
+					while (reader.BaseStream.Position < endOfPng) {
+						var blockSize = reader.ReadInt32();
+						for (var i = 0; i < blockSize; i++) {
+							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
+						}
+					}
 
-		internal byte[] Decompress(byte[] compressedBuffer, int decompressedSize) {
-			using (var memStream = new MemoryStream()) {
-				memStream.Write(compressedBuffer, 2, compressedBuffer.Length - 2);
-				var buffer = new byte[decompressedSize];
-				memStream.Position = 0;
+					dataStream.Position = 2; // ZLib header
+					zlib = new DeflateStream(dataStream, CompressionMode.Decompress);
+				} else {
+					zlib = new DeflateStream(reader.BaseStream, CompressionMode.Decompress);
+				}
 
-				using (var zip = new DeflateStream(memStream, CompressionMode.Decompress)) {
-					zip.Read(buffer, 0, buffer.Length);
-					return buffer;
+				using (zlib) {
+					zlib.Read(decompressedBuffer, 0, decompressedBuffer.Length);
+					return decompressedBuffer;
 				}
 			}
 		}
 
 		internal byte[] Compress(byte[] decompressedBuffer) {
-			using (var memStream = new MemoryStream()) {
-				using (var zip = new DeflateStream(memStream, CompressionMode.Compress, true)) {
+			return Compress(decompressedBuffer, ParentImage.reader.WzKey);
+		}
+
+		internal byte[] Compress(byte[] decompressedBuffer, WzMutableKey WzKey) {
+			using (var zlibStream = new MemoryStream()) {
+				byte[] header = {0x78, 0x9C};
+				using (var zip = new DeflateStream(zlibStream, CompressionMode.Compress, true)) {
 					zip.Write(decompressedBuffer, 0, decompressedBuffer.Length);
 				}
 
-				memStream.Position = 0;
-				var buffer = new byte[memStream.Length + 2];
-				memStream.Read(buffer, 2, buffer.Length - 2);
+				if (listWzUsed) {
+					using (var stream = new MemoryStream()) {
+						stream.Write(BitConverter.GetBytes(header.Length), 0, 4);
+						for (var i = 0; i < header.Length; i++) {
+							stream.WriteByte((byte) (header[i] ^ WzKey[i]));
+						}
 
-				Buffer.BlockCopy(new byte[] {0x78, 0x9C}, 0, buffer, 0, 2);
+						var buffer = zlibStream.ToArray();
+						// What's the buffer capacity? That might be worth replicating
+						stream.Write(BitConverter.GetBytes(buffer.Length), 0, 4);
+						for (var i = 0; i < buffer.Length; i++)
+							stream.WriteByte((byte) (buffer[i] ^ WzKey[i]));
+						return stream.ToArray();
+					}
+				} else {
+					zlibStream.Position = 0;
+					var buffer = new byte[zlibStream.Length + 2];
+					zlibStream.Read(buffer, 2, buffer.Length - 2);
 
-				return buffer;
+					Buffer.BlockCopy(header, 0, buffer, 0, header.Length);
+					return buffer;
+				}
 			}
 		}
 
@@ -364,51 +392,47 @@ namespace MapleLib.WzLib.WzProperties {
 					return null;
 			}
 		}
-
+		
 		/// <summary>
-		/// Parses the raw image bytes from WZ
+		/// Reads the wz, decompresses the image, and returns the raw image bytes
 		/// </summary>
 		/// <returns></returns>
 		internal byte[] GetRawImage(bool saveInMemory) {
 			var rawImageBytes = GetCompressedBytes(saveInMemory);
 
-			try {
-				using (var reader = new BinaryReader(new MemoryStream(rawImageBytes))) {
-					DeflateStream zlib;
+			var decBuf = GetRawImageArray();
 
-					var header = reader.ReadUInt16();
-					listWzUsed = header != 0x9C78 && header != 0xDA78 && header != 0x0178 && header != 0x5E78;
-					if (!listWzUsed) {
-						zlib = new DeflateStream(reader.BaseStream, CompressionMode.Decompress);
-					} else {
-						reader.BaseStream.Position -= 2;
-						var dataStream = new MemoryStream();
-						var blocksize = 0;
-						var endOfPng = rawImageBytes.Length;
+			return Decompress(rawImageBytes, decBuf);
+		}
 
-						// Read image into zlib
-						while (reader.BaseStream.Position < endOfPng) {
-							blocksize = reader.ReadInt32();
-							for (var i = 0; i < blocksize; i++)
-								dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
-						}
+		/// <summary>
+		/// Attempts to convert CompressedBytes to provided WzKey if the bytes were also compressed by List.wz encryption
+		/// </summary>
+		/// <param name="WzKey"></param>
+		/// <returns></returns>
+		public byte[] ConvertCompressedBytes(WzMutableKey WzKey) {
+			var compressedBuffer = GetCompressedBytes(false);
+			// Only convert if List.wz was used and the WzKey changed
+			if (!listWzUsed) return compressedBuffer;
+			if (ParentImage.reader.WzKey.Equals(WzKey)) return compressedBuffer;
+			// Duplicate part of the decompress code to avoid having to decompress, recompress
+			// when we just want to change the WzKey of the compressed bytes
+			// The following is an option tho.
+			// return Compress(GetRawImage(false), WzKey);
+			using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
+				var dataStream = new MemoryStream();
+				var endOfPng = compressedBuffer.Length;
 
-						dataStream.Position = 2;
-						zlib = new DeflateStream(dataStream, CompressionMode.Decompress);
+				while (reader.BaseStream.Position < endOfPng) {
+					var blockSize = reader.ReadInt32();
+					dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
+					for (var i = 0; i < blockSize; i++) {
+						dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i] ^ WzKey[i]));
 					}
-
-					var decBuf = GetRawImageArray();
-
-					if (decBuf != null)
-						using (zlib) {
-							zlib.Read(decBuf, 0, decBuf.Length);
-							return decBuf;
-						}
 				}
-			} catch (InvalidDataException) {
-			}
 
-			return null;
+				return dataStream.ToArray();
+			}
 		}
 
 		public void ParsePng(bool saveInMemory, Texture2D texture2d = null) {
@@ -800,22 +824,6 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 
 			compressedImageBytes = Compress(buf);
-
-			buf = null;
-
-			if (listWzUsed)
-				using (var memStream = new MemoryStream()) {
-					using (var writer =
-					       new WzBinaryWriter(memStream, WzTool.GetIvByMapleVersion(WzMapleVersion.GMS))) {
-						writer.Write(2);
-						for (var i = 0; i < 2; i++) writer.Write((byte) (compressedImageBytes[i] ^ writer.WzKey[i]));
-
-						writer.Write(compressedImageBytes.Length - 2);
-						for (var i = 2; i < compressedImageBytes.Length; i++)
-							writer.Write((byte) (compressedImageBytes[i] ^ writer.WzKey[i - 2]));
-						compressedImageBytes = memStream.GetBuffer();
-					}
-				}
 		}
 
 		#region Encoders
@@ -865,7 +873,7 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		#endregion
-
+		
 		public enum WzPixelFormat {
 			Unknown,
 			B4G4R4A4,

@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using MapleLib.MapleCryptoLib;
 
@@ -84,6 +85,12 @@ namespace MapleLib.WzLib.Util {
 			s.Flush();
 			ms.Close();
 			keys = newKeys;
+		}
+
+		public bool Equals(WzMutableKey compare) {
+			if (!IV.SequenceEqual(compare.IV)) return false;
+			if (!AESUserKey.SequenceEqual(compare.AESUserKey)) return false;
+			return keys.SequenceEqual(compare.keys);
 		}
 	}
 }

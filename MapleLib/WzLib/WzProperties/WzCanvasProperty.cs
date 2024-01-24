@@ -166,7 +166,7 @@ namespace MapleLib.WzLib.WzProperties {
 			writer.Write((int) 0);
 
 			// Write image
-			var bytes = PngProperty.GetCompressedBytes(false);
+			var bytes = PngProperty.ConvertCompressedBytes(writer.WzKey);
 			writer.Write(bytes.Length + 1);
 			writer.Write((byte) 0); // header? see WzImageProperty.ParseExtendedProp "0x00"
 			writer.Write(bytes);

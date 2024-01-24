@@ -52,8 +52,11 @@ namespace MapleLib.WzLib {
 			get {
 				var parent = Parent;
 				while (parent != null)
-					if (parent is WzImage) return (WzImage) parent;
-					else parent = parent.Parent;
+					if (parent is WzImage image) {
+						return image;
+					} else {
+						parent = parent.Parent;
+					}
 
 				return null;
 			}
@@ -208,6 +211,9 @@ namespace MapleLib.WzLib {
 					}
 
 					canvasProp.PngProperty = new WzPngProperty(reader, imgParent.ParseEverything) {Parent = canvasProp};
+					if (imgParent.ParseEverything) {
+						canvasProp.PngProperty.ParsePng(true);
+					}
 					return canvasProp;
 				case "Shape2D#Vector2D":
 					var vecProp = new WzVectorProperty(name) {Parent = parent};
