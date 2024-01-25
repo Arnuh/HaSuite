@@ -13,7 +13,7 @@
         <converter:VectorOriginPointFToMarginConverter x:Key="vectorOriginConverter" />
         <converter:CheckboxToVisibilityConverter x:Key="checkboxToVisibilityConverter" />
         <converter:ImageWidthOrHeightToScreenDPIConverter x:Key="imageWidthOrHeightToScreenDPIConverter" />
-        <converter:PointFToVisiblityConverter x:Key="pointFToVisiblityConverter" />
+        <converter:PointFToVisibilityConverter x:Key="pointFToVisibilityConverter" />
         <converter:CheckboxToBorderTransparencyConverter x:Key="checkboxToBorderTransparencyConverter" />
 
         <ControlTemplate x:Key="ScrollViewerControlTemplate1" TargetType="{x:Type ScrollViewer}">
@@ -717,78 +717,94 @@
                                 <!-- Top-Left -->
                                 <Rectangle x:Name="Rectangle_TopLeft"
                                            Stroke="Black" Height="1" Width="1"
-                                           VerticalAlignment="Top" HorizontalAlignment="Left"
-                                           MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"
-                                           MouseMove="Rectangle_MouseMove"
-                                           MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" />
+                                           VerticalAlignment="Top" HorizontalAlignment="Left" />
 
                                 <!-- Top-Right -->
                                 <Rectangle x:Name="Rectangle_TopRight"
                                            Stroke="Black" Height="1" Width="1"
-                                           VerticalAlignment="Top" HorizontalAlignment="Right"
-                                           MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"
-                                           MouseMove="Rectangle_MouseMove"
-                                           MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" />
+                                           VerticalAlignment="Top" HorizontalAlignment="Right" />
 
                                 <!-- Bottom-Left -->
                                 <Rectangle x:Name="Rectangle_BottomLeft"
                                            Stroke="Black" Height="1" Width="1"
-                                           VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                                           MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"
-                                           MouseMove="Rectangle_MouseMove"
-                                           MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" />
+                                           VerticalAlignment="Bottom" HorizontalAlignment="Left" />
 
                                 <!-- Bottom-Right -->
                                 <Rectangle x:Name="Rectangle_BottomRight"
                                            Stroke="Black" Height="1" Width="1"
-                                           VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                                           MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"
-                                           MouseMove="Rectangle_MouseMove"
-                                           MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" />
+                                           VerticalAlignment="Bottom" HorizontalAlignment="Right" />
                             </Grid>
 
                             <!-- Crosshair for vector origin-->
                             <!-- Margin="{Binding CanvasVectorOrigin, Converter={StaticResource vectorOriginConverter}}"
                         -->
                             <Grid
+                                Name="OriginCrosshair"
                                 Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                                Margin="{Binding CanvasVectorOrigin, Converter={StaticResource vectorOriginConverter}}">
+                                Margin="{Binding CanvasVectorOrigin, Converter={StaticResource vectorOriginConverter}}"
+                                MouseLeftButtonDown="Head_OnMouseDown"
+                                MouseLeftButtonUp="Head_OnMouseUp"
+                                MouseMove="Head_OnMouseMove">
 
                                 <!-- Grid to compensate for the crosshair length-->
                                 <!-- Crosshair must always only be 1/2 of the image width and height-->
                                 <Grid Margin="-5,0,0,-5"
-                                      Visibility="{Binding CanvasVectorOrigin, Converter={StaticResource pointFToVisiblityConverter}}">
+                                      Visibility="{Binding CanvasVectorOrigin, Converter={StaticResource pointFToVisibilityConverter}}">
                                     <Grid Width="0.5" Height="10" Background="DarkCyan" />
                                     <Grid Height="0.5" Width="10" Background="DarkCyan" />
                                 </Grid>
                             </Grid>
 
                             <!-- Grid for head crosshair-->
-                            <Grid
-                                Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"
-                                Margin="{Binding CanvasVectorHead, Converter={StaticResource vectorOriginConverter}}">
+                            <Grid Name="HeadCrosshair"
+                                  Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Top"
+                                  Margin="{Binding CanvasVectorHeadOffset, Converter={StaticResource vectorOriginConverter}}"
+                                  MouseLeftButtonDown="Head_OnMouseDown"
+                                  MouseLeftButtonUp="Head_OnMouseUp"
+                                  MouseMove="Head_OnMouseMove">
 
                                 <!-- Grid to compensate for the crosshair length-->
                                 <!-- Crosshair must always only be 1/2 of the image width and height-->
                                 <Grid Margin="-5,0,0,-5"
-                                      Visibility="{Binding CanvasVectorHead, Converter={StaticResource pointFToVisiblityConverter}}">
+                                      Visibility="{Binding CanvasVectorHeadOffset, Converter={StaticResource pointFToVisibilityConverter}}">
                                     <Grid Width="0.5" Height="10" Background="DarkOrange" />
                                     <Grid Height="0.5" Width="10" Background="DarkOrange" />
                                 </Grid>
                             </Grid>
 
-                            <!-- Grid for head lt-->
-                            <Grid
-                                Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"
-                                Margin="{Binding CanvasVectorLt, Converter={StaticResource vectorOriginConverter}}">
+                            <!-- Grid for lt-->
+                            <Grid Name="LtCrosshair"
+                                  Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Top"
+                                  Margin="{Binding CanvasVectorLtOffset, Converter={StaticResource vectorOriginConverter}}"
+                                  MouseLeftButtonDown="Head_OnMouseDown"
+                                  MouseLeftButtonUp="Head_OnMouseUp"
+                                  MouseMove="Head_OnMouseMove">
 
                                 <!-- Grid to compensate for the crosshair length-->
                                 <!-- Crosshair must always only be 1/2 of the image width and height-->
                                 <Grid Margin="-5,0,0,-5"
-                                      Visibility="{Binding CanvasVectorLt, Converter={StaticResource pointFToVisiblityConverter}}">
+                                      Visibility="{Binding CanvasVectorLtOffset, Converter={StaticResource pointFToVisibilityConverter}}">
+                                    <Grid Width="0.5" Height="10" Background="DarkMagenta" />
+                                    <Grid Height="0.5" Width="10" Background="DarkMagenta" />
+                                </Grid>
+                            </Grid>
+
+                            <!-- Grid for rb-->
+                            <Grid Name="RbCrosshair"
+                                  Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Top"
+                                  Margin="{Binding CanvasVectorRbOffset, Converter={StaticResource vectorOriginConverter}}"
+                                  MouseLeftButtonDown="Head_OnMouseDown"
+                                  MouseLeftButtonUp="Head_OnMouseUp"
+                                  MouseMove="Head_OnMouseMove">
+
+                                <!-- Grid to compensate for the crosshair length-->
+                                <!-- Crosshair must always only be 1/2 of the image width and height-->
+                                <Grid Margin="-5,0,0,-5"
+                                      Visibility="{Binding CanvasVectorRbOffset, Converter={StaticResource pointFToVisibilityConverter}}">
                                     <Grid Width="0.5" Height="10" Background="DarkMagenta" />
                                     <Grid Height="0.5" Width="10" Background="DarkMagenta" />
                                 </Grid>
@@ -828,7 +844,7 @@
         <!-- Checkbox to enable crosshair or not-->
         <Grid Grid.Row="0" Margin="15">
 
-            <!-- Displays the origin, delay, head and lt-->
+            <!-- Displays the delay, origin, head, lt, and rb-->
             <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right"
                   Visibility="{Binding ElementName=checkbox_crosshair, Path=IsChecked, Converter={StaticResource checkboxToVisibilityConverter}}"
                   Margin="0,70,0,0">
@@ -836,6 +852,7 @@
                 <Border BorderThickness="0.6">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="15" />
                             <RowDefinition Height="15" />
                             <RowDefinition Height="15" />
                             <RowDefinition Height="15" />
@@ -866,8 +883,7 @@
 
 
                         <!-- 'origin' -->
-                        <Grid Grid.Row="1"
-                              Visibility="{Binding CanvasVectorOrigin, Converter={StaticResource pointFToVisiblityConverter}}">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="75" />
@@ -901,8 +917,7 @@
                         </Grid>
 
                         <!-- 'head' -->
-                        <Grid Grid.Row="2"
-                              Visibility="{Binding CanvasVectorHead, Converter={StaticResource pointFToVisiblityConverter}}">
+                        <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="75" />
@@ -936,8 +951,7 @@
                         </Grid>
 
                         <!-- 'lt' -->
-                        <Grid Grid.Row="3"
-                              Visibility="{Binding CanvasVectorLt, Converter={StaticResource pointFToVisiblityConverter}}">
+                        <Grid Grid.Row="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="75" />
@@ -968,6 +982,40 @@
                             <Button x:Name="button_ltEdit" Content="Save" Margin="3,0,0,0" FontSize="8" Width="30"
                                     IsEnabled="False"
                                     Grid.Column="2" Click="button_ltEdit_Click" />
+                        </Grid>
+
+                        <!-- 'rb' -->
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="75" />
+                                <ColumnDefinition Width="33" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="rb XY:" Margin="0,0,0,0" FontSize="10" Foreground="DarkMagenta"
+                                       FontWeight="Bold"
+                                       Grid.Column="0" />
+                            <Grid Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="textbox_rbX" Text="0" Margin="3,0,0,0" FontSize="10"
+                                         InputScope="Number"
+                                         Grid.Column="0"
+                                         TextChanged="textbox_rb_TextChanged" />
+                                <TextBox x:Name="textbox_rbY" Text="0" Margin="3,0,0,0" FontSize="10"
+                                         InputScope="Number"
+                                         Grid.Column="1"
+                                         TextChanged="textbox_rb_TextChanged" />
+                            </Grid>
+                            <!--  <TextBlock Text="{Binding CanvasVectorRb, Converter={StaticResource pointFOriginToStringConverter}}" Margin="3,0,0,0" FontSize="10"  Foreground="DarkMagenta"
+                                        Grid.Column="1"/>-->
+
+                            <Button x:Name="button_rbEdit" Content="Save" Margin="3,0,0,0" FontSize="8" Width="30"
+                                    IsEnabled="False"
+                                    Grid.Column="2" Click="button_rbEdit_Click" />
                         </Grid>
                     </Grid>
                 </Border>

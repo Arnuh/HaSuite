@@ -127,9 +127,10 @@ namespace HaRepacker.GUI.Panels {
 		private void DataTree_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e) {
 			if (DataTree.SelectedNode == null) return;
 
-			ShowObjectValue((WzObject) DataTree.SelectedNode.Tag);
+			var node = (WzNode) DataTree.SelectedNode;
+			ShowObjectValue(node, (WzObject) node.Tag);
 			selectionLabel.Text = string.Format(Properties.Resources.SelectionType,
-				((WzNode) DataTree.SelectedNode).GetTypeName());
+				node.GetTypeName());
 		}
 
 		/// <summary>
@@ -1314,7 +1315,7 @@ namespace HaRepacker.GUI.Panels {
 		/// Shows the selected data treeview object to UI
 		/// </summary>
 		/// <param name="obj"></param>
-		private void ShowObjectValue(WzObject obj) {
+		private void ShowObjectValue(WzNode node, WzObject obj) {
 			if (obj.WzFileParent != null &&
 			    obj.WzFileParent
 				    .IsUnloaded) // this WZ is already unloaded from memory, dont attempt to display it (when the user clicks "reload" button while selection is on that)
@@ -1417,7 +1418,7 @@ namespace HaRepacker.GUI.Panels {
 				toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
 					canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
 
-				SetImageRenderView(canvasProp);
+				SetImageRenderView(node, canvasProp);
 			} else if (obj is WzUOLProperty uolProperty) {
 				bAnimateMoreButton = true; // flag
 
@@ -1433,7 +1434,7 @@ namespace HaRepacker.GUI.Panels {
 					toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasUOL.PngProperty.PixFormat,
 						canvasUOL.PngProperty.MagLevel, canvasUOL.PngProperty.IsIncorrectFormat2());
 
-					SetImageRenderView(canvasUOL);
+					SetImageRenderView(node, canvasUOL);
 				} else if
 					(linkValue is WzBinaryProperty binProperty) // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
 				{
@@ -1594,22 +1595,28 @@ namespace HaRepacker.GUI.Panels {
 		/// </summary>
 		/// <param name="canvas"></param>
 		/// <param name="animationFrame"></param>
-		private void SetImageRenderView(WzCanvasProperty canvas) {
+		private void SetImageRenderView(WzNode node, WzCanvasProperty canvas) {
+			canvasPropBox.PreLoad();
 			// origin
 			var delay = canvas[WzCanvasProperty.AnimationDelayPropertyName]?.GetInt();
 			var originVector = canvas.GetCanvasOriginPosition();
 			var headVector = canvas.GetCanvasHeadPosition();
 			var ltVector = canvas.GetCanvasLtPosition();
+			var rbVector = canvas.GetCanvasRbPosition();
 
 			// Set XY point to canvas xaml
+			canvasPropBox.ParentWzNode = node;
 			canvasPropBox.ParentWzCanvasProperty = canvas;
 			canvasPropBox.Delay = delay ?? 0;
 			canvasPropBox.CanvasVectorOrigin = originVector;
 			canvasPropBox.CanvasVectorHead = headVector;
 			canvasPropBox.CanvasVectorLt = ltVector;
+			canvasPropBox.CanvasVectorRb = rbVector;
 
 			if (canvasPropBox.Visibility != Visibility.Visible)
 				canvasPropBox.Visibility = Visibility.Visible;
+
+			canvasPropBox.PostLoad();
 		}
 
 		#endregion

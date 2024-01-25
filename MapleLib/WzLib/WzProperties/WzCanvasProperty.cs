@@ -38,6 +38,7 @@ namespace MapleLib.WzLib.WzProperties {
 		public const string OriginPropertyName = "origin";
 		public const string HeadPropertyName = "head";
 		public const string LtPropertyName = "lt";
+		public const string RbPropertyName = "rb";
 		public const string AnimationDelayPropertyName = "delay";
 
 		#endregion
@@ -215,25 +216,41 @@ namespace MapleLib.WzLib.WzProperties {
 		/// If not available, it defaults to xy of 0, 0
 		/// </summary>
 		/// <returns></returns>
-		public PointF GetCanvasHeadPosition() {
+		public PointF? GetCanvasHeadPosition() {
 			var headPos = (WzVectorProperty) this[HeadPropertyName];
-			if (headPos != null)
+			if (headPos != null) {
 				return new PointF(headPos.X.Value, headPos.Y.Value);
+			}
 
-			return new PointF(0, 0);
+			return null;
 		}
 
 		/// <summary>
-		/// Gets the 'head' position of the Canvas
+		/// Gets the 'lt' position of the Canvas
 		/// If not available, it defaults to xy of 0, 0
 		/// </summary>
 		/// <returns></returns>
-		public PointF GetCanvasLtPosition() {
+		public PointF? GetCanvasLtPosition() {
 			var headPos = (WzVectorProperty) this[LtPropertyName];
-			if (headPos != null)
+			if (headPos != null) {
 				return new PointF(headPos.X.Value, headPos.Y.Value);
+			}
 
-			return new PointF(0, 0);
+			return null;
+		}
+
+		/// <summary>
+		/// Gets the 'rb' position of the Canvas
+		/// If not available, it defaults to xy of 0, 0
+		/// </summary>
+		/// <returns></returns>
+		public PointF? GetCanvasRbPosition() {
+			var headPos = (WzVectorProperty) this[RbPropertyName];
+			if (headPos != null) {
+				return new PointF(headPos.X.Value, headPos.Y.Value);
+			}
+
+			return null;
 		}
 
 		/// <summary>

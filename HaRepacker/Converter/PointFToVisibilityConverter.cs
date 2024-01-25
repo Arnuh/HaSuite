@@ -6,11 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -20,15 +16,12 @@ namespace HaRepacker.Converter {
 	/// Returns Visiblity.Visible if the X and Y coordinates of PointF is not 0,
 	/// otherwise Visiblity.Collapsed
 	/// </summary>
-	public class PointFToVisiblityConverter : IValueConverter {
+	public class PointFToVisibilityConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
 			System.Globalization.CultureInfo culture) {
-			var point = (PointF) value;
+			var point = (PointF?) value;
 
-			if (point.X == 0 && point.Y == 0)
-				return Visibility.Collapsed;
-
-			return Visibility.Visible;
+			return point == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,

@@ -1,22 +1,14 @@
-﻿using HaRepacker.GUI.Input;
+﻿using System;
 using MapleLib.WzLib.WzProperties;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using MapleLib.WzLib;
 using static MapleLib.Configuration.UserSettings;
+using Point = System.Windows.Point;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>
@@ -58,6 +50,16 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		}
 
 		#region Exported Fields
+
+		private WzNode _ParentWzNode = null;
+
+		/// <summary>
+		/// The parent WZCanvasProperty to display from
+		/// </summary>
+		public WzNode ParentWzNode {
+			get => _ParentWzNode;
+			set => _ParentWzNode = value;
+		}
 
 		private WzCanvasProperty _ParentWzCanvasProperty = null;
 
@@ -117,38 +119,66 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			}
 		}
 
-		private PointF _CanvasVectorHead = new PointF(0, 0);
+		private PointF? _CanvasVectorHead;
 
 		/// <summary>
 		/// Head vector (Hit positioning for mobs?)
 		/// </summary>
-		public PointF CanvasVectorHead {
+		public PointF? CanvasVectorHead {
 			get => _CanvasVectorHead;
 			set {
 				_CanvasVectorHead = value;
 				OnPropertyChanged("CanvasVectorHead");
+				OnPropertyChanged("CanvasVectorHeadOffset");
 
-				textbox_headX.Text = _CanvasVectorHead.X.ToString();
-				textbox_headY.Text = _CanvasVectorHead.Y.ToString();
+				textbox_headX.Text = _CanvasVectorHead?.X.ToString() ?? "0";
+				textbox_headY.Text = _CanvasVectorHead?.Y.ToString() ?? "0";
 			}
 		}
 
-		private PointF _CanvasVectorLt = new PointF(0, 0);
+		public PointF? CanvasVectorHeadOffset =>
+			CanvasVectorHead is PointF head ? (PointF?) new PointF(head.X + CanvasVectorOrigin.X, head.Y + CanvasVectorOrigin.Y) : null;
+
+		private PointF? _CanvasVectorLt;
 
 		/// <summary>
 		/// lt vector
 		/// </summary>
-		public PointF CanvasVectorLt {
+		public PointF? CanvasVectorLt {
 			get => _CanvasVectorLt;
 			set {
 				_CanvasVectorLt = value;
 				OnPropertyChanged("CanvasVectorLt");
+				OnPropertyChanged("CanvasVectorLtOffset");
 
-				textbox_ltX.Text = _CanvasVectorLt.X.ToString();
-				textbox_ltY.Text = _CanvasVectorLt.Y.ToString();
+				textbox_ltX.Text = _CanvasVectorLt?.X.ToString() ?? "0";
+				textbox_ltY.Text = _CanvasVectorLt?.Y.ToString() ?? "0";
 			}
 		}
 
+		public PointF? CanvasVectorLtOffset =>
+			CanvasVectorLt is PointF lt ? (PointF?) new PointF(lt.X + CanvasVectorOrigin.X, lt.Y + CanvasVectorOrigin.Y) : null;
+
+		private PointF? _CanvasVectorRb;
+
+		/// <summary>
+		/// rb vector
+		/// </summary>
+		public PointF? CanvasVectorRb {
+			get => _CanvasVectorRb;
+			set {
+				_CanvasVectorRb = value;
+				OnPropertyChanged("CanvasVectorRb");
+				OnPropertyChanged("CanvasVectorRbOffset");
+
+				textbox_rbX.Text = _CanvasVectorRb?.X.ToString() ?? "0";
+				textbox_rbY.Text = _CanvasVectorRb?.Y.ToString() ?? "0";
+			}
+		}
+
+		public PointF? CanvasVectorRbOffset =>
+			CanvasVectorRb is PointF rb ? (PointF?) new PointF(rb.X + CanvasVectorOrigin.X, rb.Y + CanvasVectorOrigin.Y) : null;
+		
 		private double _ImageWidth = 0;
 
 		/// <summary>
@@ -238,6 +268,19 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		}
 
 		/// <summary>
+		/// 'rb' value changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void textbox_rb_TextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading) {
+				return;
+			}
+
+			button_rbEdit.IsEnabled = true;
+		}
+
+		/// <summary>
 		/// 'head' value changed
 		/// </summary>
 		/// <param name="sender"></param>
@@ -282,19 +325,27 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			if (isLoading)
 				return;
 
-			if (int.TryParse(textbox_ltX.Text, out var newX) && int.TryParse(textbox_ltY.Text, out var newY)) {
-				var vectorProp =
-					_ParentWzCanvasProperty[WzCanvasProperty.LtPropertyName] as WzVectorProperty;
-				if (vectorProp != null) {
-					vectorProp.X.Value = newX;
-					vectorProp.Y.Value = newY;
+			if (!int.TryParse(textbox_ltX.Text, out var newX) || !int.TryParse(textbox_ltY.Text, out var newY)) return;
+			UpdatePoint(WzCanvasProperty.LtPropertyName, newX, newY);
 
-					// Update local UI
-					CanvasVectorLt = new PointF(newX, newY);
+			// Update local UI
+			CanvasVectorLt = new PointF(newX, newY);
 
-					button_ltEdit.IsEnabled = false;
-				}
+			button_ltEdit.IsEnabled = false;
+		}
+
+		private void button_rbEdit_Click(object sender, RoutedEventArgs e) {
+			if (isLoading) {
+				return;
 			}
+
+			if (!int.TryParse(textbox_rbX.Text, out var newX) || !int.TryParse(textbox_rbY.Text, out var newY)) return;
+			UpdatePoint(WzCanvasProperty.RbPropertyName, newX, newY);
+
+			// Update local UI
+			CanvasVectorRb = new PointF(newX, newY);
+
+			button_rbEdit.IsEnabled = false;
 		}
 
 		/// <summary>
@@ -306,19 +357,13 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			if (isLoading)
 				return;
 
-			if (int.TryParse(textbox_headX.Text, out var newX) && int.TryParse(textbox_headY.Text, out var newY)) {
-				var vectorProp =
-					_ParentWzCanvasProperty[WzCanvasProperty.HeadPropertyName] as WzVectorProperty;
-				if (vectorProp != null) {
-					vectorProp.X.Value = newX;
-					vectorProp.Y.Value = newY;
+			if (!int.TryParse(textbox_headX.Text, out var newX) || !int.TryParse(textbox_headY.Text, out var newY)) return;
+			UpdatePoint(WzCanvasProperty.HeadPropertyName, newX, newY);
 
-					// Update local UI
-					CanvasVectorHead = new PointF(newX, newY);
+			// Update local UI
+			CanvasVectorHead = new PointF(newX, newY);
 
-					button_headEdit.IsEnabled = false;
-				}
-			}
+			button_headEdit.IsEnabled = false;
 		}
 
 		/// <summary>
@@ -330,18 +375,18 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			if (isLoading)
 				return;
 
-			if (int.TryParse(textbox_delay.Text, out var newdelay)) {
-				var intProperty =
-					_ParentWzCanvasProperty[WzCanvasProperty.AnimationDelayPropertyName] as WzIntProperty;
-				if (intProperty != null) {
-					intProperty.Value = newdelay;
-
-					// Update local UI
-					Delay = newdelay;
-
-					button_delayEdit.IsEnabled = false;
-				}
+			if (!int.TryParse(textbox_delay.Text, out var newdelay)) return;
+			if (!(_ParentWzCanvasProperty[WzCanvasProperty.AnimationDelayPropertyName] is WzIntProperty intProperty)) {
+				var prop = new WzIntProperty(WzCanvasProperty.AnimationDelayPropertyName, newdelay);
+				AddNode(prop);
+			} else {
+				intProperty.Value = newdelay;
 			}
+
+			// Update local UI
+			Delay = newdelay;
+
+			button_delayEdit.IsEnabled = false;
 		}
 
 		/// <summary>
@@ -353,19 +398,13 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			if (isLoading)
 				return;
 
-			if (int.TryParse(textbox_originX.Text, out var newX) && int.TryParse(textbox_originY.Text, out var newY)) {
-				var vectorProp =
-					_ParentWzCanvasProperty[WzCanvasProperty.OriginPropertyName] as WzVectorProperty;
-				if (vectorProp != null) {
-					vectorProp.X.Value = newX;
-					vectorProp.Y.Value = newY;
+			if (!int.TryParse(textbox_originX.Text, out var newX) || !int.TryParse(textbox_originY.Text, out var newY)) return;
+			UpdatePoint(WzCanvasProperty.OriginPropertyName, newX, newY);
 
-					// Update local UI
-					CanvasVectorOrigin = new PointF(newX, newY);
+			// Update local UI
+			CanvasVectorOrigin = new PointF(newX, newY);
 
-					button_originEdit.IsEnabled = false;
-				}
-			}
+			button_originEdit.IsEnabled = false;
 		}
 
 		/// <summary>
@@ -381,27 +420,100 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;
 		}
 
-		private bool bBorderDragging = false;
+		private Point _positionInBlock;
+		private PointF _startPosition;
 
-		private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-			bBorderDragging = true;
-			Rectangle_MouseMove(sender, e);
+		private void Head_OnMouseDown(object sender, MouseButtonEventArgs e) {
+			if (!(sender is Grid uiElement)) return;
+			_positionInBlock = Mouse.GetPosition(VisualTreeHelper.GetParent(uiElement) as UIElement);
+			PointF? point;
+			switch (uiElement.Name) {
+				case "OriginCrosshair":
+					point = CanvasVectorOrigin;
+					break;
+				case "HeadCrosshair":
+					point = CanvasVectorHead;
+					break;
+				case "LtCrosshair":
+					point = CanvasVectorLt;
+					break;
+				case "RbCrosshair":
+					point = CanvasVectorRb;
+					break;
+				default:
+					throw new ArgumentException();
+			}
 
-			System.Diagnostics.Debug.WriteLine("Mouse left button down");
+			_startPosition = new PointF(point?.X ?? 0, point?.Y ?? 0);
+			uiElement.CaptureMouse();
 		}
 
-		private void Rectangle_MouseMove(object sender, MouseEventArgs e) {
-			if (bBorderDragging)
-				// dragMove
-				System.Diagnostics.Debug.WriteLine("Mouse drag move");
+		private void Head_OnMouseUp(object sender, MouseButtonEventArgs e) {
+			if (!(sender is UIElement uiElement)) return;
+			uiElement.ReleaseMouseCapture();
 		}
 
-		private void Rectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-			bBorderDragging = false;
+		private void Head_OnMouseMove(object sender, MouseEventArgs e) {
+			if (!(sender is Grid uiElement)) return;
+			if (!uiElement.IsMouseCaptured) return;
+			e.Handled = true;
 
-			System.Diagnostics.Debug.WriteLine("Mouse left button up");
+			var mousePosition = Mouse.GetPosition(VisualTreeHelper.GetParent(uiElement) as UIElement);
+			var x = (int) Math.Round(_startPosition.X + (mousePosition.X - _positionInBlock.X));
+			var y = (int) Math.Round(_startPosition.Y + (mousePosition.Y - _positionInBlock.Y));
+			var point = new PointF(x, y);
+			switch (uiElement.Name) {
+				case "OriginCrosshair":
+					CanvasVectorOrigin = point;
+					UpdatePoint(WzCanvasProperty.OriginPropertyName, x, y);
+					button_originEdit.IsEnabled = false;
+					break;
+				case "HeadCrosshair":
+					CanvasVectorHead = point;
+					UpdatePoint(WzCanvasProperty.HeadPropertyName, x, y);
+					button_headEdit.IsEnabled = false;
+					break;
+				case "LtCrosshair":
+					CanvasVectorLt = point;
+					UpdatePoint(WzCanvasProperty.LtPropertyName, x, y);
+					button_ltEdit.IsEnabled = false;
+					break;
+				case "RbCrosshair":
+					CanvasVectorRb = point;
+					UpdatePoint(WzCanvasProperty.RbPropertyName, x, y);
+					button_rbEdit.IsEnabled = false;
+					break;
+				default:
+					throw new ArgumentException();
+			}
 		}
 
 		#endregion
+
+		private void AddNode(WzImageProperty prop) {
+			_ParentWzNode.AddNode(new WzNode(prop, true), false);
+		}
+
+		private void UpdatePoint(string propName, int x, int y) {
+			if (!(_ParentWzCanvasProperty[propName] is WzVectorProperty vectorProp)) {
+				var prop = new WzVectorProperty(propName, x, y);
+				AddNode(prop);
+			} else {
+				vectorProp.X.Value = x;
+				vectorProp.Y.Value = y;
+			}
+		}
+
+		public void PreLoad() {
+			isLoading = true;
+		}
+
+		public void PostLoad() {
+			isLoading = false;
+			// Lets you click save to create a default crosshair and then drag it around
+			button_headEdit.IsEnabled = CanvasVectorHead == null;
+			button_ltEdit.IsEnabled = CanvasVectorLt == null;
+			button_rbEdit.IsEnabled = CanvasVectorRb == null;
+		}
 	}
 }

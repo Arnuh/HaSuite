@@ -24,6 +24,7 @@ namespace HaRepacker.Converter {
 
 		public object Convert(object value, Type targetType, object parameter,
 			System.Globalization.CultureInfo culture) {
+			if (value == null) return new Thickness(0, 0, 0, 0);
 			var originValue = (PointF) value;
 
 			// converted
