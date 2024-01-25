@@ -64,10 +64,11 @@ namespace HaCreator.GUI.InstanceEditor {
 			var mapid = mapBrowser.SelectedItem.Substring(0, 9);
 			var mapcat = "Map" + mapid.Substring(0, 1);
 
-			if (numericUpDown != null)
+			if (numericUpDown != null) {
 				numericUpDown.Value = long.Parse(mapid);
-			else
+			} else {
 				textBox.Text = mapid;
+			}
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -77,9 +78,9 @@ namespace HaCreator.GUI.InstanceEditor {
 		}
 
 		private void Load_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape) {
 				Close();
-			else if (e.KeyCode == Keys.Enter) loadButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) loadButton_Click(null, null);
 		}
 	}
 }

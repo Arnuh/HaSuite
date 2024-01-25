@@ -4,14 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.UndoRedo {
@@ -53,11 +50,14 @@ namespace HaCreator.MapEditor.UndoRedo {
 					break;
 				case UndoRedoType.LineRemoved:
 					board = ((MapleDot) ParamB).Board;
-					if (ParamC is FootholdLine)
+					if (ParamC is FootholdLine) {
 						board.BoardItems.FootholdLines.Add((FootholdLine) ParamC);
-					else if (ParamC is RopeLine)
+					} else if (ParamC is RopeLine) {
 						board.BoardItems.RopeLines.Add((RopeLine) ParamC);
-					else throw new Exception("wrong type at undoredo, lineremoved");
+					} else {
+						throw new Exception("wrong type at undoredo, lineremoved");
+					}
+
 					((MapleLine) ParamC).FirstDot = (MapleDot) ParamA;
 					((MapleLine) ParamC).SecondDot = (MapleDot) ParamB;
 					((MapleDot) ParamA).connectedLines.Add((MapleLine) ParamC);
@@ -65,12 +65,14 @@ namespace HaCreator.MapEditor.UndoRedo {
 					break;
 				case UndoRedoType.LineAdded:
 					board = ((MapleDot) ParamB).Board;
-					if (ParamC is FootholdLine)
+					if (ParamC is FootholdLine) {
 						board.BoardItems.FootholdLines.Remove((FootholdLine) ParamC);
-					else if (ParamC is RopeLine)
+					} else if (ParamC is RopeLine) {
 						board.BoardItems.RopeLines.Remove((RopeLine) ParamC);
-					else
+					} else {
 						throw new Exception("wrong type at undoredo, lineadded");
+					}
+
 					((MapleLine) ParamC).Remove(false, null);
 					break;
 				case UndoRedoType.FootholdFlipped:

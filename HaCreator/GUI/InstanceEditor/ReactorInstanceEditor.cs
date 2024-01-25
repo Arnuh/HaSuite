@@ -6,12 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
@@ -26,8 +20,12 @@ namespace HaCreator.GUI.InstanceEditor {
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-			if (item.Name == null) useName.Checked = false;
-			else nameBox.Text = item.Name;
+			if (item.Name == null) {
+				useName.Checked = false;
+			} else {
+				nameBox.Text = item.Name;
+			}
+
 			timeBox.Value = item.ReactorTime;
 		}
 
@@ -44,8 +42,10 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
+
 				item.Name = useName.Checked ? nameBox.Text : null;
 				item.ReactorTime = (int) timeBox.Value;
 			}

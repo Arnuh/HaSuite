@@ -97,10 +97,12 @@ namespace Spine {
 			if (high == 0) return step;
 			var current = (int) ((uint) high >> 1);
 			while (true) {
-				if (values[(current + 1) * step] <= target)
+				if (values[(current + 1) * step] <= target) {
 					low = current + 1;
-				else
+				} else {
 					high = current;
+				}
+
 				if (low == high) return (low + 1) * step;
 				current = (int) ((uint) (low + high) >> 1);
 			}
@@ -113,19 +115,24 @@ namespace Spine {
 			if (high == 0) return 1;
 			var current = (int) ((uint) high >> 1);
 			while (true) {
-				if (values[current + 1] <= target)
+				if (values[current + 1] <= target) {
 					low = current + 1;
-				else
+				} else {
 					high = current;
+				}
+
 				if (low == high) return low + 1;
 				current = (int) ((uint) (low + high) >> 1);
 			}
 		}
 
 		internal static int linearSearch(float[] values, float target, int step) {
-			for (int i = 0, last = values.Length - step; i <= last; i += step)
-				if (values[i] > target)
+			for (int i = 0, last = values.Length - step; i <= last; i += step) {
+				if (values[i] > target) {
 					return i;
+				}
+			}
+
 			return -1;
 		}
 	}
@@ -610,9 +617,11 @@ namespace Spine {
 
 			int frameIndex;
 			if (time >= frames[frames.Length - 1]) // Time is after last frame.
+			{
 				frameIndex = frames.Length - 1;
-			else
+			} else {
 				frameIndex = Animation.binarySearch(frames, time) - 1;
+			}
 
 			var drawOrder = skeleton.drawOrder;
 			var slots = skeleton.slots;
@@ -687,13 +696,14 @@ namespace Spine {
 
 			if (time >= frames[frames.Length - 1]) { // Time is after last frame.
 				var lastVertices = frameVertices[frames.Length - 1];
-				if (alpha < 1)
+				if (alpha < 1) {
 					for (var i = 0; i < vertexCount; i++) {
 						var vertex = vertices[i];
 						vertices[i] = vertex + (lastVertices[i] - vertex) * alpha;
 					}
-				else
+				} else {
 					Array.Copy(lastVertices, 0, vertices, 0, vertexCount);
+				}
 
 				return;
 			}
@@ -707,17 +717,18 @@ namespace Spine {
 			var prevVertices = frameVertices[frameIndex - 1];
 			var nextVertices = frameVertices[frameIndex];
 
-			if (alpha < 1)
+			if (alpha < 1) {
 				for (var i = 0; i < vertexCount; i++) {
 					var prev = prevVertices[i];
 					var vertex = vertices[i];
 					vertices[i] = vertex + (prev + (nextVertices[i] - prev) * percent - vertex) * alpha;
 				}
-			else
+			} else {
 				for (var i = 0; i < vertexCount; i++) {
 					var prev = prevVertices[i];
 					vertices[i] = prev + (nextVertices[i] - prev) * percent;
 				}
+			}
 		}
 	}
 

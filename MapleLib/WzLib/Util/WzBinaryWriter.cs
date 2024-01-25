@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -162,11 +161,13 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public void Write(string value, int length) {
-			for (var i = 0; i < length; i++)
-				if (i < value.Length)
+			for (var i = 0; i < length; i++) {
+				if (i < value.Length) {
 					Write(value[i]);
-				else
+				} else {
 					Write((byte) 0);
+				}
+			}
 		}
 
 		public char[] EncryptString(string stringToDecrypt) {

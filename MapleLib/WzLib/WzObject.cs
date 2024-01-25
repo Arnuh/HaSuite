@@ -16,7 +16,6 @@
 
 using System;
 using System.Drawing;
-using MapleLib.WzLib.WzProperties;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -55,16 +54,17 @@ namespace MapleLib.WzLib {
 			get {
 				var wzObject = this;
 
-				if (wzObject is WzFile)
+				if (wzObject is WzFile) {
 					return ((WzFile) this)[name];
-				else if (wzObject is WzDirectory)
+				} else if (wzObject is WzDirectory) {
 					return ((WzDirectory) this)[name];
-				else if (wzObject is WzImage)
+				} else if (wzObject is WzImage) {
 					return ((WzImage) this)[name];
-				else if (wzObject is WzImageProperty)
+				} else if (wzObject is WzImageProperty) {
 					return ((WzImageProperty) this)[name];
-				else
+				} else {
 					throw new NotImplementedException();
+				}
 			}
 		}
 
@@ -75,8 +75,9 @@ namespace MapleLib.WzLib {
 		/// <returns></returns>
 		public WzObject GetTopMostWzDirectory() {
 			var parent = Parent;
-			if (parent == null)
+			if (parent == null) {
 				return this; // this
+			}
 
 			while (parent.Parent != null) parent = parent.Parent;
 
@@ -85,8 +86,9 @@ namespace MapleLib.WzLib {
 
 		public string FullPath {
 			get {
-				if (this is WzFile file)
+				if (this is WzFile file) {
 					return file.WzDirectory.Name;
+				}
 
 				var result = Name;
 				var currObj = this;

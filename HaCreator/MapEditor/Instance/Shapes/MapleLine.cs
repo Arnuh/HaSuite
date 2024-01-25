@@ -4,12 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -66,10 +66,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			lock (board.ParentControl) {
 				firstDot.DisconnectLine(this);
 				secondDot.DisconnectLine(this);
-				if (this is FootholdLine) board.BoardItems.FootholdLines.Remove((FootholdLine) this);
-				else if (this is RopeLine) board.BoardItems.RopeLines.Remove((RopeLine) this);
-				if (!(secondDot is Mouse) && undoPipe != null)
+				if (this is FootholdLine) {
+					board.BoardItems.FootholdLines.Remove((FootholdLine) this);
+				} else if (this is RopeLine) board.BoardItems.RopeLines.Remove((RopeLine) this);
+
+				if (!(secondDot is Mouse) && undoPipe != null) {
 					undoPipe.Add(UndoRedoManager.LineRemoved(this, firstDot, secondDot));
+				}
 
 				if (removeDots) {
 					firstDot.RemoveItem(undoPipe);
@@ -115,23 +118,31 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public void OnFirstDotMoved() {
-			if (xBind)
+			if (xBind) {
 				secondDot.MoveSilent(firstDot.X, secondDot.Y);
-			if (yBind)
+			}
+
+			if (yBind) {
 				secondDot.MoveSilent(secondDot.X, firstDot.Y);
+			}
 		}
 
 		public void OnSecondDotMoved() {
-			if (xBind)
+			if (xBind) {
 				firstDot.MoveSilent(secondDot.X, firstDot.Y);
-			if (yBind)
+			}
+
+			if (yBind) {
 				firstDot.MoveSilent(firstDot.X, secondDot.Y);
+			}
 		}
 
 		public virtual XNA.Color GetColor(SelectionInfo sel) {
-			if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel))
+			if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel)) {
 				return Selected ? UserSettings.SelectedColor : Color;
-			else return InactiveColor;
+			} else {
+				return InactiveColor;
+			}
 		}
 
 		public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
@@ -140,12 +151,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public MapleDot GetOtherDot(MapleDot x) {
-			if (firstDot == x)
+			if (firstDot == x) {
 				return secondDot;
-			else if (secondDot == x)
+			} else if (secondDot == x) {
 				return firstDot;
-			else
+			} else {
 				throw new Exception("GetOtherDot: line is not properly connected");
+			}
 		}
 	}
 }

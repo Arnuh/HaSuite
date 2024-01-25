@@ -1,12 +1,12 @@
-﻿using HaSharedLibrary.Render;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace HaCreator.MapSimulator.Objects.FieldObject {
 	public class BackgroundItem : BaseDXDrawableItem {
@@ -93,10 +93,11 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 
 			color = new Color(0xFF, 0xFF, 0xFF, a);
 
-			if (frame0.Height <= 1 && frame0.Width <= 1)
+			if (frame0.Height <= 1 && frame0.Width <= 1) {
 				disabledBackground = true; // removed from Map.wz/bg, but entry still presist in maps
-			else
+			} else {
 				disabledBackground = false;
+			}
 
 			CheckBGData();
 		}
@@ -106,10 +107,13 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 		/// </summary>
 		private void CheckBGData() {
 			if (type != BackgroundType.Regular) {
-				if (cx < 0)
+				if (cx < 0) {
 					cx = 0;
-				if (cy < 0)
+				}
+
+				if (cy < 0) {
 					cy = 0;
+				}
 			}
 		}
 
@@ -199,7 +203,9 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 			int TickCount) {
 			if (((int) mapRenderResolution & screenMode) != screenMode ||
 			    disabledBackground) // dont draw if the screenMode isnt for this
+			{
 				return;
+			}
 
 			var drawFrame = GetCurrentFrame(TickCount);
 			var X = CalculateBackgroundPosX(drawFrame, mapShiftX, centerX, renderWidth, RenderObjectScaling);

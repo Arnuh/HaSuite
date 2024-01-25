@@ -1,18 +1,8 @@
-﻿using MapleLib.WzLib.WzStructure.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaSharedLibrary.GUI {
 	/// <summary>
@@ -80,14 +70,16 @@ namespace HaSharedLibrary.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void comboBox_fieldType_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			if (e.AddedItems.Count == 0 || comboBox_fieldType.SelectedIndex < 0 || bIsLoading)
+			if (e.AddedItems.Count == 0 || comboBox_fieldType.SelectedIndex < 0 || bIsLoading) {
 				return;
+			}
 
 			var selectedIndex = comboBox_fieldType.SelectedIndex;
 			var fieldType = (FieldType) Enum.GetValues(typeof(FieldType)).GetValue(selectedIndex);
 
-			if (setTextboxOnFieldTypeChange != null)
+			if (setTextboxOnFieldTypeChange != null) {
 				setTextboxOnFieldTypeChange.Text = ((int) fieldType).ToString(); // the int value of the enum
+			}
 		}
 	}
 }

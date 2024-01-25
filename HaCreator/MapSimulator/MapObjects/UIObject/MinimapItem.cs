@@ -1,15 +1,11 @@
-﻿using HaCreator.MapSimulator.MapObjects.UIObject;
+﻿using System.Collections.Generic;
+using HaCreator.MapSimulator.MapObjects.UIObject;
 using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapSimulator.Objects.UIObject {
 	/// <summary>
@@ -46,22 +42,28 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 			MapObjects.UIObject.UIObject objUIBtBig, MapObjects.UIObject.UIObject objUIBtMap) {
 			this.objUIBtMin = objUIBtMin;
 			this.objUIBtMax = objUIBtMax;
-			if (objUIBtBig != null)
+			if (objUIBtBig != null) {
 				this.objUIBtBig = objUIBtBig;
+			}
+
 			this.objUIBtMap = objUIBtMap;
 
 			uiButtons.Add(objUIBtMin);
 			uiButtons.Add(objUIBtMax);
-			if (objUIBtBig != null)
+			if (objUIBtBig != null) {
 				uiButtons.Add(objUIBtBig);
+			}
+
 			uiButtons.Add(objUIBtMap);
 
 			objUIBtMax.SetButtonState(UIObjectState.Disabled); // start maximised
 
 			objUIBtMin.ButtonClickReleased += ObjUIBtMin_ButtonClickReleased;
 			objUIBtMax.ButtonClickReleased += ObjUIBtMax_ButtonClickReleased;
-			if (objUIBtBig != null)
+			if (objUIBtBig != null) {
 				objUIBtBig.ButtonClickReleased += ObjUIBtBig_ButtonClickReleased;
+			}
+
 			objUIBtMap.ButtonClickReleased += ObjUIBtMap_ButtonClickReleased;
 		}
 

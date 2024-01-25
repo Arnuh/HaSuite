@@ -1,14 +1,10 @@
-﻿using HaCreator.MapEditor.Instance.Shapes;
+﻿using System.Collections.Generic;
+using HaCreator.MapEditor.Instance.Shapes;
 using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapSimulator.Objects.FieldObject {
 	public class TooltipItem : BaseDXDrawableItem {

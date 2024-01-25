@@ -6,22 +6,18 @@
 
 //#define SPEEDTEST
 
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using HaCreator.Collections;
 using HaCreator.GUI;
-using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor {

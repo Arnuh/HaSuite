@@ -4,13 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Info;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HaCreator.MapEditor.Info;
+using MapleLib.WzLib.WzStructure.Data;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -62,13 +59,14 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 							return -1;
 						} else {
 							if (c.Parent != null && c.Parent is TileInstance &&
-							    ((TileInfo) c.Parent.BaseInfo).u == "edU")
+							    ((TileInfo) c.Parent.BaseInfo).u == "edU") {
 								return -1;
-							else if (d.Parent != null && d.Parent is TileInstance &&
-							         ((TileInfo) d.Parent.BaseInfo).u == "edU")
+							} else if (d.Parent != null && d.Parent is TileInstance &&
+							           ((TileInfo) d.Parent.BaseInfo).u == "edU") {
 								return 1;
-							else
+							} else {
 								return 0;
+							}
 						}
 					}
 				}
@@ -77,12 +75,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public static void MergeAnchors(FootholdAnchor a, FootholdAnchor b) {
 			foreach (FootholdLine line in b.connectedLines) {
-				if (line.FirstDot == b)
+				if (line.FirstDot == b) {
 					line.FirstDot = a;
-				else if (line.SecondDot == b)
+				} else if (line.SecondDot == b) {
 					line.SecondDot = a;
-				else
+				} else {
 					throw new Exception("No anchor matches foothold");
+				}
 
 				a.connectedLines.Add(line);
 			}
@@ -91,17 +90,21 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public bool AllConnectedLinesVertical() {
-			foreach (var line in connectedLines)
-				if (line.FirstDot.X != line.SecondDot.X)
+			foreach (var line in connectedLines) {
+				if (line.FirstDot.X != line.SecondDot.X) {
 					return false;
+				}
+			}
 
 			return true;
 		}
 
 		public bool AllConnectedLinesHorizontal() {
-			foreach (var line in connectedLines)
-				if (line.FirstDot.Y != line.SecondDot.Y)
+			foreach (var line in connectedLines) {
+				if (line.FirstDot.Y != line.SecondDot.Y) {
 					return false;
+				}
+			}
 
 			return true;
 		}
@@ -117,9 +120,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public FootholdLine GetOtherLine(FootholdLine line) {
-			foreach (FootholdLine currLine in connectedLines)
-				if (line != currLine)
+			foreach (FootholdLine currLine in connectedLines) {
+				if (line != currLine) {
 					return currLine;
+				}
+			}
 
 			return null;
 		}
@@ -143,9 +148,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems) {
 			var serList = new List<ISerializableSelector>();
-			foreach (FootholdLine fh in connectedLines)
-				if (serializedItems.Contains(fh.GetOtherAnchor(this)))
+			foreach (FootholdLine fh in connectedLines) {
+				if (serializedItems.Contains(fh.GetOtherAnchor(this))) {
 					serList.Add(fh);
+				}
+			}
 
 			return serList;
 		}

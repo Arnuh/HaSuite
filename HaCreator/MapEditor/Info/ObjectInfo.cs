@@ -4,21 +4,16 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaCreator.MapEditor.Info.Default;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Info {
@@ -59,12 +54,13 @@ namespace HaCreator.MapEditor.Info {
 				return null;
 			}
 
-			if (objInfoProp.HCTag == null)
+			if (objInfoProp.HCTag == null) {
 				try {
 					objInfoProp.HCTag = Load((WzSubProperty) objInfoProp, oS, l0, l1, l2);
 				} catch (KeyNotFoundException) {
 					return null;
 				}
+			}
 
 			return (ObjectInfo) objInfoProp.HCTag;
 		}
@@ -77,19 +73,22 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		private static List<List<XNA.Point>> ParsePropToOffsetMap(WzImageProperty prop) {
-			if (prop == null)
+			if (prop == null) {
 				return null;
+			}
+
 			var result = new List<List<XNA.Point>>();
-			if (prop is WzConvexProperty)
+			if (prop is WzConvexProperty) {
 				result.Add(ParsePropToOffsetList((WzConvexProperty) prop));
-			else if (prop is WzSubProperty)
+			} else if (prop is WzSubProperty) {
 				try {
 					foreach (WzConvexProperty offsetSet in prop.WzProperties)
 						result.Add(ParsePropToOffsetList(offsetSet));
 				} catch (InvalidCastException) {
 				}
-			else
+			} else {
 				result = null;
+			}
 
 			return result;
 		}
@@ -111,8 +110,10 @@ namespace HaCreator.MapEditor.Info {
 			result.footholdOffsets = ParsePropToOffsetMap(footholds);
 			result.ropeOffsets = ParsePropToOffsetMap(ropes);
 			result.ladderOffsets = ParsePropToOffsetMap(ladders);
-			if (chairs != null)
+			if (chairs != null) {
 				result.chairOffsets = ParsePropToOffsetList(chairs);
+			}
+
 			return result;
 		}
 
@@ -125,7 +126,7 @@ namespace HaCreator.MapEditor.Info {
 
 		public void ParseOffsets(ObjectInstance instance, Board board, int x, int y) {
 			var ladder = l0 == "ladder";
-			if (footholdOffsets != null)
+			if (footholdOffsets != null) {
 				foreach (var anchorList in footholdOffsets) {
 					var anchors = new List<FootholdAnchor>();
 					foreach (var foothold in anchorList) {
@@ -138,13 +139,15 @@ namespace HaCreator.MapEditor.Info {
 
 					CreateFootholdsFromAnchorList(board, anchors);
 				}
+			}
 
-			if (chairOffsets != null)
+			if (chairOffsets != null) {
 				foreach (var chairPos in chairOffsets) {
 					var chair = new Chair(board, x + chairPos.X, y + chairPos.Y);
 					board.BoardItems.Chairs.Add(chair);
 					instance.BindItem(chair, chairPos);
 				}
+			}
 		}
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {

@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using System.IO;
 using MapleLib.WzLib.Util;
-using MapleLib.WzLib.WzProperties;
 
 namespace MapleLib.WzLib {
 	/// <summary>

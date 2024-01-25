@@ -7,32 +7,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using System.Text;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Timers;
-using System.Threading;
 using System.Reflection;
-using MapleLib.WzLib;
-using MapleLib.WzLib.Serialization;
-using MapleLib.WzLib.Util;
-using MapleLib.PacketLib;
-using MapleLib.MapleCryptoLib;
-using MapleLib.WzLib.Nx;
-using static MapleLib.Configuration.UserSettings;
-using HaRepacker.GUI.Panels;
-using HaRepacker.GUI.Interaction;
-using HaRepacker.GUI.Input;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
+using System.Windows.Threading;
 using HaRepacker.Comparer;
+using HaRepacker.GUI.Input;
+using HaRepacker.GUI.Interaction;
+using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using HaSharedLibrary;
+using MapleLib.MapleCryptoLib;
+using MapleLib.PacketLib;
+using MapleLib.WzLib;
+using MapleLib.WzLib.Nx;
+using MapleLib.WzLib.Serialization;
+using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
+using static MapleLib.Configuration.UserSettings;
 using Application = System.Windows.Forms.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Size = System.Drawing.Size;
@@ -90,7 +90,7 @@ namespace HaRepacker.GUI {
 					};
 					Program.pipeThread.Start();
 				} catch (IOException) {
-					if (wzPathToLoad != null)
+					if (wzPathToLoad != null) {
 						try {
 							using (var clientPipe =
 							       new NamedPipeClientStream(".", Program.pipeName, PipeDirection.Out)) {
@@ -103,6 +103,7 @@ namespace HaRepacker.GUI {
 							Environment.Exit(0);
 						} catch (TimeoutException) {
 						}
+					}
 				}
 			}
 
@@ -170,7 +171,7 @@ namespace HaRepacker.GUI {
 				SortNodesRecursively(node);
 				MainPanel.DataTree.EndUpdate();
 			} catch (Exception ex) {
-				Warning.Error(string.Format(Properties.Resources.MainCouldntOpenWZ, path));
+				Warning.Error(string.Format(Resources.MainCouldntOpenWZ, path));
 			}
 		}
 
@@ -270,10 +271,11 @@ namespace HaRepacker.GUI {
 			var path = existingLoadedWzFile.FilePath;
 
 			// Unload it
-			if (currentDispatcher != null)
+			if (currentDispatcher != null) {
 				await currentDispatcher.BeginInvoke((Action) (() => { UnloadWzFile(existingLoadedWzFile, currentDispatcher); }));
-			else
+			} else {
 				UnloadWzFile(existingLoadedWzFile, currentDispatcher);
+			}
 
 			// Load the new wz file from the same path
 			var newWzFile = Program.WzFileManager.LoadWzFile(path, encVersion);
@@ -292,10 +294,11 @@ namespace HaRepacker.GUI {
 
 			// remove from treeview
 			if (node != null) {
-				if (currentDispatcher != null)
+				if (currentDispatcher != null) {
 					await currentDispatcher.BeginInvoke((Action) (() => { node.DeleteWzNode(); }));
-				else
+				} else {
 					node.DeleteWzNode();
+				}
 			}
 		}
 
@@ -350,11 +353,11 @@ namespace HaRepacker.GUI {
 		/// <param name="encryptionBox"></param>
 		public static void AddWzEncryptionTypesToComboBox(object encryptionBox) {
 			string[] resources = {
-				Properties.Resources.EncTypeGMS,
-				Properties.Resources.EncTypeMSEA,
-				Properties.Resources.EncTypeNone,
-				Properties.Resources.EncTypeCustom,
-				Properties.Resources.EncTypeGenerate
+				Resources.EncTypeGMS,
+				Resources.EncTypeMSEA,
+				Resources.EncTypeNone,
+				Resources.EncTypeCustom,
+				Resources.EncTypeGenerate
 			};
 			var isToolStripComboBox = encryptionBox is ToolStripComboBox;
 
@@ -364,7 +367,9 @@ namespace HaRepacker.GUI {
 					((ToolStripComboBox) encryptionBox).Items.Add(res); // in mainform
 				} else {
 					if (i != 4) // dont show bruteforce option in SaveForm
+					{
 						((ComboBox) encryptionBox).Items.Add(res); // in saveForm
+					}
 				}
 
 				i++;
@@ -378,7 +383,9 @@ namespace HaRepacker.GUI {
 		/// <param name="e"></param>
 		private void EncryptionBox_SelectedIndexChanged(object sender, EventArgs e) {
 			if (!mainFormLoaded) // first run during app startup
+			{
 				return;
+			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
 			var wzMapleVer = GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
@@ -446,9 +453,12 @@ namespace HaRepacker.GUI {
 					break;
 				case WzMapleVersion.GENERATE:
 					if (fromNewForm) // dont return GENERATE, as that option is unavailable when creating a new WZ via NewForm.
+					{
 						setIndex = 2; // BMS
-					else
+					} else {
 						setIndex = 4;
+					}
+
 					break;
 			}
 
@@ -478,10 +488,11 @@ namespace HaRepacker.GUI {
 		}
 
 		private void SetWindowStateThreadSafe(FormWindowState state) {
-			if (InvokeRequired)
+			if (InvokeRequired) {
 				Invoke(new SetWindowStateDelegate(SetWindowStateCallback), state);
-			else
+			} else {
 				SetWindowStateCallback(state);
+			}
 		}
 
 		#endregion
@@ -490,6 +501,7 @@ namespace HaRepacker.GUI {
 			if (File.Exists(requestPath)) {
 				MainPanel.Dispatcher.Invoke(() => { LoadWzFileCallback(requestPath); });
 			}
+
 			return "OK";
 		}
 
@@ -524,8 +536,9 @@ namespace HaRepacker.GUI {
 		}
 
 		private void MainForm_SizeChanged(object sender, EventArgs e) {
-			if (!mainFormLoaded)
+			if (!mainFormLoaded) {
 				return;
+			}
 
 			if (Size.Width * Size.Height != 0) {
 				RedockControls();
@@ -554,7 +567,7 @@ namespace HaRepacker.GUI {
 		private void tabControl_MainPanels_KeyUp(object sender, KeyEventArgs e) {
 			var countTabs = Convert.ToByte(tabControl_MainPanels.TabCount);
 
-			if (e.Control)
+			if (e.Control) {
 				switch (e.KeyCode) {
 					case Keys.T: // Open new tab
 						AddTabsInternal();
@@ -615,6 +628,7 @@ namespace HaRepacker.GUI {
 						tabControl_MainPanels.SelectTab(9);
 						break;
 				}
+			}
 		}
 
 		private void UpdateSelectedMainPanelTab() {
@@ -654,7 +668,7 @@ namespace HaRepacker.GUI {
 
 			string tabName = null;
 			if (defaultName == null) {
-				if (!NameInputBox.Show(Properties.Resources.MainAddTabTitle, 25, out tabName)) return;
+				if (!NameInputBox.Show(Resources.MainAddTabTitle, 25, out tabName)) return;
 
 				defaultName = tabName;
 			} else {
@@ -738,8 +752,10 @@ namespace HaRepacker.GUI {
 		/// <param name="source"></param>
 		/// <param name="e"></param>
 		private void OnWzIVKeyUIUpdateEvent(object source, ElapsedEventArgs e) {
-			if (aTimer_wzKeyBruteforce == null)
+			if (aTimer_wzKeyBruteforce == null) {
 				return;
+			}
+
 			if (wzKeyBruteforceCompleted) {
 				aTimer_wzKeyBruteforce.Stop();
 				aTimer_wzKeyBruteforce = null;
@@ -779,8 +795,9 @@ namespace HaRepacker.GUI {
 			     i < startValue + lookupRangePerCPU * (cpuId + 1);
 			     i++) // 2 bill key pairs? o_O
 			{
-				if (wzKeyBruteforceCompleted)
+				if (wzKeyBruteforceCompleted) {
 					break;
+				}
 
 				var bytes = new byte[4];
 				unsafe {
@@ -847,15 +864,16 @@ namespace HaRepacker.GUI {
 								form.Show();
 							}
 						} else {
-							MessageBox.Show(Properties.Resources.ExecutingAssemblyError, Properties.Resources.Warning, MessageBoxButtons.OK);
+							MessageBox.Show(Resources.ExecutingAssemblyError, Resources.Warning, MessageBoxButtons.OK);
 						}
+
 						return;
 					}
 
 					if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
 						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, mapleVersionEncryptionSelected);
 						if (img == null) {
-							MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
+							MessageBox.Show(Resources.MainFileOpenFail, Resources.Error);
 							break;
 						}
 
@@ -901,10 +919,10 @@ namespace HaRepacker.GUI {
 			}
 
 			if (wzfilePathsToLoad.Count == 0) return;
-			
+
 			// Show splash screen
 			MainPanel.OnSetPanelLoading();
-			
+
 			// Try opening one, to see if the user is having the right priviledge
 			// Load all original WZ files 
 			await Task.Run(() => {
@@ -941,12 +959,13 @@ namespace HaRepacker.GUI {
 		private void openToolStripMenuItem_Click(object sender, EventArgs e) {
 			// Load WZ file
 			using (var dialog = new OpenFileDialog() {
-				       Title = Properties.Resources.SelectWz,
-				       Filter = $"{Properties.Resources.WzFilter}|*.wz;ZLZ.dll",
+				       Title = Resources.SelectWz,
+				       Filter = $"{Resources.WzFilter}|*.wz;ZLZ.dll",
 				       Multiselect = true
 			       }) {
-				if (dialog.ShowDialog() != DialogResult.OK)
+				if (dialog.ShowDialog() != DialogResult.OK) {
 					return;
+				}
 
 				// Opens the selected file
 				OpenFileInternal(dialog.FileNames);
@@ -971,8 +990,9 @@ namespace HaRepacker.GUI {
 				       ShowNewFolderButton = true
 			       }) {
 				var result = fbd.ShowDialog();
-				if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+				if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath)) {
 					return;
+				}
 
 				var iniFilesPath = Directory.GetFiles(fbd.SelectedPath, "*.ini", SearchOption.AllDirectories);
 
@@ -1024,7 +1044,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void unloadAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (Warning.Warn(Properties.Resources.MainUnloadAll)) {
+			if (Warning.Warn(Resources.MainUnloadAll)) {
 				var currentThread = Dispatcher.CurrentDispatcher;
 
 				var wzFiles = Program.WzFileManager.WzFileList;
@@ -1042,7 +1062,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void reloadAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (Warning.Warn(Properties.Resources.MainReloadAll)) {
+			if (Warning.Warn(Resources.MainReloadAll)) {
 				var currentThread = Dispatcher.CurrentDispatcher;
 
 				var wzFiles = Program.WzFileManager.WzFileList;
@@ -1060,8 +1080,9 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void renderMapToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (MainPanel.DataTree.SelectedNode == null)
+			if (MainPanel.DataTree.SelectedNode == null) {
 				return;
+			}
 
 			if (MainPanel.DataTree.SelectedNode.Tag is WzImage) {
 				var zoomLevel = double.Parse(zoomTextBox.TextBox.Text);
@@ -1146,15 +1167,16 @@ namespace HaRepacker.GUI {
 				if (MainPanel.DataTree.Nodes.Count == 1) {
 					node = (WzNode) MainPanel.DataTree.Nodes[0];
 				} else {
-					MessageBox.Show(Properties.Resources.MainSelectWzFolder,
-						Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show(Resources.MainSelectWzFolder,
+						Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 			} else {
-				if (MainPanel.DataTree.SelectedNode.Tag is WzFile)
+				if (MainPanel.DataTree.SelectedNode.Tag is WzFile) {
 					node = (WzNode) MainPanel.DataTree.SelectedNode;
-				else
+				} else {
 					node = ((WzNode) MainPanel.DataTree.SelectedNode).TopLevelNode;
+				}
 			}
 
 			// Save to file.
@@ -1168,7 +1190,7 @@ namespace HaRepacker.GUI {
 		/// <param name="e"></param>
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
 			Program.ConfigurationManager.ApplicationSettings.WindowMaximized = WindowState == FormWindowState.Maximized;
-			e.Cancel = !Warning.Warn(Properties.Resources.MainConfirmExit);
+			e.Cancel = !Warning.Warn(Resources.MainConfirmExit);
 
 			// Save app settings quickly
 			if (!e.Cancel) Program.ConfigurationManager.Save();
@@ -1179,7 +1201,7 @@ namespace HaRepacker.GUI {
 		}
 
 		private void RemoveSelectedNodes() {
-			if (!Warning.Warn(Properties.Resources.MainConfirmRemoveNode)) return;
+			if (!Warning.Warn(Resources.MainConfirmRemoveNode)) return;
 
 			MainPanel.PromptRemoveSelectedTreeNodes();
 		}
@@ -1211,13 +1233,16 @@ namespace HaRepacker.GUI {
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
+
 			var folderDialog = new FolderBrowserDialog {
 				Description = Resources.SelectOutDir
 			};
-			if (folderDialog.ShowDialog() != DialogResult.OK)
+			if (folderDialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
@@ -1243,13 +1268,17 @@ namespace HaRepacker.GUI {
 			bool absolute) {
 			pbar.Dispatcher.Invoke(() => {
 				if (setMaxValue) {
-					if (absolute)
+					if (absolute) {
 						pbar.Maximum = value;
-					else pbar.Maximum += value;
+					} else {
+						pbar.Maximum += value;
+					}
 				} else {
-					if (absolute)
+					if (absolute) {
 						pbar.Value = value;
-					else pbar.Value += value;
+					} else {
+						pbar.Value += value;
+					}
 				}
 			});
 		}
@@ -1277,7 +1306,7 @@ namespace HaRepacker.GUI {
 
 		private string GetOutputDirectory() {
 			return Program.ConfigurationManager.UserSettings.DefaultXmlFolder == ""
-				? SavedFolderBrowser.Show(Properties.Resources.SelectOutDir)
+				? SavedFolderBrowser.Show(Resources.SelectOutDir)
 				: Program.ConfigurationManager.UserSettings.DefaultXmlFolder;
 		}
 
@@ -1294,8 +1323,9 @@ namespace HaRepacker.GUI {
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
@@ -1323,8 +1353,9 @@ namespace HaRepacker.GUI {
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
@@ -1359,10 +1390,11 @@ namespace HaRepacker.GUI {
 
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzDirectory)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzDirectory) {
 					dirs.Add((WzDirectory) node.Tag);
-				else if (node.Tag is WzImage) imgs.Add((WzImage) node.Tag);
+				} else if (node.Tag is WzImage) imgs.Add((WzImage) node.Tag);
+			}
 
 			var serializer = new WzImgSerializer();
 			threadDone = false;
@@ -1385,9 +1417,11 @@ namespace HaRepacker.GUI {
 			}
 
 			var objs = new List<WzObject>();
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzObject)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzObject) {
 					objs.Add((WzObject) node.Tag);
+				}
+			}
 
 			var serializer = new WzPngMp3Serializer();
 			threadDone = false;
@@ -1430,18 +1464,21 @@ namespace HaRepacker.GUI {
 
 			var dlgResult = MessageBox.Show(Resources.MainWzExportJson_IncludeBase64,
 				Resources.MainWzExportJson_IncludeBase64_Title, MessageBoxButtons.YesNoCancel);
-			if (dlgResult == DialogResult.Cancel)
+			if (dlgResult == DialogResult.Cancel) {
 				return;
+			}
+
 			var bIncludeBase64BinData = dlgResult == DialogResult.Yes;
 
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzDirectory directory)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzDirectory directory) {
 					dirs.Add(directory);
-				else if (node.Tag is WzImage image)
+				} else if (node.Tag is WzImage image) {
 					imgs.Add(image);
-				else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+				} else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+			}
 
 			var serializer = new WzJsonBsonSerializer(
 				Program.ConfigurationManager.UserSettings.Indentation,
@@ -1469,12 +1506,13 @@ namespace HaRepacker.GUI {
 
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzDirectory directory)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzDirectory directory) {
 					dirs.Add(directory);
-				else if (node.Tag is WzImage image)
+				} else if (node.Tag is WzImage image) {
 					imgs.Add(image);
-				else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+				} else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+			}
 
 			var serializer = new WzClassicXmlSerializer(
 				Program.ConfigurationManager.UserSettings.Indentation,
@@ -1502,12 +1540,13 @@ namespace HaRepacker.GUI {
 
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzDirectory)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzDirectory) {
 					dirs.Add((WzDirectory) node.Tag);
-				else if (node.Tag is WzImage)
+				} else if (node.Tag is WzImage) {
 					imgs.Add((WzImage) node.Tag);
-				else if (node.Tag is WzFile) dirs.Add(((WzFile) node.Tag).WzDirectory);
+				} else if (node.Tag is WzFile) dirs.Add(((WzFile) node.Tag).WzDirectory);
+			}
 
 			var serializer = new WzClassicXmlSerializer(
 				Program.ConfigurationManager.UserSettings.Indentation,
@@ -1530,13 +1569,17 @@ namespace HaRepacker.GUI {
 				Title = Resources.SelectOutXml,
 				Filter = string.Format("{0}|*.xml", Resources.XmlFilter)
 			};
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
+
 			var objs = new List<WzObject>();
 
-			foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-				if (node.Tag is WzObject)
+			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
+				if (node.Tag is WzObject) {
 					objs.Add((WzObject) node.Tag);
+				}
+			}
 
 			var serializer = new WzNewXmlSerializer(
 				Program.ConfigurationManager.UserSettings.Indentation,
@@ -1569,24 +1612,27 @@ namespace HaRepacker.GUI {
 			       tag is WzFile ||
 			       tag is IPropertyContainer;
 		}
-		
+
 		private void xMLToolStripMenuItem2_Click(object sender, EventArgs e) {
 			if (!IsChildHoldingSelectedNode()) {
 				return;
 			}
 
 			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
-			if (!(wzFile is WzFile))
+			if (!(wzFile is WzFile)) {
 				return;
+			}
+
 			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectXml,
-				Filter = $"{Properties.Resources.XmlFilter}|*.xml",
+				Title = Resources.SelectXml,
+				Filter = $"{Resources.XmlFilter}|*.xml",
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
 
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
@@ -1600,25 +1646,28 @@ namespace HaRepacker.GUI {
 			}
 
 			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
-			if (!(wzFile is WzFile))
+			if (!(wzFile is WzFile)) {
 				return;
+			}
 
 			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectWzImg,
-				Filter = $"{Properties.Resources.WzImgFilter}|*.img",
+				Title = Resources.SelectWzImg,
+				Filter = $"{Resources.WzImgFilter}|*.img",
 				Multiselect = true,
 				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
 			};
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			foreach (var filePath in dialog.FileNames)
 				UpdatePreviousLoadDirectory(filePath);
 
-			var input = WzMapleVersionInputBox.Show(Properties.Resources.InteractionWzMapleVersionTitle,
+			var input = WzMapleVersionInputBox.Show(Resources.InteractionWzMapleVersionTitle,
 				out var wzImageImportVersion);
-			if (!input)
+			if (!input) {
 				return;
+			}
 
 			ImportImg(wzImageImportVersion, dialog.FileNames);
 		}
@@ -1631,10 +1680,11 @@ namespace HaRepacker.GUI {
 
 		private void ViewHelpToolStripMenuItem_Click(object sender, EventArgs e) {
 			var helpPath = Path.Combine(Application.StartupPath, HelpFile);
-			if (File.Exists(helpPath))
+			if (File.Exists(helpPath)) {
 				Help.ShowHelp(this, HelpFile);
-			else
-				Warning.Error(string.Format(Properties.Resources.MainHelpOpenFail, HelpFile));
+			} else {
+				Warning.Error(string.Format(Resources.MainHelpOpenFail, HelpFile));
+			}
 		}
 
 		private void CopyToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1665,7 +1715,7 @@ namespace HaRepacker.GUI {
 		#endregion
 
 		private void AbortButton_Click(object sender, EventArgs e) {
-			if (Warning.Warn(Properties.Resources.MainConfirmAbort)) {
+			if (Warning.Warn(Resources.MainConfirmAbort)) {
 				threadDone = true;
 				runningThread.Abort();
 			}
@@ -1825,9 +1875,11 @@ namespace HaRepacker.GUI {
 		private void InsertWzNodeCallback(WzNode node, WzNode parent) {
 			var child = WzNode.GetChildNode(parent, node.Text);
 			if (child != null) {
-				if (ShowReplaceDialog(node.Text))
+				if (ShowReplaceDialog(node.Text)) {
 					child.DeleteWzNode();
-				else return;
+				} else {
+					return;
+				}
 			}
 
 			parent.AddNode(node, true);
@@ -1920,7 +1972,7 @@ namespace HaRepacker.GUI {
 			if (selectedNode != null && !IsChildHoldingSelectedNode()) {
 				return;
 			}
-			
+
 			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
 			var deserializer = new WzImgDeserializer(true);
 			yesToAll = false;

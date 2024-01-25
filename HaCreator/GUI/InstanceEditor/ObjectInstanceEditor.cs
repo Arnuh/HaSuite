@@ -78,8 +78,10 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Board.BoardItems.Sort();
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
+
 				item.Name = nameEnable.Checked ? nameBox.Text : Defaults.Object.Name;
 				item.flow = flowBox.Checked;
 				item.reactor = reactorBox.Checked;
@@ -110,9 +112,11 @@ namespace HaCreator.GUI.InstanceEditor {
 				((Control) cbx.Tag).Enabled = featureActivated;
 			} else {
 				foreach (var control in (Control[]) cbx.Tag) control.Enabled = featureActivated;
-				foreach (var control in (Control[]) cbx.Tag)
-					if (control is CheckBox)
+				foreach (var control in (Control[]) cbx.Tag) {
+					if (control is CheckBox) {
 						enablingCheckBox_CheckChanged(control, e);
+					}
+				}
 			}
 		}
 
@@ -122,8 +126,9 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		private void questAdd_Click(object sender, EventArgs e) {
 			var input = new ObjQuestInput();
-			if (input.ShowDialog() == DialogResult.OK)
+			if (input.ShowDialog() == DialogResult.OK) {
 				questList.Items.Add(input.result);
+			}
 		}
 	}
 }

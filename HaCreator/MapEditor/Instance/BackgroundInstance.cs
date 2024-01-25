@@ -6,14 +6,8 @@
 
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
-using XNA = Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaRepacker.Utils;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
 	public class BackgroundInstance : BoardItem, IFlippable, ISerializable {
@@ -47,8 +41,9 @@ namespace HaCreator.MapEditor.Instance {
 			this._spineAni = _spineAni;
 			this._spineRandomStart = _spineRandomStart;
 
-			if (flip)
+			if (flip) {
 				BaseX -= Width - 2 * Origin.X;
+			}
 		}
 
 		public override ItemTypes Type => ItemTypes.Backgrounds;
@@ -59,16 +54,20 @@ namespace HaCreator.MapEditor.Instance {
 				if (flip == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip) BaseX -= xFlipShift;
-				else BaseX += xFlipShift;
+				if (flip) {
+					BaseX -= xFlipShift;
+				} else {
+					BaseX += xFlipShift;
+				}
 			}
 		}
 
 		public int UnflippedX => flip ? BaseX + Width - 2 * Origin.X : BaseX;
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			if (sprite == null || baseInfo.GetTexture(sprite) == null)
+			if (sprite == null || baseInfo.GetTexture(sprite) == null) {
 				return;
+			}
 
 			var destinationRectangle =
 				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
@@ -198,17 +197,19 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override int X {
 			get {
-				if (UserSettings.emulateParallax)
+				if (UserSettings.emulateParallax) {
 					return CalculateBackgroundPosX();
-				else
+				} else {
 					return base.X;
+				}
 			}
 			set {
 				int newX;
-				if (UserSettings.emulateParallax)
+				if (UserSettings.emulateParallax) {
 					newX = ReverseBackgroundPosX(value);
-				else
+				} else {
 					newX = value;
+				}
 
 				base.Move(newX, base.Y);
 			}
@@ -216,16 +217,19 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override int Y {
 			get {
-				if (UserSettings.emulateParallax)
+				if (UserSettings.emulateParallax) {
 					return CalculateBackgroundPosY();
-				else return base.Y;
+				} else {
+					return base.Y;
+				}
 			}
 			set {
 				int newY;
-				if (UserSettings.emulateParallax)
+				if (UserSettings.emulateParallax) {
 					newY = ReverseBackgroundPosY(value);
-				else
+				} else {
 					newY = value;
+				}
 
 				base.Move(base.X, newY);
 			}

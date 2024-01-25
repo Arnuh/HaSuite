@@ -1,12 +1,12 @@
-﻿using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using MapleLib;
 using System.Diagnostics;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using MapleLib;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaRepacker.GUI {
 	public class WzStringSearchFormDataCache {
@@ -95,9 +95,10 @@ namespace HaRepacker.GUI {
 				var StreetNameLower = StreetName.ToLower();
 
 				if (RegionNameLower.Contains(SearchQuery) || MapNameLower.Contains(SearchQuery) ||
-				    StreetNameLower.Contains(SearchQuery))
+				    StreetNameLower.Contains(SearchQuery)) {
 					HexJumpList.Add(item.Key,
 						new KeyValuePair<string, string>(string.Format("[{0}]{1}", RegionName, StreetName), MapName));
+				}
 			}
 		}
 
@@ -116,8 +117,9 @@ namespace HaRepacker.GUI {
 				var basic0Desc = val.Item2;
 				var parentQuest = val.Item3;
 
-				if (questName.ToLower().Contains(SearchQuery))
+				if (questName.ToLower().Contains(SearchQuery)) {
 					HexJumpList.Add(item.Key, new KeyValuePair<string, string>(questName, basic0Desc));
+				}
 			}
 		}
 
@@ -139,9 +141,10 @@ namespace HaRepacker.GUI {
 				if (skillName == null) {
 					Debug.WriteLine("Skillid of " + item.Key + " is null.");
 				} else {
-					if (skillName.ToLower().Contains(SearchQuery) || desc.ToLower().Contains(SearchQuery))
+					if (skillName.ToLower().Contains(SearchQuery) || desc.ToLower().Contains(SearchQuery)) {
 						HexJumpList.Add(item.Key,
 							new KeyValuePair<string, string>(skillName, string.Format("{0}\r\n{1}", desc, h)));
+					}
 				}
 			}
 		}
@@ -158,8 +161,9 @@ namespace HaRepacker.GUI {
 				var jobName = item.Value;
 
 
-				if (jobName.ToLower().Contains(SearchQuery))
+				if (jobName.ToLower().Contains(SearchQuery)) {
 					HexJumpList.Add(item.Key, new KeyValuePair<string, string>(item.Key.ToString(), jobName));
+				}
 			}
 		}
 
@@ -180,8 +184,9 @@ namespace HaRepacker.GUI {
 				var NPCNameLower = NPCName.ToLower();
 				var NPCFunctionLower = NPCFUnction.ToLower();
 
-				if (NPCNameLower.Contains(SearchQuery) || NPCFunctionLower.Contains(SearchQuery))
+				if (NPCNameLower.Contains(SearchQuery) || NPCFunctionLower.Contains(SearchQuery)) {
 					HexJumpList.Add(item.Key, new KeyValuePair<string, string>(NPCName, NPCFUnction));
+				}
 			}
 		}
 
@@ -263,8 +268,9 @@ namespace HaRepacker.GUI {
 
 				foreach (var item in LookupSource) {
 					var val = item.Value;
-					if (val.Key.ToLower().Contains(SearchQuery) || val.Value.ToLower().Contains(SearchQuery))
+					if (val.Key.ToLower().Contains(SearchQuery) || val.Value.ToLower().Contains(SearchQuery)) {
 						HexJumpList.Add(item.Key, item.Value);
+					}
 				}
 			}
 		}
@@ -286,8 +292,10 @@ namespace HaRepacker.GUI {
 					var Dir = ofd.FileName.Replace("\\Base.wz", "");
 					foreach (var Name in Directory.GetFiles(Dir)) {
 						var Info = new FileInfo(Name);
-						if (Info.Extension != ".wz")
+						if (Info.Extension != ".wz") {
 							continue;
+						}
+
 						var File = new WzFile(Name, WzMapleVersion);
 
 
@@ -295,9 +303,10 @@ namespace HaRepacker.GUI {
 						if (parseStatus == WzFileParseStatus.Success) {
 							Files.Add(Info.Name, File);
 
-							if (LoadedVersion == string.Empty)
+							if (LoadedVersion == string.Empty) {
 								LoadedVersion = "MapleStory v." + File.Version + " WZ version: " +
 								                File.MapleVersion.ToString();
+							}
 						} else {
 							MessageBox.Show(parseStatus.GetErrorDescription(), Properties.Resources.Error);
 						}
@@ -377,8 +386,9 @@ namespace HaRepacker.GUI {
 
 				var bookName = skill["bookName"]?.ReadString(null);
 				if (bookName != null) {
-					if (!JobsCache.ContainsKey(SkillIdOrJobID))
+					if (!JobsCache.ContainsKey(SkillIdOrJobID)) {
 						JobsCache.Add(SkillIdOrJobID, bookName);
+					}
 				} else {
 					var name = skill["name"]?.ReadString("NULL");
 					var desc = skill["desc"]?.ReadString(null);
@@ -388,10 +398,11 @@ namespace HaRepacker.GUI {
 					if (h1 == null) h1 = string.Empty;
 
 					if (name != null) {
-						if (!SkillsCache.ContainsKey(SkillIdOrJobID))
+						if (!SkillsCache.ContainsKey(SkillIdOrJobID)) {
 							SkillsCache.Add(SkillIdOrJobID, new Tuple<string, string, string>(name, desc, h1));
-						else
+						} else {
 							Debug.WriteLine("[WzDataCache] Skillid already exist in the key " + SkillIdOrJobID);
+						}
 					}
 				}
 			}
@@ -400,8 +411,9 @@ namespace HaRepacker.GUI {
 			foreach (WzSubProperty NPC in NpcDir.WzProperties) {
 				var NPCId = int.Parse(NPC.Name);
 
-				if (NPCsCache.ContainsKey(NPCId))
+				if (NPCsCache.ContainsKey(NPCId)) {
 					continue;
+				}
 
 				NPCsCache.Add(NPCId, new KeyValuePair<string, string>(
 					NPC["name"].ReadString("NULL"),
@@ -412,8 +424,9 @@ namespace HaRepacker.GUI {
 			foreach (WzSubProperty Item in CashDir.WzProperties) {
 				var Id = int.Parse(Item.Name);
 
-				if (CashItemCache.ContainsKey(Id))
+				if (CashItemCache.ContainsKey(Id)) {
 					continue;
+				}
 
 				CashItemCache.Add(Id, new KeyValuePair<string, string>(
 					Item["name"].ReadString("NULL"),
@@ -424,8 +437,9 @@ namespace HaRepacker.GUI {
 			foreach (WzSubProperty Item in ConsumeDir.WzProperties) {
 				var Id = int.Parse(Item.Name);
 
-				if (UseItemCache.ContainsKey(Id))
+				if (UseItemCache.ContainsKey(Id)) {
 					continue;
+				}
 
 				UseItemCache.Add(Id, new KeyValuePair<string, string>(
 					Item["name"].ReadString("NULL"),
@@ -436,8 +450,9 @@ namespace HaRepacker.GUI {
 			foreach (WzSubProperty Item in InsDir.WzProperties) {
 				var Id = int.Parse(Item.Name);
 
-				if (SetupItemCache.ContainsKey(Id))
+				if (SetupItemCache.ContainsKey(Id)) {
 					continue;
+				}
 
 				SetupItemCache.Add(Id, new KeyValuePair<string, string>(
 					Item["name"].ReadString("NULL"),
@@ -451,8 +466,9 @@ namespace HaRepacker.GUI {
 				foreach (WzSubProperty Item in MapArea.WzProperties) {
 					var Id = int.Parse(Item.Name);
 
-					if (EtcItemCache.ContainsKey(Id))
+					if (EtcItemCache.ContainsKey(Id)) {
 						continue;
+					}
 
 					EtcItemCache.Add(Id, new KeyValuePair<string, string>(
 						Item["name"].ReadString("NULL"),
@@ -470,8 +486,10 @@ namespace HaRepacker.GUI {
 					foreach (WzSubProperty EqpCategoriesItem in EqpCategories.WzProperties) {
 						var Id = int.Parse(EqpCategoriesItem.Name);
 
-						if (EqpItemCache.ContainsKey(Id))
+						if (EqpItemCache.ContainsKey(Id)) {
 							continue;
+						}
+
 						EqpItemCache.Add(Id, new KeyValuePair<string, string>(
 							EqpCategoriesItem["name"].ReadString("NULL"),
 							EqpCategoriesItem["desc"].ReadString("NULL")));
@@ -496,8 +514,9 @@ namespace HaRepacker.GUI {
 					var MapName = ((WzStringProperty) Map["mapName"]).ReadString("");
 					var StreetName = ((WzStringProperty) Map["streetName"]).ReadString("");
 
-					if (!MapNameCache.ContainsKey(Id))
+					if (!MapNameCache.ContainsKey(Id)) {
 						MapNameCache.Add(Id, new Tuple<string, string, string>(RegionName, MapName, StreetName));
+					}
 				}
 			}
 		}

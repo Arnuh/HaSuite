@@ -23,11 +23,6 @@
      distribution.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace HaCreator.MapEditor.TilesDesign {
 	internal class edU : MapTileDesign {
 		public edU() {

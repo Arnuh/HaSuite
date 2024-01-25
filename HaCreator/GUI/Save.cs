@@ -4,14 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor;
-using HaCreator.Wz;
-using HaSharedLibrary.Wz;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 using HaCreator.GUI.InstanceEditor;
+using HaCreator.MapEditor;
+using HaCreator.Wz;
+using HaSharedLibrary.Wz;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI {
 	public partial class Save : Form {
@@ -25,9 +25,9 @@ namespace HaCreator.GUI {
 		public Save(Board board) {
 			this.board = board;
 			InitializeComponent();
-			if (board.IsNewMapDesign)
+			if (board.IsNewMapDesign) {
 				idBox_mapId.Text = MapConstants.MaxMap.ToString();
-			else
+			} else {
 				switch (board.MapInfo.mapType) {
 					case MapType.CashShopPreview:
 					case MapType.MapLogin:
@@ -39,17 +39,19 @@ namespace HaCreator.GUI {
 					default:
 						throw new NotSupportedException("Unknown map type at Save::.ctor()");
 				}
+			}
 
 			idBox_TextChanged(null, null);
 		}
 
 		private MapType GetIdBoxMapType() {
-			if (idBox_mapId.Text.StartsWith("MapLogin"))
+			if (idBox_mapId.Text.StartsWith("MapLogin")) {
 				return MapType.MapLogin;
-			else if (idBox_mapId.Text == "CashShopPreview")
+			} else if (idBox_mapId.Text == "CashShopPreview") {
 				return MapType.CashShopPreview;
-			else
+			} else {
 				return MapType.RegularMap;
+			}
 		}
 
 		/// <summary>
@@ -98,8 +100,10 @@ namespace HaCreator.GUI {
 					    board.ParentControl.UserObjects.NewObjects.Select(x => x.l2)
 						    .Aggregate((x, y) => x + "\r\n" + y) +
 					    "\r\n\r\nIf you want to remove some or all of them, exit the saving dialog and remove them first.\r\nProceed?",
-					    "Unsaved Objects", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+					    "Unsaved Objects", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes) {
 					return;
+				}
+
 				board.ParentControl.UserObjects.Flush();
 			}
 
@@ -136,9 +140,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Save_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape) {
 				Close();
-			else if (e.KeyCode == Keys.Enter) saveButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) saveButton_Click(null, null);
 		}
 
 		/// <summary>

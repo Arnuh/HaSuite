@@ -248,9 +248,12 @@ namespace Spine {
 		public int FindBoneIndex(string boneName) {
 			if (boneName == null) throw new ArgumentNullException("boneName cannot be null.");
 			var bones = this.bones;
-			for (int i = 0, n = bones.Count; i < n; i++)
-				if (bones[i].data.name == boneName)
+			for (int i = 0, n = bones.Count; i < n; i++) {
+				if (bones[i].data.name == boneName) {
 					return i;
+				}
+			}
+
 			return -1;
 		}
 
@@ -270,9 +273,12 @@ namespace Spine {
 		public int FindSlotIndex(string slotName) {
 			if (slotName == null) throw new ArgumentNullException("slotName cannot be null.");
 			var slots = this.slots;
-			for (int i = 0, n = slots.Count; i < n; i++)
-				if (slots[i].data.name.Equals(slotName))
+			for (int i = 0, n = slots.Count; i < n; i++) {
+				if (slots[i].data.name.Equals(slotName)) {
 					return i;
+				}
+			}
+
 			return -1;
 		}
 
@@ -334,8 +340,9 @@ namespace Spine {
 					Attachment attachment = null;
 					if (attachmentName != null) {
 						attachment = GetAttachment(i, attachmentName);
-						if (attachment == null)
+						if (attachment == null) {
 							throw new Exception("Attachment not found: " + attachmentName + ", for slot: " + slotName);
+						}
 					}
 
 					slot.Attachment = attachment;

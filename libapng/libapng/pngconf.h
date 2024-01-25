@@ -608,7 +608,7 @@ typedef char FAR * FAR * FAR * png_charppp;
  */
 #    if (defined(_Windows) || defined(_WINDOWS) || defined(_WINDOWS_)) && \
         (!defined(INT_MAX) || INT_MAX <= 0x7ffffffeL)
-       typedef DWORD         png_alloc_size_t;
+typedef DWORD png_alloc_size_t;
 #    else
 typedef png_size_t png_alloc_size_t;
 #    endif

@@ -4,15 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Drawing;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor.Info {
 	public abstract class MapleDrawableInfo {
@@ -43,10 +38,11 @@ namespace HaCreator.MapEditor.Info {
 
 		public virtual Texture2D GetTexture(SpriteBatch sprite) {
 			if (texture == null) {
-				if (image != null && image.Width == 1 && image.Height == 1)
+				if (image != null && image.Width == 1 && image.Height == 1) {
 					texture = Properties.Resources.placeholder.ToTexture2D(sprite.GraphicsDevice);
-				else
+				} else {
 					texture = image.ToTexture2D(sprite.GraphicsDevice);
+				}
 			}
 
 			return texture;

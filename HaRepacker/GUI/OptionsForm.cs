@@ -5,10 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using MapleLib.WzLib.Serialization;
-using HaRepacker.GUI.Panels;
-using System.Diagnostics;
 
 namespace HaRepacker.GUI {
 	public partial class OptionsForm : Form {
@@ -65,10 +64,12 @@ namespace HaRepacker.GUI {
 			Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles = loadRelated.Checked;
 			Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
 			Program.ConfigurationManager.UserSettings.AutoAssociate = autoAssociateBox.Checked;
-			if (defXmlFolderEnable.Checked)
+			if (defXmlFolderEnable.Checked) {
 				Program.ConfigurationManager.UserSettings.DefaultXmlFolder = defXmlFolderBox.Text;
-			else
+			} else {
 				Program.ConfigurationManager.UserSettings.DefaultXmlFolder = "";
+			}
+
 			Program.ConfigurationManager.UserSettings.Indentation = indentBox.Value;
 			Program.ConfigurationManager.UserSettings.LineBreakType = (LineBreak) lineBreakBox.SelectedIndex;
 			Program.ConfigurationManager.UserSettings.ThemeColor = themeColor__comboBox.SelectedIndex;

@@ -4,18 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.Exceptions;
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.TilesDesign;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
@@ -47,22 +43,30 @@ namespace HaCreator.MapEditor.Instance {
 			var tilegroup = (MapTileDesign) TileSnap.tileCats[baseInfo.u];
 			var mag = baseInfo.mag;
 			var first_threshold = MultiBoard.FirstSnapVerification * mag;
-			foreach (var item in Board.BoardItems.Items)
+			foreach (var item in Board.BoardItems.Items) {
 				if (item is TileInstance) {
 					// Trying to snap to other selected items can mess up some of the mouse bindings
-					if (item.Selected || item.Equals(this))
+					if (item.Selected || item.Equals(this)) {
 						continue;
+					}
+
 					var tile = (TileInstance) item;
-					if (tile.LayerNumber != LayerNumber)
+					if (tile.LayerNumber != LayerNumber) {
 						continue;
+					}
+
 					int dx = tile.X - X, dy = tile.Y - Y;
 					// first verification to save time
 					// Note that we are first checking dx and dy alone; although this is already covered by the following distance calculation,
 					// it is significantly faster and will likely weed out most of the candidates before calculating their actual distance.
-					if (dx > first_threshold || dy > first_threshold || InputHandler.Distance(dx, dy) > first_threshold)
+					if (dx > first_threshold || dy > first_threshold || InputHandler.Distance(dx, dy) > first_threshold) {
 						continue;
-					if (pred != null && !pred.Invoke(tile))
+					}
+
+					if (pred != null && !pred.Invoke(tile)) {
 						continue;
+					}
+
 					foreach (var snapInfo in tilegroup.potentials) {
 						if (snapInfo.type != tile.baseInfo.u) continue;
 						var distance = InputHandler.Distance(X - tile.X + snapInfo.x * mag,
@@ -71,6 +75,7 @@ namespace HaCreator.MapEditor.Instance {
 						result.Add(new Tuple<double, TileInstance, MapTileDesignPotential>(distance, tile, snapInfo));
 					}
 				}
+			}
 
 			return result;
 		}
@@ -82,9 +87,11 @@ namespace HaCreator.MapEditor.Instance {
 
 			// Get closest candidate
 			var best = 0;
-			for (var i = 1; i < candidates.Count; i++)
-				if (candidates[i].Item1 < candidates[best].Item1)
+			for (var i = 1; i < candidates.Count; i++) {
+				if (candidates[i].Item1 < candidates[best].Item1) {
 					best = i;
+				}
+			}
 
 			// Move all selected items to snap
 			var mag = baseInfo.mag;

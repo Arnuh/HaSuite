@@ -7,10 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor {
 	public class Scheduler : IDisposable {
@@ -33,17 +30,20 @@ namespace HaCreator.MapEditor {
 				// Get nearest action
 				Action nearestAction = null;
 				var nearestTime = int.MaxValue;
-				foreach (var nextActionTime in nextTimes)
+				foreach (var nextActionTime in nextTimes) {
 					if (nextActionTime.Value < nearestTime) {
 						nearestAction = nextActionTime.Key;
 						nearestTime = nextActionTime.Value;
 					}
+				}
 
 				// If we have spare time, sleep it
 				var currTime = sw.ElapsedMilliseconds;
 				if (currTime < (long) nearestTime)
 					// We can safely cast to int since nobody will ever add a timer with an interval > MAXINT
+				{
 					Thread.Sleep((int) ((long) nearestTime - currTime));
+				}
 
 				// It is now guaranteed we are at (or past) the time needed to nearestAction, so we will execute it
 				nearestAction.Invoke();

@@ -41,8 +41,10 @@ namespace MapleLib.PacketLib {
 		/// <param name="hex">Byte as a hex string</param>
 		/// <returns>Byte representation of the string</returns>
 		private static byte HexToByte(string hex) {
-			if (hex.Length > 2 || hex.Length <= 0)
+			if (hex.Length > 2 || hex.Length <= 0) {
 				throw new ArgumentException("hex must be 1 or 2 characters in length");
+			}
+
 			var newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
 			return newByte;
 		}
@@ -58,8 +60,9 @@ namespace MapleLib.PacketLib {
 			// remove all none A-F, 0-9, characters
 			for (var i = 0; i < hexString.Length; i++) {
 				c = hexString[i];
-				if (IsHexDigit(c))
+				if (IsHexDigit(c)) {
 					newString += c;
+				}
 			}
 
 			// if odd number of characters, discard last character

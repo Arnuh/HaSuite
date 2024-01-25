@@ -16,12 +16,8 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace MapleLib {
 	/// <summary>
@@ -59,44 +55,51 @@ namespace MapleLib {
 				var errorCode = LoadLibrary("squish.dll");
 				if (errorCode != IntPtr.Zero) {
 					var FixFlagsPtr = GetProcAddress(errorCode, "_DLLEXPORT_FixFlags");
-					if (FixFlagsPtr != null)
+					if (FixFlagsPtr != null) {
 						FixFlags = (_DLLEXPORT_FixFlags) Marshal.GetDelegateForFunctionPointer(FixFlagsPtr,
 							typeof(_DLLEXPORT_FixFlags));
+					}
 
 					var CompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Compress");
-					if (CompressPtr != null)
+					if (CompressPtr != null) {
 						Compress = (_DLLEXPORT_Compress) Marshal.GetDelegateForFunctionPointer(CompressPtr,
 							typeof(_DLLEXPORT_Compress));
+					}
 
 					var CompressMaskedPtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressMasked");
-					if (CompressMaskedPtr != null)
+					if (CompressMaskedPtr != null) {
 						CompressMasked =
 							(_DLLEXPORT_CompressMasked) Marshal.GetDelegateForFunctionPointer(CompressMaskedPtr,
 								typeof(_DLLEXPORT_CompressMasked));
+					}
 
 					var DecompressPtr = GetProcAddress(errorCode, "_DLLEXPORT_Decompress");
-					if (DecompressPtr != null)
+					if (DecompressPtr != null) {
 						Decompress =
 							(_DLLEXPORT_Decompress) Marshal.GetDelegateForFunctionPointer(DecompressPtr,
 								typeof(_DLLEXPORT_Decompress));
+					}
 
 					var StorageRequirementsPtr = GetProcAddress(errorCode, "_DLLEXPORT_GetStorageRequirements");
-					if (StorageRequirementsPtr != null)
+					if (StorageRequirementsPtr != null) {
 						GetStorageRequirements =
 							(_DLLEXPORT_GetStorageRequirements) Marshal.GetDelegateForFunctionPointer(
 								StorageRequirementsPtr, typeof(_DLLEXPORT_GetStorageRequirements));
+					}
 
 					var CompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_CompressImage");
-					if (CompressImagePtr != null)
+					if (CompressImagePtr != null) {
 						CompressImage =
 							(_DLLEXPORT_CompressImage) Marshal.GetDelegateForFunctionPointer(CompressImagePtr,
 								typeof(_DLLEXPORT_CompressImage));
+					}
 
 					var DecompressImagePtr = GetProcAddress(errorCode, "_DLLEXPORT_DecompressImage");
-					if (DecompressImagePtr != null)
+					if (DecompressImagePtr != null) {
 						DecompressImage =
 							(_DLLEXPORT_DecompressImage) Marshal.GetDelegateForFunctionPointer(DecompressImagePtr,
 								typeof(_DLLEXPORT_DecompressImage));
+					}
 
 
 					_SquishLibLoadingState = SquishLibLoadingState.Initialised; // flag as initialised

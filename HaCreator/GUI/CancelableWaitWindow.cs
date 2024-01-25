@@ -5,14 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HaCreator.GUI {
@@ -36,10 +29,11 @@ namespace HaCreator.GUI {
 			actionThread.Abort();
 
 			// Is the thread stuck?
-			if (!actionThread.Join(5000))
+			if (!actionThread.Join(5000)) {
 				MessageBox.Show(
 					"Could not terminate actionThread after 5000ms. This usually means something has gone horribly wrong. The program may now be in an undefined state, try to save your work and restart.",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 
 			EndWait();
 		}

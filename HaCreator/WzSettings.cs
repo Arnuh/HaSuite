@@ -5,12 +5,11 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-using System.Text;
-using XNA = Microsoft.Xna.Framework;
-using MapleLib.WzLib.WzStructure.Data;
 using System.Drawing;
 using HaSharedLibrary.Render.DX;
+using MapleLib.WzLib.WzStructure.Data;
 using Newtonsoft.Json;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator {
 	public static class UserSettings {

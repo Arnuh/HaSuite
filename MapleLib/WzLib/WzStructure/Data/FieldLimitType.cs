@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MapleLib.WzLib.WzStructure.Data {
 	public enum FieldLimitType {
@@ -57,9 +53,11 @@ namespace MapleLib.WzLib.WzStructure.Data {
 
 		public static int GetMaxFieldLimitType() {
 			var max = 0;
-			foreach (FieldLimitType limitType in Enum.GetValues(typeof(FieldLimitType)))
-				if ((int) limitType > max)
+			foreach (FieldLimitType limitType in Enum.GetValues(typeof(FieldLimitType))) {
+				if ((int) limitType > max) {
 					max = (int) limitType;
+				}
+			}
 
 			return max;
 		}

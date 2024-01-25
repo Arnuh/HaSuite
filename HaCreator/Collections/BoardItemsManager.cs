@@ -8,16 +8,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using MapleLib.WzLib.WzStructure.Data;
-using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.MapEditor.Instance.Misc;
+using System.Runtime.CompilerServices;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Misc;
+using HaCreator.MapEditor.Instance.Shapes;
 using MapleLib.WzLib.WzStructure;
-using HaSharedLibrary.Render.DX;
-using System.Runtime.CompilerServices;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.Collections {
 	public class BoardItemsManager {
@@ -57,15 +55,18 @@ namespace HaCreator.Collections {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public MirrorFieldData CheckObjectWithinMirrorFieldDataBoundary(int x, int y,
 			MirrorFieldDataType filter_objectForOverlay) {
-			if (MirrorFieldDatas.Count == 0)
+			if (MirrorFieldDatas.Count == 0) {
 				return null;
+			}
 
 			var pos = new Microsoft.Xna.Framework.Point(x, y - 60);
 			var reflectionBoundaryWithin = MirrorFieldDatas.FirstOrDefault(
 				mirror => { return mirror.Rectangle.Contains(pos) && mirror.MirrorFieldDataType == filter_objectForOverlay; });
 
-			if (reflectionBoundaryWithin != null)
+			if (reflectionBoundaryWithin != null) {
 				return reflectionBoundaryWithin;
+			}
+
 			return null;
 		}
 
@@ -101,15 +102,17 @@ namespace HaCreator.Collections {
 				if (item is TileInstance || item is ObjectInstance) {
 					TileObjs.Remove((LayeredItem) item);
 				} else if (item is BackgroundInstance) {
-					if (((BackgroundInstance) item).front)
+					if (((BackgroundInstance) item).front) {
 						FrontBackgrounds.Remove((BackgroundInstance) item);
-					else
+					} else {
 						BackBackgrounds.Remove((BackgroundInstance) item);
+					}
 				} else if (item.Type == ItemTypes.Misc) {
-					if (item is VRDot || item is MinimapDot)
+					if (item is VRDot || item is MinimapDot) {
 						SpecialDots.Remove((MapleDot) item);
-					else
+					} else {
 						MiscItems.Remove(item);
+					}
 				} else {
 					var itemType = item.GetType();
 					foreach (var itemList in AllItemLists) {
@@ -129,21 +132,25 @@ namespace HaCreator.Collections {
 			lock (board.ParentControl) {
 				if (item is TileInstance || item is ObjectInstance) {
 					TileObjs.Add((LayeredItem) item);
-					if (sort)
+					if (sort) {
 						Sort();
+					}
 				} else if (item is BackgroundInstance instance) {
-					if (instance.front)
+					if (instance.front) {
 						FrontBackgrounds.Add(instance);
-					else
+					} else {
 						BackBackgrounds.Add(instance);
+					}
 
-					if (sort)
+					if (sort) {
 						Sort();
+					}
 				} else if (item.Type == ItemTypes.Misc) {
-					if (item is VRDot || item is MinimapDot)
+					if (item is VRDot || item is MinimapDot) {
 						SpecialDots.Add((MapleDot) item);
-					else
+					} else {
 						MiscItems.Add(item);
+					}
 				} else {
 					var itemType = item.GetType();
 					foreach (var itemList in AllItemLists) {
@@ -167,7 +174,7 @@ namespace HaCreator.Collections {
 
 		private void SortLayers() {
 			lock (board.ParentControl) {
-				for (var i = 0; i < 2; i++)
+				for (var i = 0; i < 2; i++) {
 					TileObjs.Sort(
 						delegate(LayeredItem a, LayeredItem b) {
 							if (a.Layer.LayerNumber > b.Layer.LayerNumber) {
@@ -183,21 +190,24 @@ namespace HaCreator.Collections {
 									} else if (ai.z < bi.z) {
 										return -1;
 									} else {
-										if (a.Z > b.Z)
+										if (a.Z > b.Z) {
 											return 1;
-										else if (a.Z < b.Z)
+										} else if (a.Z < b.Z) {
 											return -1;
-										else
+										} else {
 											return 0;
+										}
 									}
 								}
 
 								if (a is ObjectInstance && b is ObjectInstance) {
-									if (a.Z > b.Z)
+									if (a.Z > b.Z) {
 										return 1;
-									else if (a.Z < b.Z)
+									} else if (a.Z < b.Z) {
 										return -1;
-									else return 0;
+									} else {
+										return 0;
+									}
 								} else if (a is TileInstance && b is ObjectInstance) {
 									return 1;
 								} else {
@@ -206,6 +216,7 @@ namespace HaCreator.Collections {
 							}
 						}
 					);
+				}
 			}
 		}
 
@@ -233,9 +244,13 @@ namespace HaCreator.Collections {
 			lock (board.ParentControl) {
 				BackBackgrounds.Sort(
 					delegate(BackgroundInstance a, BackgroundInstance b) {
-						if (a.Z > b.Z) return 1;
-						else if (a.Z < b.Z) return -1;
-						else return 0;
+						if (a.Z > b.Z) {
+							return 1;
+						} else if (a.Z < b.Z) {
+							return -1;
+						} else {
+							return 0;
+						}
 					}
 				);
 			}
@@ -245,9 +260,13 @@ namespace HaCreator.Collections {
 			lock (board.ParentControl) {
 				FrontBackgrounds.Sort(
 					delegate(BackgroundInstance a, BackgroundInstance b) {
-						if (a.Z > b.Z) return 1;
-						else if (a.Z < b.Z) return -1;
-						else return 0;
+						if (a.Z > b.Z) {
+							return 1;
+						} else if (a.Z < b.Z) {
+							return -1;
+						} else {
+							return 0;
+						}
 					}
 				);
 			}

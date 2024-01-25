@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HaSharedLibrary.Util {
 	public static class BitmapHelper {

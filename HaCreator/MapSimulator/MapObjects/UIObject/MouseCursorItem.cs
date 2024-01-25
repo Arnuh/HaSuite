@@ -1,14 +1,10 @@
-﻿using HaSharedLibrary.Render;
+﻿using System.Collections.Generic;
+using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapSimulator.Objects.UIObject {
 	/// <summary>
@@ -83,17 +79,20 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 			if ((mouseCursorItemStates & (int) MouseCursorItemStates.LeftPress) != (int) MouseCursorItemStates.LeftPress
 			    && (mouseCursorItemStates & (int) MouseCursorItemStates.RightPress) !=
 			    (int) MouseCursorItemStates.RightPress) // default
+			{
 				base.Draw(sprite, skeletonMeshRenderer, gameTime,
 					-MousePos.X, -MousePos.Y, centerX, centerY,
 					drawReflectionInfo,
 					renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
 					TickCount);
-			else // if left or right press is active, draw pressed state
+			} else // if left or right press is active, draw pressed state
+			{
 				cursorItemPressedState.Draw(sprite, skeletonMeshRenderer, gameTime,
 					-MousePos.X, -MousePos.Y, centerX, centerY,
 					drawReflectionInfo,
 					renderWidth, renderHeight, RenderObjectScaling, mapRenderResolution,
 					TickCount);
+			}
 		}
 	}
 

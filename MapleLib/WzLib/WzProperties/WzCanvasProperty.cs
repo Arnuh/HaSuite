@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System.Collections.Generic;
-using System.IO;
-using MapleLib.WzLib.Util;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Text.RegularExpressions;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using MapleLib.WzLib.Util;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -103,8 +103,9 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <returns>The wz property with the specified name</returns>
 		public override WzImageProperty this[string name] {
 			get {
-				if (name == "PNG")
+				if (name == "PNG") {
 					return imageProp;
+				}
 
 				return properties.FirstOrDefault(iwp => iwp.Name.ToLower() == name.ToLower());
 			}
@@ -135,8 +136,9 @@ namespace MapleLib.WzLib.WzProperties {
 
 			WzImageProperty ret = this;
 			foreach (var segment in segments) {
-				if (segment == "PNG")
+				if (segment == "PNG") {
 					return imageProp;
+				}
 
 				var iwp = ret.WzProperties.FirstOrDefault(p => p.Name == segment);
 				if (iwp == null) return null;
@@ -205,8 +207,9 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <returns></returns>
 		public PointF GetCanvasOriginPosition() {
 			var originPos = (WzVectorProperty) this[OriginPropertyName];
-			if (originPos != null)
+			if (originPos != null) {
 				return new PointF(originPos.X.Value, originPos.Y.Value);
+			}
 
 			return new PointF(0, 0);
 		}
@@ -299,7 +302,9 @@ namespace MapleLib.WzLib.WzProperties {
 				WzObject currentWzObj = this; // first object to work with
 				while ((currentWzObj = currentWzObj.Parent) != null) {
 					if (!(currentWzObj is WzImage)) // keep looping if its not a WzImage
+					{
 						continue;
+					}
 
 					var wzImageParent = (WzImage) currentWzObj;
 					var foundProperty = wzImageParent.GetFromPath(_inlink);
@@ -309,7 +314,10 @@ namespace MapleLib.WzLib.WzProperties {
 				WzObject currentWzObj = this; // first object to work with
 				while ((currentWzObj = currentWzObj.Parent) != null) {
 					if (!(currentWzObj is WzDirectory)) // keep looping if its not a WzImage
+					{
 						continue;
+					}
+
 					var wzFileParent = ((WzDirectory) currentWzObj).wzFile;
 
 					// TODO

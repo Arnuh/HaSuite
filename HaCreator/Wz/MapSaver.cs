@@ -7,22 +7,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using HaCreator.MapEditor;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure.Data;
-using MapleLib.WzLib.WzStructure;
-using HaCreator.MapEditor.TilesDesign;
-using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Info;
-using HaCreator.MapEditor.Instance;
-using HaCreator.Collections;
 using HaCreator.MapEditor.Info.Default;
-using HaCreator.MapSimulator;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Misc;
+using HaCreator.MapEditor.Instance.Shapes;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Wz;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.Wz {
 	public class MapSaver {
@@ -61,8 +57,9 @@ namespace HaCreator.Wz {
 					parent = (WzDirectory) WzInfoTools.FindMapDirectoryParent(mapId, Program.WzManager);
 				} else {
 					WzObject mapImage = WzInfoTools.FindMapImage(mapId, Program.WzManager);
-					if (mapImage == null)
+					if (mapImage == null) {
 						throw new Exception("Could not find a suitable Map.wz to place the new map into.");
+					}
 
 					parent = (WzDirectory) mapImage.Parent;
 					mapImage.Remove();
@@ -89,8 +86,9 @@ namespace HaCreator.Wz {
 						board.VRRectangle.Height));
 			if (board.MapInfo.mapType == MapType.RegularMap) {
 				var strMapImg = (WzImage) Program.WzManager.FindWzImageByName("string", "Map.img");
-				if (strMapImg == null)
+				if (strMapImg == null) {
 					throw new Exception("Map.img not found in string.wz");
+				}
 
 				var strCatProp = (WzSubProperty) strMapImg[board.MapInfo.strCategoryName];
 				if (strCatProp == null) {
@@ -164,7 +162,7 @@ namespace HaCreator.Wz {
 				var tiles = new List<TileInstance>();
 				var objParent = new WzSubProperty();
 				var objIndex = 0;
-				foreach (var item in l.Items)
+				foreach (var item in l.Items) {
 					if (item is ObjectInstance instance) {
 						var obj = new WzSubProperty();
 						var objInst = instance;
@@ -204,6 +202,7 @@ namespace HaCreator.Wz {
 					} else {
 						throw new Exception("Unknown type in layered lists");
 					}
+				}
 
 				layerProp["obj"] = objParent;
 
@@ -323,12 +322,14 @@ namespace HaCreator.Wz {
 			var stringWzDirs = Program.WzManager.GetWzDirectoriesFromBase("string");
 			foreach (var stringWzDir in stringWzDirs) {
 				strTooltipImg = (WzImage) stringWzDir?["ToolTipHelp.img"];
-				if (strTooltipImg != null)
+				if (strTooltipImg != null) {
 					break; // found
+				}
 			}
 
-			if (strTooltipImg == null)
+			if (strTooltipImg == null) {
 				throw new Exception("Unable to find ToolTipHelp.img in String.wz");
+			}
 
 			var strTooltipCat = (WzSubProperty) strTooltipImg["Mapobject"];
 			var strTooltipParent = (WzSubProperty) strTooltipCat[board.MapInfo.id.ToString()];
@@ -340,12 +341,14 @@ namespace HaCreator.Wz {
 			}
 
 			// Check if the tooltips' original numbers can still be used
-			if (retainTooltipStrings)
-				for (var i = 0; i < board.BoardItems.ToolTips.Count; i++)
+			if (retainTooltipStrings) {
+				for (var i = 0; i < board.BoardItems.ToolTips.Count; i++) {
 					if (board.BoardItems.ToolTips[i].OriginalNumber == -1) {
 						retainTooltipStrings = false;
 						break;
 					}
+				}
+			}
 
 			// If they do not, we need to update string.wz and rebuild the string tooltip props
 			if (!retainTooltipStrings) {
@@ -357,8 +360,9 @@ namespace HaCreator.Wz {
 				var ttInst = board.BoardItems.ToolTips[i];
 				var tooltipPropStr = retainTooltipStrings ? ttInst.OriginalNumber.ToString() : i.ToString();
 				tooltipParent[tooltipPropStr] = PackRectangle(ttInst);
-				if (ttInst.CharacterToolTip != null)
+				if (ttInst.CharacterToolTip != null) {
 					tooltipParent[tooltipPropStr + "char"] = PackRectangle(ttInst.CharacterToolTip);
+				}
 
 				if (retainTooltipStrings) {
 					// This prop must exist if we are retaining, otherwise the map would not load
@@ -423,7 +427,9 @@ namespace HaCreator.Wz {
 				bgProp["type"] = InfoTool.SetInt((int) bgInst.type);
 				bgProp["front"] = bgInst.front.SetOptionalBool(Defaults.Background.Front);
 				if (bgInst.screenMode != (int) RenderResolution.Res_All) // 0
+				{
 					bgProp["screenMode"] = InfoTool.SetInt(bgInst.screenMode);
+				}
 
 				bgProp["spineAni"] = InfoTool.SetOptionalString(bgInst.SpineAni, Defaults.Background.SpineAni);
 				bgProp["spineRandomStart"] = bgInst.SpineRandomStart.SetOptionalBool(Defaults.Background.SpineRandomStart);
@@ -469,7 +475,7 @@ namespace HaCreator.Wz {
 			var fhParent = new WzSubProperty();
 			board.BoardItems.FootholdLines.ForEach(x => x.saved = false);
 			board.BoardItems.FootholdLines.Sort(FootholdLine.FHSorter);
-			
+
 			var fhIndex = 1;
 			foreach (var line in board.BoardItems.FootholdLines) line.num = fhIndex++;
 
@@ -528,7 +534,7 @@ namespace HaCreator.Wz {
 			var buffParent = new WzSubProperty();
 			var swimParent = new WzSubProperty();
 
-			foreach (var item in board.BoardItems.MiscItems)
+			foreach (var item in board.BoardItems.MiscItems) {
 				if (item is Clock clock) {
 					var clockProp = new WzSubProperty();
 					clockProp["x"] = InfoTool.SetInt(clock.Left);
@@ -581,6 +587,7 @@ namespace HaCreator.Wz {
 				} else if (item is SwimArea swim) {
 					swimParent[swim.Identifier] = PackRectangle(swim);
 				}
+			}
 
 			if (areaParent.WzProperties.Count > 0) image["area"] = areaParent;
 
@@ -590,8 +597,9 @@ namespace HaCreator.Wz {
 		}
 
 		public void SaveMirrorFieldData() {
-			if (board.BoardItems.MirrorFieldDatas.Count == 0)
+			if (board.BoardItems.MirrorFieldDatas.Count == 0) {
 				return;
+			}
 
 			var mirrorFieldDataParent = new WzSubProperty();
 
@@ -599,8 +607,9 @@ namespace HaCreator.Wz {
 			foreach (MirrorFieldDataType dataType in
 			         Enum.GetValues(typeof(MirrorFieldDataType))) // initial holder data, only run once
 			{
-				if (dataType == MirrorFieldDataType.NULL || dataType == MirrorFieldDataType.info)
+				if (dataType == MirrorFieldDataType.NULL || dataType == MirrorFieldDataType.info) {
 					continue;
+				}
 
 				var holderProp = new WzSubProperty(); // <imgdir name="MirrorFieldData"><imgdir name="0">
 				holderProp.Name = i.ToString(); // "0"
@@ -625,7 +634,7 @@ namespace HaCreator.Wz {
 			}
 
 			// dumpppp
-			foreach (BoardItem item in board.BoardItems.MirrorFieldDatas)
+			foreach (BoardItem item in board.BoardItems.MirrorFieldDatas) {
 				if (item is MirrorFieldData) {
 					var mirrorFieldData = (MirrorFieldData) item;
 					var forTargetObject =
@@ -673,6 +682,7 @@ namespace HaCreator.Wz {
 						                    forTargetObject);
 					}
 				}
+			}
 
 			if (mirrorFieldDataParent.WzProperties.Count > 0) image["MirrorFieldData"] = mirrorFieldDataParent;
 		}
@@ -727,7 +737,9 @@ namespace HaCreator.Wz {
 			if (bestFoothold == -1)
 				// 0 stands in the game for flying or nonexistant foothold; I do not know what are the results of putting an NPC there,
 				// however, if the user puts an NPC with no floor under it he should expect weird things to happen.
+			{
 				return 0;
+			}
 
 			return bestFoothold;
 		}
@@ -739,8 +751,9 @@ namespace HaCreator.Wz {
 			foreach (var anchor in board.BoardItems.FHAnchors) {
 				// Find an anchor on the same layer, with 1 connected line, in the X range of our target line, whose line is not vertical
 				if (anchor.LayerNumber != layer || anchor.connectedLines.Count != 1 || anchor.X < x0 || anchor.X > x1 ||
-				    anchor.connectedLines[0].FirstDot.X == anchor.connectedLines[0].SecondDot.X)
+				    anchor.connectedLines[0].FirstDot.X == anchor.connectedLines[0].SecondDot.X) {
 					continue;
+				}
 
 				var d = Math.Abs(anchor.Y - y);
 				if (d < distance) {
@@ -750,7 +763,9 @@ namespace HaCreator.Wz {
 
 				if (distance == 0)
 					// Not going to find anything better
+				{
 					return result;
+				}
 			}
 
 			return distance < 100 ? result : null;
@@ -786,14 +801,16 @@ namespace HaCreator.Wz {
 					var nitems = tileInst.BoundItemsList.Count;
 					if (tileInst.BoundItemsList[0].Y != tileInst.BoundItemsList[nitems - 1].Y ||
 					    tileInst.BoundItemsList[0].X != tileInst.BoundItemsList[1].X ||
-					    tileInst.BoundItemsList[nitems - 1].X != tileInst.BoundItemsList[nitems - 2].X)
+					    tileInst.BoundItemsList[nitems - 1].X != tileInst.BoundItemsList[nitems - 2].X) {
 						continue;
+					}
 
 					// Only work with snapped edU's
 					if (tileInst.FindSnappableTiles(0,
 						    x => ((TileInfo) x.BaseInfo).u == "enH0" || ((TileInfo) x.BaseInfo).u == "slLU" ||
-						         ((TileInfo) x.BaseInfo).u == "slRU").Count == 0)
+						         ((TileInfo) x.BaseInfo).u == "slRU").Count == 0) {
 						continue;
+					}
 
 					/*FootholdLine surfaceLine = GetConnectingLine((FootholdAnchor)tileInst.BoundItemsList[1], (FootholdAnchor)tileInst.BoundItemsList[2]);
 					if (surfaceLine == null)
@@ -903,15 +920,19 @@ namespace HaCreator.Wz {
 
 		public void ChangeMapTypeAndID(int newId, MapType newType) {
 			board.MapInfo.mapType = newType;
-			if (newType != MapType.RegularMap)
+			if (newType != MapType.RegularMap) {
 				return;
+			}
+
 			var oldId = board.MapInfo.id;
 			if (oldId == newId) return;
 
 			board.MapInfo.id = newId;
-			foreach (var portalInst in board.BoardItems.Portals)
-				if (portalInst.tm == oldId)
+			foreach (var portalInst in board.BoardItems.Portals) {
+				if (portalInst.tm == oldId) {
 					portalInst.tm = newId;
+				}
+			}
 		}
 
 		public void UpdateMapLists() {

@@ -4,16 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Info;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HaCreator.MapEditor.Info;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaCreator.Wz {
 	public class WzInformationManager {

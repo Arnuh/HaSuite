@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaSharedLibrary.Render.DX {
 	public interface IDXObject {

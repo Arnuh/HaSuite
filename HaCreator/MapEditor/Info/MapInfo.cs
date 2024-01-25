@@ -18,11 +18,11 @@
 
 using System;
 using System.Collections.Generic;
-using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure.Data;
 using System.Drawing;
 using HaCreator.MapEditor.Info.Default;
 using MapleLib.Helpers;
+using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure.Data.MapStructure;
 
 namespace MapleLib.WzLib.WzStructure {
@@ -146,7 +146,7 @@ namespace MapleLib.WzLib.WzStructure {
 				  file.Version
 				: "");
 
-			foreach (var prop in image["info"].WzProperties)
+			foreach (var prop in image["info"].WzProperties) {
 				switch (prop.Name) {
 					case "bgm":
 						bgm = InfoTool.GetString(prop);
@@ -320,9 +320,11 @@ namespace MapleLib.WzLib.WzStructure {
 						break;
 					case "allowedItem":
 						allowedItem = new List<int>();
-						if (prop.WzProperties != null && prop.WzProperties.Count > 0)
+						if (prop.WzProperties != null && prop.WzProperties.Count > 0) {
 							foreach (var item in prop.WzProperties)
 								allowedItem.Add(item.GetInt());
+						}
+
 						break;
 					case "recovery":
 						recovery = InfoTool.GetFloat(prop);
@@ -553,6 +555,7 @@ namespace MapleLib.WzLib.WzStructure {
 						additionalProps.Add(prop.DeepClone());
 						break;
 				}
+			}
 		}
 
 		public static Rectangle? GetVR(WzImage image) {

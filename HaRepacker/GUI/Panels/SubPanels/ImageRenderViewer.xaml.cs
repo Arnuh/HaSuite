@@ -1,5 +1,4 @@
 ﻿using System;
-using MapleLib.WzLib.WzProperties;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
@@ -7,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 using static MapleLib.Configuration.UserSettings;
 using Point = System.Windows.Point;
 
@@ -23,8 +23,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			InitializeComponent();
 
 			// Set theme color
-			if (Program.ConfigurationManager.UserSettings.ThemeColor == (int) UserSettingsThemeColor.Dark)
+			if (Program.ConfigurationManager.UserSettings.ThemeColor == (int) UserSettingsThemeColor.Dark) {
 				VisualStateManager.GoToState(this, "BlackTheme", false);
+			}
 
 			DataContext = this; // set data binding to self.
 
@@ -178,7 +179,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 
 		public PointF? CanvasVectorRbOffset =>
 			CanvasVectorRb is PointF rb ? (PointF?) new PointF(rb.X + CanvasVectorOrigin.X, rb.Y + CanvasVectorOrigin.Y) : null;
-		
+
 		private double _ImageWidth = 0;
 
 		/// <summary>
@@ -229,14 +230,16 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void checkbox_crosshair_Checked(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			var checkbox = (CheckBox) sender;
-			if (checkbox.IsChecked == true)
+			if (checkbox.IsChecked == true) {
 				Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = true;
-			else
+			} else {
 				Program.ConfigurationManager.UserSettings.EnableCrossHairDebugInformation = false;
+			}
 		}
 
 		/// <summary>
@@ -245,14 +248,16 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void checkbox_border_Checked(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			var checkbox = (CheckBox) sender;
-			if (checkbox.IsChecked == true)
+			if (checkbox.IsChecked == true) {
 				Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = true;
-			else
+			} else {
 				Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation = false;
+			}
 		}
 
 		/// <summary>
@@ -261,8 +266,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void textbox_lt_TextChanged(object sender, TextChangedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			button_ltEdit.IsEnabled = true;
 		}
@@ -286,8 +292,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void textbox_head_TextChanged(object sender, TextChangedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			button_headEdit.IsEnabled = true;
 		}
@@ -298,8 +305,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void textbox_origin_TextChanged(object sender, TextChangedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			button_originEdit.IsEnabled = true;
 		}
@@ -310,8 +318,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void textbox_delay_TextChanged(object sender, TextChangedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			button_delayEdit.IsEnabled = true;
 		}
@@ -322,8 +331,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_ltEdit_Click(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			if (!int.TryParse(textbox_ltX.Text, out var newX) || !int.TryParse(textbox_ltY.Text, out var newY)) return;
 			UpdatePoint(WzCanvasProperty.LtPropertyName, newX, newY);
@@ -354,8 +364,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_headEdit_Click(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			if (!int.TryParse(textbox_headX.Text, out var newX) || !int.TryParse(textbox_headY.Text, out var newY)) return;
 			UpdatePoint(WzCanvasProperty.HeadPropertyName, newX, newY);
@@ -372,8 +383,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_delayEdit_Click(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			if (!int.TryParse(textbox_delay.Text, out var newdelay)) return;
 			if (!(_ParentWzCanvasProperty[WzCanvasProperty.AnimationDelayPropertyName] is WzIntProperty intProperty)) {
@@ -395,8 +407,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_originEdit_Click(object sender, RoutedEventArgs e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			if (!int.TryParse(textbox_originX.Text, out var newX) || !int.TryParse(textbox_originY.Text, out var newY)) return;
 			UpdatePoint(WzCanvasProperty.OriginPropertyName, newX, newY);
@@ -413,8 +426,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			if (isLoading)
+			if (isLoading) {
 				return;
+			}
 
 			var zoomSlider = (Slider) sender;
 			Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;

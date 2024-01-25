@@ -4,14 +4,13 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Windows.Forms;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
 using HaSharedLibrary.Wz;
-using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using System;
-using System.Windows.Forms;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.GUI {
@@ -75,8 +74,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e) {
-			if (numericUpDown1.Value != -1)
+			if (numericUpDown1.Value != -1) {
 				buttonCreateFrmClone.Enabled = true; // enable the button after selecting a map
+			}
 		}
 
 
@@ -86,8 +86,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void buttonCreateFrmClone_Click(object sender, EventArgs e) {
-			if (numericUpDown1.Value == -1)
+			if (numericUpDown1.Value == -1) {
 				return;
+			}
 
 			var mapId = (int) numericUpDown1.Value;
 			var mapId_str = mapId.ToString();
@@ -114,9 +115,9 @@ namespace HaCreator.GUI {
 		#region Misc
 
 		private void New_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape) {
 				Close();
-			else if (e.KeyCode == Keys.Enter) newButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) newButton_Click(null, null);
 		}
 
 		#endregion

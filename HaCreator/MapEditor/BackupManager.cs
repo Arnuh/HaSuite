@@ -4,15 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Input;
-using HaCreator.Wz;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using HaCreator.MapEditor.Input;
+using HaCreator.Wz;
 
 namespace HaCreator.MapEditor {
 	public class BackupManager {
@@ -44,16 +40,19 @@ namespace HaCreator.MapEditor {
 		}
 
 		public void BackupCheck() {
-			if (!enabled || !UserSettings.BackupEnabled)
+			if (!enabled || !UserSettings.BackupEnabled) {
 				return;
+			}
+
 			if (input.IsUserIdleFor(UserSettings.BackupIdleTime) ||
 			    input.IsBackupDelayedFor(UserSettings.BackupMaxTime)) {
 				lock (multiBoard) {
 					if (multiBoard.SelectedBoard == null ||
 					    multiBoard.SelectedBoard.Mouse == null ||
 					    multiBoard.SelectedBoard.Mouse.State != MouseState.Selection ||
-					    multiBoard.SelectedBoard.Mouse.BoundItems.Count > 0)
+					    multiBoard.SelectedBoard.Mouse.BoundItems.Count > 0) {
 						return;
+					}
 				}
 
 				input.OnBackup();
@@ -73,24 +72,28 @@ namespace HaCreator.MapEditor {
 							ioQueue.Add(userObjsFileName, multiBoard.UserObjects.SerializedForm);
 						}
 
-						foreach (var board in multiBoard.Boards)
+						foreach (var board in multiBoard.Boards) {
 							if (board.Dirty) {
 								board.Dirty = false;
 								serQueue.Add(board.UniqueID.ToString() + ".ham", board.SerializationManager);
 							}
+						}
 					}
 
 					// Execute the serialization queue
-					if (serQueue.Count > 0)
+					if (serQueue.Count > 0) {
 						foreach (var serReq in serQueue)
 							ioQueue.Add(serReq.Key, serReq.Value.SerializeBoard(false));
+					}
 
 
 					// Execute the IO queue
 					if (ioQueue.Count > 0) {
 						var basePath = GetBasePath();
-						if (!Directory.Exists(basePath))
+						if (!Directory.Exists(basePath)) {
 							Directory.CreateDirectory(basePath);
+						}
+
 						foreach (var ioRequest in ioQueue)
 							File.WriteAllText(Path.Combine(basePath, ioRequest.Key), ioRequest.Value);
 					}
@@ -102,16 +105,18 @@ namespace HaCreator.MapEditor {
 			lock (this) {
 				var basePath = GetBasePath();
 				var backup = Path.Combine(basePath, uid.ToString() + ".ham");
-				if (File.Exists(backup))
+				if (File.Exists(backup)) {
 					File.Delete(backup);
+				}
 			}
 		}
 
 		public void ClearBackups() {
 			lock (this) {
 				var basePath = GetBasePath();
-				if (Directory.Exists(basePath))
+				if (Directory.Exists(basePath)) {
 					Directory.Delete(basePath, true);
+				}
 			}
 		}
 
@@ -119,8 +124,10 @@ namespace HaCreator.MapEditor {
 			var loadedFiles = new Dictionary<string, string>();
 			lock (this) {
 				var basePath = GetBasePath();
-				if (!Directory.Exists(basePath))
+				if (!Directory.Exists(basePath)) {
 					return false;
+				}
+
 				if (MessageBox.Show(
 					    "PheCreator was shut down unexpectedly, and can attempt to recover from a backed up state automatically. Proceed?\r\n\r\n(To start from scratch, press \"No\")",
 					    "Recovery", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No) {
@@ -132,8 +139,10 @@ namespace HaCreator.MapEditor {
 					loadedFiles.Add(file.Name.ToLower(), File.ReadAllText(file.FullName));
 			}
 
-			if (loadedFiles.Count == 0)
+			if (loadedFiles.Count == 0) {
 				return false;
+			}
+
 			lock (multiBoard) {
 				if (loadedFiles.ContainsKey(userObjsFileName)) {
 					multiBoard.UserObjects.DeserializeObjects(loadedFiles[userObjsFileName]);
@@ -141,8 +150,10 @@ namespace HaCreator.MapEditor {
 				}
 
 				foreach (var file in loadedFiles) {
-					if (Path.GetExtension(file.Key) != ".ham")
+					if (Path.GetExtension(file.Key) != ".ham") {
 						continue;
+					}
+
 					MapLoader.CreateMapFromHam(multiBoard, tabs, file.Value, hcsm.MakeRightClickHandler());
 				}
 			}

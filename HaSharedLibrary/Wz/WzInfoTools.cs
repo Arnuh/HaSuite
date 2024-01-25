@@ -4,16 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaSharedLibrary;
+using System;
+using System.Drawing;
 using MapleLib;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaSharedLibrary.Wz {
@@ -51,7 +46,7 @@ namespace HaSharedLibrary.Wz {
 
 		public static string RemoveLeadingZeros(string source) {
 			var firstNonZeroIndex = 0;
-			for (var i = 0; i < source.Length; i++)
+			for (var i = 0; i < source.Length; i++) {
 				if (source[i] != (char) 0x30) //char at index i is not 0
 				{
 					firstNonZeroIndex = i;
@@ -60,6 +55,7 @@ namespace HaSharedLibrary.Wz {
 				{
 					return "0";
 				}
+			}
 
 			return source.Substring(firstNonZeroIndex);
 		}
@@ -71,8 +67,9 @@ namespace HaSharedLibrary.Wz {
 			if (stringWzDirs != null) {
 				WzObject mobObj = stringWzDirs[id];
 				var mobName = (WzStringProperty) mobObj["name"];
-				if (mobName == null)
+				if (mobName == null) {
 					return "";
+				}
 
 				return mobName.Value;
 			}
@@ -87,8 +84,9 @@ namespace HaSharedLibrary.Wz {
 			if (stringWzDirs != null) {
 				WzObject npcObj = stringWzDirs[id];
 				var npcName = (WzStringProperty) npcObj["name"];
-				if (npcName == null)
+				if (npcName == null) {
 					return "";
+				}
 
 				return npcName.Value;
 			}
@@ -98,11 +96,12 @@ namespace HaSharedLibrary.Wz {
 
 		public static WzSubProperty GetMapStringProp(int id, WzFileManager fileManager) {
 			var mapImg = (WzImage) fileManager.FindWzImageByName("string", "Map.img");
-			if (mapImg != null)
+			if (mapImg != null) {
 				foreach (WzSubProperty mapNameCategory in mapImg.WzProperties) {
 					var mapNameDirectory = (WzSubProperty) mapNameCategory[id.ToString()];
 					if (mapNameDirectory != null) return mapNameDirectory;
 				}
+			}
 
 			return null;
 		}
@@ -132,16 +131,19 @@ namespace HaSharedLibrary.Wz {
 		}
 
 		public static WzObject GetObjectByRelativePath(WzObject currentObject, string path) {
-			foreach (var directive in path.Split("/".ToCharArray()))
-				if (directive == "..")
+			foreach (var directive in path.Split("/".ToCharArray())) {
+				if (directive == "..") {
 					currentObject = currentObject.Parent;
-				else if (currentObject is WzImageProperty)
+				} else if (currentObject is WzImageProperty) {
 					currentObject = ((WzImageProperty) currentObject)[directive];
-				else if (currentObject is WzImage)
+				} else if (currentObject is WzImage) {
 					currentObject = ((WzImage) currentObject)[directive];
-				else if (currentObject is WzDirectory)
+				} else if (currentObject is WzDirectory) {
 					currentObject = ((WzDirectory) currentObject)[directive];
-				else throw new Exception("invalid type");
+				} else {
+					throw new Exception("invalid type");
+				}
+			}
 
 			return currentObject;
 		}
@@ -153,16 +155,19 @@ namespace HaSharedLibrary.Wz {
 		}
 
 		public static string RemoveExtension(string source) {
-			if (source.Substring(source.Length - 4) == ".img")
+			if (source.Substring(source.Length - 4) == ".img") {
 				return source.Substring(0, source.Length - 4);
+			}
+
 			return source;
 		}
 
 		public static WzImageProperty GetRealProperty(WzImageProperty prop) {
-			if (prop is WzUOLProperty)
+			if (prop is WzUOLProperty) {
 				return (WzImageProperty) ResolveUOL((WzUOLProperty) prop);
-			else
+			} else {
 				return prop;
+			}
 		}
 
 		public static WzCanvasProperty GetMobImage(WzImage parentImage) {
@@ -216,8 +221,9 @@ namespace HaSharedLibrary.Wz {
 		/// <returns></returns>
 		public static WzImage FindMapImage(string mapid, WzFileManager fileManager) {
 			WzObject mapParent = FindMapDirectoryParent(mapid, fileManager);
-			if (mapParent == null)
+			if (mapParent == null) {
 				return null;
+			}
 
 			if (fileManager.Is64Bit) return (WzImage) mapParent;
 

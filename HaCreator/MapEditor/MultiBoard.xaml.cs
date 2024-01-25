@@ -15,14 +15,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using HaCreator.Collections;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
@@ -63,8 +61,10 @@ namespace HaCreator.MapEditor {
 		public HaCreatorStateManager HaCreatorStateManager {
 			get => _HaCreatorStateManager;
 			set {
-				if (_HaCreatorStateManager != null)
+				if (_HaCreatorStateManager != null) {
 					throw new Exception("HaCreatorStateManager already set.");
+				}
+
 				_HaCreatorStateManager = value;
 			}
 		}
@@ -109,7 +109,7 @@ namespace HaCreator.MapEditor {
 			pixel = CreatePixel();
 			DeviceReady = true;
 
-			while (!Program.AbortThreads)
+			while (!Program.AbortThreads) {
 				if (DeviceReady && CurrentHostWindowState != WindowState.Minimized) {
 					RenderFrame();
 #if FPS_TEST
@@ -118,6 +118,7 @@ namespace HaCreator.MapEditor {
 				} else {
 					Thread.Sleep(100);
 				}
+			}
 		}
 
 		#region Initialization
@@ -126,7 +127,9 @@ namespace HaCreator.MapEditor {
 			InitializeComponent();
 
 			if (!DesignerProperties.GetIsInDesignMode(this)) // stupid errors popping up in design mode 
+			{
 				winFormDXHolder.Visibility = Visibility.Visible;
+			}
 
 			dxHandle = DxContainer.Handle;
 			userObjs = new UserObjectsManager(this);
@@ -137,8 +140,9 @@ namespace HaCreator.MapEditor {
 		/// Starts the multi board along with associated graphics device
 		/// </summary>
 		public void Start() {
-			if (DeviceReady)
+			if (DeviceReady) {
 				return;
+			}
 
 			//if (selectedBoard == null) 
 			//    throw new Exception("Cannot start without a selected board");
@@ -200,17 +204,19 @@ namespace HaCreator.MapEditor {
 		#region Methods
 
 		public void OnMinimapStateChanged(Board board, bool hasMm) {
-			if (MinimapStateChanged != null)
+			if (MinimapStateChanged != null) {
 				MinimapStateChanged.Invoke(board, hasMm);
+			}
 		}
 
 		public void OnBoardRemoved(Board board) {
-			if (BoardRemoved != null)
+			if (BoardRemoved != null) {
 				BoardRemoved.Invoke(board, null);
+			}
 		}
 
 		private Texture2D CreatePixel() {
-			var bmp = new System.Drawing.Bitmap(1, 1);
+			var bmp = new Bitmap(1, 1);
 			bmp.SetPixel(0, 0, System.Drawing.Color.White);
 
 			return bmp.ToTexture2D(DxDevice);
@@ -284,19 +290,23 @@ namespace HaCreator.MapEditor {
 #endif
 
 			if (selectedBoard != null) // No map selected to draw on
+			{
 				lock (this) {
 					if (selectedBoard != null) { // check again
-					
+
 						selectedBoard.RenderBoard(sprite);
-						if (selectedBoard.MapSize.X < _CurrentDXWindowSize.Width)
+						if (selectedBoard.MapSize.X < _CurrentDXWindowSize.Width) {
 							DrawLine(sprite, new Vector2(MapSize.X, 0),
 								new Vector2(MapSize.X, _CurrentDXWindowSize.Height), Color.Black);
+						}
 
-						if (selectedBoard.MapSize.Y < _CurrentDXWindowSize.Height)
+						if (selectedBoard.MapSize.Y < _CurrentDXWindowSize.Height) {
 							DrawLine(sprite, new Vector2(0, MapSize.Y),
 								new Vector2(_CurrentDXWindowSize.Width, MapSize.Y), Color.Black);
+						}
 					}
 				}
+			}
 #if FPS_TEST
             fontEngine.DrawString(sprite, new System.Drawing.Point(), Color.Black, fpsCounter.Frames.ToString(), 1000);
 #endif
@@ -338,16 +348,19 @@ namespace HaCreator.MapEditor {
 			set {
 				lock (this) {
 					selectedBoard = value;
-					if (value != null)
+					if (value != null) {
 						AdjustScrollBars();
+					}
 				}
 			}
 		}
 
 		public Point MapSize {
 			get {
-				if (selectedBoard == null)
+				if (selectedBoard == null) {
 					return new Point(0, 0);
+				}
+
 				return selectedBoard.MapSize;
 			}
 		}
@@ -404,10 +417,12 @@ namespace HaCreator.MapEditor {
 
 		private void GetObjsUnderPointFromList(IMapleList list, Point locationVirtualPos, ref BoardItem itemUnderPoint,
 			ref BoardItem selectedUnderPoint, ref bool selectedItemHigher) {
-			if (!list.IsItem)
+			if (!list.IsItem) {
 				return;
+			}
+
 			var sel = selectedBoard.GetUserSelectionInfo();
-			if (list.ListType == ItemTypes.None)
+			if (list.ListType == ItemTypes.None) {
 				for (var i = 0; i < list.Count; i++) {
 					var item = (BoardItem) list[i];
 					if ((selectedBoard.EditedTypes & item.Type) != item.Type) continue;
@@ -425,7 +440,7 @@ namespace HaCreator.MapEditor {
 						}
 					}
 				}
-			else if ((selectedBoard.EditedTypes & list.ListType) == list.ListType)
+			} else if ((selectedBoard.EditedTypes & list.ListType) == list.ListType) {
 				for (var i = 0; i < list.Count; i++) {
 					var item = (BoardItem) list[i];
 					if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom)
@@ -442,6 +457,7 @@ namespace HaCreator.MapEditor {
 						}
 					}
 				}
+			}
 		}
 
 		private BoardItemPair GetObjectsUnderPoint(Point location, out bool selectedItemHigher) {
@@ -453,9 +469,10 @@ namespace HaCreator.MapEditor {
 						0),
 					PhysicalToVirtual(location.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, /*item.Origin.Y*/
 						0));
-			for (var i = 0; i < selectedBoard.BoardItems.AllItemLists.Length; i++)
+			for (var i = 0; i < selectedBoard.BoardItems.AllItemLists.Length; i++) {
 				GetObjsUnderPointFromList(selectedBoard.BoardItems.AllItemLists[i], locationVirtualPos,
 					ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher);
+			}
 
 			return new BoardItemPair(itemUnderPoint, selectedUnderPoint);
 		}
@@ -468,36 +485,47 @@ namespace HaCreator.MapEditor {
 		private BoardItem GetObjectUnderPoint(Point location) {
 			bool selectedItemHigher;
 			var objsUnderPoint = GetObjectsUnderPoint(location, out selectedItemHigher);
-			if (objsUnderPoint.SelectedItem == null && objsUnderPoint.NonSelectedItem == null) return null;
-			else if (objsUnderPoint.SelectedItem == null) return objsUnderPoint.NonSelectedItem;
-			else if (objsUnderPoint.NonSelectedItem == null) return objsUnderPoint.SelectedItem;
-			else return selectedItemHigher ? objsUnderPoint.SelectedItem : objsUnderPoint.NonSelectedItem;
+			if (objsUnderPoint.SelectedItem == null && objsUnderPoint.NonSelectedItem == null) {
+				return null;
+			} else if (objsUnderPoint.SelectedItem == null) {
+				return objsUnderPoint.NonSelectedItem;
+			} else if (objsUnderPoint.NonSelectedItem == null) {
+				return objsUnderPoint.SelectedItem;
+			} else {
+				return selectedItemHigher ? objsUnderPoint.SelectedItem : objsUnderPoint.NonSelectedItem;
+			}
 		}
 
 		public static bool IsPointInsideRectangle(Point point, int left, int top, int right, int bottom) {
-			if (bottom > point.Y && top < point.Y && left < point.X && right > point.X)
+			if (bottom > point.Y && top < point.Y && left < point.X && right > point.X) {
 				return true;
+			}
+
 			return false;
 		}
 
 		public void OnExportRequested() {
-			if (ExportRequested != null)
+			if (ExportRequested != null) {
 				ExportRequested.Invoke();
+			}
 		}
 
 		public void OnLoadRequested() {
-			if (LoadRequested != null)
+			if (LoadRequested != null) {
 				LoadRequested.Invoke();
+			}
 		}
 
 		public void OnCloseTabRequested() {
-			if (CloseTabRequested != null)
+			if (CloseTabRequested != null) {
 				CloseTabRequested.Invoke();
+			}
 		}
 
 		public void OnSwitchTabRequested(bool reverse) {
-			if (SwitchTabRequested != null)
+			if (SwitchTabRequested != null) {
 				SwitchTabRequested.Invoke(this, reverse);
+			}
 		}
 
 		public delegate void LeftMouseDownDelegate(Board selectedBoard, BoardItem item, BoardItem selectedItem,
@@ -529,7 +557,7 @@ namespace HaCreator.MapEditor {
 
 		public event MouseMovedDelegate MouseMoved;
 
-		public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, string name,
+		public delegate void ImageDroppedDelegate(Board selectedBoard, Bitmap bmp, string name,
 			Point pos);
 
 		public event ImageDroppedDelegate ImageDropped;
@@ -613,12 +641,13 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void DxContainer_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
-			if (selectedBoard == null)
+			if (selectedBoard == null) {
 				return;
+			}
 
 			var x = (int) (e.X / _scale);
 			var y = (int) (e.Y / _scale);
-			
+
 			// If the mouse has not been moved while we were in focus (e.g. when clicking on the editor while another window focused), this event will be sent without a mousemove event preceding it.
 			// We will move it to its correct position by invoking the move event handler manually.
 			if (selectedBoard.Mouse.X != x || selectedBoard.Mouse.Y != y) {
@@ -649,8 +678,10 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void DxContainer_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e) {
-			if (selectedBoard == null)
+			if (selectedBoard == null) {
 				return;
+			}
+
 			var x = (int) (e.X / _scale);
 			var y = (int) (e.Y / _scale);
 			selectedBoard.Mouse.IsDown = false;
@@ -675,8 +706,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		public void DxContainer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
-			if (selectedBoard == null)
+			if (selectedBoard == null) {
 				return;
+			}
 
 			lock (this) {
 				if (ShortcutKeyPressed != null) {
@@ -688,12 +720,18 @@ namespace HaCreator.MapEditor {
 					            System.Windows.Forms.Keys.Shift;
 					var filteredKeys = e.KeyData;
 
-					if (ctrl && (filteredKeys & System.Windows.Forms.Keys.Control) != 0)
+					if (ctrl && (filteredKeys & System.Windows.Forms.Keys.Control) != 0) {
 						filteredKeys = filteredKeys ^ System.Windows.Forms.Keys.Control;
-					if (alt && (filteredKeys & System.Windows.Forms.Keys.Alt) != 0)
+					}
+
+					if (alt && (filteredKeys & System.Windows.Forms.Keys.Alt) != 0) {
 						filteredKeys = filteredKeys ^ System.Windows.Forms.Keys.Alt;
-					if (shift && (filteredKeys & System.Windows.Forms.Keys.Shift) != 0)
+					}
+
+					if (shift && (filteredKeys & System.Windows.Forms.Keys.Shift) != 0) {
 						filteredKeys = filteredKeys ^ System.Windows.Forms.Keys.Shift;
+					}
+
 					lock (this) {
 						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, filteredKeys);
 					}
@@ -707,8 +745,10 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void DxContainer_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
-			if (selectedBoard == null)
+			if (selectedBoard == null) {
 				return;
+			}
+
 			var x = (int) (e.X / _scale);
 			var y = (int) (e.Y / _scale);
 			lock (this) {
@@ -723,8 +763,9 @@ namespace HaCreator.MapEditor {
 							PhysicalToVirtual(y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0));
 					selectedBoard.Mouse.Move(newPos.X, newPos.Y);
 
-					if (MouseMoved != null)
+					if (MouseMoved != null) {
 						MouseMoved.Invoke(selectedBoard, oldPos, newPos, new Point(e.X, e.Y));
+					}
 				}
 			}
 		}
@@ -736,10 +777,11 @@ namespace HaCreator.MapEditor {
 		/// <param name="e"></param>
 		private void DxContainer_DragEnter(object sender, System.Windows.Forms.DragEventArgs e) {
 			lock (this) {
-				if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
 					e.Effect = System.Windows.Forms.DragDropEffects.Copy;
-				else
+				} else {
 					e.Effect = System.Windows.Forms.DragDropEffects.None;
+				}
 			}
 		}
 
@@ -752,8 +794,9 @@ namespace HaCreator.MapEditor {
 			lock (this) {
 				if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-				if (!AssertLayerSelected())
+				if (!AssertLayerSelected()) {
 					return;
+				}
 
 				var data = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
@@ -762,18 +805,19 @@ namespace HaCreator.MapEditor {
 				// be warned when run under visual studio. it inherits VS's scaling and VS's window location
 				var p = PointToScreen(new System.Windows.Point(x, y));
 				foreach (var file in data) {
-					System.Drawing.Bitmap bmp;
+					Bitmap bmp;
 					try {
-						bmp = (System.Drawing.Bitmap) System.Drawing.Image.FromFile(file);
+						bmp = (Bitmap) System.Drawing.Image.FromFile(file);
 					} catch {
 						continue;
 					}
 
-					if (ImageDropped != null)
+					if (ImageDropped != null) {
 						ImageDropped.Invoke(selectedBoard, bmp, Path.GetFileNameWithoutExtension(file),
 							new Point(
 								PhysicalToVirtual((int) p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
 								PhysicalToVirtual((int) p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
+					}
 				}
 			}
 		}
@@ -789,8 +833,9 @@ namespace HaCreator.MapEditor {
 				UIElement sender) // Were not overriding OnMouseWheel anymore because it's better to override it in mainform
 		{
 			lock (this) {
-				if (!DeviceReady)
+				if (!DeviceReady) {
 					return false;
+				}
 
 				var newMousePoint = e.MouseDevice.GetPosition(sender);
 
@@ -800,12 +845,14 @@ namespace HaCreator.MapEditor {
 
 				_mousePoint = newMousePoint;
 
-				if (vScrollBar.Value - scrollValue < vScrollBar.Minimum)
+				if (vScrollBar.Value - scrollValue < vScrollBar.Minimum) {
 					vScrollBar.Value = vScrollBar.Minimum;
-				else if (vScrollBar.Value - scrollValue > vScrollBar.Maximum)
+				} else if (vScrollBar.Value - scrollValue > vScrollBar.Maximum) {
 					vScrollBar.Value = vScrollBar.Maximum;
-				else
+				} else {
 					vScrollBar.Value -= (int) scrollValue;
+				}
+
 				VScrollBar_Scroll(null, null);
 
 				return true;
@@ -865,8 +912,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="value"></param>
 		/// <returns>True if scrolling is possible</returns>
 		public bool AddHScrollbarValue(int value) {
-			if (hScrollBar.Value + value == hScrollBar.Value)
+			if (hScrollBar.Value + value == hScrollBar.Value) {
 				return false;
+			}
 
 			SetHScrollbarValue((int) (hScrollBar.Value + value));
 
@@ -891,8 +939,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="value"></param>
 		/// <returns>True if scrolling is possible</returns>
 		public bool AddVScrollbarValue(int value) {
-			if (vScrollBar.Value + value == hScrollBar.Value)
+			if (vScrollBar.Value + value == hScrollBar.Value) {
 				return false;
+			}
 
 			SetVScrollbarValue((int) (vScrollBar.Value + value));
 

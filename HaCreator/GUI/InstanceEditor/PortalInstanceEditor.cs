@@ -5,14 +5,14 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MapleLib.WzLib.WzStructure.Data;
-using System.Collections;
 using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
+using MapleLib.WzLib.WzStructure.Data;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
 
 namespace HaCreator.GUI.InstanceEditor {
@@ -24,12 +24,13 @@ namespace HaCreator.GUI.InstanceEditor {
 			InitializeComponent();
 			var portalTypes = Program.InfoManager.PortalTypeById.Count;
 			var portals = new ArrayList();
-			for (var i = 0; i < portalTypes; i++)
+			for (var i = 0; i < portalTypes; i++) {
 				try {
 					portals.Add(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[i]]);
 				} catch (KeyNotFoundException) {
 					continue;
 				}
+			}
 
 			ptComboBox.Items.AddRange(portals.ToArray());
 			this.item = item;
@@ -58,8 +59,12 @@ namespace HaCreator.GUI.InstanceEditor {
 			yInput.Value = item.Y;
 			ptComboBox.SelectedIndex = Program.InfoManager.PortalIdByType[item.pt];
 			pnBox.Text = item.pn;
-			if (item.tm == item.Board.MapInfo.id) thisMap.Checked = true;
-			else tmBox.Value = item.tm;
+			if (item.tm == item.Board.MapInfo.id) {
+				thisMap.Checked = true;
+			} else {
+				tmBox.Value = item.tm;
+			}
+
 			tnBox.Text = item.tn;
 			if (item.script != null) scriptBox.Text = item.script;
 			LoadOptionalInt(item.delay, delayBox, delayEnable, Defaults.Portal.Delay);
@@ -85,8 +90,9 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
 
 				item.pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
 
@@ -104,6 +110,7 @@ namespace HaCreator.GUI.InstanceEditor {
 				} else {
 					item.script = Defaults.Portal.Script;
 				}
+
 				switch (item.pt) {
 					case PortalType.StartPoint:
 						item.pn = "sp";
@@ -202,8 +209,9 @@ namespace HaCreator.GUI.InstanceEditor {
 
 				if (portalImageList.SelectedItem != null &&
 				    Program.InfoManager.GamePortals.ContainsKey(
-					    Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]))
+					    Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex])) {
 					item.image = (string) portalImageList.SelectedItem;
+				}
 			}
 
 			Close();
@@ -373,16 +381,18 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		private void portalImageList_SelectedIndexChanged(object sender, EventArgs e) {
 			lock (item.Board.ParentControl) {
-				if (portalImageList.SelectedItem == null)
+				if (portalImageList.SelectedItem == null) {
 					return;
-				else if ((string) portalImageList.SelectedItem == "default")
+				} else if ((string) portalImageList.SelectedItem == "default") {
 					return;
+				}
 				//portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]].DefaultImage);
-				else
+				else {
 					portalImageBox.Image =
 						new Bitmap(Program.InfoManager.GamePortals[
 							Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][
 							(string) portalImageList.SelectedItem]);
+				}
 			}
 		}
 
@@ -398,8 +408,9 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		private void btnBrowseTn_Click(object sender, EventArgs e) {
 			var tn = TnSelector.Show(item.Board);
-			if (tn != null)
+			if (tn != null) {
 				tnBox.Text = tn;
+			}
 		}
 	}
 

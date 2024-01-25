@@ -69,7 +69,7 @@ png_sig_cmp(png_const_bytep sig, png_size_t start, png_size_t num_to_check) {
 PNG_FUNCTION(voidpf /* PRIVATE */,
              png_zalloc, (voidpf png_ptr, uInt items, uInt size), PNG_ALLOCATED) {
 	png_voidp ptr;
-	png_structp p = (png_structp)png_ptr;
+	auto p = (png_structp)png_ptr;
 	png_uint_32 save_flags = p->flags;
 	png_alloc_size_t num_bytes;
 

@@ -4,15 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using System;
-using System.Drawing;
-using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.MapEditor.Info {
 	public class PortalInfo : MapleDrawableInfo {

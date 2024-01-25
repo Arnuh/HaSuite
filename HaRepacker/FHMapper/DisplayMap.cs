@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 
 namespace Footholds {
@@ -36,18 +35,25 @@ namespace Footholds {
 		}
 
 		private void DisplayMap_FormClosing(object sender, FormClosingEventArgs e) {
-			if (map != null)
+			if (map != null) {
 				map.Dispose();
+			}
 
-			if (MapPBox.Image != null)
+			if (MapPBox.Image != null) {
 				MapPBox.Image.Dispose();
+			}
 
-			if (MobSpawnPoints != null)
+			if (MobSpawnPoints != null) {
 				MobSpawnPoints.Clear();
-			if (Footholds != null)
+			}
+
+			if (Footholds != null) {
 				Footholds.Clear();
-			if (thePortals != null)
+			}
+
+			if (thePortals != null) {
 				thePortals.Clear();
+			}
 		}
 
 		private void DisplayMap_Load(object sender, EventArgs e) {
@@ -132,8 +138,9 @@ namespace Footholds {
 		}
 
 		private void DisplayMap_Resize(object sender, EventArgs e) {
-			if (WindowState == FormWindowState.Maximized)
+			if (WindowState == FormWindowState.Maximized) {
 				Size = MapPBox.Size;
+			}
 		}
 
 		private void DisplayMap_MouseMove(object sender, MouseEventArgs e) {

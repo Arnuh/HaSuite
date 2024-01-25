@@ -4,20 +4,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
 	public class
 		ToolTipInstance : MapleRectangle,
-			ISerializable // Renamed to ToolTipInstance to avoid ambiguity with System.Windows.Forms.ToolTip
+		ISerializable // Renamed to ToolTipInstance to avoid ambiguity with System.Windows.Forms.ToolTip
 	{
 		private string title;
 		private string desc;
@@ -62,10 +59,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
 			base.Draw(sprite, dotColor, xShift, yShift);
-			if (title != null)
+			if (title != null) {
 				Board.ParentControl.FontEngine.DrawString(sprite,
 					new System.Drawing.Point(X + xShift + 2, Y + yShift + 2), Microsoft.Xna.Framework.Color.Black,
 					title, Width);
+			}
 
 			if (desc != null) {
 				var titleHeight = (int) Math.Ceiling(Board.ParentControl.FontEngine.MeasureString(title).Height);
@@ -78,8 +76,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void RemoveItem(List<UndoRedoAction> undoPipe) {
 			lock (board.ParentControl) {
 				base.RemoveItem(undoPipe);
-				if (ttc != null)
+				if (ttc != null) {
 					ttc.RemoveItem(undoPipe);
+				}
 			}
 		}
 
@@ -102,8 +101,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems) {
 			var result = base.SelectSerialized(serializedItems);
-			if (ttc != null)
+			if (ttc != null) {
 				result.Add(ttc);
+			}
+
 			return result;
 		}
 

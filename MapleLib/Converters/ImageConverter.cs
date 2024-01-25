@@ -1,15 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MapleLib.Converters {
 	public static class ImageConverter {
@@ -85,8 +80,9 @@ namespace MapleLib.Converters {
 
 				return bytedata;
 			} finally {
-				if (bmpdata != null)
+				if (bmpdata != null) {
 					bitmap.UnlockBits(bmpdata);
+				}
 			}
 		}
 

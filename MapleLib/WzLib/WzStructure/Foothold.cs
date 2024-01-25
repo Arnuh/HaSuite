@@ -14,11 +14,6 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace MapleLib.WzLib.WzStructure {
 	public struct Foothold {
 		public int x1, x2, y1, y2;

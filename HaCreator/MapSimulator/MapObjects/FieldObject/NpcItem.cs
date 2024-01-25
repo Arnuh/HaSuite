@@ -1,10 +1,10 @@
-﻿using HaCreator.MapEditor.Instance;
+﻿using System.Collections.Generic;
+using HaCreator.MapEditor.Instance;
 using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System.Collections.Generic;
 
 namespace HaCreator.MapSimulator.Objects.FieldObject {
 	public class NpcItem : BaseDXDrawableItem {

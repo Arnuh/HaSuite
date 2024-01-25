@@ -55,8 +55,10 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
+
 				item.rx0Shift = (int) rx0Box.Value;
 				item.rx1Shift = (int) rx1Box.Value;
 				item.yShift = (int) yShiftBox.Value;

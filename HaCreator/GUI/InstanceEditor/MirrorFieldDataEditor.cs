@@ -30,11 +30,12 @@ namespace HaCreator.GUI.InstanceEditor {
 
 			comboBox_objectForOverlay.SelectedIndex = 0; // "mirror"
 			var i = 0;
-			foreach (string comboBoxItem in comboBox_objectForOverlay.Items)
+			foreach (string comboBoxItem in comboBox_objectForOverlay.Items) {
 				if (comboBoxItem == mirrorFieldData.ReflectionInfo.ObjectForOverlay) {
 					comboBox_objectForOverlay.SelectedIndex = i;
 					break;
 				}
+			}
 
 			//numericUpDown_xOffsetValue.Value = mirrorFieldData.
 
@@ -127,9 +128,11 @@ namespace HaCreator.GUI.InstanceEditor {
 				foreach (var control in (Control[]) cbx.Tag)
 					control.Enabled = featureActivated;
 
-				foreach (var control in (Control[]) cbx.Tag)
-					if (control is CheckBox)
+				foreach (var control in (Control[]) cbx.Tag) {
+					if (control is CheckBox) {
 						enablingCheckBox_CheckChanged(control, e);
+					}
+				}
 			}
 		}
 
@@ -139,8 +142,9 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void trackBar_gradient_ValueChanged(object sender, EventArgs e) {
-			if (_mirrorFieldData == null || label_gradient == null)
+			if (_mirrorFieldData == null || label_gradient == null) {
 				return;
+			}
 
 			label_gradient.Text = _mirrorFieldData.ReflectionInfo.Gradient.ToString();
 		}
@@ -151,8 +155,9 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void trackBar_alpha_ValueChanged(object sender, EventArgs e) {
-			if (_mirrorFieldData == null || label_alphaValue == null)
+			if (_mirrorFieldData == null || label_alphaValue == null) {
 				return;
+			}
 
 			label_alphaValue.Text = _mirrorFieldData.ReflectionInfo.Alpha.ToString();
 		}

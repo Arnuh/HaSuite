@@ -21,16 +21,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using MapleLib.WzLib.WzProperties;
-using Spine;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static MapleLib.WzDataReader;
+using MapleLib.WzLib.WzProperties;
+using Spine;
 
 namespace MapleLib.WzLib.Spine {
 	public class WzSpineAtlasLoader {
@@ -72,10 +67,11 @@ namespace MapleLib.WzLib.Spine {
 			var parent = atlasNode.Parent;
 
 			List<WzImageProperty> childProperties;
-			if (parent is WzImageProperty)
+			if (parent is WzImageProperty) {
 				childProperties = ((WzImageProperty) parent).WzProperties;
-			else
+			} else {
 				childProperties = ((WzImage) parent).WzProperties;
+			}
 
 
 			if (childProperties != null) {
@@ -94,12 +90,13 @@ namespace MapleLib.WzLib.Spine {
 					foreach (var property in childProperties) {
 						var linkedProperty = property.GetLinkedWzImageProperty();
 
-						if (linkedProperty is WzBinaryProperty soundProp)
+						if (linkedProperty is WzBinaryProperty soundProp) {
 							using (var ms = new MemoryStream(soundProp.GetBytes(false))) {
 								var skeletonBinary = new SkeletonBinary(atlas);
 								data = skeletonBinary.ReadSkeletonData(ms);
 								return true;
 							}
+						}
 					}
 				}
 			}

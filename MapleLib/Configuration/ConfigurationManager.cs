@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System;
+using System.IO;
 using MapleLib.MapleCryptoLib;
 using MapleLib.PacketLib;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Text;
 
 namespace MapleLib.Configuration {
 	public class ConfigurationManager {
@@ -59,8 +58,10 @@ namespace MapleLib.Configuration {
 		public static string GetLocalFolderPath() {
 			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var our_folder = Path.Combine(appdata, configPipeName);
-			if (!Directory.Exists(our_folder))
+			if (!Directory.Exists(our_folder)) {
 				Directory.CreateDirectory(our_folder);
+			}
+
 			return our_folder;
 		}
 
@@ -149,8 +150,9 @@ namespace MapleLib.Configuration {
 			// Set the UserKey in memory.
 			MapleCryptoConstants.UserKey_WzLib = new byte[128];
 			var bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
-			if (bytes.Length == 0)
+			if (bytes.Length == 0) {
 				return;
+			}
 
 			MapleCryptoConstants.UserKey_WzLib = new byte[MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.Length];
 			for (var i = 0; i < MapleCryptoConstants.UserKey_WzLib.Length; i += 4) {

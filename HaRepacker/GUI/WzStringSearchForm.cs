@@ -20,11 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using MapleLib.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
+using MapleLib.Helpers;
 
 namespace HaRepacker.GUI {
 	public partial class WzStringSearchForm : Form {
@@ -95,28 +94,35 @@ namespace HaRepacker.GUI {
 		private void textBox_itemidFind_TextChanged(object sender, EventArgs e) {
 			var query = textBox_itemidFind.Text;
 			if (query.Length <= 2 && query != string.Empty) // if its string empty, include everything..
+			{
 				return;
+			}
 
 			HexJumpList.Clear();
 			comboBox_hexlist.Items.Clear();
 
 			// Items
-			if (checkBox_searcheq.Checked)
+			if (checkBox_searcheq.Checked) {
 				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Eqp, query, HexJumpList);
+			}
 
-			if (checkBox_searchuse.Checked)
+			if (checkBox_searchuse.Checked) {
 				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Use, query, HexJumpList);
+			}
 
-			if (checkBox_searchsetup.Checked)
+			if (checkBox_searchsetup.Checked) {
 				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Setup, query,
 					HexJumpList);
+			}
 
-			if (checkBox_searchetc.Checked)
+			if (checkBox_searchetc.Checked) {
 				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Etc, query, HexJumpList);
+			}
 
-			if (checkBox_searchcash.Checked)
+			if (checkBox_searchcash.Checked) {
 				WzDataCache.LookupItemNameDesc(WzStringSearchFormDataCache.WzDataCacheItemType.Cash, query,
 					HexJumpList);
+			}
 
 			// Quests
 			if (checkBox_searchquest.Checked) WzDataCache.LookupQuest(query, HexJumpList);

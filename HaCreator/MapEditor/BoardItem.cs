@@ -4,21 +4,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
-using XNA = Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaCreator.Exceptions;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor {
 	public abstract class BoardItem : ISerializableSelector {
@@ -57,10 +53,12 @@ namespace HaCreator.MapEditor {
 
 				if (undoPipe != null) undoPipe.Add(UndoRedoManager.ItemAdded(this));
 
-				if (parent != null)
-					if (!(parent is Mouse) && undoPipe != null)
+				if (parent != null) {
+					if (!(parent is Mouse) && undoPipe != null) {
 						undoPipe.Add(UndoRedoManager.ItemsLinked(parent, this,
 							(Microsoft.Xna.Framework.Point) parent.boundItems[this]));
+					}
+				}
 			}
 		}
 
@@ -73,9 +71,10 @@ namespace HaCreator.MapEditor {
 				if (undoPipe != null) undoPipe.Add(UndoRedoManager.ItemDeleted(this));
 
 				if (parent != null) {
-					if (!(parent is Mouse) && undoPipe != null)
+					if (!(parent is Mouse) && undoPipe != null) {
 						undoPipe.Add(UndoRedoManager.ItemsUnlinked(parent, this,
 							(Microsoft.Xna.Framework.Point) parent.boundItems[this]));
+					}
 
 					parent.ReleaseItem(this);
 				}
@@ -114,11 +113,14 @@ namespace HaCreator.MapEditor {
 					item.Move(value.X + x, value.Y + y);
 				}
 
-				if (parent != null && !(parent is Mouse))
+				if (parent != null && !(parent is Mouse)) {
 					parent.boundItems[this] = new XNA.Point(X - parent.X, Y - parent.Y);
+				}
 
 				if (tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
+				{
 					tempParent.boundItems[this] = new XNA.Point(X - tempParent.X, Y - tempParent.Y);
+				}
 			}
 		}
 
@@ -133,13 +135,16 @@ namespace HaCreator.MapEditor {
 				}
 
 				if (tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
+				{
 					tempParent.boundItems[this] = new XNA.Point(X - tempParent.X, Y - tempParent.Y);
+				}
 			}
 		}
 
 		public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			if (ApplicationSettings.InfoMode)
+			if (ApplicationSettings.InfoMode) {
 				Board.ParentControl.DrawDot(sprite, X + xShift, Y + yShift, UserSettings.OriginColor, 1);
+			}
 		}
 
 		public virtual bool CheckIfLayerSelected(SelectionInfo sel) {
@@ -148,16 +153,20 @@ namespace HaCreator.MapEditor {
 		}
 
 		public virtual XNA.Color GetColor(SelectionInfo sel, bool selected) {
-			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel))
+			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel)) {
 				return selected ? UserSettings.SelectedColor : XNA.Color.White;
-			else return MultiBoard.InactiveColor;
+			} else {
+				return MultiBoard.InactiveColor;
+			}
 		}
 
 		public virtual bool IsPixelTransparent(int x, int y) {
 			lock (Board.ParentControl) {
 				var image = Image;
-				if (this is IFlippable && ((IFlippable) this).Flip)
+				if (this is IFlippable && ((IFlippable) this).Flip) {
 					x = image.Width - x;
+				}
+
 				return image.GetPixel(x, y).A == 0;
 			}
 		}
@@ -165,9 +174,13 @@ namespace HaCreator.MapEditor {
 		public bool BoundToSelectedItem(Board board) {
 			lock (Board.ParentControl) {
 				var currItem = Parent;
-				while (currItem != null)
-					if (board.SelectedItems.Contains(currItem)) return true;
-					else currItem = currItem.Parent;
+				while (currItem != null) {
+					if (board.SelectedItems.Contains(currItem)) {
+						return true;
+					} else {
+						currItem = currItem.Parent;
+					}
+				}
 			}
 
 			return false;
@@ -182,8 +195,10 @@ namespace HaCreator.MapEditor {
 			// Move all selected items accordingly
 			foreach (var binding in Board.Mouse.BoundItems) {
 				var item = binding.Key;
-				if (item.tempParent != null || item.Parent == null)
+				if (item.tempParent != null || item.Parent == null) {
 					continue;
+				}
+
 				var currParentOffs = binding.Value;
 				item.SnapMove(item.Parent.X + currParentOffs.X - snapOffs.X,
 					item.Parent.Y + currParentOffs.Y - snapOffs.Y);
@@ -233,14 +248,17 @@ namespace HaCreator.MapEditor {
 				lock (Board.ParentControl) {
 					if (selected == value) return;
 					selected = value;
-					if (value && !board.SelectedItems.Contains(this))
+					if (value && !board.SelectedItems.Contains(this)) {
 						board.SelectedItems.Add(this);
-					else if (!value && board.SelectedItems.Contains(this))
+					} else if (!value && board.SelectedItems.Contains(this)) {
 						board.SelectedItems.Remove(this);
-					if (board.SelectedItems.Count == 1)
+					}
+
+					if (board.SelectedItems.Count == 1) {
 						board.ParentControl.OnSelectedItemChanged(board.SelectedItems[0]);
-					else if (board.SelectedItems.Count == 0)
+					} else if (board.SelectedItems.Count == 0) {
 						board.ParentControl.OnSelectedItemChanged(null);
+					}
 				}
 			}
 		}
@@ -290,14 +308,19 @@ namespace HaCreator.MapEditor {
 			var bindOrder = new List<long>();
 			foreach (var item in boundItemsList) {
 				if (!(item is ISerializable)) // We should only have bound ISerializables (specifically, chairs and foothold anchors)
+				{
 					throw new SerializationException("Bound item is not ISerializable");
+				}
+
 				var refNum = refDict[(ISerializable) item];
 				result.Add(refNum.ToString(), SerializationManager.SerializePoint(boundItems[item]));
 				bindOrder.Add(refNum);
 			}
 
-			if (bindOrder.Count > 0)
+			if (bindOrder.Count > 0) {
 				result.Add("bindOrder", bindOrder.ToArray());
+			}
+
 			return result;
 		}
 
@@ -308,8 +331,10 @@ namespace HaCreator.MapEditor {
 
 		public virtual void DeserializeBindings(IDictionary<string, object> bindSer,
 			Dictionary<long, ISerializable> refDict) {
-			if (!bindSer.ContainsKey("bindOrder"))
+			if (!bindSer.ContainsKey("bindOrder")) {
 				return; // No bindings were serialized
+			}
+
 			var bindOrder = ((object[]) bindSer["bindOrder"]).Cast<long>().ToArray();
 			foreach (var id in bindOrder) {
 				var item = (BoardItem) refDict[id];

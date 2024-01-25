@@ -1,13 +1,8 @@
-﻿using MapleLib.WzLib.Spine;
+﻿using System.Runtime.CompilerServices;
+using MapleLib.WzLib.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaSharedLibrary.Render.DX {
 	public class DXSpineObject : IDXObject {

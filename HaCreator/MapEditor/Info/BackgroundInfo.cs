@@ -4,9 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Drawing;
+using System.Linq;
 using HaCreator.MapEditor.Instance;
 using HaCreator.Properties;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
@@ -14,9 +15,6 @@ using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Drawing;
-using System.Linq;
 
 namespace HaCreator.MapEditor.Info {
 	public class BackgroundInfo : MapleDrawableInfo {
@@ -58,8 +56,9 @@ namespace HaCreator.MapEditor.Info {
 		/// <param name="no"></param>
 		/// <returns></returns>
 		public static BackgroundInfo Get(GraphicsDevice graphicsDevice, string bS, BackgroundInfoType type, string no) {
-			if (!Program.InfoManager.BackgroundSets.ContainsKey(bS))
+			if (!Program.InfoManager.BackgroundSets.ContainsKey(bS)) {
 				return null;
+			}
 
 			var bsImg = Program.InfoManager.BackgroundSets[bS];
 			var bgInfoProp =
@@ -74,8 +73,9 @@ namespace HaCreator.MapEditor.Info {
 			}
 
 			if (type == BackgroundInfoType.Spine) {
-				if (bgInfoProp.HCTagSpine == null)
+				if (bgInfoProp.HCTagSpine == null) {
 					bgInfoProp.HCTagSpine = Load(graphicsDevice, bgInfoProp, bS, type, no);
+				}
 
 				return (BackgroundInfo) bgInfoProp.HCTagSpine;
 			} else {
@@ -182,9 +182,10 @@ namespace HaCreator.MapEditor.Info {
 			if (!string.IsNullOrEmpty(spineAni)) // if one isnt set already, via pre-existing object in map. It probably means its created via BackgroundPanel
 				// attempt to get one
 			{
-				if (wzSpineAnimationItem != null && wzSpineAnimationItem.SkeletonData.Animations.Count > 0)
+				if (wzSpineAnimationItem != null && wzSpineAnimationItem.SkeletonData.Animations.Count > 0) {
 					spineAni = wzSpineAnimationItem.SkeletonData.Animations[0]
 						.Name; // actually we should allow the user to select, but nexon only places 1 animation for now
+				}
 			}
 
 			return new BackgroundInstance(this, board, x, y, z, rx, ry, cx, cy, type, a, front, flip, screenMode,

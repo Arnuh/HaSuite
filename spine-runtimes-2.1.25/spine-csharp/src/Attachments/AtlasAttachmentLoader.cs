@@ -41,8 +41,10 @@ namespace Spine {
 
 		public RegionAttachment NewRegionAttachment(Skin skin, string name, string path) {
 			var region = FindRegion(path);
-			if (region == null)
+			if (region == null) {
 				throw new Exception("Region not found in atlas: " + path + " (region attachment: " + name + ")");
+			}
+
 			var attachment = new RegionAttachment(name);
 			attachment.RendererObject = region;
 			attachment.SetUVs(region.u, region.v, region.u2, region.v2, region.rotate);
@@ -57,8 +59,10 @@ namespace Spine {
 
 		public MeshAttachment NewMeshAttachment(Skin skin, string name, string path) {
 			var region = FindRegion(path);
-			if (region == null)
+			if (region == null) {
 				throw new Exception("Region not found in atlas: " + path + " (mesh attachment: " + name + ")");
+			}
+
 			var attachment = new MeshAttachment(name);
 			attachment.RendererObject = region;
 			attachment.RegionU = region.u;
@@ -77,8 +81,10 @@ namespace Spine {
 
 		public SkinnedMeshAttachment NewSkinnedMeshAttachment(Skin skin, string name, string path) {
 			var region = FindRegion(path);
-			if (region == null)
+			if (region == null) {
 				throw new Exception("Region not found in atlas: " + path + " (skinned mesh attachment: " + name + ")");
+			}
+
 			var attachment = new SkinnedMeshAttachment(name);
 			attachment.RendererObject = region;
 			attachment.RegionU = region.u;
@@ -104,8 +110,9 @@ namespace Spine {
 
 			for (var i = 0; i < atlasArray.Length; i++) {
 				region = atlasArray[i].FindRegion(name);
-				if (region != null)
+				if (region != null) {
 					return region;
+				}
 			}
 
 			return null;

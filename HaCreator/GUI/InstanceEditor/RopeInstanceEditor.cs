@@ -6,12 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
@@ -26,10 +20,11 @@ namespace HaCreator.GUI.InstanceEditor {
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
 			ufBox.Checked = item.ParentRope.uf;
-			if (item.ParentRope.ladder)
+			if (item.ParentRope.ladder) {
 				ladderBox.Checked = true;
-			else
+			} else {
 				ladderBox.Checked = false;
+			}
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
 		}
@@ -47,8 +42,10 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
+
 				item.ParentRope.uf = ufBox.Checked;
 				if (item.ParentRope.ladder != ladderBox.Checked) {
 					item.ParentRope.OnUserTouchedLadder();

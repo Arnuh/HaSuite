@@ -6,11 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
@@ -50,8 +45,9 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
 
 				item.Title = useTitleBox.Checked ? titleBox.Text : null;
 				item.Desc = useDescBox.Checked ? descBox.Text : null;

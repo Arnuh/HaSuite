@@ -4,10 +4,9 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using MapleLib.WzLib;
 using System;
-using System.Drawing;
 using System.Windows.Forms;
+using MapleLib.WzLib;
 
 namespace HaRepacker.GUI.Interaction {
 	public partial class WzMapleVersionInputBox : Form {
@@ -15,10 +14,11 @@ namespace HaRepacker.GUI.Interaction {
 			var form = new WzMapleVersionInputBox(title);
 			var result = form.ShowDialog() == DialogResult.OK;
 
-			if (result)
+			if (result) {
 				MapleVersionEncryptionSelected = (WzMapleVersion) form.comboBox_wzEncryptionType.SelectedIndex;
-			else
+			} else {
 				MapleVersionEncryptionSelected = WzMapleVersion.BMS; // default
+			}
 
 			return result;
 		}
@@ -37,16 +37,18 @@ namespace HaRepacker.GUI.Interaction {
 		}
 
 		private void keyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) 13)
+			if (e.KeyChar == (char) 13) {
 				okButton_Click(null, null);
+			}
 		}
 
 		private void okButton_Click(object sender, EventArgs e) {
-			if (comboBox_wzEncryptionType.SelectedIndex == -1)
+			if (comboBox_wzEncryptionType.SelectedIndex == -1) {
 				MessageBox.Show(Properties.Resources.EnterValidInput,
 					Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-			else
+			} else {
 				DialogResult = DialogResult.OK;
+			}
 		}
 
 		private void cancelButton_Click(object sender, EventArgs e) {

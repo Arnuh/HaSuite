@@ -4,12 +4,6 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace HaCreator.Collections {
 	public abstract class ItemsEnumeratorBase {
 		private BoardItemsManager parent;
@@ -35,8 +29,9 @@ namespace HaCreator.Collections {
 					currListIndex++;
 					if (currListIndex == parent.AllItemLists.Length) return false;
 					currList = parent.AllItemLists[currListIndex];
-					if (currList.IsItem != items)
+					if (currList.IsItem != items) {
 						goto replaceList;
+					}
 				} while (currList.Count == 0);
 			}
 

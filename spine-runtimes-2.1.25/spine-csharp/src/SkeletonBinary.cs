@@ -29,9 +29,8 @@
  *****************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.IO;
 #if WINDOWS_STOREAPP
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -317,12 +316,13 @@ namespace Spine {
 		private float[] ReadFloatArray(Stream input, float scale) {
 			var n = ReadInt(input, true);
 			var array = new float[n];
-			if (scale == 1)
+			if (scale == 1) {
 				for (var i = 0; i < n; i++)
 					array[i] = ReadFloat(input);
-			else
+			} else {
 				for (var i = 0; i < n; i++)
 					array[i] = ReadFloat(input) * scale;
+			}
 
 			return array;
 		}
@@ -476,27 +476,30 @@ namespace Spine {
 
 							float[] vertices;
 							int vertexCount;
-							if (attachment is MeshAttachment)
+							if (attachment is MeshAttachment) {
 								vertexCount = ((MeshAttachment) attachment).vertices.Length;
-							else
+							} else {
 								vertexCount = ((SkinnedMeshAttachment) attachment).weights.Length / 3 * 2;
+							}
 
 							var end = ReadInt(input, true);
 							if (end == 0) {
-								if (attachment is MeshAttachment)
+								if (attachment is MeshAttachment) {
 									vertices = ((MeshAttachment) attachment).vertices;
-								else
+								} else {
 									vertices = new float[vertexCount];
+								}
 							} else {
 								vertices = new float[vertexCount];
 								var start = ReadInt(input, true);
 								end += start;
-								if (scale == 1)
+								if (scale == 1) {
 									for (var v = start; v < end; v++)
 										vertices[v] = ReadFloat(input);
-								else
+								} else {
 									for (var v = start; v < end; v++)
 										vertices[v] = ReadFloat(input) * scale;
+								}
 
 								if (attachment is MeshAttachment) {
 									var meshVertices = ((MeshAttachment) attachment).vertices;
@@ -540,9 +543,12 @@ namespace Spine {
 					while (originalIndex < slotCount)
 						unchanged[unchangedIndex++] = originalIndex++;
 					// Fill in unchanged items.
-					for (var ii = slotCount - 1; ii >= 0; ii--)
-						if (drawOrder[ii] == -1)
+					for (var ii = slotCount - 1; ii >= 0; ii--) {
+						if (drawOrder[ii] == -1) {
 							drawOrder[ii] = unchanged[--unchangedIndex];
+						}
+					}
+
 					timeline.SetFrame(i, ReadFloat(input), drawOrder);
 				}
 

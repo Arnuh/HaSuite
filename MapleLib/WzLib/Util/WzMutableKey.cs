@@ -18,7 +18,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using MapleLib.MapleCryptoLib;
 
 namespace MapleLib.WzLib.Util {
 	public class WzMutableKey {
@@ -72,7 +71,7 @@ namespace MapleLib.WzLib.Util {
 			var ms = new MemoryStream(newKeys, startIndex, newKeys.Length - startIndex, true);
 			var s = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
 
-			for (var i = startIndex; i < size; i += 16)
+			for (var i = startIndex; i < size; i += 16) {
 				if (i == 0) {
 					var block = new byte[16];
 					for (var j = 0; j < block.Length; j++) block[j] = IV[j % 4];
@@ -81,6 +80,7 @@ namespace MapleLib.WzLib.Util {
 				} else {
 					s.Write(newKeys, i - 16, 16);
 				}
+			}
 
 			s.Flush();
 			ms.Close();

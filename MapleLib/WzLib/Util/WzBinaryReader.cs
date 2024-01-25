@@ -51,8 +51,9 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public void RollbackStreamPosition(int byOffset) {
-			if (BaseStream.Position < byOffset)
+			if (BaseStream.Position < byOffset) {
 				throw new Exception("Cant rollback stream position below 0");
+			}
 
 			BaseStream.Position -= byOffset;
 		}
@@ -81,10 +82,11 @@ namespace MapleLib.WzLib.Util {
 			if (smallLength > 0) // Unicode
 			{
 				ushort mask = 0xAAAA;
-				if (smallLength == sbyte.MaxValue)
+				if (smallLength == sbyte.MaxValue) {
 					length = ReadInt32();
-				else
+				} else {
 					length = (int) smallLength;
+				}
 
 				if (length <= 0) return string.Empty;
 
@@ -97,10 +99,11 @@ namespace MapleLib.WzLib.Util {
 				}
 			} else { // ASCII
 				byte mask = 0xAA;
-				if (smallLength == sbyte.MinValue)
+				if (smallLength == sbyte.MinValue) {
 					length = ReadInt32();
-				else
+				} else {
 					length = (int) -smallLength;
+				}
 
 				if (length <= 0) return string.Empty;
 

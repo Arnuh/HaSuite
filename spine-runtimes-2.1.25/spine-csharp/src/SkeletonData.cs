@@ -118,9 +118,12 @@ namespace Spine {
 		public int FindBoneIndex(string boneName) {
 			if (boneName == null) throw new ArgumentNullException("boneName cannot be null.");
 			var bones = this.bones;
-			for (int i = 0, n = bones.Count; i < n; i++)
-				if (bones[i].name == boneName)
+			for (int i = 0, n = bones.Count; i < n; i++) {
+				if (bones[i].name == boneName) {
 					return i;
+				}
+			}
+
 			return -1;
 		}
 
@@ -142,9 +145,12 @@ namespace Spine {
 		public int FindSlotIndex(string slotName) {
 			if (slotName == null) throw new ArgumentNullException("slotName cannot be null.");
 			var slots = this.slots;
-			for (int i = 0, n = slots.Count; i < n; i++)
-				if (slots[i].name == slotName)
+			for (int i = 0, n = slots.Count; i < n; i++) {
+				if (slots[i].name == slotName) {
 					return i;
+				}
+			}
+
 			return -1;
 		}
 
@@ -153,9 +159,12 @@ namespace Spine {
 		/// <returns>May be null.</returns>
 		public Skin FindSkin(string skinName) {
 			if (skinName == null) throw new ArgumentNullException("skinName cannot be null.");
-			foreach (var skin in skins)
-				if (skin.name == skinName)
+			foreach (var skin in skins) {
+				if (skin.name == skinName) {
 					return skin;
+				}
+			}
+
 			return null;
 		}
 
@@ -164,9 +173,12 @@ namespace Spine {
 		/// <returns>May be null.</returns>
 		public EventData FindEvent(string eventDataName) {
 			if (eventDataName == null) throw new ArgumentNullException("eventDataName cannot be null.");
-			foreach (var eventData in events)
-				if (eventData.name == eventDataName)
+			foreach (var eventData in events) {
+				if (eventData.name == eventDataName) {
 					return eventData;
+				}
+			}
+
 			return null;
 		}
 

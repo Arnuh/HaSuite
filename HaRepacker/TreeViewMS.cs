@@ -2,9 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -109,7 +107,9 @@ namespace HaRepacker {
 						var n = bottomnode;
 						while (n != uppernode.Parent) {
 							if (!m_coll.Contains(n)) // new node ?
+							{
 								myQueue.Enqueue(n);
+							}
 
 							n = n.Parent;
 						}
@@ -134,7 +134,9 @@ namespace HaRepacker {
 							var n = uppernode;
 							while (nIndexUpper <= nIndexBottom) {
 								if (!m_coll.Contains(n)) // new node ?
+								{
 									myQueue.Enqueue(n);
+								}
 
 								n = n.NextNode;
 
@@ -172,8 +174,9 @@ namespace HaRepacker {
 
 
 		protected bool isParent(TreeNode parentNode, TreeNode childNode) {
-			if (parentNode == childNode)
+			if (parentNode == childNode) {
 				return true;
+			}
 
 			var n = childNode;
 			var bFound = false;
@@ -205,10 +208,11 @@ namespace HaRepacker {
 				n.BackColor = back;
 
 				var node = (WzNode) n;
-				if (node.IsWzObjectAddedManually)
+				if (node.IsWzObjectAddedManually) {
 					n.ForeColor = WzNode.NewObjectForeColor;
-				else
+				} else {
 					n.ForeColor = fore;
+				}
 			}
 		}
 

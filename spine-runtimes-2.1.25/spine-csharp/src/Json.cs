@@ -30,9 +30,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Globalization;
 
 namespace Spine {
 	// Example usage:
@@ -130,7 +130,7 @@ namespace Spine {
 				json.Read();
 
 				// {
-				while (true)
+				while (true) {
 					switch (NextToken) {
 						case TOKEN.NONE:
 							return null;
@@ -153,6 +153,7 @@ namespace Spine {
 							table[name] = ParseValue();
 							break;
 					}
+				}
 			}
 
 			private List<object> ParseArray() {
@@ -394,20 +395,21 @@ namespace Spine {
 				IDictionary asDict;
 				string asStr;
 
-				if (value == null)
+				if (value == null) {
 					builder.Append("null");
-				else if ((asStr = value as string) != null)
+				} else if ((asStr = value as string) != null) {
 					SerializeString(asStr);
-				else if (value is bool)
+				} else if (value is bool) {
 					builder.Append(value.ToString().ToLower());
-				else if ((asList = value as IList) != null)
+				} else if ((asList = value as IList) != null) {
 					SerializeArray(asList);
-				else if ((asDict = value as IDictionary) != null)
+				} else if ((asDict = value as IDictionary) != null) {
 					SerializeObject(asDict);
-				else if (value is char)
+				} else if (value is char) {
 					SerializeString(value.ToString());
-				else
+				} else {
 					SerializeOther(value);
+				}
 			}
 
 			private void SerializeObject(IDictionary obj) {
@@ -449,7 +451,7 @@ namespace Spine {
 				builder.Append('\"');
 
 				var charArray = str.ToCharArray();
-				foreach (var c in charArray)
+				foreach (var c in charArray) {
 					switch (c) {
 						case '"':
 							builder.Append("\\\"");
@@ -474,13 +476,15 @@ namespace Spine {
 							break;
 						default:
 							var codepoint = Convert.ToInt32(c);
-							if (codepoint >= 32 && codepoint <= 126)
+							if (codepoint >= 32 && codepoint <= 126) {
 								builder.Append(c);
-							else
+							} else {
 								builder.Append("\\u" + Convert.ToString(codepoint, 16).PadLeft(4, '0'));
+							}
 
 							break;
 					}
+				}
 
 				builder.Append('\"');
 			}
@@ -496,10 +500,11 @@ namespace Spine {
 				    || value is short
 				    || value is ushort
 				    || value is ulong
-				    || value is decimal)
+				    || value is decimal) {
 					builder.Append(value.ToString());
-				else
+				} else {
 					SerializeString(value.ToString());
+				}
 			}
 		}
 	}

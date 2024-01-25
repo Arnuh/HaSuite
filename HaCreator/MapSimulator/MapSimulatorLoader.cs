@@ -1,30 +1,26 @@
-﻿using HaCreator.MapEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapSimulator.MapObjects.UIObject;
-using HaCreator.MapSimulator.Objects;
 using HaCreator.MapSimulator.Objects.FieldObject;
 using HaCreator.MapSimulator.Objects.UIObject;
-using HaCreator.Wz;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
+using HaSharedLibrary.Wz;
+using MapleLib.Converters;
+using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using MapleLib.Converters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using HaSharedLibrary.Wz;
-using MapleLib.Helpers;
-using SharpDX.Direct2D1.Effects;
 
 namespace HaCreator.MapSimulator {
 	public class MapSimulatorLoader {
@@ -37,8 +33,9 @@ namespace HaCreator.MapSimulator {
 		/// <param name="titleName"></param>
 		/// <returns></returns>
 		public static MapSimulator CreateAndShowMapSimulator(Board mapBoard, string titleName) {
-			if (mapBoard.MiniMap == null)
+			if (mapBoard.MiniMap == null) {
 				mapBoard.RegenerateMinimap();
+			}
 
 			MapSimulator mapSimulator = null;
 
@@ -73,8 +70,9 @@ namespace HaCreator.MapSimulator {
 
 			source = WzInfoTools.GetRealProperty(source);
 
-			if (source is WzSubProperty property1 && property1.WzProperties.Count == 1)
+			if (source is WzSubProperty property1 && property1.WzProperties.Count == 1) {
 				source = property1.WzProperties[0];
+			}
 
 			if (source is WzCanvasProperty property) //one-frame
 			{
@@ -116,7 +114,7 @@ namespace HaCreator.MapSimulator {
 				WzImageProperty _frameProp;
 				var i = 0;
 
-				while ((_frameProp = WzInfoTools.GetRealProperty(source[(i++).ToString()])) != null)
+				while ((_frameProp = WzInfoTools.GetRealProperty(source[(i++).ToString()])) != null) {
 					if (_frameProp is WzSubProperty) // issue with 867119250
 					{
 						frames.AddRange(LoadFrames(texturePool, _frameProp, x, y, device, ref usedProps, null));
@@ -126,10 +124,11 @@ namespace HaCreator.MapSimulator {
 						if (_frameProp is WzUOLProperty) // some could be UOL. Ex: 321100000 Mirror world: [Mirror World] Leafre
 						{
 							var linkVal = ((WzUOLProperty) _frameProp).LinkValue;
-							if (linkVal is WzCanvasProperty linkCanvas)
+							if (linkVal is WzCanvasProperty linkCanvas) {
 								frameProp = linkCanvas;
-							else
+							} else {
 								continue;
+							}
 						} else {
 							frameProp = (WzCanvasProperty) _frameProp;
 						}
@@ -138,7 +137,7 @@ namespace HaCreator.MapSimulator {
 
 						var bLoadedSpine = LoadSpineMapObjectItem((WzImageProperty) frameProp.Parent, frameProp,
 							device, spineAni);
-						if (!bLoadedSpine)
+						if (!bLoadedSpine) {
 							if (frameProp.MSTag == null) {
 								var canvasBitmapPath = frameProp.FullPath;
 								var textureFromCache = texturePool.GetTexture(canvasBitmapPath);
@@ -151,6 +150,7 @@ namespace HaCreator.MapSimulator {
 									texturePool.AddTextureToPool(canvasBitmapPath, (Texture2D) frameProp.MSTag);
 								}
 							}
+						}
 
 						usedProps.Add(frameProp);
 
@@ -171,6 +171,7 @@ namespace HaCreator.MapSimulator {
 							frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture, delay));
 						}
 					}
+				}
 			}
 
 			return frames;
@@ -220,9 +221,10 @@ namespace HaCreator.MapSimulator {
 				return null;
 			}
 
-			if (frames.Count == 1)
+			if (frames.Count == 1) {
 				return new BackgroundItem(bgInstance.cx, bgInstance.cy, bgInstance.rx, bgInstance.ry, bgInstance.type,
 					bgInstance.a, bgInstance.front, frames[0], flip, bgInstance.screenMode);
+			}
 
 			return new BackgroundItem(bgInstance.cx, bgInstance.cy, bgInstance.rx, bgInstance.ry, bgInstance.type,
 				bgInstance.a, bgInstance.front, frames, flip, bgInstance.screenMode);
@@ -260,10 +262,11 @@ namespace HaCreator.MapSimulator {
 				}
 			}
 
-			if (spineAtlas != null)
+			if (spineAtlas != null) {
 				if (spineAtlas is WzStringProperty stringObj) {
-					if (!stringObj.IsSpineAtlasResources)
+					if (!stringObj.IsSpineAtlasResources) {
 						return false;
+					}
 
 					var spineObject = new WzSpineObject(new WzSpineAnimationItem(stringObj));
 
@@ -284,8 +287,9 @@ namespace HaCreator.MapSimulator {
 					// Define mixing between animations.
 					spineObject.stateData = new AnimationStateData(spineObject.skeleton.Data);
 					spineObject.state = new AnimationState(spineObject.stateData);
-					if (!bIsObjectLayer)
+					if (!bIsObjectLayer) {
 						spineObject.state.TimeScale = 0.1f;
+					}
 
 					if (spineAniPath != null) {
 						spineObject.state.SetAnimation(0, spineAniPath, true);
@@ -298,6 +302,7 @@ namespace HaCreator.MapSimulator {
 					prop.MSTagSpine = spineObject;
 					return true;
 				}
+			}
 
 			return false;
 		}
@@ -323,15 +328,18 @@ namespace HaCreator.MapSimulator {
 			var linkedReactorImage = reactorInfo.LinkedWzImage;
 			if (linkedReactorImage != null) {
 				var framesImage = (WzImageProperty) linkedReactorImage?["0"]?["0"];
-				if (framesImage != null)
+				if (framesImage != null) {
 					frames = LoadFrames(texturePool, framesImage, reactorInstance.X, reactorInstance.Y, device,
 						ref usedProps);
+				}
 			}
 
 			if (frames.Count == 0)
 				//string error = string.Format("[MapSimulatorLoader] 0 frames loaded for reactor from src: '{0}'",  reactorInfo.ID);
 				//ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
+			{
 				return null;
+			}
 
 			return new ReactorItem(reactorInstance, frames);
 		}
@@ -391,19 +399,23 @@ namespace HaCreator.MapSimulator {
 
 				if (portalImageProperty != null) {
 					WzSubProperty framesPropertyParent;
-					if (portalImageProperty["portalContinue"] != null)
+					if (portalImageProperty["portalContinue"] != null) {
 						framesPropertyParent = (WzSubProperty) portalImageProperty["portalContinue"];
-					else
+					} else {
 						framesPropertyParent = (WzSubProperty) portalImageProperty;
+					}
 
-					if (framesPropertyParent != null)
+					if (framesPropertyParent != null) {
 						frames.AddRange(LoadFrames(texturePool, framesPropertyParent, portalInstance.X,
 							portalInstance.Y, device, ref usedProps));
+					}
 				}
 			}
 
-			if (frames.Count == 0)
+			if (frames.Count == 0) {
 				return null;
+			}
+
 			return new PortalItem(portalInstance, frames);
 		}
 
@@ -427,8 +439,9 @@ namespace HaCreator.MapSimulator {
 			var
 				frames = new List<IDXObject>(); // All frames "stand", "speak" "blink" "hair", "angry", "wink" etc
 
-			foreach (var childProperty in source.WzProperties)
+			foreach (var childProperty in source.WzProperties) {
 				if (childProperty is WzSubProperty mobStateProperty) // issue with 867119250, Eluna map mobs
+				{
 					switch (mobStateProperty.Name) {
 						case "info": // info/speak/0 WzStringProperty
 						{
@@ -440,6 +453,8 @@ namespace HaCreator.MapSimulator {
 							break;
 						}
 					}
+				}
+			}
 
 			return new MobItem(mobInstance, frames);
 		}
@@ -500,12 +515,15 @@ namespace HaCreator.MapSimulator {
 		public static MinimapItem CreateMinimapFromProperty(WzImage uiWindow1Image, WzImage uiWindow2Image,
 			WzImage uiBasicImage, Board mapBoard, GraphicsDevice device, float UserScreenScaleFactor, string MapName,
 			string StreetName, WzImage soundUIImage, bool bBigBang) {
-			if (mapBoard.MiniMap == null)
+			if (mapBoard.MiniMap == null) {
 				return null;
+			}
 
 			var minimapFrameProperty = (WzSubProperty) uiWindow2Image?["MiniMap"];
 			if (minimapFrameProperty == null) // UIWindow2 not available pre-BB.
+			{
 				minimapFrameProperty = (WzSubProperty) uiWindow1Image["MiniMap"];
+			}
 
 			var maxMapProperty = (WzSubProperty) minimapFrameProperty["MaxMap"];
 			var miniMapProperty = (WzSubProperty) minimapFrameProperty["MinMap"];
@@ -515,8 +533,11 @@ namespace HaCreator.MapSimulator {
 
 			WzSubProperty useFrame;
 			if (mapBoard.MapInfo.zeroSideOnly || MapConstants.IsZerosTemple(mapBoard.MapInfo.id)) // zero's temple
+			{
 				useFrame = maxMapMirrorProperty;
-			else useFrame = maxMapProperty;
+			} else {
+				useFrame = maxMapProperty;
+			}
 
 			// Wz frames
 			var c = ((WzCanvasProperty) useFrame?["c"])?.GetLinkedWzCanvasBitmap();
@@ -559,7 +580,9 @@ namespace HaCreator.MapSimulator {
 				if (effective_width >
 				    miniMapImage
 					    .Width) // if minimap is smaller in size than the (text + frame), minimap will be aligned to the center instead
+				{
 					miniMapAlignXFromLeft = (effective_width - miniMapImage.Width) / 2 /* - miniMapAlignXFromLeft*/;
+				}
 
 				var miniMapUIImage = new System.Drawing.Bitmap(effective_width, effective_height);
 				using (var graphics = System.Drawing.Graphics.FromImage(miniMapUIImage)) {

@@ -224,9 +224,10 @@ namespace MapleLib.MapleCryptoLib {
 
 			// Process any remaining elements
 			var remainder = count % simdWidth;
-			if (remainder > 0)
+			if (remainder > 0) {
 				for (var x = 0; x < ret.Length; x++)
 					ret[x] = input[x % count];
+			}
 
 			return ret;
 		}

@@ -12,7 +12,9 @@ namespace HaRepacker.GUI.Input {
 		public static bool Show(string title, int maxInputLength, out string name) {
 			var form = new NameInputBox(title);
 			if (maxInputLength != 0) // 0 = not set a max length
+			{
 				form.nameBox.MaxLength = maxInputLength;
+			}
 
 			var result = form.ShowDialog() == DialogResult.OK;
 			name = form.nameResult;

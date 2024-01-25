@@ -28,8 +28,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-
 namespace Spine {
 	/// <summary>Attachment that has a polygon for bounds checking.</summary>
 	public class BoundingBoxAttachment : Attachment {

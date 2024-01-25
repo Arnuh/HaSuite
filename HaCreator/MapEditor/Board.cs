@@ -5,18 +5,18 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Threading;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MapleLib.WzLib.WzStructure.Data;
-using MapleLib.WzLib.WzStructure;
+using System.Collections.ObjectModel;
+using System.Threading;
 using HaCreator.Collections;
-using HaCreator.MapEditor.UndoRedo;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Util;
+using MapleLib.WzLib.WzStructure;
+using MapleLib.WzLib.WzStructure.Data;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HaCreator.MapEditor {
 	public class Board {
@@ -98,23 +98,29 @@ namespace HaCreator.MapEditor {
 
 		public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel) {
 			if (list.ListType == ItemTypes.None) {
-				foreach (BoardItem item in list)
+				foreach (BoardItem item in list) {
 					if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
-						    yShift - item.Origin.Y) && (sel.visibleTypes & item.Type) != 0)
+						    yShift - item.Origin.Y) && (sel.visibleTypes & item.Type) != 0) {
 						item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
+					}
+				}
 			} else if ((sel.visibleTypes & list.ListType) != 0) {
 				if (list.IsItem) {
-					foreach (BoardItem item in list)
+					foreach (BoardItem item in list) {
 						if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
-							    yShift - item.Origin.Y))
+							    yShift - item.Origin.Y)) {
 							item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
+						}
+					}
 				} else {
-					foreach (MapleLine line in list)
+					foreach (MapleLine line in list) {
 						if (parent.IsItemInRange(Math.Min(line.FirstDot.X, line.SecondDot.X),
 							    Math.Min(line.FirstDot.Y, line.SecondDot.Y),
 							    Math.Abs(line.FirstDot.X - line.SecondDot.X),
-							    Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift))
+							    Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift)) {
 							line.Draw(sprite, line.GetColor(sel), xShift, yShift);
+						}
+					}
 				}
 			}
 		}
@@ -144,10 +150,11 @@ namespace HaCreator.MapEditor {
 					} else {
 						var bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
 						var processor = System.Drawing.Graphics.FromImage(bmp);
-						foreach (BoardItem item in BoardItems.TileObjs)
+						foreach (BoardItem item in BoardItems.TileObjs) {
 							processor.DrawImage(item.Image,
 								new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X,
 									item.Y + centerPoint.Y - item.Origin.Y));
+						}
 
 						bmp = CropImage(bmp,
 							new System.Drawing.Rectangle(MinimapRectangle.X + centerPoint.X,
@@ -164,8 +171,10 @@ namespace HaCreator.MapEditor {
 		}
 
 		public void RenderBoard(SpriteBatch sprite) {
-			if (mapInfo == null)
+			if (mapInfo == null) {
 				return;
+			}
+
 			var xShift = centerPoint.X - hScroll;
 			var yShift = centerPoint.Y - vScroll;
 			var sel = GetUserSelectionInfo();
@@ -189,12 +198,14 @@ namespace HaCreator.MapEditor {
 			}
 
 			// Render VR if it exists
-			if (VRRectangle != null && (sel.visibleTypes & VRRectangle.Type) != 0)
+			if (VRRectangle != null && (sel.visibleTypes & VRRectangle.Type) != 0) {
 				VRRectangle.Draw(sprite, xShift, yShift, sel);
+			}
 
 			// Render minimap rectangle
-			if (MinimapRectangle != null && (sel.visibleTypes & MinimapRectangle.Type) != 0)
+			if (MinimapRectangle != null && (sel.visibleTypes & MinimapRectangle.Type) != 0) {
 				MinimapRectangle.Draw(sprite, xShift, yShift, sel);
+			}
 
 			// Render the minimap itself
 			if (miniMap != null && UserSettings.useMiniMap) {
@@ -207,8 +218,9 @@ namespace HaCreator.MapEditor {
 				var mapArea = new Rectangle(minimapArea.X, minimapArea.Y, (int) (minimapArea.Width / scale), (int) (minimapArea.Height / scale));
 				parent.FillRectangle(sprite, mapArea, Color.Gray);
 				// Render minimap
-				if (miniMapTexture == null)
+				if (miniMapTexture == null) {
 					miniMapTexture = miniMap.ToTexture2D(parent.GraphicsDevice);
+				}
 
 				sprite.Draw(miniMapTexture, minimapImageArea, null, Color.White, 0, new Vector2(0, 0),
 					SpriteEffects.None, 0.99999f);
@@ -223,10 +235,11 @@ namespace HaCreator.MapEditor {
 			}
 
 			// Render center point if InfoMode on
-			if (ApplicationSettings.InfoMode)
+			if (ApplicationSettings.InfoMode) {
 				parent.FillRectangle(sprite,
 					new Rectangle(MultiBoard.VirtualToPhysical(-5, centerPoint.X, hScroll, 0),
 						MultiBoard.VirtualToPhysical(-5, centerPoint.Y, vScroll, 0), 10, 10), Color.DarkRed);
+			}
 		}
 
 		public void Dispose() {

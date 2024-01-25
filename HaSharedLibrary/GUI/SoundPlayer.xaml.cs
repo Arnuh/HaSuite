@@ -1,19 +1,8 @@
-﻿using MapleLib.WzLib.WzProperties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaSharedLibrary.GUI {
 	/// <summary>
@@ -51,8 +40,9 @@ namespace HaSharedLibrary.GUI {
 		#region Slider
 
 		private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			if (isUpdatingTimeLabel)
+			if (isUpdatingTimeLabel) {
 				return;
+			}
 
 
 			PrepareAudioForPlayback();
@@ -106,8 +96,9 @@ namespace HaSharedLibrary.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void slider_volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			if (currAudio == null)
+			if (currAudio == null) {
 				return;
+			}
 
 			currAudio.Volume = (float) (slider_volume.Value / 100f);
 		}

@@ -5,11 +5,10 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace HaSharedLibrary.Render.DX {
 	public class DXObject : IDXObject {

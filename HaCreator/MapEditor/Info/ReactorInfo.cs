@@ -4,14 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.GUI;
+using System.Drawing;
 using HaCreator.MapEditor.Instance;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace HaCreator.MapEditor.Info {
 	public class ReactorInfo : MapleExtractableInfo {
@@ -37,9 +34,11 @@ namespace HaCreator.MapEditor.Info {
 
 		public override void ParseImage() {
 			if (LinkedWzImage != null) // load from here too
+			{
 				ExtractPNGFromImage(_LinkedWzImage);
-			else
+			} else {
 				ExtractPNGFromImage((WzImage) ParentObject);
+			}
 		}
 
 		public static ReactorInfo Get(string id) {

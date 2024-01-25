@@ -5,24 +5,22 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using MapleLib.WzLib;
-using HaCreator.MapEditor;
-using MapleLib.WzLib.Util;
-using HaCreator.Wz;
-using MapleLib.WzLib.WzStructure;
-using MapleLib.Helpers;
-using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.Info;
-using MapleLib.WzLib.WzProperties;
 using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Instance;
+using HaCreator.Wz;
+using HaRepacker;
 using HaSharedLibrary.Wz;
 using MapleLib;
-using System.Windows.Shapes;
-using HaRepacker;
+using MapleLib.Helpers;
+using MapleLib.WzLib;
+using MapleLib.WzLib.Util;
+using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure;
 using Path = System.IO.Path;
 
 namespace HaCreator.GUI {
@@ -47,9 +45,11 @@ namespace HaCreator.GUI {
 		}
 
 		private bool IsPathCommon(string path) {
-			foreach (var commonPath in WzFileManager.COMMON_MAPLESTORY_DIRECTORY)
-				if (commonPath == path)
+			foreach (var commonPath in WzFileManager.COMMON_MAPLESTORY_DIRECTORY) {
+				if (commonPath == path) {
 					return true;
+				}
+			}
 
 			return false;
 		}
@@ -70,10 +70,11 @@ namespace HaCreator.GUI {
 				return;
 			}
 
-			if (!ApplicationSettings.MapleFoldersList.Contains(wzPath) && !IsPathCommon(wzPath))
+			if (!ApplicationSettings.MapleFoldersList.Contains(wzPath) && !IsPathCommon(wzPath)) {
 				ApplicationSettings.MapleFoldersList = ApplicationSettings.MapleFoldersList == ""
 					? wzPath
 					: ApplicationSettings.MapleFoldersList + "," + wzPath;
+			}
 
 			WzMapleVersion fileVersion;
 			short version = -1;
@@ -88,6 +89,7 @@ namespace HaCreator.GUI {
 			} else {
 				fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
 			}
+
 			if (InitializeWzFiles(wzPath, fileVersion)) {
 				Hide();
 				Application.DoEvents();
@@ -299,25 +301,32 @@ namespace HaCreator.GUI {
 				foreach (var path in paths) {
 					if (!Directory.Exists(
 						    path)) // check if the old path actually exist before adding it to the combobox
+					{
 						continue;
+					}
 
 					pathBox.Items.Add(path);
 				}
 
 				foreach (var path in WzFileManager.COMMON_MAPLESTORY_DIRECTORY) // default path list
-					if (Directory.Exists(path))
+				{
+					if (Directory.Exists(path)) {
 						pathBox.Items.Add(path);
+					}
+				}
 
-				if (pathBox.Items.Count == 0)
+				if (pathBox.Items.Count == 0) {
 					pathBox.Items.Add("Select Maple Folder");
+				}
 			} catch {
 			}
 
 			versionBox.SelectedIndex = ApplicationSettings.MapleVersionIndex;
-			if (pathBox.Items.Count < ApplicationSettings.MapleFolderIndex + 1)
+			if (pathBox.Items.Count < ApplicationSettings.MapleFolderIndex + 1) {
 				pathBox.SelectedIndex = pathBox.Items.Count - 1;
-			else
+			} else {
 				pathBox.SelectedIndex = ApplicationSettings.MapleFolderIndex;
+			}
 		}
 
 		private void button2_Click(object sender, EventArgs e) {
@@ -326,8 +335,9 @@ namespace HaCreator.GUI {
 				       //   RootFolder = Environment.SpecialFolder.ProgramFilesX86,
 				       Description = "Select the MapleStory folder."
 			       }) {
-				if (mapleSelect.ShowDialog() != DialogResult.OK)
+				if (mapleSelect.ShowDialog() != DialogResult.OK) {
 					return;
+				}
 
 				pathBox.Items.Add(mapleSelect.SelectedPath);
 				pathBox.SelectedIndex = pathBox.Items.Count - 1;
@@ -358,6 +368,7 @@ namespace HaCreator.GUI {
 					return;
 				}
 			}
+
 			if (!InitializeWzFiles(wzPath, fileVersion)) return;
 
 			var mb = new MultiBoard();
@@ -406,8 +417,8 @@ namespace HaCreator.GUI {
 					allBackgrounds.AddRange(mapBoard.BoardItems.BackBackgrounds);
 					allBackgrounds.AddRange(mapBoard.BoardItems.FrontBackgrounds);
 
-					foreach (var bg in allBackgrounds)
-						if (bg.type != MapleLib.WzLib.WzStructure.Data.BackgroundType.Regular)
+					foreach (var bg in allBackgrounds) {
+						if (bg.type != MapleLib.WzLib.WzStructure.Data.BackgroundType.Regular) {
 							if (bg.cx < 0 || bg.cy < 0) {
 								var error = string.Format(
 									"Negative CX/ CY moving background object. CX='{0}', CY={1}, Type={2}, {3}{4}",
@@ -415,6 +426,8 @@ namespace HaCreator.GUI {
 									mapImage.ToString() /*overrides, see WzImage.ToString*/);
 								ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
 							}
+						}
+					}
 
 					allBackgrounds.Clear();
 				} catch (Exception exp) {
@@ -430,8 +443,9 @@ namespace HaCreator.GUI {
 					mapImage.UnparseImage(); // To preserve memory, since this is a very memory intensive test
 				}
 
-				if (ErrorLogger.NumberOfErrorsPresent() > 200)
+				if (ErrorLogger.NumberOfErrorsPresent() > 200) {
 					ErrorLogger.SaveToFile(OUTPUT_ERROR_FILENAME);
+				}
 			}
 
 			ErrorLogger.SaveToFile(OUTPUT_ERROR_FILENAME);
@@ -447,9 +461,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Initialization_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Enter)
+			if (e.KeyCode == Keys.Enter) {
 				button_initialise_Click(null, null);
-			else if (e.KeyCode == Keys.Escape) Close();
+			} else if (e.KeyCode == Keys.Escape) Close();
 		}
 
 
@@ -469,11 +483,14 @@ namespace HaCreator.GUI {
 			var stringWzDirs = Program.WzManager.GetWzDirectoriesFromBase("string");
 			foreach (var stringWzDir in stringWzDirs) {
 				var mobStringImage = (WzImage) stringWzDir?["mob.img"];
-				if (mobStringImage == null)
+				if (mobStringImage == null) {
 					continue; // not in this wz
+				}
 
-				if (!mobStringImage.Parsed)
+				if (!mobStringImage.Parsed) {
 					mobStringImage.ParseImage();
+				}
+
 				foreach (WzSubProperty mob in mobStringImage.WzProperties) {
 					var nameProp = (WzStringProperty) mob["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
@@ -498,11 +515,14 @@ namespace HaCreator.GUI {
 			var stringWzDirs = Program.WzManager.GetWzDirectoriesFromBase("string");
 			foreach (var stringWzDir in stringWzDirs) {
 				var npcImage = (WzImage) stringWzDir?["Npc.img"];
-				if (npcImage == null)
+				if (npcImage == null) {
 					continue; // not in this wz
+				}
 
-				if (!npcImage.Parsed)
+				if (!npcImage.Parsed) {
 					npcImage.ParseImage();
+				}
+
 				foreach (WzSubProperty npc in npcImage.WzProperties) {
 					var nameProp = (WzStringProperty) npc["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
@@ -537,10 +557,14 @@ namespace HaCreator.GUI {
 				}
 
 				foreach (var soundImage in soundWzDir.WzImages) {
-					if (!soundImage.Name.ToLower().Contains("bgm"))
+					if (!soundImage.Name.ToLower().Contains("bgm")) {
 						continue;
-					if (!soundImage.Parsed)
+					}
+
+					if (!soundImage.Parsed) {
 						soundImage.ParseImage();
+					}
+
 					try {
 						foreach (var bgmImage in soundImage.WzProperties) {
 							WzBinaryProperty binProperty = null;
@@ -552,10 +576,11 @@ namespace HaCreator.GUI {
 								if (linkVal is WzBinaryProperty linkCanvas) binProperty = linkCanvas;
 							}
 
-							if (binProperty != null)
+							if (binProperty != null) {
 								Program.InfoManager.BGMs[
 										WzInfoTools.RemoveExtension(soundImage.Name) + @"/" + binProperty.Name] =
 									binProperty;
+							}
 						}
 					} catch (Exception e) {
 						var error = string.Format("[ExtractSoundFile] Error parsing {0}, {1} file.\r\nError: {2}",
@@ -572,8 +597,9 @@ namespace HaCreator.GUI {
 		/// </summary>
 		public void ExtractMapMarks() {
 			var mapWzImg = (WzImage) Program.WzManager.FindWzImageByName("map", "MapHelper.img");
-			if (mapWzImg == null)
+			if (mapWzImg == null) {
 				throw new Exception("MapHelper.img not found in map.wz.");
+			}
 
 			foreach (WzCanvasProperty mark in mapWzImg["mark"].WzProperties)
 				Program.InfoManager.MapMarks[mark.Name] = mark.GetLinkedWzCanvasBitmap();
@@ -659,31 +685,36 @@ namespace HaCreator.GUI {
 		public void ExtractStringWzMaps() {
 			var stringWzImg = (WzImage) Program.WzManager.FindWzImageByName("string", "Map.img");
 
-			if (!stringWzImg.Parsed)
+			if (!stringWzImg.Parsed) {
 				stringWzImg.ParseImage();
+			}
+
 			foreach (WzSubProperty mapCat in stringWzImg.WzProperties)
 			foreach (WzSubProperty map in mapCat.WzProperties) {
 				var streetName = (WzStringProperty) map["streetName"];
 				var mapName = (WzStringProperty) map["mapName"];
 				string id;
-				if (map.Name.Length == 9)
+				if (map.Name.Length == 9) {
 					id = map.Name;
-				else
+				} else {
 					id = WzInfoTools.AddLeadingZeros(map.Name, 9);
+				}
 
-				if (mapName == null)
+				if (mapName == null) {
 					Program.InfoManager.Maps[id] = new Tuple<string, string>("", "");
-				else
+				} else {
 					Program.InfoManager.Maps[id] =
 						new Tuple<string, string>(streetName?.Value == null ? string.Empty : streetName.Value,
 							mapName.Value);
+				}
 			}
 		}
 
 		public void ExtractPortals() {
 			var mapImg = (WzImage) Program.WzManager.FindWzImageByName("map", "MapHelper.img");
-			if (mapImg == null)
+			if (mapImg == null) {
 				throw new Exception("Couldnt extract portals. MapHelper.img not found.");
+			}
 
 			var portalParent = (WzSubProperty) mapImg["portal"];
 			var editorParent = (WzSubProperty) portalParent["editor"];
@@ -694,7 +725,7 @@ namespace HaCreator.GUI {
 			}
 
 			var gameParent = (WzSubProperty) portalParent["game"]["pv"];
-			foreach (var portal in gameParent.WzProperties)
+			foreach (var portal in gameParent.WzProperties) {
 				if (portal.WzProperties[0] is WzSubProperty) {
 					var images = new Dictionary<string, Bitmap>();
 					Bitmap defaultImage = null;
@@ -702,10 +733,11 @@ namespace HaCreator.GUI {
 						//WzSubProperty portalContinue = (WzSubProperty)image["portalContinue"];
 						//if (portalContinue == null) continue;
 						var portalImage = image["0"].GetBitmap();
-						if (image.Name == "default")
+						if (image.Name == "default") {
 							defaultImage = portalImage;
-						else
+						} else {
 							images.Add(image.Name, portalImage);
+						}
 					}
 
 					Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
@@ -726,6 +758,7 @@ namespace HaCreator.GUI {
 						continue;
 					} //nexon likes to toss ints in here zType etc
 				}
+			}
 
 			for (var i = 0; i < Program.InfoManager.PortalTypeById.Count; i++)
 				Program.InfoManager.PortalIdByType[Program.InfoManager.PortalTypeById[i]] = i;

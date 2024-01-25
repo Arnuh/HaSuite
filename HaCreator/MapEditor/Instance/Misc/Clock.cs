@@ -5,12 +5,6 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using XNA = Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaCreator.MapEditor.Instance.Shapes;
 
 namespace HaCreator.MapEditor.Instance.Misc {
 	public class Clock : MiscRectangle, ISerializable {

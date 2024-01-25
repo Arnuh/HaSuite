@@ -5,19 +5,16 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
+using System.Security.Principal;
+using System.Threading;
 using System.Windows.Forms;
 using HaRepacker.GUI;
-using Microsoft.Win32;
-using System.Threading;
-using MapleLib.WzLib;
-using System.IO.Pipes;
-using System.IO;
-using System.Security.Principal;
-using System.Globalization;
-using MapleLib.Configuration;
-using HaSharedLibrary;
-using System.Runtime.CompilerServices;
 using MapleLib;
+using MapleLib.Configuration;
+using Microsoft.Win32;
 
 namespace HaRepacker {
 	public static class Program {
@@ -74,8 +71,10 @@ namespace HaRepacker {
 			// Parameters
 			var firstRun = PrepareApplication(true);
 			string wzToLoad = null;
-			if (args.Length > 0)
+			if (args.Length > 0) {
 				wzToLoad = args[0];
+			}
+
 			Application.Run(new MainForm(wzToLoad, true, firstRun));
 			EndApplication(true, true);
 		}
@@ -86,8 +85,10 @@ namespace HaRepacker {
 		/// <param name="ci"></param>
 		/// <returns></returns>
 		private static CultureInfo GetMainCulture(CultureInfo ci) {
-			if (!ci.Name.Contains("-"))
+			if (!ci.Name.Contains("-")) {
 				return ci;
+			}
+
 			switch (ci.Name.Split("-".ToCharArray())[0]) {
 				case "ko":
 					return new CultureInfo("ko");
@@ -96,10 +97,11 @@ namespace HaRepacker {
 				case "en":
 					return new CultureInfo("en");
 				case "zh":
-					if (ci.EnglishName.Contains("Simplified"))
+					if (ci.EnglishName.Contains("Simplified")) {
 						return new CultureInfo("zh-CHS");
-					else
+					} else {
 						return new CultureInfo("zh-CHT");
+					}
 				default:
 					return ci;
 			}
@@ -117,8 +119,10 @@ namespace HaRepacker {
 		public static string GetLocalFolderPath() {
 			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var our_folder = Path.Combine(appdata, pipeName);
-			if (!Directory.Exists(our_folder))
+			if (!Directory.Exists(our_folder)) {
 				Directory.CreateDirectory(our_folder);
+			}
+
 			return our_folder;
 		}
 

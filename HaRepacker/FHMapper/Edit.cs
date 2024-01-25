@@ -23,21 +23,26 @@ namespace Footholds {
 		private void Edit_Load(object sender, EventArgs e) {
 			PrevLbl.Text = ((WzIntProperty) fh.Data["prev"]).Value.ToString();
 			NextLbl.Text = ((WzIntProperty) fh.Data["next"]).Value.ToString();
-			if (!(bool) settings.ToArray()[1])
+			if (!(bool) settings.ToArray()[1]) {
 				PrevTBox.Text = ((WzIntProperty) fh.Data["prev"]).Value.ToString();
-			else
+			} else {
 				PrevTBox.Text = settings.ToArray()[0].ToString();
-			if (!(bool) settings.ToArray()[3])
+			}
+
+			if (!(bool) settings.ToArray()[3]) {
 				NextTBox.Text = ((WzIntProperty) fh.Data["next"]).Value.ToString();
-			else
+			} else {
 				NextTBox.Text = settings.ToArray()[2].ToString();
-			if (!(bool) settings.ToArray()[5])
+			}
+
+			if (!(bool) settings.ToArray()[5]) {
 				try {
 					ForceTBox.Text = ((WzIntProperty) fh.Data["force"]).Value.ToString();
 				} catch {
 				}
-			else
+			} else {
 				ForceTBox.Text = settings.ToArray()[4].ToString();
+			}
 
 			try {
 				ForceLbl.Text = ((WzIntProperty) fh.Data["force"]).Value.ToString();

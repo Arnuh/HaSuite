@@ -28,8 +28,9 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private void nameBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) 13)
+			if (e.KeyChar == (char) 13) {
 				okButton_Click(null, null);
+			}
 		}
 
 		private void okButton_Click(object sender, EventArgs e) {

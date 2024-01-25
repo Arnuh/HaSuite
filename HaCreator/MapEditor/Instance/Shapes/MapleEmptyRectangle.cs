@@ -4,14 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -129,10 +126,18 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public virtual void Draw(SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel) {
 			var lineColor = ab.GetColor(sel);
 			int x, y;
-			if (a.X < b.X) x = a.X + xShift;
-			else x = b.X + xShift;
-			if (b.Y < c.Y) y = b.Y + yShift;
-			else y = c.Y + yShift;
+			if (a.X < b.X) {
+				x = a.X + xShift;
+			} else {
+				x = b.X + xShift;
+			}
+
+			if (b.Y < c.Y) {
+				y = b.Y + yShift;
+			} else {
+				y = c.Y + yShift;
+			}
+
 			ab.Draw(sprite, lineColor, xShift, yShift);
 			bc.Draw(sprite, lineColor, xShift, yShift);
 			cd.Draw(sprite, lineColor, xShift, yShift);

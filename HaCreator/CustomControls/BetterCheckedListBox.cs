@@ -2,11 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Data;
-
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace HaCreator.CustomControls {
 	//Show the CheckedListBox icon in the Toolbox for our component
@@ -50,7 +48,9 @@ namespace HaCreator.CustomControls {
 			var bufAllowChecks = AllowChecks;
 			if (AllowChecks == false)
 				//This is needed so we can change checkstates
+			{
 				AllowChecks = true;
+			}
 
 			//Clear items
 			Items.Clear();
@@ -59,10 +59,13 @@ namespace HaCreator.CustomControls {
 			var i = 0;
 			for (i = 0; i <= dt.DefaultView.Count - 1; i++)
 				//Determine whether to check each item or not
-				if (((string) dt.Rows[i][ChkMember] == "1") | ((string) dt.Rows[i][ChkMember] == "True"))
+			{
+				if (((string) dt.Rows[i][ChkMember] == "1") | ((string) dt.Rows[i][ChkMember] == "True")) {
 					Items.Add(dt.DefaultView[i], true);
-				else
+				} else {
 					Items.Add(dt.DefaultView[i], false);
+				}
+			}
 
 			AllowChecks = bufAllowChecks;
 		}
@@ -116,10 +119,11 @@ namespace HaCreator.CustomControls {
 
 		public bool Checked(int index) {
 			//Search for the item in CheckedIndices to see if its checked or not
-			if (CheckedIndices.IndexOf(index) != -1)
+			if (CheckedIndices.IndexOf(index) != -1) {
 				return true;
-			else
+			} else {
 				return false;
+			}
 		}
 
 		public void SetChecked(int index, bool value) {

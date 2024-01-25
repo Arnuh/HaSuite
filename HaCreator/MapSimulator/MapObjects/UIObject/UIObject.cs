@@ -1,4 +1,6 @@
-﻿using HaSharedLibrary.Render.DX;
+﻿using System;
+using System.Collections.Generic;
+using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
@@ -6,13 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static HaCreator.MapSimulator.MapObjects.UIObject.UIObjectButtonEvent;
 
 namespace HaCreator.MapSimulator.MapObjects.UIObject {
@@ -44,8 +39,9 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 		/// <param name="state"></param>
 		/// <returns></returns>
 		public BaseDXDrawableItem GetBaseDXDrawableItemByState(UIObjectState state = UIObjectState.Null) {
-			if (state == UIObjectState.Null)
+			if (state == UIObjectState.Null) {
 				state = currentState;
+			}
 
 			switch (state) {
 				case UIObjectState.Pressed:
@@ -235,7 +231,9 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 			}
 
 			if (drawableImages.Count == 0) // oh noz u sux
+			{
 				throw new Exception("Error creating BaseDXDrawableItem from WzSubProperty.");
+			}
 
 			if (drawableImages.Count > 0) {
 				var item_pixelDot = new BaseDXDrawableItem(drawableImages, flip) {
@@ -263,8 +261,9 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 		/// <param name="mouseState"></param>
 		public void CheckMouseEvent(int shiftCenteredX, int shiftCenteredY, int containerParentX, int containerParentY,
 			MouseState mouseState) {
-			if (currentState == UIObjectState.Disabled)
+			if (currentState == UIObjectState.Disabled) {
 				return; // disabled buttons dont react
+			}
 
 			// The position of the button relative to the minimap
 			var minimapButtonRelativeX = -containerParentX - X; // Left to right
@@ -287,7 +286,9 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 					SetButtonState(UIObjectState.Pressed);
 
 					if (seBtMouseClick != null) // play mouse click sound
+					{
 						seBtMouseClick.Play();
+					}
 				} else if (mouseState.LeftButton == ButtonState.Released) {
 					var priorState = currentState;
 
@@ -297,12 +298,16 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 					    UIObjectState
 						    .Pressed) // this after setting the MouseOver state, so user-code does not get override
 						// Invoke clicked event
+					{
 						ButtonClickReleased?.Invoke(this);
+					}
 				} else {
 					SetButtonState(UIObjectState.MouseOver);
 
 					if (seBtMouseOver != null) // play mouse over sound
+					{
 						seBtMouseOver.Play();
+					}
 				}
 			} else {
 				SetButtonState(UIObjectState.Normal);

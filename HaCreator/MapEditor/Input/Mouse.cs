@@ -6,17 +6,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
+using System.Linq;
 using System.Security.Cryptography;
-using Xna = Microsoft.Xna.Framework;
-using MapleLib.WzLib.WzStructure.Data;
-using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.Info;
-using HaCreator.MapEditor.UndoRedo;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.UndoRedo;
+using MapleLib.WzLib.WzStructure.Data;
+using Xna = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Input {
 	public class Mouse : MapleDot //inheriting mapledot to make it easier to attach maplelines to it
@@ -58,9 +57,11 @@ namespace HaCreator.MapEditor.Input {
 					ReleaseItem(currAddedObj);
 					if (currAddedObj is LayeredItem) {
 						var highestZ = 0;
-						foreach (var item in Board.BoardItems.TileObjs)
-							if (item.Z > highestZ)
+						foreach (var item in Board.BoardItems.TileObjs) {
+							if (item.Z > highestZ) {
 								highestZ = item.Z;
+							}
+						}
 
 						currAddedObj.Z = highestZ;
 						Board.BoardItems.Sort();
@@ -116,9 +117,11 @@ namespace HaCreator.MapEditor.Input {
 					var count = BoundItems.Count;
 					var items = BoundItems.Keys.ToList();
 					Clock clock = null;
-					foreach (var item in items)
-						if (item is Clock)
+					foreach (var item in items) {
+						if (item is Clock) {
 							clock = (Clock) item;
+						}
+					}
 
 					foreach (var item in items) ReleaseItem(item);
 
@@ -180,7 +183,7 @@ namespace HaCreator.MapEditor.Input {
 			lock (Board.ParentControl) {
 				var pos = new Xna.Point(X, Y);
 				var sel = board.GetUserSelectionInfo();
-				foreach (var anchor in Board.BoardItems.FHAnchors)
+				foreach (var anchor in Board.BoardItems.FHAnchors) {
 					if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) &&
 					    anchor.CheckIfLayerSelected(sel)) {
 						if (anchor.connectedLines.Count > 1) continue;
@@ -203,6 +206,7 @@ namespace HaCreator.MapEditor.Input {
 							Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
 						}
 					}
+				}
 			}
 		}
 
@@ -214,10 +218,11 @@ namespace HaCreator.MapEditor.Input {
 				}
 
 				if (state == MouseState.Ropes || state == MouseState.Tooltip) {
-					if (state == MouseState.Ropes)
+					if (state == MouseState.Ropes) {
 						((RopeAnchor) BoundItems.Keys.ElementAt(0)).RemoveItem(null);
-					else
+					} else {
 						((ToolTipDot) BoundItems.Keys.ElementAt(0)).ParentTooltip.RemoveItem(null);
+					}
 				} else if (state == MouseState.Footholds && connectedLines.Count > 0) {
 					var fh = (FootholdLine) connectedLines[0];
 					fh.Remove(false, null);
@@ -245,8 +250,10 @@ namespace HaCreator.MapEditor.Input {
 		public void SetHeldInfo(MapleDrawableInfo newInfo) {
 			lock (Board.ParentControl) {
 				Clear();
-				if (newInfo.Image == null)
+				if (newInfo.Image == null) {
 					((MapleExtractableInfo) newInfo).ParseImage();
+				}
+
 				currAddedInfo = newInfo;
 
 				currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board,
@@ -393,8 +400,10 @@ namespace HaCreator.MapEditor.Input {
 
 		public override void BindItem(BoardItem item, Microsoft.Xna.Framework.Point distance) {
 			lock (Board.ParentControl) {
-				if (BoundItems.ContainsKey(item))
+				if (BoundItems.ContainsKey(item)) {
 					return;
+				}
+
 				BoundItems[item] = distance;
 				item.tempParent = item.Parent;
 				item.Parent = this;

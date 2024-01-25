@@ -4,20 +4,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor {
 	public class UserObjectsManager {
@@ -37,7 +34,9 @@ namespace HaCreator.MapEditor {
 			if (Program.InfoManager == null)
 				// Prevents VS designer from crashing when rendering this control; there is no way that Program.InfoManager will be null
 				// in the real execution of this code.
+			{
 				return;
+			}
 
 			// Make sure that all our structures exist
 			if (!Program.InfoManager.ObjectSets.ContainsKey(oS)) {
@@ -61,8 +60,9 @@ namespace HaCreator.MapEditor {
 		}
 
 		public ObjectInfo Add(Bitmap bmp, string name) {
-			if (!IsNameValid(name))
+			if (!IsNameValid(name)) {
 				throw new NameAlreadyUsedException();
+			}
 
 			var origin = new Point(bmp.Width / 2, bmp.Height / 2);
 
@@ -93,7 +93,7 @@ namespace HaCreator.MapEditor {
 			}
 
 			// Remove all instances of it
-			foreach (var board in multiBoard.Boards)
+			foreach (var board in multiBoard.Boards) {
 				for (var i = 0; i < board.BoardItems.TileObjs.Count; i++) {
 					var li = board.BoardItems.TileObjs[i];
 					if (li is ObjectInstance) {
@@ -104,51 +104,62 @@ namespace HaCreator.MapEditor {
 						}
 					}
 				}
+			}
 
 			// Search it in newObjects
-			foreach (var oi in newObjects)
+			foreach (var oi in newObjects) {
 				if (oi.l2 == l2) {
 					newObjects.Remove(oi);
 					oi.ParentObject.Remove();
 					return;
 				}
+			}
 
 			// Search it in wz objects
-			foreach (var prop in l1prop.WzProperties)
+			foreach (var prop in l1prop.WzProperties) {
 				if (prop.Name == l2) {
 					prop.Remove();
 					// We removed a property that existed in the file already, so we must set it as updated
 					SetOsUpdated();
 					return;
 				}
+			}
 
 			throw new Exception("Could not find " + l2 + " in userObjs");
 		}
 
 		public void Flush() {
-			if (newObjects.Count == 0)
+			if (newObjects.Count == 0) {
 				return;
+			}
+
 			var objsDir = (WzDirectory) Program.WzManager["map"]["Obj"]; // "obj' is in Map.wz or Map2.wz (TODO)
-			if (objsDir[oS + ".img"] == null)
+			if (objsDir[oS + ".img"] == null) {
 				objsDir[oS + ".img"] = Program.InfoManager.ObjectSets[oS];
+			}
+
 			SetOsUpdated();
 			newObjects.Clear();
 		}
 
 		private void SerializeObjects() {
-			if (newObjectsData.Count == 0)
+			if (newObjectsData.Count == 0) {
 				serializedFormCache = null;
-			else
+			} else {
 				serializedFormCache = JsonConvert.SerializeObject(newObjectsData);
+			}
+
 			dirty = true;
 		}
 
 		public void DeserializeObjects(string data) {
 			var newObjectsData2 =
 				JsonConvert.DeserializeObject<Dictionary<string, byte[]>>(data);
-			foreach (var obj in newObjectsData2)
-				if (IsNameValid(obj.Key))
+			foreach (var obj in newObjectsData2) {
+				if (IsNameValid(obj.Key)) {
 					Add((Bitmap) Image.FromStream(new MemoryStream(obj.Value)), obj.Key);
+				}
+			}
 
 			SerializeObjects();
 		}

@@ -14,12 +14,6 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System;
-using System.Collections;
-using System.IO;
-using System.Text;
-using MapleLib.MapleCryptoLib;
-
 namespace MapleLib.WzLib.Util {
 	public class XmlUtil {
 		private static readonly char[] specialCharacters = {'"', '\'', '&', '<', '>'};
@@ -30,12 +24,13 @@ namespace MapleLib.WzLib.Util {
 			bool charFixed;
 			for (var i = 0; i < text.Length; i++) {
 				charFixed = false;
-				for (var k = 0; k < specialCharacters.Length; k++)
+				for (var k = 0; k < specialCharacters.Length; k++) {
 					if (text[i] == specialCharacters[k]) {
 						fixedText += replacementStrings[k];
 						charFixed = true;
 						break;
 					}
+				}
 
 				if (!charFixed) fixedText += text[i];
 			}

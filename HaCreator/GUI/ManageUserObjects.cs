@@ -4,22 +4,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzStructure;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class ManageUserObjects : Form {
@@ -46,8 +41,10 @@ namespace HaCreator.GUI {
 		}
 
 		private void objsList_DrawItem(object sender, DrawItemEventArgs e) {
-			if (e.Index == -1)
+			if (e.Index == -1) {
 				return;
+			}
+
 			e.DrawBackground();
 			var g = e.Graphics;
 
@@ -63,8 +60,10 @@ namespace HaCreator.GUI {
 
 		private void removeBtn_Click(object sender, EventArgs e) {
 			if (MessageBox.Show("This action CANNOT BE UNDONE, are you sure you want to remove this object?",
-				    "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+				    "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) {
 				return;
+			}
+
 			var index = objsList.SelectedIndex;
 			var obj = (UserObject) objsList.SelectedItem;
 			userObjs.Remove(obj.ToString());
@@ -83,8 +82,10 @@ namespace HaCreator.GUI {
 			if (!uobj.newObj) {
 				if (MessageBox.Show(
 					    "This will search the entire Map.wz for usages of this object. It may take a while. Proceed?",
-					    "Search", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+					    "Search", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes) {
 					return;
+				}
+
 				cww = new CancelableWaitWindow("Searching...",
 					() => Enumerable.Concat(SearchMapWzForObj(l2),
 						SearchEditorForObj(l2).Select(x => x + " (In Editor)")));
@@ -94,22 +95,25 @@ namespace HaCreator.GUI {
 			}
 
 			cww.ShowDialog();
-			if (cww.result == null)
+			if (cww.result == null) {
 				return;
+			}
+
 			var result = ((IEnumerable<string>) cww.result).ToList();
-			if (result.Count > 0)
+			if (result.Count > 0) {
 				MessageBox.Show(
 					"The object is used in the following maps:\r\n\r\n" + result.Aggregate((x, y) => x + ", " + y),
 					"Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			else
+			} else {
 				MessageBox.Show("The object is not used in any maps.", "Search Results", MessageBoxButtons.OK,
 					MessageBoxIcon.Information);
+			}
 		}
 
 		private List<string> SearchEditorForObj(string l2) {
 			var result = new List<string>();
 			foreach (var board in userObjs.MultiBoard.Boards)
-			foreach (var li in board.BoardItems.TileObjs)
+			foreach (var li in board.BoardItems.TileObjs) {
 				if (li is ObjectInstance) {
 					var oi = (ObjectInfo) li.BaseInfo;
 					if (oi.oS == UserObjectsManager.oS &&
@@ -120,6 +124,7 @@ namespace HaCreator.GUI {
 						break;
 					}
 				}
+			}
 
 			return result;
 		}
@@ -130,15 +135,21 @@ namespace HaCreator.GUI {
 			foreach (var mapImg in mapDir.WzImages) {
 				var fastForwardToNext = false;
 				var parsed = mapImg.Parsed;
-				if (!parsed)
+				if (!parsed) {
 					mapImg.ParseImage();
+				}
+
 				foreach (var layer in mapImg.WzProperties) {
-					if (layer.Name.Length != 1 || !char.IsDigit(layer.Name[0]))
+					if (layer.Name.Length != 1 || !char.IsDigit(layer.Name[0])) {
 						continue;
+					}
+
 					var prop = layer["obj"];
-					if (prop == null)
+					if (prop == null) {
 						continue;
-					foreach (var obj in prop.WzProperties)
+					}
+
+					foreach (var obj in prop.WzProperties) {
 						if (InfoTool.GetString(obj["oS"]) == UserObjectsManager.oS &&
 						    InfoTool.GetString(obj["l0"]) == Program.APP_NAME &&
 						    InfoTool.GetString(obj["l1"]) == UserObjectsManager.l1 &&
@@ -147,13 +158,16 @@ namespace HaCreator.GUI {
 							fastForwardToNext = true;
 							break;
 						}
+					}
 
-					if (fastForwardToNext)
+					if (fastForwardToNext) {
 						break;
+					}
 				}
 
-				if (!parsed)
+				if (!parsed) {
 					mapImg.UnparseImage();
+				}
 			}
 
 			return result;

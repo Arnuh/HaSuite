@@ -4,20 +4,15 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class LayerChange : EditorBase {
@@ -46,11 +41,12 @@ namespace HaCreator.GUI {
 
 
 		private bool LayeredItemsSelected(out int layer) {
-			foreach (var item in board.SelectedItems)
+			foreach (var item in board.SelectedItems) {
 				if (item is LayeredItem) {
 					layer = ((LayeredItem) item).Layer.LayerNumber;
 					return true;
 				}
+			}
 
 			layer = 0;
 			return false;
@@ -58,9 +54,12 @@ namespace HaCreator.GUI {
 
 		private bool LayerCapableOfHoldingSelectedItems(Layer layer) {
 			if (layer.tS == null) return true;
-			foreach (var item in items)
-				if (item is TileInstance && ((TileInfo) item.BaseInfo).tS != layer.tS)
+			foreach (var item in items) {
+				if (item is TileInstance && ((TileInfo) item.BaseInfo).tS != layer.tS) {
 					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -88,8 +87,10 @@ namespace HaCreator.GUI {
 					new Tuple<int, int>(li.LayerNumber, li.PlatformNumber)));
 			}
 
-			if (actions.Count > 0)
+			if (actions.Count > 0) {
 				board.UndoRedoMan.AddUndoBatch(actions);
+			}
+
 			touchedLayers.ToList().ForEach(x => board.Layers[x].RecheckTileSet());
 			targetLayer.RecheckTileSet();
 			InputHandler.ClearSelectedItems(board);

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapleLib.WzLib.WzStructure.Data {
+﻿namespace MapleLib.WzLib.WzStructure.Data {
 	public static class FieldTypeExtensions {
 		public static string ToReadableString(this FieldType str) {
 			var name = str.ToString().Replace("FIELDTYPE_", "");

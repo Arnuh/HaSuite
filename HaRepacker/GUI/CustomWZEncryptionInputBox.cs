@@ -7,9 +7,8 @@
 
 using System;
 using System.Windows.Forms;
-using MapleLib.PacketLib;
 using MapleLib.MapleCryptoLib;
-using MapleLib.Configuration;
+using MapleLib.PacketLib;
 
 namespace HaRepacker.GUI {
 	public partial class CustomWZEncryptionInputBox : Form {
@@ -36,11 +35,12 @@ namespace HaRepacker.GUI {
 
 			var parsed = true;
 			if (splitBytes.Length == 4) {
-				foreach (var byte_ in splitBytes)
+				foreach (var byte_ in splitBytes) {
 					if (!CheckHexDigits(byte_)) {
 						parsed = false;
 						break;
 					}
+				}
 			} else {
 				parsed = false;
 			}
@@ -81,11 +81,12 @@ namespace HaRepacker.GUI {
 
 				var parsed2 = true;
 				if (splitAESKeyBytes.Length == 32) {
-					foreach (var byte_ in splitAESKeyBytes)
+					foreach (var byte_ in splitAESKeyBytes) {
 						if (!CheckHexDigits(byte_)) {
 							parsed2 = false;
 							break;
 						}
+					}
 				} else {
 					parsed2 = false;
 				}
@@ -307,9 +308,11 @@ namespace HaRepacker.GUI {
 		/// <returns></returns>
 		private bool CheckHexDigits(string input) {
 			if (input.Length >= 1 && input.Length <= 2) {
-				for (var i = 0; i < input.Length; i++)
-					if (!HexEncoding.IsHexDigit(input[i]))
+				for (var i = 0; i < input.Length; i++) {
+					if (!HexEncoding.IsHexDigit(input[i])) {
 						return false;
+					}
+				}
 			} else {
 				return false;
 			}

@@ -7,9 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Drawing.Imaging;
 
 namespace HaSharedLibrary.SharpApng {
 	public class SharpApng : IDisposable {
@@ -26,8 +23,11 @@ namespace HaSharedLibrary.SharpApng {
 
 		public SharpApngFrame this[int index] {
 			get {
-				if (index < m_frames.Count) return m_frames[index];
-				else return null;
+				if (index < m_frames.Count) {
+					return m_frames[index];
+				} else {
+					return null;
+				}
 			}
 			set {
 				if (index < m_frames.Count) m_frames[index] = value;
@@ -60,16 +60,19 @@ namespace HaSharedLibrary.SharpApng {
 
 			for (var i = 0; i < m_frames.Count; i++) {
 				var frame = m_frames[i];
-				if (frame.Bitmap.Width != maxSize.Width || frame.Bitmap.Height != maxSize.Height)
+				if (frame.Bitmap.Width != maxSize.Width || frame.Bitmap.Height != maxSize.Height) {
 					frame.Bitmap = ExtendImage(frame.Bitmap, maxSize);
+				}
+
 				SharpApngBasicWrapper.CreateFrameManaged(frame.Bitmap, frame.DelayNum, frame.DelayDen, i);
 			}
 
 			SharpApngBasicWrapper.SaveApngManaged(path, m_frames.Count, maxSize.Width, maxSize.Height,
 				firstFrameHidden);
 
-			if (disposeAfter)
+			if (disposeAfter) {
 				Dispose();
+			}
 		}
 	}
 }

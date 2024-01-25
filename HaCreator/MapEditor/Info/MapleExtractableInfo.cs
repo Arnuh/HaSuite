@@ -4,13 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using MapleLib.WzLib;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MapleLib.WzLib;
 
 namespace HaCreator.MapEditor.Info {
 	public abstract class MapleExtractableInfo : MapleDrawableInfo {
@@ -20,11 +15,13 @@ namespace HaCreator.MapEditor.Info {
 
 		public override Bitmap Image {
 			get {
-				if (base.Image == null)
+				if (base.Image == null) {
 					ParseImage();
+				}
 
-				if (base.Image == null || (base.Image.Width == 1 && base.Image.Height == 1))
+				if (base.Image == null || (base.Image.Width == 1 && base.Image.Height == 1)) {
 					return Properties.Resources.placeholder;
+				}
 
 				return base.Image;
 			}
@@ -32,8 +29,9 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public void ParseImageIfNeeded() {
-			if (Image == null)
+			if (Image == null) {
 				ParseImage();
+			}
 		}
 
 		public abstract void ParseImage();

@@ -4,20 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.GUI;
+using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.MapEditor.Info {
 	public class NpcInfo : MapleExtractableInfo {
@@ -38,8 +30,9 @@ namespace HaCreator.MapEditor.Info {
 			: base(image, origin, parentObject) {
 			this.id = id;
 			this.name = name;
-			if (image != null && image.Width == 1 && image.Height == 1)
+			if (image != null && image.Width == 1 && image.Height == 1) {
 				image = Properties.Resources.placeholder;
+			}
 		}
 
 		private void ExtractPNGFromImage(WzImage image) {
@@ -57,21 +50,28 @@ namespace HaCreator.MapEditor.Info {
 
 		public override void ParseImage() {
 			if (LinkedWzImage != null) // attempt to load from here too
+			{
 				ExtractPNGFromImage(LinkedWzImage);
-			else
+			} else {
 				ExtractPNGFromImage((WzImage) ParentObject);
+			}
 		}
 
 		public static NpcInfo Get(string id) {
 			var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
 			var npcImage = (WzImage) Program.WzManager.FindWzImageByName("npc", imgName);
-			if (npcImage == null)
+			if (npcImage == null) {
 				return null;
+			}
 
-			if (!npcImage.Parsed)
+			if (!npcImage.Parsed) {
 				npcImage.ParseImage();
-			if (npcImage.HCTag == null)
+			}
+
+			if (npcImage.HCTag == null) {
 				npcImage.HCTag = Load(npcImage);
+			}
+
 			var result = (NpcInfo) npcImage.HCTag;
 			result.ParseImageIfNeeded();
 			return result;

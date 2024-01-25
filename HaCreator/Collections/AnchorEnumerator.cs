@@ -4,13 +4,9 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Instance.Shapes;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HaCreator.MapEditor.Instance.Shapes;
 
 namespace HaCreator.Collections {
 	public class AnchorEnumerator : IEnumerable<FootholdAnchor>, IEnumerator<FootholdAnchor> {
@@ -47,10 +43,11 @@ namespace HaCreator.Collections {
 			}
 
 			if (anchors.Count == 0) {
-				if (toVisit.Count == 0)
+				if (toVisit.Count == 0) {
 					return false;
-				else
+				} else {
 					curr = toVisit.Pop();
+				}
 			} else if (anchors.Count == 1) {
 				curr = anchors[0];
 				visited.Add(curr);

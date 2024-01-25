@@ -4,20 +4,15 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using HaCreator.Collections;
 using HaCreator.GUI;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.MapEditor.UndoRedo;
-using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor {
@@ -107,13 +102,14 @@ namespace HaCreator.MapEditor {
 
 			var hasItems = false;
 			foreach (var currList in new List<ToolStripMenuItem>[]
-				         {generalCategory, zCategory, platformCategory})
+				         {generalCategory, zCategory, platformCategory}) {
 				if (currList.Count > 0) {
 					if (hasItems) cms.Items.Add(new ToolStripSeparator());
 
 					cms.Items.AddRange(currList.ToArray());
 					hasItems = true;
 				}
+			}
 		}
 
 		/// <summary>
@@ -139,10 +135,12 @@ namespace HaCreator.MapEditor {
 
 		private void moveLayer_Click(object sender, EventArgs e) {
 			lock (multiboard) {
-				for (var i = 0; i < board.SelectedItems.Count; i++)
-					if (board.SelectedItems[i] is FootholdAnchor)
+				for (var i = 0; i < board.SelectedItems.Count; i++) {
+					if (board.SelectedItems[i] is FootholdAnchor) {
 						foreach (var x in new AnchorEnumerator((FootholdAnchor) board.SelectedItems[i]))
 							x.Selected = true;
+					}
+				}
 
 				new LayerChange(board.SelectedItems, board).ShowDialog();
 			}
@@ -150,9 +148,11 @@ namespace HaCreator.MapEditor {
 
 		private int getZmOfSelectedFoothold() {
 			var anchor = (FootholdAnchor) target;
-			foreach (FootholdLine line in anchor.connectedLines)
-				if (line.Selected)
+			foreach (FootholdLine line in anchor.connectedLines) {
+				if (line.Selected) {
 					return line.PlatformNumber;
+				}
+			}
 
 			return -1;
 		}
@@ -168,28 +168,35 @@ namespace HaCreator.MapEditor {
 				var zm = target is IContainsLayerInfo
 					? ((IContainsLayerInfo) target).PlatformNumber
 					: getZmOfSelectedFoothold();
-				foreach (var item in target.Board.BoardItems.Items)
-					if (item is IContainsLayerInfo && ((IContainsLayerInfo) item).PlatformNumber == zm)
+				foreach (var item in target.Board.BoardItems.Items) {
+					if (item is IContainsLayerInfo && ((IContainsLayerInfo) item).PlatformNumber == zm) {
 						((BoardItem) item).Selected = true;
+					}
+				}
 
-				foreach (var line in target.Board.BoardItems.FootholdLines)
+				foreach (var line in target.Board.BoardItems.FootholdLines) {
 					if (line.PlatformNumber == zm) {
 						((FootholdLine) line).FirstDot.Selected = true;
 						((FootholdLine) line).SecondDot.Selected = true;
 					}
+				}
 			}
 		}
 
 		private void editZm_Click(object sender, EventArgs e) {
 			lock (multiboard) {
 				var items = new List<IContainsLayerInfo>();
-				foreach (var item in board.SelectedItems)
-					if (item is IContainsLayerInfo)
+				foreach (var item in board.SelectedItems) {
+					if (item is IContainsLayerInfo) {
 						items.Add((IContainsLayerInfo) item);
-					else if (item is FootholdAnchor)
-						foreach (FootholdLine line in ((FootholdAnchor) item).connectedLines)
-							if (line.Selected)
+					} else if (item is FootholdAnchor) {
+						foreach (FootholdLine line in ((FootholdAnchor) item).connectedLines) {
+							if (line.Selected) {
 								items.Add(line);
+							}
+						}
+					}
+				}
 
 				new MassZmEditor(items.ToArray(), board, ((IContainsLayerInfo) target).PlatformNumber).ShowDialog();
 			}

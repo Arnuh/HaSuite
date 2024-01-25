@@ -1,11 +1,6 @@
-﻿using MapleLib.WzLib;
+﻿using System.Diagnostics;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MapleLib {
 	/// <summary>
@@ -19,14 +14,16 @@ namespace MapleLib {
 		/// <param name="fallback"></param>
 		/// <returns></returns>
 		public static string ReadString(this WzImageProperty value, string fallback) {
-			if (value == null || value.GetType() == typeof(WzNullProperty))
+			if (value == null || value.GetType() == typeof(WzNullProperty)) {
 				return fallback;
+			}
 
 			if (value != null) {
-				if (value.PropertyType == WzPropertyType.String)
+				if (value.PropertyType == WzPropertyType.String) {
 					return ((WzStringProperty) value).Value;
-				else if (value.PropertyType == WzPropertyType.Int)
+				} else if (value.PropertyType == WzPropertyType.Int) {
 					return ((WzIntProperty) value).Value.ToString();
+				}
 			}
 
 			return ((WzStringProperty) value).Value;
@@ -38,8 +35,10 @@ namespace MapleLib {
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public static WzVectorProperty ReadVector(this WzImageProperty value) {
-			if (value == null)
+			if (value == null) {
 				return null;
+			}
+
 			return (WzVectorProperty) value;
 		}
 
@@ -50,19 +49,20 @@ namespace MapleLib {
 		/// <param name="def"></param>
 		/// <returns></returns>
 		public static long ReadLong(this WzImageProperty value, long def = 0) {
-			if (value == null)
+			if (value == null) {
 				return 0;
-			else if (value.PropertyType == WzPropertyType.Int)
+			} else if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			else if (value.PropertyType == WzPropertyType.Long)
+			} else if (value.PropertyType == WzPropertyType.Long) {
 				return ((WzLongProperty) value).Value;
-			else if (value.PropertyType == WzPropertyType.String)
+			} else if (value.PropertyType == WzPropertyType.String) {
 				try {
 					return long.Parse(((WzStringProperty) value).Value);
 				} catch {
 					Debug.WriteLine("Error parsing string to long: " + ((WzStringProperty) value).Value);
 					return def;
 				}
+			}
 
 			return 0;
 		}
@@ -78,12 +78,14 @@ namespace MapleLib {
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public static int ReadValue(this WzImageProperty value) {
-			if (value == null)
+			if (value == null) {
 				return 0;
-			else if (value.PropertyType == WzPropertyType.Int)
+			} else if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			else if (value.PropertyType == WzPropertyType.String)
+			} else if (value.PropertyType == WzPropertyType.String) {
 				return int.Parse(((WzStringProperty) value).Value);
+			}
+
 			return 0;
 		}
 
@@ -111,7 +113,9 @@ namespace MapleLib {
 					if (strdata.EndsWith("%"))
 						// Stupid nexon, see <imgdir name="02040016">
 						// It have a scroll success rate of 10% instead of 10
+					{
 						return int.Parse(strdata.Substring(0, strdata.Length - 1));
+					}
 				}
 			}
 

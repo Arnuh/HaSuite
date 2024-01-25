@@ -103,8 +103,9 @@ namespace HaSharedLibrary.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ListView_fieldLimitType_ItemCheck(object sender, ItemCheckEventArgs e) {
-			if (initializingListViewForFieldLimit)
+			if (initializingListViewForFieldLimit) {
 				return;
+			}
 
 			//System.Diagnostics.Debug.WriteLine("Set index at  " + e.Index + " to " + listView_fieldLimitType.Items[e.Index].Checked);
 		}
@@ -115,23 +116,28 @@ namespace HaSharedLibrary.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ListView_fieldLimitType_ItemChecked(object sender, ItemCheckedEventArgs e) {
-			if (initializingListViewForFieldLimit)
+			if (initializingListViewForFieldLimit) {
 				return;
+			}
 
 			ulong fieldLimit = 0;
-			foreach (ListViewItem item in listView_fieldLimitType.Items)
+			foreach (ListViewItem item in listView_fieldLimitType.Items) {
 				if (item.Checked) {
 					var numShift = (int) item.Tag;
 
 					//System.Diagnostics.Debug.WriteLine("Selected " + numShift + ", " + (long)(1L << numShift));
 					fieldLimit |= (ulong) (1L << numShift);
 				}
+			}
 
 			//System.Diagnostics.Debug.WriteLine("Result " + fieldLimit);
-			if (setTextboxOnFieldLimitChange != null)
+			if (setTextboxOnFieldLimitChange != null) {
 				setTextboxOnFieldLimitChange.Text = fieldLimit.ToString();
-			if (setTextboxOnFieldLimitChange_wpf != null)
+			}
+
+			if (setTextboxOnFieldLimitChange_wpf != null) {
 				setTextboxOnFieldLimitChange_wpf.Text = fieldLimit.ToString();
+			}
 
 			// set value
 			_fieldLimit = fieldLimit;

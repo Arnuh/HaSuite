@@ -5,39 +5,34 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using HaCreator.Exceptions;
+using HaCreator.GUI;
 using HaCreator.MapEditor;
-using Microsoft.Xna.Framework;
+using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Info.Default;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Misc;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaSharedLibrary.Render;
+using HaSharedLibrary.Render.DX;
+using HaSharedLibrary.Util;
+using HaSharedLibrary.Wz;
+using MapleLib.Helpers;
 using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using MapleLib.Helpers;
-using MapleLib.WzLib.WzProperties;
-using System.Collections;
-using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.Info;
-using HaCreator.MapEditor.Instance.Misc;
 using XNA = Microsoft.Xna.Framework;
-using System.Runtime.Remoting.Channels;
-using System.Windows.Media;
-using HaSharedLibrary.Util;
-using HaCreator.GUI;
-using HaCreator.MapSimulator;
-using HaCreator.Exceptions;
-using HaCreator.MapEditor.Info.Default;
-using HaSharedLibrary.Render.DX;
-using HaSharedLibrary.Render;
-using HaSharedLibrary.Wz;
 
 namespace HaCreator.Wz {
 	public static class MapLoader {
 		public static List<string> VerifyMapPropsKnown(WzImage mapImage, bool userless) {
 			var copyPropNames = new List<string>();
-			foreach (var prop in mapImage.WzProperties)
+			foreach (var prop in mapImage.WzProperties) {
 				switch (prop.Name) {
 					case "0":
 					case "1":
@@ -85,9 +80,10 @@ namespace HaCreator.Wz {
 					case "monsterCarnival"
 						: // The Monster Carnival. It has an immense amount of info and stateful objects, including the mobs and guardians. We do not support it. (e.g. 980000201)
 						copyPropNames.Add(prop.Name);
-						if (!userless)
+						if (!userless) {
 							MessageBox.Show("The map you are opening has the feature \"" + prop.Name +
 							                "\", which is purposely not supported in the editor.\r\nTo get around this, HaCreator will copy the original feature's data byte-to-byte. This might cause the feature to stop working if it depends on map objects, such as footholds or mobs.");
+						}
 
 						continue;
 					case "tokyoBossParty": // Neo Tokyo 802000801.img
@@ -147,6 +143,7 @@ namespace HaCreator.Wz {
 						copyPropNames.Add(prop.Name);
 						break;
 				}
+			}
 
 			return copyPropNames;
 		}
@@ -208,13 +205,15 @@ namespace HaCreator.Wz {
 		public static void LoadLayers(WzImage mapImage, Board mapBoard) {
 			for (var layer = 0; layer <= MapConstants.MaxMapLayers; layer++) {
 				var layerProp = (WzSubProperty) mapImage[layer.ToString()];
-				if (layerProp == null)
+				if (layerProp == null) {
 					continue;
+				}
 
 				var tSprop = layerProp["info"]?["tS"];
 				string tS = null;
-				if (tSprop != null)
+				if (tSprop != null) {
 					tS = InfoTool.GetString(tSprop);
+				}
 
 				// Load objects
 				foreach (var obj in layerProp["obj"].WzProperties) {
@@ -247,8 +246,9 @@ namespace HaCreator.Wz {
 					}
 
 					var objInfo = ObjectInfo.Get(oS, l0, l1, l2);
-					if (objInfo == null)
+					if (objInfo == null) {
 						continue;
+					}
 
 					var l = mapBoard.Layers[layer];
 					mapBoard.BoardItems.TileObjs.Add((LayeredItem) objInfo.CreateInstance(l, mapBoard, x, y, z, zM, r,
@@ -276,8 +276,9 @@ namespace HaCreator.Wz {
 
 		public static void LoadLife(WzImage mapImage, Board mapBoard) {
 			var lifeParent = mapImage["life"];
-			if (lifeParent == null)
+			if (lifeParent == null) {
 				return;
+			}
 
 			if (lifeParent["isCategory"].GetOptionalBool(false)) // cant handle this for now.  Azwan 262021001.img TODO
 				// - 170
@@ -312,15 +313,19 @@ namespace HaCreator.Wz {
 				switch (type) {
 					case "m":
 						var mobInfo = MobInfo.Get(id);
-						if (mobInfo == null)
+						if (mobInfo == null) {
 							continue;
+						}
+
 						mapBoard.BoardItems.Mobs.Add((MobInstance) mobInfo.CreateInstance(mapBoard, x, cy, x - rx0,
 							rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
 						break;
 					case "n":
 						var npcInfo = NpcInfo.Get(id);
-						if (npcInfo == null)
+						if (npcInfo == null) {
 							continue;
+						}
+
 						mapBoard.BoardItems.NPCs.Add((NpcInstance) npcInfo.CreateInstance(mapBoard, x, cy, x - rx0,
 							rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
 						break;
@@ -351,8 +356,9 @@ namespace HaCreator.Wz {
 				var i = 0;
 				WzImageProperty chairImage;
 				while ((chairImage = chairParent[i.ToString()]) != null) {
-					if (chairImage is WzVectorProperty chair)
+					if (chairImage is WzVectorProperty chair) {
 						mapBoard.BoardItems.Chairs.Add(new Chair(mapBoard, chair.X.Value, chair.Y.Value));
+					}
 
 					i++;
 				}
@@ -367,11 +373,13 @@ namespace HaCreator.Wz {
 					} else if (a.X < b.X) {
 						return -1;
 					} else {
-						if (a.Y > b.Y)
+						if (a.Y > b.Y) {
 							return 1;
-						else if (a.Y < b.Y)
+						} else if (a.Y < b.Y) {
 							return -1;
-						else return 0;
+						} else {
+							return 0;
+						}
 					}
 				}));
 			for (var i = 0; i < mapBoard.BoardItems.Chairs.Count - 1; i++) {
@@ -473,11 +481,13 @@ namespace HaCreator.Wz {
 			for (var i = 0; i < mapBoard.Layers.Count; i++)
 			for (var zm_cand = 0; mapBoard.Layers[i].zMList.Count == 0; zm_cand++)
 				// Choose a zM that is free
+			{
 				if (!allExistingZMs.Contains(zm_cand)) {
 					mapBoard.Layers[i].zMList.Add(zm_cand);
 					allExistingZMs.Add(zm_cand);
 					break;
 				}
+			}
 		}
 
 		public static void LoadPortals(WzImage mapImage, Board mapBoard) {
@@ -510,16 +520,19 @@ namespace HaCreator.Wz {
 			if (tooltipsParent == null) return;
 
 			var tooltipsStringImage = (WzImage) Program.WzManager.FindWzImageByName("string", "ToolTipHelp.img");
-			if (tooltipsStringImage == null)
+			if (tooltipsStringImage == null) {
 				throw new Exception("ToolTipHelp.img not found in string.wz");
+			}
 
-			if (!tooltipsStringImage.Parsed)
+			if (!tooltipsStringImage.Parsed) {
 				tooltipsStringImage.ParseImage();
+			}
 
 			var tooltipStrings =
 				(WzSubProperty) tooltipsStringImage["Mapobject"][mapBoard.MapInfo.id.ToString()];
-			if (tooltipStrings == null)
+			if (tooltipStrings == null) {
 				return;
+			}
 
 			for (var i = 0; true; i++) {
 				var num = i.ToString();
@@ -527,10 +540,13 @@ namespace HaCreator.Wz {
 				var tooltipProp = (WzSubProperty) tooltipsParent[num];
 				var tooltipChar = (WzSubProperty) tooltipsParent[num + "char"];
 
-				if (tooltipString == null && tooltipProp == null)
+				if (tooltipString == null && tooltipProp == null) {
 					break;
-				if ((tooltipString == null) ^ (tooltipProp == null))
+				}
+
+				if ((tooltipString == null) ^ (tooltipProp == null)) {
 					continue;
+				}
 
 				var title = InfoTool.GetString(tooltipString["Title"]);
 				var desc = tooltipString["Desc"].GetOptionalString(Defaults.ToolTip.Desc);
@@ -539,7 +555,7 @@ namespace HaCreator.Wz {
 				var y1 = InfoTool.GetInt(tooltipProp["y1"]);
 				var y2 = InfoTool.GetInt(tooltipProp["y2"]);
 				var tooltipPos =
-					new Rectangle(x1, y1, x2 - x1, y2 - y1);
+					new XNA.Rectangle(x1, y1, x2 - x1, y2 - y1);
 				var tt = new ToolTipInstance(mapBoard, tooltipPos, title, desc, i);
 				mapBoard.BoardItems.ToolTips.Add(tt);
 				if (tooltipChar != null) {
@@ -547,7 +563,7 @@ namespace HaCreator.Wz {
 					x2 = InfoTool.GetInt(tooltipChar["x2"]);
 					y1 = InfoTool.GetInt(tooltipChar["y1"]);
 					y2 = InfoTool.GetInt(tooltipChar["y2"]);
-					tooltipPos = new Rectangle(x1, y1, x2 - x1, y2 - y1);
+					tooltipPos = new XNA.Rectangle(x1, y1, x2 - x1, y2 - y1);
 
 					var ttc = new ToolTipChar(mapBoard, tooltipPos, tt);
 					mapBoard.BoardItems.CharacterToolTips.Add(ttc);
@@ -587,8 +603,9 @@ namespace HaCreator.Wz {
 				}
 
 				var bgInfo = BackgroundInfo.Get(mapBoard.ParentControl.GraphicsDevice, bS, infoType, no);
-				if (bgInfo == null)
+				if (bgInfo == null) {
 					continue;
+				}
 
 				IList list = front ? mapBoard.BoardItems.FrontBackgrounds : mapBoard.BoardItems.BackBackgrounds;
 				list.Add((BackgroundInstance) bgInfo.CreateInstance(mapBoard, x, y, i, rx, ry, cx, cy, type, a, front,
@@ -613,7 +630,7 @@ namespace HaCreator.Wz {
 
 			if (clock != null) {
 				var clockInstance = new Clock(mapBoard,
-					new Rectangle(InfoTool.GetInt(clock["x"]), InfoTool.GetInt(clock["y"]),
+					new XNA.Rectangle(InfoTool.GetInt(clock["x"]), InfoTool.GetInt(clock["y"]),
 						InfoTool.GetInt(clock["width"]), InfoTool.GetInt(clock["height"])));
 				mapBoard.BoardItems.Add(clockInstance, false);
 			}
@@ -638,17 +655,18 @@ namespace HaCreator.Wz {
 				mapBoard.BoardItems.Add(shipInstance, false);
 			}
 
-			if (area != null)
+			if (area != null) {
 				foreach (var prop in area.WzProperties) {
 					var x1 = InfoTool.GetInt(prop["x1"]);
 					var x2 = InfoTool.GetInt(prop["x2"]);
 					var y1 = InfoTool.GetInt(prop["y1"]);
 					var y2 = InfoTool.GetInt(prop["y2"]);
 					var currArea = new Area(mapBoard,
-						new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)),
+						new XNA.Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)),
 						prop.Name);
 					mapBoard.BoardItems.Add(currArea, false);
 				}
+			}
 
 			if (healer != null) {
 				var objPath = InfoTool.GetString(healer["healer"]);
@@ -685,7 +703,7 @@ namespace HaCreator.Wz {
 				mapBoard.BoardItems.Add(pulleyInstance, false);
 			}
 
-			if (BuffZone != null)
+			if (BuffZone != null) {
 				foreach (var zone in BuffZone.WzProperties) {
 					var x1 = InfoTool.GetInt(zone["x1"]);
 					var x2 = InfoTool.GetInt(zone["x2"]);
@@ -696,12 +714,13 @@ namespace HaCreator.Wz {
 					var duration = InfoTool.GetInt(zone["Duration"]);
 
 					var currZone = new BuffZone(mapBoard,
-						new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), id,
+						new XNA.Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), id,
 						interval, duration, zone.Name);
 					mapBoard.BoardItems.Add(currZone, false);
 				}
+			}
 
-			if (swimArea != null)
+			if (swimArea != null) {
 				foreach (var prop in swimArea.WzProperties) {
 					var x1 = InfoTool.GetInt(prop["x1"]);
 					var x2 = InfoTool.GetInt(prop["x2"]);
@@ -709,12 +728,13 @@ namespace HaCreator.Wz {
 					var y2 = InfoTool.GetInt(prop["y2"]);
 
 					var currArea = new SwimArea(mapBoard,
-						new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)),
+						new XNA.Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)),
 						prop.Name);
 					mapBoard.BoardItems.Add(currArea, false);
 				}
+			}
 
-			if (mirrorFieldData != null)
+			if (mirrorFieldData != null) {
 				foreach (var prop in mirrorFieldData.WzProperties)
 				foreach (var prop_ in prop.WzProperties) // mob, user
 				{
@@ -726,8 +746,9 @@ namespace HaCreator.Wz {
 					}
 
 					if (targetObjectReflectionType == MirrorFieldDataType.NULL ||
-					    targetObjectReflectionType == MirrorFieldDataType.info)
+					    targetObjectReflectionType == MirrorFieldDataType.info) {
 						continue;
+					}
 
 					foreach (var prop_items in prop_.WzProperties) {
 						var rectBoundary = InfoTool.GetLtRbRectangle(prop_items);
@@ -738,7 +759,7 @@ namespace HaCreator.Wz {
 						var reflection = prop_items["reflection"].GetOptionalBool(Defaults.MirrorData.Reflection);
 						var alphaTest = prop_items["alphaTest"].GetOptionalBool(Defaults.MirrorData.AlphaTest);
 
-						var rectangle = new Rectangle(
+						var rectangle = new XNA.Rectangle(
 							rectBoundary.X - offset.X.Value,
 							rectBoundary.Y - offset.Y.Value,
 							rectBoundary.Width,
@@ -749,11 +770,12 @@ namespace HaCreator.Wz {
 								alphaTest);
 
 						var mirrorFieldDataItem = new MirrorFieldData(mapBoard, rectangle,
-							new Vector2(offset.X.Value, offset.Y.Value), reflectionInfo,
+							new XNA.Vector2(offset.X.Value, offset.Y.Value), reflectionInfo,
 							targetObjectReflectionType);
 						mapBoard.BoardItems.MirrorFieldDatas.Add(mirrorFieldDataItem);
 					}
 				}
+			}
 			// Some misc items are not implemented here; these are copied byte-to-byte from the original. See VerifyMapPropsKnown for details.
 		}
 
@@ -810,8 +832,8 @@ namespace HaCreator.Wz {
 			return menu;
 		}
 
-		public static void GetMapDimensions(WzImage mapImage, out Rectangle VR, out Point mapCenter, out Point mapSize,
-			out Point minimapCenter, out Point minimapSize, out bool hasVR, out bool hasMinimap) {
+		public static void GetMapDimensions(WzImage mapImage, out XNA.Rectangle VR, out XNA.Point mapCenter, out XNA.Point mapSize,
+			out XNA.Point minimapCenter, out XNA.Point minimapSize, out bool hasVR, out bool hasMinimap) {
 			var vr = MapInfo.GetVR(mapImage);
 			hasVR = vr.HasValue;
 			hasMinimap = mapImage["miniMap"] != null;
@@ -819,17 +841,20 @@ namespace HaCreator.Wz {
 				// No minimap, generate sizes from VR
 				if (vr == null)
 					// No minimap and no VR, our only chance of getting sizes is by generating a VR, if that fails we're screwed
-					if (!GetMapVR(mapImage, ref vr))
+				{
+					if (!GetMapVR(mapImage, ref vr)) {
 						throw new NoVRException();
+					}
+				}
 
-				minimapSize = new Point(vr.Value.Width + 10, vr.Value.Height + 10); //leave 5 pixels on each side
-				minimapCenter = new Point(5 - vr.Value.Left, 5 - vr.Value.Top);
-				mapSize = new Point(minimapSize.X, minimapSize.Y);
-				mapCenter = new Point(minimapCenter.X, minimapCenter.Y);
+				minimapSize = new XNA.Point(vr.Value.Width + 10, vr.Value.Height + 10); //leave 5 pixels on each side
+				minimapCenter = new XNA.Point(5 - vr.Value.Left, 5 - vr.Value.Top);
+				mapSize = new XNA.Point(minimapSize.X, minimapSize.Y);
+				mapCenter = new XNA.Point(minimapCenter.X, minimapCenter.Y);
 			} else {
 				var miniMap = mapImage["miniMap"];
-				minimapSize = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
-				minimapCenter = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
+				minimapSize = new XNA.Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
+				minimapCenter = new XNA.Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
 				int topOffs = 0, botOffs = 0, leftOffs = 0, rightOffs = 0;
 				int leftTarget = 69 - minimapCenter.X,
 					topTarget = 86 - minimapCenter.Y,
@@ -848,11 +873,11 @@ namespace HaCreator.Wz {
 					if (vr.Value.Bottom > botTarget) botOffs = vr.Value.Bottom - botTarget;
 				}
 
-				mapSize = new Point(minimapSize.X + leftOffs + rightOffs, minimapSize.Y + topOffs + botOffs);
-				mapCenter = new Point(minimapCenter.X + leftOffs, minimapCenter.Y + topOffs);
+				mapSize = new XNA.Point(minimapSize.X + leftOffs + rightOffs, minimapSize.Y + topOffs + botOffs);
+				mapCenter = new XNA.Point(minimapCenter.X + leftOffs, minimapCenter.Y + topOffs);
 			}
 
-			VR = new Rectangle(vr.Value.X, vr.Value.Y, vr.Value.Width, vr.Value.Height);
+			VR = new XNA.Rectangle(vr.Value.X, vr.Value.Y, vr.Value.Width, vr.Value.Height);
 		}
 
 		/// <summary>
@@ -870,8 +895,9 @@ namespace HaCreator.Wz {
 		public static void CreateMapFromImage(int mapId, WzImage mapImage, string mapName, string streetName,
 			string categoryName, WzSubProperty strMapProp, System.Windows.Controls.TabControl Tabs,
 			MultiBoard multiBoard, System.Windows.RoutedEventHandler[] rightClickHandler) {
-			if (!mapImage.Parsed)
+			if (!mapImage.Parsed) {
 				mapImage.ParseImage();
+			}
 
 			var copyPropNames = VerifyMapPropsKnown(mapImage, false);
 
@@ -879,15 +905,17 @@ namespace HaCreator.Wz {
 			foreach (var copyPropName in copyPropNames) info.additionalNonInfoProps.Add(mapImage[copyPropName]);
 
 			var type = GetMapType(mapImage);
-			if (type == MapType.RegularMap)
+			if (type == MapType.RegularMap) {
 				info.id = int.Parse(WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)));
+			}
+
 			info.mapType = type;
 
-			var VR = new Rectangle();
-			var center = new Point();
-			var size = new Point();
-			var minimapSize = new Point();
-			var minimapCenter = new Point();
+			var VR = new XNA.Rectangle();
+			var center = new XNA.Point();
+			var size = new XNA.Point();
+			var minimapSize = new XNA.Point();
+			var minimapCenter = new XNA.Point();
 			var hasMinimap = false;
 			var hasVR = false;
 
@@ -915,7 +943,7 @@ namespace HaCreator.Wz {
 					var mmPos = new System.Drawing.Point(-minimapCenter.X, -minimapCenter.Y);
 					mapBoard.MinimapPosition = mmPos;
 					mapBoard.MinimapRectangle = new MinimapRectangle(mapBoard,
-						new Rectangle(mmPos.X, mmPos.Y, minimapSize.X, minimapSize.Y));
+						new XNA.Rectangle(mmPos.X, mmPos.Y, minimapSize.X, minimapSize.Y));
 				}
 
 				if (hasVR) mapBoard.VRRectangle = new VRRectangle(mapBoard, VR);
@@ -962,7 +990,7 @@ namespace HaCreator.Wz {
 		/// <param name="Tabs"></param>
 		/// <param name="multiBoard"></param>
 		public static void CreateMap(string streetName, string mapName, int mapId, string tooltip,
-			System.Windows.Controls.ContextMenu menu, Point size, Point center, System.Windows.Controls.TabControl Tabs,
+			System.Windows.Controls.ContextMenu menu, XNA.Point size, XNA.Point center, System.Windows.Controls.TabControl Tabs,
 			MultiBoard multiBoard) {
 			lock (multiBoard) {
 				var bIsNewMapDesign = mapId == -1;
@@ -1006,7 +1034,7 @@ namespace HaCreator.Wz {
 
 		public static void CreateMapFromHam(MultiBoard multiBoard, System.Windows.Controls.TabControl Tabs, string data,
 			System.Windows.RoutedEventHandler[] rightClickHandler) {
-			CreateMap("", "", -1, "", CreateStandardMapMenu(rightClickHandler), new Point(), new Point(), Tabs,
+			CreateMap("", "", -1, "", CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), Tabs,
 				multiBoard);
 			multiBoard.SelectedBoard.Loading = true; // Prevent TS Change callbacks while were loading
 			lock (multiBoard) {

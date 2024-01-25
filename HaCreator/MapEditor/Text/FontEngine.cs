@@ -5,14 +5,11 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-using Microsoft.Xna.Framework.Graphics;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
 using HaSharedLibrary.Util;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HaCreator.MapEditor.Text {
 	public class FontEngine {
@@ -85,7 +82,9 @@ namespace HaCreator.MapEditor.Text {
 			foreach (var c in str.ToCharArray()) {
 				if (c > 256)
 					//hack to stop attempting to draw languages other than english
+				{
 					return;
+				}
 
 				var w = characters[c].w;
 				var h = characters[c].h;

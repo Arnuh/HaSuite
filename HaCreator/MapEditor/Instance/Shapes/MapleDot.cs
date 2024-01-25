@@ -4,16 +4,13 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -42,9 +39,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void OnItemPlaced(List<UndoRedoAction> undoPipe) {
 			lock (board.ParentControl) {
 				base.OnItemPlaced(undoPipe);
-				if (RemoveConnectedLines)
+				if (RemoveConnectedLines) {
 					foreach (var line in connectedLines)
 						line.OnPlaced(undoPipe);
+				}
 			}
 		}
 
@@ -53,9 +51,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void RemoveItem(List<UndoRedoAction> undoPipe) {
 			lock (board.ParentControl) {
 				base.RemoveItem(undoPipe);
-				if (RemoveConnectedLines)
+				if (RemoveConnectedLines) {
 					while (connectedLines.Count > 0)
 						connectedLines[0].Remove(false, undoPipe);
+				}
 			}
 		}
 
@@ -66,9 +65,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override int Height => UserSettings.DotWidth * 2;
 
 		public override XNA.Color GetColor(SelectionInfo sel, bool selected) {
-			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel))
+			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel)) {
 				return selected ? UserSettings.SelectedColor : Color;
-			else return InactiveColor;
+			} else {
+				return InactiveColor;
+			}
 		}
 
 		public override Point Origin => origin;
@@ -104,16 +105,18 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void Move(int x, int y) {
 			lock (board.ParentControl) {
 				base.Move(x, y);
-				if (PointMoved != null)
+				if (PointMoved != null) {
 					PointMoved.Invoke();
+				}
 			}
 		}
 
 		public override void SnapMove(int x, int y) {
 			lock (board.ParentControl) {
 				base.SnapMove(x, y);
-				if (PointMoved != null)
+				if (PointMoved != null) {
 					PointMoved.Invoke();
+				}
 			}
 		}
 
@@ -151,21 +154,23 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				}
 
 				if (closestAnchor != null) {
-					if (xClosest)
+					if (xClosest) {
 						SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X,
 							closestAnchor.Y));
-					else
+					} else {
 						SnapMoveAllMouseBoundItems(new XNA.Point(closestAnchor.X,
 							Parent.Y + Parent.BoundItems[this].Y));
+					}
 				}
 			}
 		}
 
 		public bool BetweenOrEquals(int value, int bounda, int boundb, int tolerance) {
-			if (bounda < boundb)
+			if (bounda < boundb) {
 				return bounda - tolerance <= value && value <= boundb + tolerance;
-			else
+			} else {
 				return boundb - tolerance <= value && value <= bounda + tolerance;
+			}
 		}
 
 		public MapleDot(Board board, SerializationForm json)

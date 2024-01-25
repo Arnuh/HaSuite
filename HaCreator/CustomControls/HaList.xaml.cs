@@ -4,22 +4,13 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HaCreator.CustomControls {
 	public abstract class PropertyChangeNotifierBase : INotifyPropertyChanged {
@@ -109,11 +100,14 @@ namespace HaCreator.CustomControls {
 		public int SelectedIndex {
 			get => selectedIndex;
 			set {
-				if (value < 0 || value >= Items.Count)
+				if (value < 0 || value >= Items.Count) {
 					return;
+				}
 
-				if (selectedIndex != -1)
+				if (selectedIndex != -1) {
 					Items[selectedIndex].Selected = false;
+				}
+
 				selectedIndex = value;
 				Items[selectedIndex].Selected = true;
 
@@ -124,13 +118,17 @@ namespace HaCreator.CustomControls {
 				double h = 16;
 				if (h * selectedIndex < sv.VerticalOffset)
 					// Item is invisible above us
+				{
 					sv.ScrollToVerticalOffset(h * selectedIndex);
-				else if (h * (selectedIndex + 1) > sv.VerticalOffset + Height)
+				} else if (h * (selectedIndex + 1) > sv.VerticalOffset + Height)
 					// Item is invisible below us
+				{
 					sv.ScrollToVerticalOffset(h * (selectedIndex + 1) - Height);
+				}
 
-				if (SelectionChanged != null)
+				if (SelectionChanged != null) {
 					SelectionChanged.Invoke(Items[selectedIndex], null);
+				}
 			}
 		}
 

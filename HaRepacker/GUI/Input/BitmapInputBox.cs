@@ -37,8 +37,9 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private void keyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) 13)
+			if (e.KeyChar == (char) 13) {
 				okButton_Click(null, null);
+			}
 		}
 
 		private void okButton_Click(object sender, EventArgs e) {
@@ -48,11 +49,14 @@ namespace HaRepacker.GUI.Input {
 			var validated = false;
 
 			// Validate input
-			if (nameBox.Text != null && pathBox.Text != null && pathBox.Text != "" && pictureBox.Image != null)
+			if (nameBox.Text != null && pathBox.Text != null && pathBox.Text != "" && pictureBox.Image != null) {
 				if ((fileName == string.Empty && IsPathGIF(filePath)) ||
 				    fileName != string
 					    .Empty) // only allow string empty name if its a GIF. [Frames of file name 0, 1, 2, 3, 4, 5]
+				{
 					validated = true;
+				}
+			}
 
 			if (validated) {
 				nameResult = nameBox.Text;
@@ -77,7 +81,9 @@ namespace HaRepacker.GUI.Input {
 			};
 			if (dialog.ShowDialog() == DialogResult.OK)
 				// Set path
+			{
 				pathBox.Text = dialog.FileName;
+			}
 		}
 
 		/// <summary>
@@ -99,14 +105,15 @@ namespace HaRepacker.GUI.Input {
 				pictureBox.Size = img.Size;
 				pictureBox.Image = img;
 
-				if (IsPathGIF(FilePath))
+				if (IsPathGIF(FilePath)) {
 					using (Stream imageStreamSource = new FileStream(FilePath, FileMode.Open, FileAccess.Read)) {
 						var decoder = new GifBitmapDecoder(imageStreamSource,
 							BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 						foreach (BitmapSource src in decoder.Frames) bmpResult.Add(BitmapFromSource(src));
 					}
-				else
+				} else {
 					bmpResult.Add((Bitmap) img);
+				}
 			} catch (Exception exp) {
 				Debug.WriteLine(exp.ToString());
 			}

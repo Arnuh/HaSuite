@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HaCreator.MapSimulator {
 	/// <summary>
@@ -21,8 +18,9 @@ namespace HaCreator.MapSimulator {
 		/// <param name="wzpath"></param>
 		/// <returns></returns>
 		public Texture2D GetTexture(string wzpath) {
-			if (TEXTURE_POOL.ContainsKey(wzpath))
+			if (TEXTURE_POOL.ContainsKey(wzpath)) {
 				return TEXTURE_POOL[wzpath];
+			}
 
 			return null;
 		}
@@ -33,11 +31,14 @@ namespace HaCreator.MapSimulator {
 		/// <param name="wzpath"></param>
 		/// <param name="texture"></param>
 		public void AddTextureToPool(string wzpath, Texture2D texture) {
-			if (!TEXTURE_POOL.ContainsKey(wzpath))
+			if (!TEXTURE_POOL.ContainsKey(wzpath)) {
 				lock (TEXTURE_POOL) {
 					if (!TEXTURE_POOL.ContainsKey(wzpath)) // check again
+					{
 						TEXTURE_POOL.Add(wzpath, texture);
+					}
 				}
+			}
 		}
 
 		public void Dispose() {

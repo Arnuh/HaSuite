@@ -6,14 +6,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-using MapleLib.MapleCryptoLib;
-using MapleLib.WzLib.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MapleLib.WzLib.Util;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>

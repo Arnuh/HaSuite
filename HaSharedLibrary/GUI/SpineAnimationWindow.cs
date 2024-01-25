@@ -21,14 +21,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
+using System.Linq;
 using HaRepacker.Utils;
 using MapleLib.WzLib.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Spine;
-using System;
-using System.Linq;
 
 namespace HaSharedLibrary.GUI {
 	public class SpineAnimationWindow : Game {
@@ -181,8 +181,9 @@ namespace HaSharedLibrary.GUI {
 			// Allows the game to exit
 #if !WINDOWS_STOREAPP
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-			    || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			    || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
+			}
 #endif
 			// Handle full screen
 			var bIsAltEnterPressed =
@@ -203,31 +204,42 @@ namespace HaSharedLibrary.GUI {
 
 			var MOVE_XY_POSITION = 2;
 			if (bIsShiftPressed) // Move 2x as fast with shift pressed
+			{
 				MOVE_XY_POSITION *= 2;
+			}
 
-			if (bIsUpKeyPressed)
+			if (bIsUpKeyPressed) {
 				wzSpineObject.skeleton.Y += MOVE_XY_POSITION;
-			if (bIsDownKeyPressed)
+			}
+
+			if (bIsDownKeyPressed) {
 				wzSpineObject.skeleton.Y -= MOVE_XY_POSITION;
-			if (bIsLeftKeyPressed)
+			}
+
+			if (bIsLeftKeyPressed) {
 				wzSpineObject.skeleton.X += MOVE_XY_POSITION;
-			if (bIsRightKeyPressed)
+			}
+
+			if (bIsRightKeyPressed) {
 				wzSpineObject.skeleton.X -= MOVE_XY_POSITION;
+			}
 
 			// Swap between skins
 			if (Keyboard.GetState().IsKeyDown(Keys.PageUp)) {
-				if (spineSkinIndex != 0)
+				if (spineSkinIndex != 0) {
 					spineSkinIndex--;
-				else
+				} else {
 					spineSkinIndex = wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count() - 1;
+				}
 
 				wzSpineObject.skeleton.SetSkin(
 					wzSpineObject.spineAnimationItem.SkeletonData.Skins[spineSkinIndex]);
 			} else if (Keyboard.GetState().IsKeyDown(Keys.PageDown)) {
-				if (spineSkinIndex + 1 < wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count())
+				if (spineSkinIndex + 1 < wzSpineObject.spineAnimationItem.SkeletonData.Skins.Count()) {
 					spineSkinIndex++;
-				else
+				} else {
 					spineSkinIndex = 0;
+				}
 
 				wzSpineObject.skeleton.SetSkin(
 					wzSpineObject.spineAnimationItem.SkeletonData.Skins[spineSkinIndex]);
@@ -272,7 +284,7 @@ namespace HaSharedLibrary.GUI {
 				//SpriteSortMode.Deferred,
 				BlendState.NonPremultiplied, null, null, null, null, matrixScale);
 
-			if (gameTime.TotalGameTime.TotalSeconds < 3)
+			if (gameTime.TotalGameTime.TotalSeconds < 3) {
 				spriteBatch.DrawString(font,
 					string.Format("Press [Left] [Right] [Up] [Down] [Shift] for navigation.{0}{1}",
 						Environment.NewLine,
@@ -281,6 +293,7 @@ namespace HaSharedLibrary.GUI {
 							: string.Empty),
 					new Vector2(20, 10),
 					Color.White);
+			}
 
 			spriteBatch.End();
 

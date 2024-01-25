@@ -4,16 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.UndoRedo;
-using MapleLib.WzLib.WzStructure;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
+using HaCreator.MapEditor.UndoRedo;
+using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
@@ -105,12 +99,14 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public static bool Exists(int x1, int y1, int x2, int y2, Board board) {
-			foreach (var fh in board.BoardItems.FootholdLines)
+			foreach (var fh in board.BoardItems.FootholdLines) {
 				if ((fh.FirstDot.X == x1 && fh.FirstDot.Y == y1 &&
 				     fh.SecondDot.X == x2 && fh.SecondDot.Y == y2) ||
 				    (fh.FirstDot.X == x2 && fh.FirstDot.Y == y2 &&
-				     fh.SecondDot.X == x1 && fh.SecondDot.Y == y1))
+				     fh.SecondDot.X == x1 && fh.SecondDot.Y == y1)) {
 					return true;
+				}
+			}
 
 			return false;
 		}
@@ -130,16 +126,20 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public static FootholdLine[] GetSelectedFootholds(Board board) {
 			var length = 0;
-			foreach (var line in board.BoardItems.FootholdLines)
-				if (line.Selected)
+			foreach (var line in board.BoardItems.FootholdLines) {
+				if (line.Selected) {
 					length++;
+				}
+			}
+
 			var result = new FootholdLine[length];
 			var index = 0;
-			foreach (var line in board.BoardItems.FootholdLines)
+			foreach (var line in board.BoardItems.FootholdLines) {
 				if (line.Selected) {
 					result[index] = line;
 					index++;
 				}
+			}
 
 			return result;
 		}
@@ -185,12 +185,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public FootholdAnchor GetOtherAnchor(FootholdAnchor first) {
-			if (FirstDot == first)
+			if (FirstDot == first) {
 				return (FootholdAnchor) SecondDot;
-			else if (SecondDot == first)
+			} else if (SecondDot == first) {
 				return (FootholdAnchor) FirstDot;
-			else
+			} else {
 				throw new Exception("GetOtherAnchor: line is not properly connected");
+			}
 		}
 
 		#region ISerializable Implementation

@@ -142,7 +142,7 @@ namespace MapleLib.WzLib.WzProperties {
 					linkVal = parent;
 					var fullPath = parent.FullPath;
 
-					foreach (var path in paths)
+					foreach (var path in paths) {
 						if (path == "..") {
 							linkVal = linkVal.Parent;
 						} else {
@@ -151,16 +151,18 @@ namespace MapleLib.WzLib.WzProperties {
 							} else if (linkVal is WzImage image) {
 								linkVal = image[path];
 							} else if (linkVal is WzDirectory directory) {
-								if (path.EndsWith(".img"))
+								if (path.EndsWith(".img")) {
 									linkVal = directory[path];
-								else
+								} else {
 									linkVal = directory[path + ".img"];
+								}
 							} else {
 								ErrorLogger.Log(ErrorLevel.Critical,
 									"UOL got nexon'd at property: " + FullPath);
 								return null;
 							}
 						}
+					}
 				}
 
 				return linkVal;

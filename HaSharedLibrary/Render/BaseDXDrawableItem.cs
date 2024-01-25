@@ -1,13 +1,8 @@
-﻿using HaSharedLibrary.Render.DX;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaSharedLibrary.Render.DX {
 	/// <summary>
@@ -107,14 +102,17 @@ namespace HaSharedLibrary.Render.DX {
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected IDXObject GetCurrentFrame(int TickCount) {
-			if (notAnimated)
+			if (notAnimated) {
 				return frame0;
+			}
 
 			// Animated
 			if (TickCount - lastFrameSwitchTime > frames[currFrame].Delay) {
 				currFrame++; //advance frame
-				if (currFrame == frames.Count)
+				if (currFrame == frames.Count) {
 					currFrame = 0;
+				}
+
 				lastFrameSwitchTime = TickCount;
 			}
 
@@ -143,10 +141,11 @@ namespace HaSharedLibrary.Render.DX {
 			var shiftCenteredY = mapShiftY - centerY;
 
 			IDXObject drawFrame;
-			if (notAnimated)
+			if (notAnimated) {
 				drawFrame = frame0;
-			else
+			} else {
 				drawFrame = GetCurrentFrame(TickCount);
+			}
 
 			if (IsFrameWithinView(drawFrame, shiftCenteredX, shiftCenteredY, width, height)) {
 				drawFrame.DrawObject(sprite, skeletonMeshRenderer, gameTime,

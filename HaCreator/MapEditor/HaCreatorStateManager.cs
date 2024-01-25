@@ -4,12 +4,6 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.CustomControls;
-using HaCreator.GUI.EditorPanels;
-using HaCreator.GUI;
-using HaCreator.GUI.InstanceEditor;
-using MapleLib.Helpers;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,23 +11,23 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using MapleLib.WzLib;
-using HaCreator.Wz;
-using MapleLib.WzLib.WzStructure;
-using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.MapEditor.Input;
-using HaCreator.MapEditor.UndoRedo;
 using HaCreator.Exceptions;
+using HaCreator.GUI;
+using HaCreator.GUI.EditorPanels;
+using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
-using SystemWinCtl = System.Windows.Controls;
-using HaSharedLibrary;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.UndoRedo;
+using HaCreator.Wz;
 using MapleLib;
-using MapleLib.WzLib.WzProperties;
+using MapleLib.Helpers;
+using MapleLib.WzLib.WzStructure.Data;
+using SystemWinCtl = System.Windows.Controls;
 using Application = System.Windows.Forms.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -130,7 +124,7 @@ namespace HaCreator.MapEditor {
 			this.multiBoard.BoardRemoved += MultiBoard_BoardRemoved;
 			this.multiBoard.MinimapStateChanged += MultiBoard_MinimapStateChanged;
 
-			multiBoard.Visibility = System.Windows.Visibility.Collapsed;
+			multiBoard.Visibility = Visibility.Collapsed;
 			ribbon.SetEnabled(false);
 		}
 
@@ -212,16 +206,18 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		/// <param name="selectedItem"></param>
 		private void MultiBoard_SelectedItemChanged(BoardItem selectedItem) {
-			if (selectedItem != null)
+			if (selectedItem != null) {
 				textblock_selectedItem.Text = CreateItemDescription(selectedItem).Replace(Environment.NewLine, " - ");
-			else
+			} else {
 				textblock_selectedItem.Text = string.Empty;
+			}
 		}
 
 		private void MultiBoard_ReturnToSelectionState() {
 			// No need to lock because SelectionMode() and ExitEditMode() are both thread-safe
-			if (multiBoard.SelectedBoard == null)
+			if (multiBoard.SelectedBoard == null) {
 				return;
+			}
 
 			multiBoard.SelectedBoard.Mouse.SelectionMode();
 			ExitEditMode();
@@ -230,12 +226,13 @@ namespace HaCreator.MapEditor {
 
 		private void MultiBoard_OnSendToBackClicked(BoardItem boardRefItem) {
 			lock (multiBoard) {
-				foreach (var item in boardRefItem.Board.SelectedItems)
+				foreach (var item in boardRefItem.Board.SelectedItems) {
 					if (item.Z > 0) {
 						item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction>
 							{UndoRedoManager.ItemZChanged(item, item.Z, 0)});
 						item.Z = 0;
 					}
+				}
 
 				boardRefItem.Board.BoardItems.Sort();
 			}
@@ -258,10 +255,11 @@ namespace HaCreator.MapEditor {
 					new GeneralInstanceEditor(item).ShowDialog();
 				} else if (item is FootholdAnchor) {
 					var selectedFootholds = FootholdLine.GetSelectedFootholds(item.Board);
-					if (selectedFootholds.Length > 0)
+					if (selectedFootholds.Length > 0) {
 						new FootholdEditor(selectedFootholds).ShowDialog();
-					else
+					} else {
 						new GeneralInstanceEditor(item).ShowDialog();
+					}
 				} else if (item is RopeAnchor ropeItem) {
 					new RopeInstanceEditor(ropeItem).ShowDialog();
 				} else if (item is LifeInstance lifeItem) {
@@ -296,21 +294,28 @@ namespace HaCreator.MapEditor {
 							? multiBoard.SelectedBoard.BoardItems.FrontBackgrounds
 							: multiBoard.SelectedBoard.BoardItems.BackBackgrounds;
 						var highestZ = 0;
-						foreach (BackgroundInstance bg in list)
-							if (bg.Z > highestZ)
+						foreach (BackgroundInstance bg in list) {
+							if (bg.Z > highestZ) {
 								highestZ = bg.Z;
+							}
+						}
+
 						item.Z = highestZ + 1;
 					} else {
 						var highestZ = 0;
-						foreach (var layeredItem in multiBoard.SelectedBoard.BoardItems.TileObjs)
-							if (layeredItem.Z > highestZ)
+						foreach (var layeredItem in multiBoard.SelectedBoard.BoardItems.TileObjs) {
+							if (layeredItem.Z > highestZ) {
 								highestZ = layeredItem.Z;
+							}
+						}
+
 						item.Z = highestZ + 1;
 					}
 
-					if (item.Z != oldZ)
+					if (item.Z != oldZ) {
 						item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction>
 							{UndoRedoManager.ItemZChanged(item, oldZ, item.Z)});
+					}
 				}
 			}
 
@@ -328,8 +333,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="e"></param>
 		private void MapEditInfo(object sender, EventArgs e) {
 			var item = (System.Windows.Controls.MenuItem) sender;
-			if (item == null)
+			if (item == null) {
 				return;
+			}
 
 			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
@@ -338,8 +344,9 @@ namespace HaCreator.MapEditor {
 			lock (selectedBoard.ParentControl) {
 				var infoEditor = new InfoEditor(selectedBoard, selectedBoard.MapInfo, multiBoard, tabItem);
 				infoEditor.ShowDialog();
-				if (selectedBoard.ParentControl.SelectedBoard == selectedBoard)
+				if (selectedBoard.ParentControl.SelectedBoard == selectedBoard) {
 					selectedBoard.ParentControl.AdjustScrollBars();
+				}
 			}
 		}
 
@@ -350,8 +357,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="e"></param>
 		private void MapAddVR(object sender, EventArgs e) {
 			var item = (System.Windows.Controls.MenuItem) sender;
-			if (item == null)
+			if (item == null) {
 				return;
+			}
 
 			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
@@ -380,8 +388,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="e"></param>
 		private void MapAddMinimap(object sender, EventArgs e) {
 			var item = (System.Windows.Controls.MenuItem) sender;
-			if (item == null)
+			if (item == null) {
 				return;
+			}
 
 			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
@@ -434,15 +443,19 @@ namespace HaCreator.MapEditor {
 		/// <param name="e"></param>
 		private void CloseMapTab(object sender, EventArgs e) {
 			if (tabs.Items.Count <= 0) // at least 1 tabs for now
+			{
 				return;
+			}
 
 			if (MessageBox.Show("Are you sure you want to close this map?", "Close", MessageBoxButtons.YesNo,
-				    MessageBoxIcon.Question) != DialogResult.Yes)
+				    MessageBoxIcon.Question) != DialogResult.Yes) {
 				return;
+			}
 
 			var item = (System.Windows.Controls.MenuItem) sender;
-			if (item == null)
+			if (item == null) {
 				return;
+			}
 
 			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
@@ -465,8 +478,9 @@ namespace HaCreator.MapEditor {
 		}
 
 		private void Tabs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
-			if (multiBoard.SelectedBoard == null)
+			if (multiBoard.SelectedBoard == null) {
 				return;
+			}
 
 			lock (multiBoard) {
 				MultiBoard_ReturnToSelectionState();
@@ -507,8 +521,10 @@ namespace HaCreator.MapEditor {
 		/// Show map '/info' handlers
 		/// </summary>
 		private void Ribbon_ShowMapPropertiesClicked() {
-			if (multiBoard.SelectedBoard == null)
+			if (multiBoard.SelectedBoard == null) {
 				return;
+			}
+
 			var unsupportedProp = multiBoard.SelectedBoard.MapInfo.unsupportedInfoProperties;
 
 			var sb = new StringBuilder();
@@ -535,10 +551,14 @@ namespace HaCreator.MapEditor {
 		public void Ribbon_ExportClicked() {
 			var ofd = new SaveFileDialog()
 				{Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham"};
-			if (lastSaveLoc != null)
+			if (lastSaveLoc != null) {
 				ofd.FileName = lastSaveLoc;
-			if (ofd.ShowDialog() != DialogResult.OK)
+			}
+
+			if (ofd.ShowDialog() != DialogResult.OK) {
 				return;
+			}
+
 			lastSaveLoc = ofd.FileName;
 			// No need to lock, SerializeBoard locks only the critical areas to cut down on locked time
 			try {
@@ -558,10 +578,11 @@ namespace HaCreator.MapEditor {
 		private void Ribbon_FinalizeClicked() {
 			if (MessageBox.Show(
 				    "This will finalize all footholds, removing their Tile bindings and clearing the Undo/Redo list in the process.\r\nContinue?",
-				    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+				    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes) {
 				lock (multiBoard) {
 					new MapSaver(multiBoard.SelectedBoard).ActualizeFootholds();
 				}
+			}
 		}
 
 		private void Ribbon_HaRepackerClicked() {
@@ -585,12 +606,13 @@ namespace HaCreator.MapEditor {
 		}
 
 		private bool? getTypes(ItemTypes visibleTypes, ItemTypes editedTypes, ItemTypes type) {
-			if ((editedTypes & type) == type)
+			if ((editedTypes & type) == type) {
 				return true;
-			else if ((visibleTypes & type) == type)
+			} else if ((visibleTypes & type) == type) {
 				return (bool?) null;
-			else
+			} else {
 				return false;
+			}
 		}
 
 		private void ParseVisibleEditedTypes() {
@@ -615,8 +637,9 @@ namespace HaCreator.MapEditor {
 
 		private void Ribbon_RandomTilesToggled(bool pressed) {
 			ApplicationSettings.randomTiles = pressed;
-			if (tilePanel != null)
+			if (tilePanel != null) {
 				tilePanel.LoadTileSetList();
+			}
 		}
 
 		private void Ribbon_SnappingToggled(bool pressed) {
@@ -646,8 +669,10 @@ namespace HaCreator.MapEditor {
 
 			var selectedBoard = multiBoard.SelectedBoard;
 			var tab = (System.Windows.Controls.TabItem) tabs.SelectedItem;
-			if (selectedBoard == null || tab == null)
+			if (selectedBoard == null || tab == null) {
 				return;
+			}
+
 			var mapSimulator =
 				MapSimulator.MapSimulatorLoader.CreateAndShowMapSimulator(selectedBoard, (string) tab.Header);
 
@@ -715,10 +740,11 @@ namespace HaCreator.MapEditor {
 
 		private void Ribbon_HelpClicked() {
 			var helpPath = Path.Combine(Application.StartupPath, "Help.htm");
-			if (File.Exists(helpPath))
+			if (File.Exists(helpPath)) {
 				Process.Start(helpPath);
-			else
+			} else {
 				MessageBox.Show("Help could not be shown because the help file (HRHelp.htm) was not found");
+			}
 		}
 
 		private void Ribbon_AboutClicked() {
@@ -757,10 +783,11 @@ namespace HaCreator.MapEditor {
 		private void Ribbon_OpenClicked() {
 			string mapNameFilter = null;
 			var currentSelectedBoard = multiBoard.SelectedBoard;
-			if (currentSelectedBoard != null)
+			if (currentSelectedBoard != null) {
 				mapNameFilter =
 					(currentSelectedBoard.MapInfo.id / 10000)
 					.ToString(); // shows near-by maps relative to the current map opened in the Board
+			}
 
 			var fieldSelector =
 				new FieldSelector(multiBoard, tabs, MakeRightClickHandler(), false,
@@ -822,8 +849,10 @@ namespace HaCreator.MapEditor {
 			lock (multiBoard) {
 				var dlg = new NewPlatform(new SortedSet<int>(multiBoard.SelectedBoard.Layers
 					.Select(x => (IEnumerable<int>) x.zMList).Aggregate((x, y) => Enumerable.Concat(x, y))));
-				if (dlg.ShowDialog() != DialogResult.OK)
+				if (dlg.ShowDialog() != DialogResult.OK) {
 					return;
+				}
+
 				var zm = dlg.result;
 				multiBoard.SelectedBoard.SelectedLayer.zMList.Add(zm);
 				multiBoard.SelectedBoard.SelectedPlatform = zm;
@@ -864,8 +893,10 @@ namespace HaCreator.MapEditor {
 		}
 
 		private void ribbon_LayerViewChanged(int layer, int platform, bool allLayers, bool allPlats) {
-			if (multiBoard.SelectedBoard == null)
+			if (multiBoard.SelectedBoard == null) {
 				return;
+			}
+
 			SetLayer(layer, platform, allLayers, allPlats);
 			InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
 		}

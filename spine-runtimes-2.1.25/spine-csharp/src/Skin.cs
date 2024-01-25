@@ -60,16 +60,20 @@ namespace Spine {
 
 		public void FindNamesForSlot(int slotIndex, List<string> names) {
 			if (names == null) throw new ArgumentNullException("names cannot be null.");
-			foreach (var key in attachments.Keys)
-				if (key.Key == slotIndex)
+			foreach (var key in attachments.Keys) {
+				if (key.Key == slotIndex) {
 					names.Add(key.Value);
+				}
+			}
 		}
 
 		public void FindAttachmentsForSlot(int slotIndex, List<Attachment> attachments) {
 			if (attachments == null) throw new ArgumentNullException("attachments cannot be null.");
-			foreach (var entry in this.attachments)
-				if (entry.Key.Key == slotIndex)
+			foreach (var entry in this.attachments) {
+				if (entry.Key.Key == slotIndex) {
 					attachments.Add(entry.Value);
+				}
+			}
 		}
 
 		public override string ToString() {

@@ -28,8 +28,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-
 namespace Spine {
 	public class Event {
 		public EventData Data { get; private set; }

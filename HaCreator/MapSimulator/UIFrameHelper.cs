@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using MapleLib.Converters;
 
 namespace HaCreator.MapSimulator {
@@ -40,10 +35,11 @@ namespace HaCreator.MapSimulator {
 			graphics.FillRectangle(new SolidBrush(backgroundColor), fillRectangleBGRange);
 
 			// Fill background with bitmap
-			if (c != null)
+			if (c != null) {
 				for (var column = (int) fillRectangleBGRange.Y; column < fillRectangleBGRange.Width; column += c.Width)
 				for (var row = (int) fillRectangleBGRange.X; row < fillRectangleBGRange.Height; row += c.Height)
 					graphics.DrawImage(c.ToImage(), new PointF(row, column));
+			}
 
 			// Frames
 			if (n != null && s != null && w != null && e != null && ne != null && sw != null && nw != null &&

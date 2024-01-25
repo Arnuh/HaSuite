@@ -140,8 +140,10 @@ namespace Spine {
 			var maxX = this.maxX;
 			var maxY = this.maxY;
 			if ((x1 <= minX && x2 <= minX) || (y1 <= minY && y2 <= minY) || (x1 >= maxX && x2 >= maxX) ||
-			    (y1 >= maxY && y2 >= maxY))
+			    (y1 >= maxY && y2 >= maxY)) {
 				return false;
+			}
+
 			var m = (y2 - y1) / (x2 - x1);
 			var y = m * (minX - x1) + y1;
 			if (y > minY && y < maxY) return true;
@@ -171,8 +173,9 @@ namespace Spine {
 				var prevY = vertices[prevIndex + 1];
 				if ((vertexY < y && prevY >= y) || (prevY < y && vertexY >= y)) {
 					var vertexX = vertices[ii];
-					if (vertexX + (y - vertexY) / (prevY - vertexY) * (vertices[prevIndex] - vertexX) < x)
+					if (vertexX + (y - vertexY) / (prevY - vertexY) * (vertices[prevIndex] - vertexX) < x) {
 						inside = !inside;
+					}
 				}
 
 				prevIndex = ii;
@@ -185,9 +188,12 @@ namespace Spine {
 		/// efficient to only call this method if {@link #aabbContainsPoint(float, float)} returns true.</summary>
 		public BoundingBoxAttachment ContainsPoint(float x, float y) {
 			var polygons = Polygons;
-			for (int i = 0, n = polygons.Count; i < n; i++)
-				if (ContainsPoint(polygons[i], x, y))
+			for (int i = 0, n = polygons.Count; i < n; i++) {
+				if (ContainsPoint(polygons[i], x, y)) {
 					return BoundingBoxes[i];
+				}
+			}
+
 			return null;
 		}
 
@@ -195,9 +201,12 @@ namespace Spine {
 		/// more efficient to only call this method if {@link #aabbIntersectsSegment(float, float, float, float)} returns true.</summary>
 		public BoundingBoxAttachment IntersectsSegment(float x1, float y1, float x2, float y2) {
 			var polygons = Polygons;
-			for (int i = 0, n = polygons.Count; i < n; i++)
-				if (IntersectsSegment(polygons[i], x1, y1, x2, y2))
+			for (int i = 0, n = polygons.Count; i < n; i++) {
+				if (IntersectsSegment(polygons[i], x1, y1, x2, y2)) {
 					return BoundingBoxes[i];
+				}
+			}
+
 			return null;
 		}
 
@@ -218,7 +227,9 @@ namespace Spine {
 				if (((x >= x3 && x <= x4) || (x >= x4 && x <= x3)) && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1))) {
 					var y = (det1 * height34 - height12 * det2) / det3;
 					if (((y >= y3 && y <= y4) || (y >= y4 && y <= y3)) &&
-					    ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))) return true;
+					    ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))) {
+						return true;
+					}
 				}
 
 				x3 = x4;

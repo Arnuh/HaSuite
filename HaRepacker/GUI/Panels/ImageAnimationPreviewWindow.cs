@@ -1,19 +1,15 @@
-﻿using HaSharedLibrary.Render.DX;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text;
+using HaRepacker.Utils;
+using HaSharedLibrary.Render.DX;
+using HaSharedLibrary.Util;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaSharedLibrary.Util;
-using Spine;
-using System.Runtime.CompilerServices;
-using HaRepacker.Utils;
 
 namespace HaRepacker.GUI.Panels {
 	public class ImageAnimationPreviewWindow : Game {
@@ -130,8 +126,9 @@ namespace HaRepacker.GUI.Panels {
 
 					// Get delay property
 					var delay = canvasProperty[WzCanvasProperty.AnimationDelayPropertyName]?.GetInt();
-					if (delay == null)
+					if (delay == null) {
 						delay = 0;
+					}
 
 					// Add to the list of images to render
 					var origin = canvasProperty.GetCanvasOriginPosition();
@@ -173,8 +170,9 @@ namespace HaRepacker.GUI.Panels {
 			// Allows the game to exit
 #if !WINDOWS_STOREAPP
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-			    || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			    || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
 				Exit();
+			}
 #endif
 			// Handle full screen
 			var bIsAltEnterPressed =
@@ -189,10 +187,13 @@ namespace HaRepacker.GUI.Panels {
 			var bIsMinusKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemMinus);
 			var zoomOffset = 1.5f / frameRate; // move a fixed amount a second, not dependent on GPU speed
 
-			if (bIsPlusKeyPressed)
+			if (bIsPlusKeyPressed) {
 				renderAnimationScaling += zoomOffset;
-			if (bIsMinusKeyPressed)
+			}
+
+			if (bIsMinusKeyPressed) {
 				renderAnimationScaling -= zoomOffset;
+			}
 
 			// Navigate around the rendered object
 			var bIsUpKeyPressed = Keyboard.GetState().IsKeyDown(Keys.Up);
@@ -202,19 +203,19 @@ namespace HaRepacker.GUI.Panels {
 
 			var moveOffset = (int) (500f / frameRate); // move a fixed amount a second, not dependent on GPU speed
 			if (bIsLeftKeyPressed || bIsRightKeyPressed) {
-				if (bIsLeftKeyPressed)
+				if (bIsLeftKeyPressed) {
 					mapShiftX += (int) (moveOffset / renderAnimationScaling);
-
-				else if (bIsRightKeyPressed)
+				} else if (bIsRightKeyPressed) {
 					mapShiftX -= (int) (moveOffset / renderAnimationScaling);
+				}
 			}
 
 			if (bIsUpKeyPressed || bIsDownKeyPressed) {
-				if (bIsUpKeyPressed)
+				if (bIsUpKeyPressed) {
 					mapShiftY += (int) (moveOffset / renderAnimationScaling);
-
-				else if (bIsDownKeyPressed)
+				} else if (bIsDownKeyPressed) {
 					mapShiftY -= (int) (moveOffset / renderAnimationScaling);
+				}
 			}
 
 			oldKeyboardState = Keyboard.GetState(); // set the new state as the old state for next time
@@ -288,11 +289,12 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			// Keyboard navigation info
-			if (gameTime.TotalGameTime.TotalSeconds < 3)
+			if (gameTime.TotalGameTime.TotalSeconds < 3) {
 				spriteBatch.DrawString(font,
 					string.Format("Press [Left] [Right] [Up] [Down] for navigation.{0}   [+ -] for zoom",
 						Environment.NewLine),
 					new Vector2(20, 10), Color.White);
+			}
 
 			spriteBatch.End();
 			/////////////////////// ///////////////////////

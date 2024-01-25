@@ -22,10 +22,13 @@ namespace HaRepacker.GUI.Input {
 			}
 
 			// Set default value 
-			if (defaultName != null)
+			if (defaultName != null) {
 				form.nameBox.Text = defaultName;
-			if (defaultValue != 0)
+			}
+
+			if (defaultValue != 0) {
 				form.valueBox.Value = defaultValue;
+			}
 
 			var result = form.ShowDialog() == DialogResult.OK;
 			name = form.nameResult;
@@ -43,8 +46,9 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private void nameBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) 13)
+			if (e.KeyChar == (char) 13) {
 				okButton_Click(null, null);
+			}
 		}
 
 		/// <summary>

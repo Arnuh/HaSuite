@@ -5,21 +5,15 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using HaCreator.MapEditor;
-using System.Runtime.InteropServices;
-using MapleLib.WzLib;
-using HaCreator.GUI;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using System.Threading;
-using System.Resources;
-using System.Reflection;
+using System.Windows.Forms;
+using HaCreator.GUI;
+using HaCreator.MapEditor;
 using HaCreator.Wz;
-using HaSharedLibrary;
 using MapleLib;
+using MapleLib.WzLib;
 
 namespace HaCreator {
 	internal static class Program {
@@ -39,8 +33,10 @@ namespace HaCreator {
 		public static string GetLocalSettingsFolder() {
 			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var our_folder = Path.Combine(appdata, APP_NAME);
-			if (!Directory.Exists(our_folder))
+			if (!Directory.Exists(our_folder)) {
 				Directory.CreateDirectory(our_folder);
+			}
+
 			return our_folder;
 		}
 
@@ -89,13 +85,17 @@ namespace HaCreator {
 			Application.Run(initForm);
 
 			// Shutdown
-			if (initForm.editor != null)
+			if (initForm.editor != null) {
 				initForm.editor.hcsm.backupMan.ClearBackups();
+			}
+
 			SettingsManager.SaveSettings();
 			if (Restarting) Application.Restart();
 
 			if (WzManager != null) // doesnt initialise on load until WZ files are loaded via Initialization.xaml.cs
+			{
 				WzManager.Dispose();
+			}
 		}
 
 		/// <summary>
@@ -104,8 +104,10 @@ namespace HaCreator {
 		/// <param name="ci"></param>
 		/// <returns></returns>
 		private static CultureInfo GetMainCulture(CultureInfo ci) {
-			if (!ci.Name.Contains("-"))
+			if (!ci.Name.Contains("-")) {
 				return ci;
+			}
+
 			switch (ci.Name.Split("-".ToCharArray())[0]) {
 				case "ko":
 					return new CultureInfo("ko");
@@ -114,10 +116,11 @@ namespace HaCreator {
 				case "en":
 					return new CultureInfo("en");
 				case "zh":
-					if (ci.EnglishName.Contains("Simplified"))
+					if (ci.EnglishName.Contains("Simplified")) {
 						return new CultureInfo("zh-CHS");
-					else
+					} else {
 						return new CultureInfo("zh-CHT");
+					}
 				default:
 					return ci;
 			}

@@ -5,11 +5,11 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
-using MapleLib.WzLib;
 using HaRepacker.GUI.Panels;
 using MapleLib.MapleCryptoLib;
-using System.Linq;
+using MapleLib.WzLib;
 
 namespace HaRepacker.GUI {
 	public partial class NewForm : Form {
@@ -61,8 +61,9 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void EncryptionBox_SelectionChanged(object sender, EventArgs e) {
-			if (bIsLoading)
+			if (bIsLoading) {
 				return;
+			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
 			var wzMapleVersion = MainForm.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);

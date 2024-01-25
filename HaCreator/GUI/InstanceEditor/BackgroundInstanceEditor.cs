@@ -7,16 +7,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
-using MapleLib.WzLib.WzStructure.Data;
-using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.UndoRedo;
-using System.Windows.Controls;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Info.Default;
-using Spine;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Render.DX;
+using MapleLib.WzLib.WzStructure.Data;
+using Spine;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class BackgroundInstanceEditor : EditorBase {
@@ -28,10 +28,11 @@ namespace HaCreator.GUI.InstanceEditor {
 			this.item = item;
 			xInput.Value = item.BaseX;
 			yInput.Value = item.BaseY;
-			if (item.Z == -1)
+			if (item.Z == -1) {
 				zInput.Enabled = false;
-			else
+			} else {
 				zInput.Value = item.Z;
+			}
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
 			typeBox.Items.AddRange((object[]) Tables.BackgroundTypeNames.Cast<object>());
@@ -69,8 +70,9 @@ namespace HaCreator.GUI.InstanceEditor {
 				i++;
 			}
 
-			if (item.screenMode < 0)
+			if (item.screenMode < 0) {
 				comboBox_screenMode.SelectedIndex = 0;
+			}
 
 			// Spine
 			var baseInfo = (BackgroundInfo) item.BaseInfo;
@@ -144,8 +146,9 @@ namespace HaCreator.GUI.InstanceEditor {
 				}
 
 				if (sort) item.Board.BoardItems.Sort();
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
+				}
 
 				item.type = (BackgroundType) typeBox.SelectedIndex;
 				item.a = (int) alphaBox.Value;
@@ -164,10 +167,11 @@ namespace HaCreator.GUI.InstanceEditor {
 				} else {
 					item.SpineRandomStart = checkBox_spineRandomStart.Checked;
 
-					if (comboBox_spineAnimation.SelectedItem != null)
+					if (comboBox_spineAnimation.SelectedItem != null) {
 						item.SpineAni = ((comboBox_spineAnimation.SelectedItem as ComboBoxItem).Tag as Animation).Name;
-					else
+					} else {
 						item.SpineAni = Defaults.Background.SpineAni;
+					}
 				}
 			}
 
@@ -206,9 +210,11 @@ namespace HaCreator.GUI.InstanceEditor {
 			var bDisableSaveButton = false;
 
 			var bgType = (BackgroundType) typeBox.SelectedIndex;
-			if (bgType != BackgroundType.Regular)
-				if (cxBox.Value < 0)
+			if (bgType != BackgroundType.Regular) {
+				if (cxBox.Value < 0) {
 					bDisableSaveButton = true;
+				}
+			}
 
 			okButton.Enabled = !bDisableSaveButton;
 		}
@@ -223,9 +229,11 @@ namespace HaCreator.GUI.InstanceEditor {
 			var bDisableSaveButton = false;
 
 			var bgType = (BackgroundType) typeBox.SelectedIndex;
-			if (bgType != BackgroundType.Regular)
-				if (cyBox.Value < 0)
+			if (bgType != BackgroundType.Regular) {
+				if (cyBox.Value < 0) {
 					bDisableSaveButton = true;
+				}
+			}
 
 			okButton.Enabled = !bDisableSaveButton;
 		}
@@ -244,8 +252,9 @@ namespace HaCreator.GUI.InstanceEditor {
 				cxBox.Minimum = 0;
 				cyBox.Minimum = 0;
 
-				if (cyBox.Value < 0 || cxBox.Value < 0)
+				if (cyBox.Value < 0 || cxBox.Value < 0) {
 					bDisableSaveButton = true;
+				}
 			} else {
 				cxBox.Minimum = int.MaxValue * -1;
 				cyBox.Minimum = int.MaxValue * -1;

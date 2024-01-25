@@ -21,18 +21,23 @@ namespace Footholds {
 			DestLbl.Text = ((WzIntProperty) portal.Data["tm"]).Value.ToString();
 			XPosLbl.Text = ((WzIntProperty) portal.Data["x"]).Value.ToString();
 			YPosLbl.Text = ((WzIntProperty) portal.Data["y"]).Value.ToString();
-			if (!(bool) Settings.ToArray()[11])
+			if (!(bool) Settings.ToArray()[11]) {
 				TypeTBox.Text = ((WzIntProperty) portal.Data["pt"]).Value.ToString();
-			else
+			} else {
 				TypeTBox.Text = Settings.ToArray()[10].ToString();
-			if (!(bool) Settings.ToArray()[7])
+			}
+
+			if (!(bool) Settings.ToArray()[7]) {
 				XTBox.Text = ((WzIntProperty) portal.Data["x"]).Value.ToString();
-			else
+			} else {
 				XTBox.Text = Settings.ToArray()[6].ToString();
-			if (!(bool) Settings.ToArray()[9])
+			}
+
+			if (!(bool) Settings.ToArray()[9]) {
 				YTBox.Text = ((WzIntProperty) portal.Data["y"]).Value.ToString();
-			else
+			} else {
 				YTBox.Text = Settings.ToArray()[8].ToString();
+			}
 		}
 
 		private void ConfirmBtn_Click(object sender, EventArgs e) {

@@ -27,17 +27,20 @@ namespace MapleLib.Helpers {
 				//throw new InvalidOperationException("There is an odd number of hexadecimal digits in this string.");
 				// I will just add a zero to the end, who cares (0 padding)
 				//      Log.WriteLine(LogLevel.Debug, "Hexstring had an odd number of hexadecimal digits.");
+			{
 				hexString += '0';
+			}
 
 			var bytes = new byte[hexString.Length / 2];
 			var rand = new Random();
 			// FOURTH. Use the for-loop like a pro :D
 			for (int i = 0, j = 0; i < bytes.Length; i++, j += 2) {
 				var byteString = string.Concat(hexString[j], hexString[j + 1]);
-				if (byteString == "**")
+				if (byteString == "**") {
 					bytes[i] = (byte) rand.Next(0, byte.MaxValue);
-				else
+				} else {
 					bytes[i] = HexToByte(byteString);
+				}
 			}
 
 			return bytes;
@@ -71,9 +74,10 @@ namespace MapleLib.Helpers {
 		/// <returns>The byte representation of the string.</returns>
 		private static byte HexToByte(string hex) {
 			if (hex == null) throw new ArgumentNullException("hex");
-			if (hex.Length == 0 || 2 < hex.Length)
+			if (hex.Length == 0 || 2 < hex.Length) {
 				throw new ArgumentOutOfRangeException("hex",
 					"The hexadecimal string must be 1 or 2 characters in length.");
+			}
 
 			var newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
 			return newByte;

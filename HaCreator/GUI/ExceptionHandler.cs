@@ -5,14 +5,8 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class ExceptionHandler : Form {
@@ -20,8 +14,10 @@ namespace HaCreator.GUI {
 
 		public string GetExceptionInfo(Exception e) {
 			var result = e.Message + "\r\n\r\n" + e.Source + "\r\n\r\n" + e.StackTrace;
-			if (e.InnerException != null)
+			if (e.InnerException != null) {
 				result += "\r\n\r\n" + GetExceptionInfo(e.InnerException);
+			}
+
 			return result;
 		}
 

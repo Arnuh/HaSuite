@@ -1,19 +1,12 @@
-﻿using MapleLib.Helpers;
-using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xml.Linq;
-using System.Collections.ObjectModel;
 using System.Threading;
-using System.Text.RegularExpressions;
-using Microsoft.Xna.Framework;
-using System.Diagnostics;
+using System.Windows;
+using MapleLib.Helpers;
+using MapleLib.WzLib;
 
 namespace MapleLib {
 	public class WzFileManager : IDisposable {
@@ -132,8 +125,9 @@ namespace MapleLib {
 		/// </summary>
 		/// <returns></returns>
 		public static bool Detect64BitDirectoryWzFileFormat(string baseDirectoryPath) {
-			if (!Directory.Exists(baseDirectoryPath))
+			if (!Directory.Exists(baseDirectoryPath)) {
 				throw new Exception("Non-existent directory provided.");
+			}
 
 			var dataDirectoryPath = Path.Combine(baseDirectoryPath, "Data");
 			var bDirectoryContainsDataDir = Directory.Exists(dataDirectoryPath);
@@ -144,8 +138,9 @@ namespace MapleLib {
 				var nNumWzFilesInDataDir = Directory
 					.EnumerateFileSystemEntries(dataDirectoryPath, searchPattern, SearchOption.AllDirectories).Count();
 
-				if (nNumWzFilesInDataDir > 40)
+				if (nNumWzFilesInDataDir > 40) {
 					return true;
+				}
 			}
 
 			return false;
@@ -157,8 +152,9 @@ namespace MapleLib {
 		/// </summary>
 		/// <returns></returns>
 		public static bool DetectIsPreBBDataWZFormat(string baseDirectoryPath) {
-			if (!Directory.Exists(baseDirectoryPath))
+			if (!Directory.Exists(baseDirectoryPath)) {
 				throw new Exception("Non-existent directory provided.");
+			}
 
 			// Check if the directory contains a "Data.wz" file
 			var dataWzFilePath = Path.Combine(baseDirectoryPath, "Data.wz");
@@ -184,8 +180,9 @@ namespace MapleLib {
 					var stringDirExist = Directory.Exists(stringDirectoryPath);
 					var characterDirExist = Directory.Exists(characterDirectoryPath);
 
-					if (!skillDirExist && !stringDirExist && !characterDirExist)
+					if (!skillDirExist && !stringDirExist && !characterDirExist) {
 						return true;
+					}
 				}
 			}
 
@@ -214,20 +211,23 @@ namespace MapleLib {
 					//Debug.WriteLine(dir);
 
 					var iniFiles = Directory.GetFiles(dir, "*.ini");
-					if (iniFiles.Length <= 0 || iniFiles.Length > 1)
+					if (iniFiles.Length <= 0 || iniFiles.Length > 1) {
 						throw new Exception(".ini file at the directory '" + dir + "' is missing, or unavailable.");
+					}
 
 					var iniFile = iniFiles[0];
 					if (!File.Exists(iniFile)) {
 						throw new Exception(".ini file at the directory '" + dir + "' is missing.");
 					} else {
 						var iniFileLines = File.ReadAllLines(iniFile);
-						if (iniFileLines.Length <= 0)
+						if (iniFileLines.Length <= 0) {
 							throw new Exception(".ini file does not contain LastWzIndex information.");
+						}
 
 						var iniFileSplit = iniFileLines[0].Split('|');
-						if (iniFileSplit.Length <= 1)
+						if (iniFileSplit.Length <= 1) {
 							throw new Exception(".ini file does not contain LastWzIndex information.");
+						}
 
 						var index = int.Parse(iniFileSplit[1]);
 
@@ -239,19 +239,22 @@ namespace MapleLib {
 
 							var wzDirectoryNameOfWzFile = dir.Replace(baseDir, "").ToLower();
 
-							if (EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(item => fileName2.ToLower().Contains(item)))
+							if (EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(item => fileName2.ToLower().Contains(item))) {
 								continue; // backup files
+							}
 
 							//Debug.WriteLine(partialWzFileName);
 							//Debug.WriteLine(wzDirectoryOfWzFile);
 
-							if (_wzFilesList.ContainsKey(wzDirectoryNameOfWzFile))
+							if (_wzFilesList.ContainsKey(wzDirectoryNameOfWzFile)) {
 								_wzFilesList[wzDirectoryNameOfWzFile].Add(fileName2);
-							else
+							} else {
 								_wzFilesList.Add(wzDirectoryNameOfWzFile, new List<string> {fileName2});
+							}
 
-							if (!_wzFilesDirectoryList.ContainsKey(fileName2))
+							if (!_wzFilesDirectoryList.ContainsKey(fileName2)) {
 								_wzFilesDirectoryList.Add(fileName2, dir);
+							}
 						}
 					}
 				}
@@ -272,13 +275,15 @@ namespace MapleLib {
 					// remove the numbers to get the base name 'map'
 					var wzBaseFileName = new string(fileName2.ToLower().Where(c => char.IsLetter(c)).ToArray());
 
-					if (_wzFilesList.ContainsKey(wzBaseFileName))
+					if (_wzFilesList.ContainsKey(wzBaseFileName)) {
 						_wzFilesList[wzBaseFileName].Add(fileName2);
-					else
+					} else {
 						_wzFilesList.Add(wzBaseFileName, new List<string> {fileName2});
+					}
 
-					if (!_wzFilesDirectoryList.ContainsKey(fileName2))
+					if (!_wzFilesDirectoryList.ContainsKey(fileName2)) {
 						_wzFilesDirectoryList.Add(fileName2, directory);
+					}
 				}
 			}
 		}
@@ -295,15 +300,18 @@ namespace MapleLib {
 			var wzf = new WzFile(filePath, encVersion);
 
 			var parseStatus = wzf.ParseWzFile();
-			if (parseStatus != WzFileParseStatus.Success)
+			if (parseStatus != WzFileParseStatus.Success) {
 				throw new Exception("Error parsing " + baseName + ".wz (" + parseStatus.GetErrorDescription() + ")");
+			}
 
 			var fileName_ = baseName.ToLower().Replace(".wz", "");
 
 			if (_wzFilesUpdated.ContainsKey(wzf)) // some safety check
+			{
 				throw new Exception(string.Format(
 					"Wz {0} at the path {1} has already been loaded, and cannot be loaded again. Remove it from memory first.",
 					fileName_, wzf.FilePath));
+			}
 
 			// write lock to begin adding to the dictionary
 			_readWriteLock.EnterWriteLock();
@@ -336,9 +344,11 @@ namespace MapleLib {
 			baseName = baseName.ToLower();
 
 			if (_wzFilesUpdated.ContainsKey(wzf)) // some safety check
+			{
 				throw new Exception(string.Format(
 					"Wz file {0} at the path {1} has already been loaded, and cannot be loaded again.", baseName,
 					wzf.FilePath));
+			}
 
 			// write lock to begin adding to the dictionary
 			_readWriteLock.EnterWriteLock();
@@ -419,9 +429,11 @@ namespace MapleLib {
 			// readlock
 			_readWriteLock.EnterReadLock();
 			try {
-				foreach (var wzFileUpdated in _wzFilesUpdated)
-					if (wzFileUpdated.Value == true)
+				foreach (var wzFileUpdated in _wzFilesUpdated) {
+					if (wzFileUpdated.Value == true) {
 						updatedWzFiles.Add(wzFileUpdated.Key);
+					}
+				}
 			} finally {
 				_readWriteLock.ExitReadLock();
 			}
@@ -510,8 +522,9 @@ namespace MapleLib {
 		public WzMainDirectory GetMainDirectoryByName(string name) {
 			name = name.ToLower();
 
-			if (name.EndsWith(".wz"))
+			if (name.EndsWith(".wz")) {
 				name = name.Replace(".wz", "");
+			}
 
 			return _wzDirs[name];
 		}
@@ -525,12 +538,16 @@ namespace MapleLib {
 		/// <returns></returns>
 		public List<string> GetWzFileNameListFromBase(string baseName) {
 			if (_bIsPreBBDataWzFormat) {
-				if (!_wzFilesList.ContainsKey("data"))
+				if (!_wzFilesList.ContainsKey("data")) {
 					return new List<string>(); // return as an empty list if none
+				}
+
 				return _wzFilesList["data"];
 			} else {
-				if (!_wzFilesList.ContainsKey(baseName))
+				if (!_wzFilesList.ContainsKey(baseName)) {
 					return new List<string>(); // return as an empty list if none
+				}
+
 				return _wzFilesList[baseName];
 			}
 		}
@@ -543,16 +560,17 @@ namespace MapleLib {
 		public List<WzDirectory> GetWzDirectoriesFromBase(string baseName) {
 			var wzDirs = GetWzFileNameListFromBase(baseName);
 			// Use Select() and Where() to transform and filter the WzDirectory list
-			if (_bIsPreBBDataWzFormat)
+			if (_bIsPreBBDataWzFormat) {
 				return wzDirs
 					.Select(name => this["data"][baseName] as WzDirectory)
 					.Where(dir => dir != null)
 					.ToList();
-			else
+			} else {
 				return wzDirs
 					.Select(name => this[name])
 					.Where(dir => dir != null)
 					.ToList();
+			}
 		}
 
 		/// <summary>
@@ -602,15 +620,18 @@ namespace MapleLib {
 			if (!_wzFilesDirectoryList.ContainsKey(
 				    filePathOrBaseFileName)) // if the key is not found, it might be a path instead
 			{
-				if (File.Exists(filePathOrBaseFileName))
+				if (File.Exists(filePathOrBaseFileName)) {
 					return filePathOrBaseFileName;
+				}
+
 				throw new Exception("Couldnt find the directory key for the wz file " + filePathOrBaseFileName);
 			}
 
 			var fileName = StringUtility.CapitalizeFirstCharacter(filePathOrBaseFileName) + ".wz";
 			var filePath = Path.Combine(_wzFilesDirectoryList[filePathOrBaseFileName], fileName);
-			if (!File.Exists(filePath))
+			if (!File.Exists(filePath)) {
 				throw new Exception("wz file at the path '" + filePathOrBaseFileName + "' does not exist.");
+			}
 
 			return filePath;
 		}

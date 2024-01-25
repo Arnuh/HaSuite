@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MapleLib.WzLib.Util;
-using SharpDX.Direct2D1;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -121,9 +120,10 @@ namespace MapleLib.WzLib.WzProperties {
 		public override void WriteValue(WzBinaryWriter writer) {
 			var bIsLuaProperty = properties.Count == 1 && properties[0] is WzLuaProperty;
 
-			if (!bIsLuaProperty)
+			if (!bIsLuaProperty) {
 				writer.WriteStringValue("Property", WzImage.WzImageHeaderByte_WithoutOffset,
 					WzImage.WzImageHeaderByte_WithOffset);
+			}
 
 			WritePropertyList(writer, properties);
 		}
@@ -217,10 +217,14 @@ namespace MapleLib.WzLib.WzProperties {
 				{
 					int nodeId1, nodeId2;
 					if (int.TryParse(img1.Name, out nodeId1) && int.TryParse(img2.Name, out nodeId2)) {
-						if (nodeId1 == nodeId2)
+						if (nodeId1 == nodeId2) {
 							return 0;
-						if (nodeId1 > nodeId2)
+						}
+
+						if (nodeId1 > nodeId2) {
 							return 1;
+						}
+
 						return -1;
 					} else { // default to string compare
 						return img1.Name.CompareTo(img2.Name);

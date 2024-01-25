@@ -7,14 +7,14 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MapleLib.WzLib;
+using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info.Default;
+using HaCreator.Wz;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using HaCreator.GUI.InstanceEditor;
-using HaCreator.MapEditor.Info.Default;
 using MapleLib.WzLib.WzStructure.Data.MapStructure;
-using HaCreator.Wz;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
 
 namespace HaCreator.GUI {
@@ -89,8 +89,12 @@ namespace HaCreator.GUI {
 					IDLabel.Text = "MapLogin";
 					break;
 				case MapType.RegularMap:
-					if (info.id == -1) IDLabel.Text = "";
-					else IDLabel.Text = info.id.ToString();
+					if (info.id == -1) {
+						IDLabel.Text = "";
+					} else {
+						IDLabel.Text = info.id.ToString();
+					}
+
 					break;
 			}
 
@@ -98,12 +102,18 @@ namespace HaCreator.GUI {
 			streetBox.Text = info.strStreetName;
 			categoryBox.Text = info.strCategoryName;
 			markBox.SelectedItem = info.mapMark;
-			if (info.returnMap == info.id)
+			if (info.returnMap == info.id) {
 				cannotReturnCBX.Checked = true;
-			else returnBox.Text = info.returnMap.ToString();
-			if (info.forcedReturn == 999999999)
+			} else {
+				returnBox.Text = info.returnMap.ToString();
+			}
+
+			if (info.forcedReturn == 999999999) {
 				returnHereCBX.Checked = true;
-			else forcedRet.Text = info.forcedReturn.ToString();
+			} else {
+				forcedRet.Text = info.forcedReturn.ToString();
+			}
+
 			mobRate.Value = (decimal) info.mobRate;
 
 			//LoadOptionalInt(info.link, linkBox);
@@ -189,9 +199,9 @@ namespace HaCreator.GUI {
 			if (info.fieldType != null) /* fieldType.SelectedIndex = -1;
 			else*/ {
 				fieldType.SelectedIndex = 0;
-				if ((int) info.fieldType <= 0x22)
+				if ((int) info.fieldType <= 0x22) {
 					fieldType.SelectedIndex = (int) info.fieldType;
-				else
+				} else {
 					switch (info.fieldType) {
 						case FieldType.FIELDTYPE_WEDDING:
 							fieldType.SelectedIndex = 0x23;
@@ -221,13 +231,15 @@ namespace HaCreator.GUI {
 							fieldType.SelectedIndex = 0x2B;
 							break;
 					}
+				}
 			}
 
 			foreach (var prop in info.additionalProps) {
 				var node = unknownProps.Nodes.Add(prop.Name);
 				node.Tag = prop;
-				if (prop.WzProperties != null && prop.WzProperties.Count > 0)
+				if (prop.WzProperties != null && prop.WzProperties.Count > 0) {
 					ExtractPropList(prop.WzProperties, node);
+				}
 			}
 		}
 
@@ -235,8 +247,9 @@ namespace HaCreator.GUI {
 			foreach (var prop in properties) {
 				var node = parent.Nodes.Add(prop.Name);
 				node.Tag = prop;
-				if (prop.WzProperties != null && prop.WzProperties.Count > 0)
+				if (prop.WzProperties != null && prop.WzProperties.Count > 0) {
 					ExtractPropList(prop.WzProperties, node);
+				}
 			}
 		}
 
@@ -302,18 +315,22 @@ namespace HaCreator.GUI {
 				info.protectItem = GetOptionalInt(protectItem, protectEnable, Defaults.Info.ProtectItem);
 
 				if (helpEnable.Checked) info.help = helpBox.Text.Replace("\r\n", @"\n");
-				if (summonMobEnable.Checked)
+				if (summonMobEnable.Checked) {
 					info.timeMob = new TimeMob(
 						GetOptionalInt(timedMobStart, timedMobEnable, 0),
 						GetOptionalInt(timedMobEnd, timedMobEnable, 0),
 						(int) timedMobId.Value,
 						timedMobMessage.Text.Replace("\r\n", @"\n"));
-				if (autoLieDetectorEnable.Checked)
+				}
+
+				if (autoLieDetectorEnable.Checked) {
 					info.autoLieDetector = new AutoLieDetector(
 						(int) autoLieStart.Value,
 						(int) autoLieEnd.Value,
 						(int) autoLieInterval.Value,
 						(int) autoLieProp.Value);
+				}
+
 				if (allowedItemsEnable.Checked) {
 					info.allowedItem = new List<int>();
 					foreach (string id in allowedItems.Items)
@@ -346,9 +363,9 @@ namespace HaCreator.GUI {
 
 				info.fieldLimit = (long) fieldLimitPanel1.FieldLimit;
 
-				if (fieldType.SelectedIndex <= 0x22)
+				if (fieldType.SelectedIndex <= 0x22) {
 					info.fieldType = (FieldType) fieldType.SelectedIndex;
-				else
+				} else {
 					switch (fieldType.SelectedIndex) {
 						case 0x23:
 							info.fieldType = FieldType.FIELDTYPE_WEDDING;
@@ -378,9 +395,11 @@ namespace HaCreator.GUI {
 							info.fieldType = FieldType.FIELDTYPE_CRIMSONWOODPQ;
 							break;
 					}
+				}
 
-				if (board.MapSize.X != (int) xBox.Value || board.MapSize.Y != (int) yBox.Value)
+				if (board.MapSize.X != (int) xBox.Value || board.MapSize.Y != (int) yBox.Value) {
 					board.MapSize = new Microsoft.Xna.Framework.Point((int) xBox.Value, (int) yBox.Value);
+				}
 			}
 
 			Close();
@@ -394,9 +413,11 @@ namespace HaCreator.GUI {
 			} else {
 				foreach (var control in (Control[]) cbx.Tag)
 					control.Enabled = featureActivated;
-				foreach (var control in (Control[]) cbx.Tag)
-					if (control is CheckBox)
+				foreach (var control in (Control[]) cbx.Tag) {
+					if (control is CheckBox) {
 						enablingCheckBox_CheckChanged(control, e);
+					}
+				}
 			}
 		}
 
@@ -424,8 +445,9 @@ namespace HaCreator.GUI {
 		}
 
 		private void allowedItemsRemove_Click(object sender, EventArgs e) {
-			if (allowedItems.SelectedIndex != -1)
+			if (allowedItems.SelectedIndex != -1) {
 				allowedItems.Items.RemoveAt(allowedItems.SelectedIndex);
+			}
 		}
 
 		private void allowedItemsAdd_Click(object sender, EventArgs e) {

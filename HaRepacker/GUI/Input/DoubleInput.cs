@@ -15,8 +15,9 @@ namespace HaRepacker.GUI.Input {
 
 		private void HandleKeyPress(object sender, KeyPressEventArgs e) {
 			if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar) ||
-			      (e.KeyChar == "."[0] && !Text.Contains("."))))
+			      (e.KeyChar == "."[0] && !Text.Contains(".")))) {
 				e.Handled = true;
+			}
 		}
 
 		protected override void WndProc(ref Message msg) {
@@ -35,8 +36,11 @@ namespace HaRepacker.GUI.Input {
 		public double Value {
 			get {
 				double result = 0;
-				if (double.TryParse(Text, out result)) return result;
-				else return 0;
+				if (double.TryParse(Text, out result)) {
+					return result;
+				} else {
+					return 0;
+				}
 			}
 			set => Text = value.ToString();
 		}

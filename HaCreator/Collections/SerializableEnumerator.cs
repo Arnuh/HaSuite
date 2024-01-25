@@ -4,13 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Instance;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.Collections {
 	internal class SerializableEnumerator : IEnumerable<ISerializable>, IEnumerator<ISerializable> {
@@ -52,14 +49,18 @@ namespace HaCreator.Collections {
 			// the end of the queue and will be called after all tiles/objects have already been processed.
 
 			do {
-				if (queue.Count == 0)
+				if (queue.Count == 0) {
 					return false;
+				}
+
 				current = queue.Dequeue();
 				if (current.ShouldSelectSerialized) {
 					var currList = current.SelectSerialized(visited);
-					foreach (var item in currList)
-						if (visited.Add(item))
+					foreach (var item in currList) {
+						if (visited.Add(item)) {
 							queue.Enqueue(item);
+						}
+					}
 				}
 			} while (!(current is ISerializable));
 

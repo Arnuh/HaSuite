@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapleLib.WzLib.WzStructure.Data.MapStructure {
+﻿namespace MapleLib.WzLib.WzStructure.Data.MapStructure {
 	public struct TimeMob {
 		public int startHour, endHour;
 		public int id;

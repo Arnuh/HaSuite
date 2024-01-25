@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>
@@ -62,13 +51,15 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		}
 
 		private void yBox_TextChanged(object sender, TextChangedEventArgs e) {
-			if (button_ApplyChanges != null)
+			if (button_ApplyChanges != null) {
 				button_ApplyChanges.IsEnabled = true;
+			}
 		}
 
 		private void xBox_TextChanged(object sender, TextChangedEventArgs e) {
-			if (button_ApplyChanges != null)
+			if (button_ApplyChanges != null) {
 				button_ApplyChanges.IsEnabled = true;
+			}
 		}
 	}
 }

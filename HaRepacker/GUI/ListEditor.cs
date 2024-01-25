@@ -5,12 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using MapleLib.WzLib;
 
@@ -43,8 +38,9 @@ namespace HaRepacker.GUI {
 			var dialog = new SaveFileDialog() {
 				Title = "Select where to save the file", Filter = "List WZ File (*.wz)|*.wz"
 			};
-			if (dialog.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
+			}
 
 			var listEntries = textBox.Text.Replace("\r\n", "\n").Split("\n".ToCharArray()).ToList<string>();
 			ListFileParser.SaveToDisk(dialog.FileName, version, listEntries);

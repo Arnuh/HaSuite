@@ -5,15 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using HaCreator.MapEditor;
-using MapleLib.WzLib.WzStructure;
 using HaCreator.MapEditor.Instance.Shapes;
 
 namespace HaCreator.GUI.InstanceEditor {
@@ -26,53 +18,65 @@ namespace HaCreator.GUI.InstanceEditor {
 
 			var force = footholds[0].Force;
 			var piece = footholds[0].Piece;
-			bool cantThrough = footholds[0].CantThrough;
-			bool forbidFallDown = footholds[0].ForbidFallDown;
+			var cantThrough = footholds[0].CantThrough;
+			var forbidFallDown = footholds[0].ForbidFallDown;
 			var indeterminate = false;
-			for (var i = 1; i < footholds.Length; i++)
+			for (var i = 1; i < footholds.Length; i++) {
 				if (footholds[i].Force != force) {
 					indeterminate = true;
 					break;
 				}
+			}
 
-			if (indeterminate) forceEnable.CheckState = CheckState.Indeterminate;
-			else {
+			if (indeterminate) {
+				forceEnable.CheckState = CheckState.Indeterminate;
+			} else {
 				forceEnable.Checked = force != 0;
 				if (forceEnable.Checked) forceInt.Value = (int) force;
 			}
 
 			indeterminate = false;
-			for (var i = 1; i < footholds.Length; i++)
+			for (var i = 1; i < footholds.Length; i++) {
 				if (footholds[i].Piece != piece) {
 					indeterminate = true;
 					break;
 				}
+			}
 
-			if (indeterminate) pieceEnable.CheckState = CheckState.Indeterminate;
-			else {
+			if (indeterminate) {
+				pieceEnable.CheckState = CheckState.Indeterminate;
+			} else {
 				pieceEnable.Checked = force != 0;
 				if (pieceEnable.Checked) pieceInt.Value = (int) piece;
 			}
 
 			indeterminate = false;
-			for (var i = 1; i < footholds.Length; i++)
+			for (var i = 1; i < footholds.Length; i++) {
 				if (footholds[i].CantThrough != cantThrough) {
 					indeterminate = true;
 					break;
 				}
+			}
 
-			if (indeterminate) cantThroughBox.CheckState = CheckState.Indeterminate;
-			else cantThroughBox.Checked = cantThrough;
+			if (indeterminate) {
+				cantThroughBox.CheckState = CheckState.Indeterminate;
+			} else {
+				cantThroughBox.Checked = cantThrough;
+			}
 
 			indeterminate = false;
-			for (var i = 1; i < footholds.Length; i++)
+			for (var i = 1; i < footholds.Length; i++) {
 				if (footholds[i].ForbidFallDown != forbidFallDown) {
 					indeterminate = true;
 					break;
 				}
+			}
 
-			if (indeterminate) forbidFallDownBox.CheckState = CheckState.Indeterminate;
-			else forbidFallDownBox.Checked = forbidFallDown;
+			if (indeterminate) {
+				forbidFallDownBox.CheckState = CheckState.Indeterminate;
+			} else {
+				forbidFallDownBox.Checked = forbidFallDown;
+			}
 		}
 
 		protected override void cancelButton_Click(object sender, EventArgs e) {
@@ -97,12 +101,15 @@ namespace HaCreator.GUI.InstanceEditor {
 					foreach (var line in footholds) line.Piece = piece;
 				}
 
-				if (cantThroughBox.CheckState != CheckState.Indeterminate)
+				if (cantThroughBox.CheckState != CheckState.Indeterminate) {
 					foreach (var line in footholds)
 						line.CantThrough = cantThroughBox.Checked;
-				if (forbidFallDownBox.CheckState != CheckState.Indeterminate)
+				}
+
+				if (forbidFallDownBox.CheckState != CheckState.Indeterminate) {
 					foreach (var line in footholds)
 						line.ForbidFallDown = forbidFallDownBox.Checked;
+				}
 			}
 
 			Close();

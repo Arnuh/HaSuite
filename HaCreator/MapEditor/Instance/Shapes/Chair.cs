@@ -4,12 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using MapleLib.WzLib.WzStructure.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MapleLib.WzLib.WzStructure.Data;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -27,8 +23,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			var closestDistance = double.MaxValue;
 			foreach (var fh in Board.BoardItems.FootholdLines) {
 				// Trying to snap to other selected items can mess up some of the mouse bindings
-				if (fh.FirstDot.Selected || fh.SecondDot.Selected)
+				if (fh.FirstDot.Selected || fh.SecondDot.Selected) {
 					continue;
+				}
+
 				if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) &&
 				    BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
 					var targetY = fh.CalculateY(X) - 1;
@@ -40,9 +38,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				}
 			}
 
-			if (closestLine != null)
+			if (closestLine != null) {
 				SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X,
 					(int) closestLine.CalculateY(X) - 1));
+			}
 		}
 
 		public override XNA.Color Color => UserSettings.ChairColor;

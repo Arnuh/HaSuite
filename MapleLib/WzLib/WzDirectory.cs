@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
-using MapleLib.WzLib.Util;
-using System;
-using System.Diagnostics;
-using MapleLib.PacketLib;
-using MapleLib.WzLib.WzStructure.Enums;
-using MapleLib.WzLib.WzProperties;
 using System.Linq;
+using MapleLib.WzLib.Util;
+using MapleLib.WzLib.WzStructure.Enums;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -135,12 +132,17 @@ namespace MapleLib.WzLib {
 			get {
 				var nameLower = name.ToLower();
 
-				foreach (var i in images)
-					if (i.Name.ToLower() == nameLower)
+				foreach (var i in images) {
+					if (i.Name.ToLower() == nameLower) {
 						return i;
-				foreach (var d in subDirs)
-					if (d.Name.ToLower() == nameLower)
+					}
+				}
+
+				foreach (var d in subDirs) {
+					if (d.Name.ToLower() == nameLower) {
 						return d;
+					}
+				}
 
 				//throw new KeyNotFoundException("No wz image or directory was found with the specified name");
 				return null;
@@ -148,12 +150,13 @@ namespace MapleLib.WzLib {
 			set {
 				if (value != null) {
 					value.Name = name;
-					if (value is WzDirectory directory)
+					if (value is WzDirectory directory) {
 						AddDirectory(directory);
-					else if (value is WzImage image)
+					} else if (value is WzImage image) {
 						AddImage(image);
-					else
+					} else {
 						throw new ArgumentException("Value must be a Directory or Image");
+					}
 				}
 			}
 		}
@@ -202,12 +205,15 @@ namespace MapleLib.WzLib {
 		internal void ParseDirectory(bool lazyParse = false) {
 			//reader.PrintHexBytes(20);
 			var available = reader.Available();
-			if (available == 0)
+			if (available == 0) {
 				return;
+			}
 
 			var entryCount = reader.ReadCompressedInt();
 			if (entryCount < 0 || entryCount > 100000) // probably nothing > 100k folders for now.
+			{
 				throw new Exception("Invalid wz version used for decryption, try parsing other version numbers.");
+			}
 
 			for (var i = 0; i < entryCount; i++) {
 				var type = reader.ReadByte(); // see WzBinaryWriter.WriteWzObjectValue
@@ -262,8 +268,9 @@ namespace MapleLib.WzLib {
 					};
 					subDirs.Add(subDir);
 
-					if (lazyParse)
+					if (lazyParse) {
 						break;
+					}
 				} else {
 					var img = new WzImage(fname, reader, checksum) {
 						BlockSize = fsize,
@@ -272,8 +279,9 @@ namespace MapleLib.WzLib {
 					};
 					images.Add(img);
 
-					if (lazyParse)
+					if (lazyParse) {
 						break;
+					}
 				}
 			}
 
@@ -299,6 +307,7 @@ namespace MapleLib.WzLib {
 				// else
 				//wzImageNameTracking.Add(img.Name);
 				// Write 
+			{
 				if (img.Changed) {
 					fs.Position = img.tempFileStart;
 
@@ -314,6 +323,7 @@ namespace MapleLib.WzLib {
 					img.reader.BaseStream.Position = img.tempFileStart;
 					wzWriter.Write(img.reader.ReadBytes((int) (img.tempFileEnd - img.tempFileStart)));
 				}
+			}
 
 			foreach (var dir in subDirs) dir.SaveImages(wzWriter, fs);
 		}
@@ -432,11 +442,13 @@ namespace MapleLib.WzLib {
 				writer.WriteOffset(dir.Offset);
 			}
 
-			foreach (var dir in subDirs)
-				if (dir.BlockSize > 0)
+			foreach (var dir in subDirs) {
+				if (dir.BlockSize > 0) {
 					dir.SaveDirectory(writer);
-				else
+				} else {
 					writer.Write((byte) 0);
+				}
+			}
 		}
 
 		internal uint GetOffsets(uint curOffset) {
@@ -460,8 +472,9 @@ namespace MapleLib.WzLib {
 
 		internal void ExportXml(StreamWriter writer, bool oneFile, int level, bool isDirectory) {
 			if (oneFile) {
-				if (isDirectory)
+				if (isDirectory) {
 					writer.WriteLine(XmlUtil.Indentation(level) + XmlUtil.OpenNamedTag("WzDirectory", name, true));
+				}
 
 				foreach (var subDir in WzDirectories) subDir.ExportXml(writer, oneFile, level + 1, isDirectory);
 

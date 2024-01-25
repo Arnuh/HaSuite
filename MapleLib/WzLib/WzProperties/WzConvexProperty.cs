@@ -87,9 +87,12 @@ namespace MapleLib.WzLib.WzProperties {
 		public override WzImageProperty this[string name] {
 			get {
 				var nameLower = name.ToLower();
-				foreach (var iwp in properties)
-					if (iwp.Name.ToLower() == nameLower)
+				foreach (var iwp in properties) {
+					if (iwp.Name.ToLower() == nameLower) {
 						return iwp;
+					}
+				}
+
 				//throw new KeyNotFoundException("A wz property with the specified name was not found");
 				return null;
 			}
@@ -97,9 +100,12 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public WzImageProperty GetProperty(string name) {
 			var nameLower = name.ToLower();
-			foreach (var iwp in properties)
-				if (iwp.Name.ToLower() == nameLower)
+			foreach (var iwp in properties) {
+				if (iwp.Name.ToLower() == nameLower) {
 					return iwp;
+				}
+			}
+
 			return null;
 		}
 
@@ -123,9 +129,12 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public override void WriteValue(WzBinaryWriter writer) {
 			var extendedProps = new List<WzExtended>(properties.Count);
-			foreach (var prop in properties)
-				if (prop is WzExtended extended)
+			foreach (var prop in properties) {
+				if (prop is WzExtended extended) {
 					extendedProps.Add(extended);
+				}
+			}
+
 			writer.WriteStringValue("Shape2D#Convex2D", WzImage.WzImageHeaderByte_WithoutOffset,
 				WzImage.WzImageHeaderByte_WithOffset);
 			writer.WriteCompressedInt(extendedProps.Count);
@@ -170,8 +179,10 @@ namespace MapleLib.WzLib.WzProperties {
 		/// </summary>
 		/// <param name="prop">The property to add</param>
 		public void AddProperty(WzImageProperty prop) {
-			if (!(prop is WzExtended))
+			if (!(prop is WzExtended)) {
 				throw new Exception("Property is not IExtended");
+			}
+
 			prop.Parent = this;
 			properties.Add((WzExtended) prop);
 		}

@@ -28,10 +28,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Spine {
 	/// <summary>Draws region and mesh attachments.</summary>
@@ -120,16 +118,17 @@ namespace Spine {
 
 					Color color;
 					var a = skeletonA * slot.A * regionAttachment.A;
-					if (premultipliedAlpha)
+					if (premultipliedAlpha) {
 						color = new Color(
 							skeletonR * slot.R * regionAttachment.R * a,
 							skeletonG * slot.G * regionAttachment.G * a,
 							skeletonB * slot.B * regionAttachment.B * a, a);
-					else
+					} else {
 						color = new Color(
 							skeletonR * slot.R * regionAttachment.R,
 							skeletonG * slot.G * regionAttachment.G,
 							skeletonB * slot.B * regionAttachment.B, a);
+					}
 
 					itemVertices[TL].Color = color;
 					itemVertices[BL].Color = color;
@@ -174,16 +173,17 @@ namespace Spine {
 
 					Color color;
 					var a = skeletonA * slot.A * mesh.A;
-					if (premultipliedAlpha)
+					if (premultipliedAlpha) {
 						color = new Color(
 							skeletonR * slot.R * mesh.R * a,
 							skeletonG * slot.G * mesh.G * a,
 							skeletonB * slot.B * mesh.B * a, a);
-					else
+					} else {
 						color = new Color(
 							skeletonR * slot.R * mesh.R,
 							skeletonG * slot.G * mesh.G,
 							skeletonB * slot.B * mesh.B, a);
+					}
 
 					var uvs = mesh.UVs;
 					var itemVertices = item.vertices;
@@ -210,16 +210,17 @@ namespace Spine {
 
 					Color color;
 					var a = skeletonA * slot.A * mesh.A;
-					if (premultipliedAlpha)
+					if (premultipliedAlpha) {
 						color = new Color(
 							skeletonR * slot.R * mesh.R * a,
 							skeletonG * slot.G * mesh.G * a,
 							skeletonB * slot.B * mesh.B * a, a);
-					else
+					} else {
 						color = new Color(
 							skeletonR * slot.R * mesh.R,
 							skeletonG * slot.G * mesh.G,
 							skeletonB * slot.B * mesh.B, a);
+					}
 
 					var uvs = mesh.UVs;
 					var itemVertices = item.vertices;

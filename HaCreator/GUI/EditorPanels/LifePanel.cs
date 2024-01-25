@@ -4,21 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor;
-using HaCreator.MapEditor.Info;
-using HaCreator.Wz;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
+using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.EditorPanels {
 	public partial class LifePanel : UserControl {
@@ -57,12 +50,13 @@ namespace HaCreator.GUI.EditorPanels {
 			var getAll = searchText == "";
 			lifeListBox.Items.Clear();
 			var items = new List<string>();
-			if (reactorRButton.Checked)
+			if (reactorRButton.Checked) {
 				items.AddRange(getAll ? reactors : reactors.Where(x => ContainsIgnoreCase(x, searchText)));
-			else if (npcRButton.Checked)
+			} else if (npcRButton.Checked) {
 				items.AddRange(getAll ? npcs : npcs.Where(x => ContainsIgnoreCase(x, searchText)));
-			else if (mobRButton.Checked)
+			} else if (mobRButton.Checked) {
 				items.AddRange(getAll ? mobs : mobs.Where(x => ContainsIgnoreCase(x, searchText)));
+			}
 
 			items.Sort();
 			lifeListBox.Items.AddRange(items.Cast<object>().ToArray());

@@ -4,23 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
-using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace HaCreator.GUI.EditorPanels {
 	public partial class ObjPanel : UserControl {
@@ -43,8 +34,9 @@ namespace HaCreator.GUI.EditorPanels {
 		}
 
 		private void objSetListBox_SelectedIndexChanged(object sender, EventArgs e) {
-			if (objSetListBox.SelectedItem == null)
+			if (objSetListBox.SelectedItem == null) {
 				return;
+			}
 
 			objL0ListBox.Items.Clear();
 			objL1ListBox.Items.Clear();
@@ -59,8 +51,9 @@ namespace HaCreator.GUI.EditorPanels {
 		}
 
 		private void objL0ListBox_SelectedIndexChanged(object sender, EventArgs e) {
-			if (objL0ListBox.SelectedItem == null)
+			if (objL0ListBox.SelectedItem == null) {
 				return;
+			}
 
 			objL1ListBox.Items.Clear();
 			objImagesContainer.Controls.Clear();
@@ -97,8 +90,9 @@ namespace HaCreator.GUI.EditorPanels {
 		}
 
 		public void OnL1Changed(string l1) {
-			if ((string) objL1ListBox.SelectedItem == l1)
+			if ((string) objL1ListBox.SelectedItem == l1) {
 				objL1ListBox_SelectedIndexChanged(null, null);
+			}
 		}
 
 		private void objItem_Click(object sender, MouseEventArgs e) {

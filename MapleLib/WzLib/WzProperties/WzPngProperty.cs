@@ -392,7 +392,7 @@ namespace MapleLib.WzLib.WzProperties {
 					return null;
 			}
 		}
-		
+
 		/// <summary>
 		/// Reads the wz, decompresses the image, and returns the raw image bytes
 		/// </summary>
@@ -444,7 +444,7 @@ namespace MapleLib.WzLib.WzProperties {
 
 			try {
 				var bitmapFormat = GetBitmapPixelFormat();
-				
+
 				var rect_ = new Rectangle(0, 0, width, height);
 				var bmp = new Bitmap(width, height, bitmapFormat);
 				var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, bitmapFormat);
@@ -494,13 +494,14 @@ namespace MapleLib.WzLib.WzProperties {
 						break;
 				}
 
-				if (bmp != null)
+				if (bmp != null) {
 					if (texture2d != null) {
 						var rect = new Microsoft.Xna.Framework.Rectangle(
 							Microsoft.Xna.Framework.Point.Zero,
 							new Microsoft.Xna.Framework.Point(width, height));
 						texture2d.SetData(0, 0, rect, rawBytes, 0, rawBytes.Length);
 					}
+				}
 
 				png = bmp;
 			} catch (InvalidDataException) {
@@ -597,13 +598,14 @@ namespace MapleLib.WzLib.WzProperties {
 					ExpandColorIndexTable(colorIdxTable, rawData, off + 12);
 
 					for (var j = 0; j < 4; j++)
-					for (var i = 0; i < 4; i++)
+					for (var i = 0; i < 4; i++) {
 						SetPixel(decoded,
 							x + i,
 							y + j,
 							width,
 							colorTable[colorIdxTable[j * 4 + i]],
 							alphaTable[j * 4 + i]);
+					}
 				}
 			}
 
@@ -674,13 +676,14 @@ namespace MapleLib.WzLib.WzProperties {
 					ExpandColorIndexTable(colorIdxTable, rawData, off + 12);
 
 					for (var j = 0; j < 4; j++)
-					for (var i = 0; i < 4; i++)
+					for (var i = 0; i < 4; i++) {
 						SetPixel(decoded,
 							x + i,
 							y + j,
 							width,
 							colorTable[colorIdxTable[j * 4 + i]],
 							alphaTable[alphaIdxTable[j * 4 + i]]);
+					}
 				}
 			}
 
@@ -699,11 +702,12 @@ namespace MapleLib.WzLib.WzProperties {
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void CopyBmpDataWithStride(byte[] source, int stride, BitmapData bmpData) {
-			if (bmpData.Stride == stride)
+			if (bmpData.Stride == stride) {
 				Marshal.Copy(source, 0, bmpData.Scan0, source.Length);
-			else
+			} else {
 				for (var y = 0; y < bmpData.Height; y++)
 					Marshal.Copy(source, stride * y, bmpData.Scan0 + bmpData.Stride * y, stride);
+			}
 		}
 
 		#endregion
@@ -873,7 +877,7 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		#endregion
-		
+
 		public enum WzPixelFormat {
 			Unknown,
 			B4G4R4A4,

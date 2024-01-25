@@ -146,25 +146,33 @@ namespace Spine {
 			}
 
 			var cos = (targetX * targetX + targetY * targetY - len1 * len1 - len2 * len2) / cosDenom;
-			if (cos < -1)
+			if (cos < -1) {
 				cos = -1;
-			else if (cos > 1)
+			} else if (cos > 1) {
 				cos = 1;
+			}
+
 			var childAngle = (float) Math.Acos(cos) * bendDirection;
 			float adjacent = len1 + len2 * cos, opposite = len2 * (float) Math.Sin(childAngle);
 			var parentAngle = (float) Math.Atan2(targetY * adjacent - targetX * opposite,
 				targetX * adjacent + targetY * opposite);
 			var rotation = (parentAngle - offset) * radDeg - parentRotation;
-			if (rotation > 180)
+			if (rotation > 180) {
 				rotation -= 360;
-			else if (rotation < -180) //
+			} else if (rotation < -180) //
+			{
 				rotation += 360;
+			}
+
 			parent.rotationIK = parentRotation + rotation * alpha;
 			rotation = (childAngle + offset) * radDeg - childRotation;
-			if (rotation > 180)
+			if (rotation > 180) {
 				rotation -= 360;
-			else if (rotation < -180) //
+			} else if (rotation < -180) //
+			{
 				rotation += 360;
+			}
+
 			child.rotationIK = childRotation + (rotation + parent.worldRotation - child.parent.worldRotation) * alpha;
 		}
 	}

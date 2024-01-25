@@ -4,26 +4,18 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.CustomControls;
-using HaCreator.MapEditor;
-using HaSharedLibrary.Render.DX;
-using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using HaCreator.CustomControls;
+using HaCreator.MapEditor;
+using HaSharedLibrary.Render.DX;
 
 namespace HaCreator.GUI {
 	/// <summary>
@@ -48,10 +40,11 @@ namespace HaCreator.GUI {
 			e.Handled = true;
 			if (ribbon.IsMouseOver) {
 				var platformBox = (HaList) FindName("platformBox");
-				if (platformBox.IsMouseOver)
+				if (platformBox.IsMouseOver) {
 					platformBox.Scroll(e.Delta);
-				else if (layerBox.IsMouseOver)
+				} else if (layerBox.IsMouseOver) {
 					layerBox.Scroll(e.Delta);
+				}
 			}
 		}
 
@@ -202,101 +195,120 @@ namespace HaCreator.GUI {
 		}
 
 		private void New_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (NewClicked != null)
+			if (NewClicked != null) {
 				NewClicked.Invoke();
+			}
 		}
 
 		private void Open_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (OpenClicked != null)
+			if (OpenClicked != null) {
 				OpenClicked.Invoke();
+			}
 		}
 
 		private void Save_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (SaveClicked != null)
+			if (SaveClicked != null) {
 				SaveClicked.Invoke();
+			}
 		}
 
 		private void Repack_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (RepackClicked != null)
+			if (RepackClicked != null) {
 				RepackClicked.Invoke();
+			}
 		}
 
 		private void About_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (AboutClicked != null)
+			if (AboutClicked != null) {
 				AboutClicked.Invoke();
+			}
 		}
 
 		private void Help_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (HelpClicked != null)
+			if (HelpClicked != null) {
 				HelpClicked.Invoke();
+			}
 		}
 
 		private void Settings_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (SettingsClicked != null)
+			if (SettingsClicked != null) {
 				SettingsClicked.Invoke();
+			}
 		}
 
 		private void Exit_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ExitClicked != null)
+			if (ExitClicked != null) {
 				ExitClicked.Invoke();
+			}
 		}
 
 		private void ViewBoxes_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ViewToggled != null)
+			if (ViewToggled != null) {
 				ViewToggled.Invoke(tilesCheck.IsChecked, objsCheck.IsChecked, npcsCheck.IsChecked, mobsCheck.IsChecked,
 					reactCheck.IsChecked, portalCheck.IsChecked, fhCheck.IsChecked, ropeCheck.IsChecked,
 					chairCheck.IsChecked, tooltipCheck.IsChecked, bgCheck.IsChecked, miscCheck.IsChecked,
 					mirrorFieldDataCheck.IsChecked);
+			}
 		}
 
 		private void Minimap_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ShowMinimapToggled != null)
+			if (ShowMinimapToggled != null) {
 				ShowMinimapToggled.Invoke(((RibbonToggleButton) e.OriginalSource).IsChecked.Value);
+			}
 		}
 
 		private void Parallax_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ParallaxToggled != null)
+			if (ParallaxToggled != null) {
 				ParallaxToggled.Invoke(((RibbonToggleButton) e.OriginalSource).IsChecked.Value);
+			}
 		}
 
 		private void Finalize_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (FinalizeClicked != null)
+			if (FinalizeClicked != null) {
 				FinalizeClicked.Invoke();
+			}
 		}
 
 		private void MapSim_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (MapSimulationClicked != null)
+			if (MapSimulationClicked != null) {
 				MapSimulationClicked.Invoke();
+			}
 		}
 
 		private void RegenMinimap_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (RegenerateMinimapClicked != null)
+			if (RegenerateMinimapClicked != null) {
 				RegenerateMinimapClicked.Invoke();
+			}
 		}
 
 		private void Snapping_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (SnappingToggled != null)
+			if (SnappingToggled != null) {
 				SnappingToggled.Invoke(((RibbonToggleButton) e.OriginalSource).IsChecked.Value);
+			}
 		}
 
 		private void Random_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (RandomTilesToggled != null)
+			if (RandomTilesToggled != null) {
 				RandomTilesToggled.Invoke(((RibbonToggleButton) e.OriginalSource).IsChecked.Value);
+			}
 		}
 
 		private void InfoMode_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (InfoModeToggled != null)
+			if (InfoModeToggled != null) {
 				InfoModeToggled.Invoke(((RibbonToggleButton) e.OriginalSource).IsChecked.Value);
+			}
 		}
 
 		private void HaRepacker_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (HaRepackerClicked != null)
+			if (HaRepackerClicked != null) {
 				HaRepackerClicked.Invoke();
+			}
 		}
 
 		private void Export_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ExportClicked != null)
+			if (ExportClicked != null) {
 				ExportClicked.Invoke();
+			}
 		}
 
 		/// <summary>
@@ -305,8 +317,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void PhysicsEdit_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (MapPhysicsClicked != null)
+			if (MapPhysicsClicked != null) {
 				MapPhysicsClicked.Invoke();
+			}
 		}
 
 
@@ -316,46 +329,50 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ShowMapProperties_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (ShowMapPropertiesClicked != null)
+			if (ShowMapPropertiesClicked != null) {
 				ShowMapPropertiesClicked.Invoke();
+			}
 		}
 
 
 		#region Layer UI
 
 		private void LayerUp_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (UserSettings.InverseUpDown && sender != null)
+			if (UserSettings.InverseUpDown && sender != null) {
 				LayerDown_Executed(null, null);
-			else if (layerBox.IsEnabled && layerBox.SelectedIndex != layerBox.Items.Count - 1) layerBox.SelectedIndex++;
+			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != layerBox.Items.Count - 1) layerBox.SelectedIndex++;
 		}
 
 		private void LayerDown_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (UserSettings.InverseUpDown && sender != null)
+			if (UserSettings.InverseUpDown && sender != null) {
 				LayerUp_Executed(null, null);
-			else if (layerBox.IsEnabled && layerBox.SelectedIndex != 0) layerBox.SelectedIndex--;
+			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != 0) layerBox.SelectedIndex--;
 		}
 
 		private void PlatformUp_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (UserSettings.InverseUpDown && sender != null)
+			if (UserSettings.InverseUpDown && sender != null) {
 				PlatformDown_Executed(null, null);
-			else if (platformBox.IsEnabled && platformBox.SelectedIndex != platformBox.Items.Count - 1)
+			} else if (platformBox.IsEnabled && platformBox.SelectedIndex != platformBox.Items.Count - 1) {
 				platformBox.SelectedIndex++;
+			}
 		}
 
 		private void PlatformDown_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (UserSettings.InverseUpDown && sender != null)
+			if (UserSettings.InverseUpDown && sender != null) {
 				PlatformUp_Executed(null, null);
-			else if (platformBox.IsEnabled && platformBox.SelectedIndex != 0) platformBox.SelectedIndex--;
+			} else if (platformBox.IsEnabled && platformBox.SelectedIndex != 0) platformBox.SelectedIndex--;
 		}
 
 		private void NewPlatform_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (NewPlatformClicked != null)
+			if (NewPlatformClicked != null) {
 				NewPlatformClicked();
+			}
 		}
 
 		private void UserObjs_Executed(object sender, ExecutedRoutedEventArgs e) {
-			if (UserObjsClicked != null)
+			if (UserObjsClicked != null) {
 				UserObjsClicked();
+			}
 		}
 
 		private void beginInternalEditing() {
@@ -374,9 +391,10 @@ namespace HaCreator.GUI {
 		}
 
 		private void UpdateRemoteLayerInfo() {
-			if (LayerViewChanged != null)
+			if (LayerViewChanged != null) {
 				LayerViewChanged.Invoke(actualLayerIndex, actualPlatform, layerCheckbox.IsChecked.Value,
 					layerCheckbox.IsChecked.Value || platformCheckbox.IsChecked.Value);
+			}
 		}
 
 		private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -558,10 +576,11 @@ namespace HaCreator.GUI {
 
 		protected override void OnPreviewKeyDown(KeyEventArgs e) {
 			base.OnPreviewKeyDown(e);
-			if (e.Key != Key.Down && e.Key != Key.Up && RibbonKeyDown != null)
+			if (e.Key != Key.Down && e.Key != Key.Up && RibbonKeyDown != null) {
 				RibbonKeyDown.Invoke(this,
 					new System.Windows.Forms.KeyEventArgs(
 						(System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(e.Key)));
+			}
 		}
 
 		/// <summary>
@@ -570,8 +589,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void comboBox_Resolution_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			if (comboBox_Resolution.SelectedItem == null)
+			if (comboBox_Resolution.SelectedItem == null) {
 				return;
+			}
 
 			var selectedItem = (RenderResolution) (comboBox_Resolution.SelectedItem as ComboBoxItem).Tag;
 			UserSettings.SimulateResolution =

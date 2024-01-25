@@ -4,20 +4,15 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Collections.Generic;
+using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HaCreator.MapEditor.Info.Default;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Info {
@@ -50,16 +45,20 @@ namespace HaCreator.MapEditor.Info {
 			var tileInfoProp = prop[no];
 			if (tileInfoProp == null) tileInfoProp = prop[defaultNo];
 
-			if (tileInfoProp.HCTag == null)
+			if (tileInfoProp.HCTag == null) {
 				tileInfoProp.HCTag = Load((WzCanvasProperty) tileInfoProp, tS, u, no, mag);
+			}
+
 			return (TileInfo) tileInfoProp.HCTag;
 		}
 
 		// Optimized version, for cases where you already know the mag (e.g. mass loading tiles of the same tileSet)
 		public static TileInfo Get(string tS, string u, string no, int mag) {
 			var tileInfoProp = Program.InfoManager.TileSets[tS][u][no];
-			if (tileInfoProp.HCTag == null)
+			if (tileInfoProp.HCTag == null) {
 				tileInfoProp.HCTag = Load((WzCanvasProperty) tileInfoProp, tS, u, no, mag);
+			}
+
 			return (TileInfo) tileInfoProp.HCTag;
 		}
 
@@ -70,9 +69,11 @@ namespace HaCreator.MapEditor.Info {
 				WzInfoTools.PointFToSystemPoint(parentObject.GetCanvasOriginPosition()),
 				tS, u, no, mag, z, parentObject);
 			var footholds = (WzConvexProperty) parentObject["foothold"];
-			if (footholds != null)
+			if (footholds != null) {
 				foreach (WzVectorProperty foothold in footholds.WzProperties)
 					result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(foothold));
+			}
+
 			if (UserSettings.FixFootholdMispositions) FixFootholdMispositions(result);
 
 			return result;
@@ -114,21 +115,27 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		private static void MoveFootholdY(TileInfo result, bool first, bool top, int height) {
-			if (result.footholdOffsets.Count < 1)
+			if (result.footholdOffsets.Count < 1) {
 				return;
+			}
+
 			var idx = first ? 0 : result.footholdOffsets.Count - 1;
 			var y = top ? 0 : height * result.mag;
-			if (result.footholdOffsets[idx].Y != y)
+			if (result.footholdOffsets[idx].Y != y) {
 				result.footholdOffsets[idx] = new XNA.Point(result.footholdOffsets[idx].X, y);
+			}
 		}
 
 		private static void MoveFootholdX(TileInfo result, bool first, bool left, int width) {
-			if (result.footholdOffsets.Count < 1)
+			if (result.footholdOffsets.Count < 1) {
 				return;
+			}
+
 			var idx = first ? 0 : result.footholdOffsets.Count - 1;
 			var x = left ? 0 : width * result.mag;
-			if (result.footholdOffsets[idx].X != x)
+			if (result.footholdOffsets[idx].X != x) {
 				result.footholdOffsets[idx] = new XNA.Point(x, result.footholdOffsets[idx].Y);
+			}
 		}
 
 		public void ParseOffsets(TileInstance instance, Board board, int x, int y) {

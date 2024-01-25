@@ -1,8 +1,15 @@
-﻿using HaCreator.GUI;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
-using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapSimulator.Objects.FieldObject;
 using HaCreator.MapSimulator.Objects.UIObject;
 using HaRepacker.Utils;
@@ -18,15 +25,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HaCreator.MapSimulator {
 	/// <summary>
@@ -270,12 +268,13 @@ namespace HaCreator.MapSimulator {
 				}
 			}
 
-			if (mapBoard.VRRectangle == null)
+			if (mapBoard.VRRectangle == null) {
 				vr_fieldBoundary = new Rectangle(0, 0, mapBoard.MapSize.X, mapBoard.MapSize.Y);
-			else
+			} else {
 				vr_fieldBoundary = new Rectangle(mapBoard.VRRectangle.X + mapBoard.CenterPoint.X,
 					mapBoard.VRRectangle.Y + mapBoard.CenterPoint.Y, mapBoard.VRRectangle.Width,
 					mapBoard.VRRectangle.Height);
+			}
 			//SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
 
 			// test benchmark
@@ -306,8 +305,9 @@ namespace HaCreator.MapSimulator {
 					var bgItem = MapSimulatorLoader.CreateBackgroundFromProperty(texturePool, bgParent,
 						background, _DxDeviceManager.GraphicsDevice, ref usedProps, background.Flip);
 
-					if (bgItem != null)
+					if (bgItem != null) {
 						backgrounds_back.Add(bgItem);
+					}
 				}
 
 				foreach (var background in mapBoard.BoardItems.FrontBackgrounds) {
@@ -315,8 +315,9 @@ namespace HaCreator.MapSimulator {
 					var bgItem = MapSimulatorLoader.CreateBackgroundFromProperty(texturePool, bgParent,
 						background, _DxDeviceManager.GraphicsDevice, ref usedProps, background.Flip);
 
-					if (bgItem != null)
+					if (bgItem != null) {
 						backgrounds_front.Add(bgItem);
+					}
 				}
 			});
 
@@ -327,8 +328,9 @@ namespace HaCreator.MapSimulator {
 
 					var reactorItem = MapSimulatorLoader.CreateReactorFromProperty(texturePool, reactor,
 						_DxDeviceManager.GraphicsDevice, ref usedProps);
-					if (reactorItem != null)
+					if (reactorItem != null) {
 						mapObjects_Reactors.Add(reactorItem);
+					}
 				}
 			});
 
@@ -336,8 +338,9 @@ namespace HaCreator.MapSimulator {
 			var t_npc = Task.Run(() => {
 				foreach (var npc in mapBoard.BoardItems.NPCs) {
 					//WzImage imageProperty = (WzImage) NPCWZFile[npcInfo.ID + ".img"];
-					if (npc.Hide)
+					if (npc.Hide) {
 						continue;
+					}
 
 					var npcItem = MapSimulatorLoader.CreateNpcFromProperty(texturePool, npc,
 						_DxDeviceManager.GraphicsDevice, ref usedProps);
@@ -349,8 +352,10 @@ namespace HaCreator.MapSimulator {
 			var t_mobs = Task.Run(() => {
 				foreach (var mob in mapBoard.BoardItems.Mobs) {
 					//WzImage imageProperty = Program.WzManager.FindMobImage(mobInfo.ID); // Mob.wz Mob2.img Mob001.wz
-					if (mob.Hide)
+					if (mob.Hide) {
 						continue;
+					}
+
 					var npcItem = MapSimulatorLoader.CreateMobFromProperty(texturePool, mob,
 						_DxDeviceManager.GraphicsDevice, ref usedProps);
 					mapObjects_Mobs.Add(npcItem);
@@ -367,8 +372,9 @@ namespace HaCreator.MapSimulator {
 				foreach (var portal in mapBoard.BoardItems.Portals) {
 					var portalItem = MapSimulatorLoader.CreatePortalFromProperty(texturePool, gameParent, portal,
 						_DxDeviceManager.GraphicsDevice, ref usedProps);
-					if (portalItem != null)
+					if (portalItem != null) {
 						mapObjects_Portal.Add(portalItem);
+					}
 				}
 			});
 
@@ -402,10 +408,11 @@ namespace HaCreator.MapSimulator {
 
 			// Minimap
 			var t_minimap = Task.Run(() => {
-				if (!mapBoard.MapInfo.hideMinimap)
+				if (!mapBoard.MapInfo.hideMinimap) {
 					miniMap = MapSimulatorLoader.CreateMinimapFromProperty(uiWindow1Image, uiWindow2Image, uiBasicImage,
 						mapBoard, GraphicsDevice, UserScreenScaleFactor, mapBoard.MapInfo.strMapName,
 						mapBoard.MapInfo.strStreetName, soundUIImage, bBigBangUpdate);
+				}
 			});
 
 			while (!t_tiles.IsCompleted || !t_Background.IsCompleted || !t_reactor.IsCompleted || !t_npc.IsCompleted ||
@@ -443,7 +450,7 @@ namespace HaCreator.MapSimulator {
 
 			// mirror bottom boundaries
 			//rect_mirrorBottom
-			if (mapBoard.MapInfo.mirror_Bottom)
+			if (mapBoard.MapInfo.mirror_Bottom) {
 				if (mapBoard.MapInfo.VRLeft != null && mapBoard.MapInfo.VRRight != null) {
 					var vr_width = (int) mapBoard.MapInfo.VRRight - (int) mapBoard.MapInfo.VRLeft;
 					const int obj_mirrorBottom_height = 200;
@@ -453,6 +460,7 @@ namespace HaCreator.MapSimulator {
 
 					mirrorBottomReflection = new ReflectionDrawableBoundary(128, 255, "mirror", true, false);
 				}
+			}
 			/*
 			DXObject leftDXVRObject = new DXObject(
 			    vr_fieldBoundary.Left - VR_BORDER_WIDTHHEIGHT,
@@ -478,8 +486,9 @@ namespace HaCreator.MapSimulator {
 			// cleanup
 			// clear used items
 			foreach (var obj in usedProps) {
-				if (obj == null)
+				if (obj == null) {
 					continue; // obj copied twice in usedProps?
+				}
 
 				// Spine events
 				var spineObj = (WzSpineObject) obj.MSTagSpine;
@@ -519,7 +528,9 @@ namespace HaCreator.MapSimulator {
 		protected override void UnloadContent() {
 			if (audio != null)
 				//audio.Pause();
+			{
 				audio.Dispose();
+			}
 
 			skeletonMeshRenderer.End();
 
@@ -587,11 +598,12 @@ namespace HaCreator.MapSimulator {
 			}
 
 			// Handle print screen
-			if (newKeyboardState.IsKeyDown(Keys.PrintScreen))
+			if (newKeyboardState.IsKeyDown(Keys.PrintScreen)) {
 				if (!bSaveScreenshot && bSaveScreenshotComplete) {
 					bSaveScreenshot = true; // flag for screenshot
 					bSaveScreenshotComplete = false;
 				}
+			}
 
 
 			// Handle mouse
@@ -611,8 +623,9 @@ namespace HaCreator.MapSimulator {
 				bIsShiftPressed
 					? (int) (3000f / frameRate)
 					: (int) (1500f / frameRate); // move a fixed amount a second, not dependent on GPU speed
-			if (bIsLeftKeyPressed || bIsRightKeyPressed)
+			if (bIsLeftKeyPressed || bIsRightKeyPressed) {
 				SetCameraMoveX(bIsLeftKeyPressed, bIsRightKeyPressed, moveOffset);
+			}
 
 			if (bIsUpKeyPressed || bIsDownKeyPressed) SetCameraMoveY(bIsUpKeyPressed, bIsDownKeyPressed, moveOffset);
 
@@ -621,8 +634,9 @@ namespace HaCreator.MapSimulator {
 			}
 
 			// Debug keys
-			if (newKeyboardState.IsKeyUp(Keys.F5) && oldKeyboardState.IsKeyDown(Keys.F5))
+			if (newKeyboardState.IsKeyUp(Keys.F5) && oldKeyboardState.IsKeyDown(Keys.F5)) {
 				bShowDebugMode = !bShowDebugMode;
+			}
 
 			oldKeyboardState = newKeyboardState; // set the new state as the old state for next time
 			oldMouseState = newMouseState; // set the new state as the old state for next time
@@ -665,12 +679,13 @@ namespace HaCreator.MapSimulator {
 
 			// Map objects
 			foreach (var mapItem in mapObjects)
-			foreach (var item in mapItem)
+			foreach (var item in mapItem) {
 				item.Draw(spriteBatch, skeletonMeshRenderer, gameTime,
 					mapShiftX, mapShiftY, mapCenterX, mapCenterY,
 					null,
 					RenderWidth, RenderHeight, RenderObjectScaling, mapRenderResolution,
 					TickCount);
+			}
 
 			// Portals
 			foreach (PortalItem portalItem in mapObjects_Portal) {
@@ -752,14 +767,18 @@ namespace HaCreator.MapSimulator {
 				var instance = mobItem.MobInstance;
 
 				ReflectionDrawableBoundary mirrorFieldData = null;
-				if (mirrorBottomReflection != null)
-					if (rect_mirrorBottom.Contains(new Point(mobItem.MobInstance.X, mobItem.MobInstance.Y)))
+				if (mirrorBottomReflection != null) {
+					if (rect_mirrorBottom.Contains(new Point(mobItem.MobInstance.X, mobItem.MobInstance.Y))) {
 						mirrorFieldData = mirrorBottomReflection;
+					}
+				}
 
 				if (mirrorFieldData == null) // a field may contain both 'info/mirror_Bottom' and 'MirrorFieldData'
+				{
 					mirrorFieldData = mapBoard.BoardItems
 						.CheckObjectWithinMirrorFieldDataBoundary(mobItem.MobInstance.X, mobItem.MobInstance.Y,
 							MirrorFieldDataType.mob)?.ReflectionInfo;
+				}
 
 				mobItem.Draw(spriteBatch, skeletonMeshRenderer, gameTime,
 					mapShiftX, mapShiftY, mapCenterX, mapCenterY,
@@ -798,14 +817,18 @@ namespace HaCreator.MapSimulator {
 				var instance = npcItem.NpcInstance;
 
 				ReflectionDrawableBoundary mirrorFieldData = null;
-				if (mirrorBottomReflection != null)
-					if (rect_mirrorBottom.Contains(new Point(npcItem.NpcInstance.X, npcItem.NpcInstance.Y)))
+				if (mirrorBottomReflection != null) {
+					if (rect_mirrorBottom.Contains(new Point(npcItem.NpcInstance.X, npcItem.NpcInstance.Y))) {
 						mirrorFieldData = mirrorBottomReflection;
+					}
+				}
 
 				if (mirrorFieldData == null) // a field may contain both 'info/mirror_Bottom' and 'MirrorFieldData'
+				{
 					mirrorFieldData = mapBoard.BoardItems
 						.CheckObjectWithinMirrorFieldDataBoundary(npcItem.NpcInstance.X, npcItem.NpcInstance.Y,
 							MirrorFieldDataType.npc)?.ReflectionInfo;
+				}
 
 				npcItem.Draw(spriteBatch, skeletonMeshRenderer, gameTime,
 					mapShiftX, mapShiftY, mapCenterX, mapCenterY,
@@ -857,7 +880,7 @@ namespace HaCreator.MapSimulator {
 
 			//////////////////// UI related here ////////////////////
 			// Tooltips
-			if (mapObjects_tooltips.Count > 0)
+			if (mapObjects_tooltips.Count > 0) {
 				foreach (TooltipItem tooltip in mapObjects_tooltips) // NPCs (always in front of mobs)
 				{
 					if (tooltip.TooltipInstance.CharacterToolTip != null) {
@@ -882,8 +905,9 @@ namespace HaCreator.MapSimulator {
 									Color.White);
 							}
 
-							if (!rect.Contains(mouseState.X, mouseState.Y))
+							if (!rect.Contains(mouseState.X, mouseState.Y)) {
 								continue;
+							}
 						}
 					}
 
@@ -893,6 +917,7 @@ namespace HaCreator.MapSimulator {
 						RenderWidth, RenderHeight, RenderObjectScaling, mapRenderResolution,
 						TickCount);
 				}
+			}
 
 			// Minimap
 			if (miniMap != null) {
@@ -905,12 +930,13 @@ namespace HaCreator.MapSimulator {
 				miniMap.CheckMouseEvent(shiftCenteredX, shiftCenteredY, mouseState);
 			}
 
-			if (gameTime.TotalGameTime.TotalSeconds < 4)
+			if (gameTime.TotalGameTime.TotalSeconds < 4) {
 				spriteBatch.DrawString(font_navigationKeysHelper,
 					string.Format(
 						"[Left] [Right] [Up] [Down] [Shift] for navigation.{0}[F5] for debug mode{1}[Alt+Enter] Full screen{2}[PrintSc] Screenshot",
 						Environment.NewLine, Environment.NewLine, Environment.NewLine),
 					new Vector2(20, Height - 140), Color.White);
+			}
 
 			if (!bSaveScreenshot && bShowDebugMode) {
 				var sb = new StringBuilder();
@@ -944,8 +970,9 @@ namespace HaCreator.MapSimulator {
 		/// <param name="sprite"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DrawVRFieldBorder(SpriteBatch sprite) {
-			if (bBigBang2Update || !bDrawVRBorderLeftRight || (vr_fieldBoundary.X == 0 && vr_fieldBoundary.Y == 0))
+			if (bBigBang2Update || !bDrawVRBorderLeftRight || (vr_fieldBoundary.X == 0 && vr_fieldBoundary.Y == 0)) {
 				return;
+			}
 
 			var borderColor = Color.Black;
 
@@ -1021,7 +1048,9 @@ namespace HaCreator.MapSimulator {
 			// Draw background
 			if (backgroundColor != Color.Transparent)
 				// draw a black background sprite with the rectangleToDraw as area
+			{
 				sprite.Draw(texture_debugBoundaryRect, rectangleToDraw, backgroundColor);
+			}
 		}
 
 		/*[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1048,8 +1077,9 @@ namespace HaCreator.MapSimulator {
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoScreenshot() {
-			if (!bSaveScreenshotComplete)
+			if (!bSaveScreenshotComplete) {
 				return;
+			}
 
 			if (bSaveScreenshot) {
 				bSaveScreenshot = false;
@@ -1113,9 +1143,11 @@ namespace HaCreator.MapSimulator {
 		private ImageCodecInfo GetEncoder(ImageFormat format) {
 			var codecs = ImageCodecInfo.GetImageDecoders();
 
-			foreach (var codec in codecs)
-				if (codec.FormatID == format.Guid)
+			foreach (var codec in codecs) {
+				if (codec.FormatID == format.Guid) {
 					return codec;
+				}
+			}
 
 			return null;
 		}
@@ -1162,12 +1194,13 @@ namespace HaCreator.MapSimulator {
 				//      vr.Right, RenderWidth, (int)(vr.Right - RenderWidth), (int)((vr.Right - (RenderWidth * RenderObjectScaling)) * RenderObjectScaling),
 				//     mapShiftX + offset);
 
-				if (bIsLeftKeyPressed)
+				if (bIsLeftKeyPressed) {
 					mapShiftX = Math.Max((int) (vr_fieldBoundary.Left * RenderObjectScaling),
 						mapShiftX - moveOffset);
-				else if (bIsRightKeyPressed)
+				} else if (bIsRightKeyPressed) {
 					mapShiftX = Math.Min((int) (vr_fieldBoundary.Right - RenderWidth / RenderObjectScaling),
 						mapShiftX + moveOffset);
+				}
 			}
 		}
 
@@ -1190,11 +1223,12 @@ namespace HaCreator.MapSimulator {
 				    mapShiftX + offset);*/
 
 
-				if (bIsUpKeyPressed)
+				if (bIsUpKeyPressed) {
 					mapShiftY = Math.Max((int) vr_fieldBoundary.Top, mapShiftY - moveOffset);
-				else if (bIsDownKeyPressed)
+				} else if (bIsDownKeyPressed) {
 					mapShiftY = Math.Min((int) (vr_fieldBoundary.Bottom - RenderHeight / RenderObjectScaling),
 						mapShiftY + moveOffset);
+				}
 			}
 		}
 

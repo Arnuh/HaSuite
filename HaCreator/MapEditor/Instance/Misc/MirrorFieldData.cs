@@ -5,15 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using XNA = Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HaCreator.MapEditor.Instance.Shapes;
-using Microsoft.Xna.Framework;
 using HaSharedLibrary.Render;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc {
 	public enum MirrorFieldDataType {
@@ -33,7 +27,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 
 		private ReflectionDrawableBoundary reflectionInfo;
 		private MirrorFieldDataType mirrorFieldDataType;
-		private Vector2 offset;
+		private XNA.Vector2 offset;
 
 		#endregion
 
@@ -43,7 +37,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 		/// </summary>
 		/// <param name="board"></param>
 		/// <param name="rect"></param>
-		public MirrorFieldData(Board board, Rectangle rect, Vector2 offset,
+		public MirrorFieldData(Board board, XNA.Rectangle rect, XNA.Vector2 offset,
 			ReflectionDrawableBoundary reflectionInfo, MirrorFieldDataType mirrorFieldDataType)
 			: base(board, rect) {
 			this.reflectionInfo = reflectionInfo;
@@ -59,7 +53,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		public override void Move(int x, int y) {
-			rect = new Rectangle(x, y, Rectangle.Width, Rectangle.Height);
+			rect = new XNA.Rectangle(x, y, Rectangle.Width, Rectangle.Height);
 		}
 
 		public override string Name => "MirrorFieldData (Reflections)";
@@ -78,7 +72,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 			set => mirrorFieldDataType = value;
 		}
 
-		public Vector2 Offset {
+		public XNA.Vector2 Offset {
 			get => offset;
 			set => offset = value;
 		}
@@ -117,7 +111,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 		public new class SerializationForm : MapleRectangle.SerializationForm {
 			public ReflectionDrawableBoundary reflectionInfo;
 			public MirrorFieldDataType mirrorFieldDataType;
-			public Vector2 offset;
+			public XNA.Vector2 offset;
 		}
 
 		public override object Serialize() {

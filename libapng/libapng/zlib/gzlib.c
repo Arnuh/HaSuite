@@ -503,16 +503,16 @@ const char* msg; {
    available) -- we need to do this to cover cases where 2's complement not
    used, since C standard permits 1's complement and sign-bit representations,
    otherwise we could just use ((unsigned)-1) >> 1 */
-unsigned ZLIB_INTERNAL gz_intmax()
-{
-    unsigned p, q;
+unsigned ZLIB_INTERNAL gz_intmax() {
+	unsigned p, q;
 
-    p = 1;
-    do {
-        q = p;
-        p <<= 1;
-        p++;
-    } while (p > q);
-    return q >> 1;
+	p = 1;
+	do {
+		q = p;
+		p <<= 1;
+		p++;
+	}
+	while (p > q);
+	return q >> 1;
 }
 #endif

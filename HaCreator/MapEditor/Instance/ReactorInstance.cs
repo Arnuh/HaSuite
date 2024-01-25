@@ -7,11 +7,6 @@
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
@@ -40,8 +35,9 @@ namespace HaCreator.MapEditor.Instance {
 			this.reactorTime = reactorTime;
 			this.flip = flip;
 			this.name = name;
-			if (flip)
+			if (flip) {
 				X -= Width - 2 * Origin.X;
+			}
 		}
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
@@ -61,8 +57,11 @@ namespace HaCreator.MapEditor.Instance {
 				if (flip == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip) X -= xFlipShift;
-				else X += xFlipShift;
+				if (flip) {
+					X -= xFlipShift;
+				} else {
+					X += xFlipShift;
+				}
 			}
 		}
 

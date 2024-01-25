@@ -6,17 +6,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Forms;
-using XNA = Microsoft.Xna.Framework;
-using System.Runtime.InteropServices;
 using System.Linq;
-using HaCreator.MapEditor.UndoRedo;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
-using HaCreator.Exceptions;
-using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.UndoRedo;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Input {
 	public class InputHandler {
@@ -26,8 +25,9 @@ namespace HaCreator.MapEditor.Input {
 
 		public void OnUserInteraction() {
 			lastUserInteraction = Environment.TickCount;
-			if (parentBoard != null && parentBoard.SelectedBoard != null)
+			if (parentBoard != null && parentBoard.SelectedBoard != null) {
 				parentBoard.SelectedBoard.Dirty = true;
+			}
 		}
 
 		public void OnBackup() {
@@ -113,12 +113,14 @@ namespace HaCreator.MapEditor.Input {
 					var newRect = CreateRectangle(newPos, selectedBoard.Mouse.MultiSelectStart);
 					var toRemove = new List<BoardItem>();
 					var sel = selectedBoard.GetUserSelectionInfo();
-					foreach (var item in selectedBoard.BoardItems.Items)
+					foreach (var item in selectedBoard.BoardItems.Items) {
 						if (MultiBoard.IsItemUnderRectangle(item, newRect) &&
-						    (sel.editedTypes & item.Type) == item.Type && item.CheckIfLayerSelected(sel))
+						    (sel.editedTypes & item.Type) == item.Type && item.CheckIfLayerSelected(sel)) {
 							item.Selected = true;
-						else if (item.Selected && MultiBoard.IsItemUnderRectangle(item, oldRect))
+						} else if (item.Selected && MultiBoard.IsItemUnderRectangle(item, oldRect)) {
 							toRemove.Add(item);
+						}
+					}
 
 					foreach (var item in toRemove)
 						item.Selected = false;
@@ -138,9 +140,11 @@ namespace HaCreator.MapEditor.Input {
 						    state == MouseState.RandomTiles || state == MouseState.Ropes ||
 						    state == MouseState.Footholds || state == MouseState.Chairs) {
 							var items = selectedBoard.Mouse.BoundItems.Keys.ToList();
-							foreach (var item in items)
-								if (item is ISnappable)
+							foreach (var item in items) {
+								if (item is ISnappable) {
 									((ISnappable) item).DoSnap();
+								}
+							}
 						}
 					}
 				} else if (selectedBoard.Mouse.State == MouseState.Footholds) {
@@ -156,44 +160,52 @@ namespace HaCreator.MapEditor.Input {
 						Math.Min(Math.Max(currPhysicalPos.Y, 0), (int) parentBoard.Height));
 
 					if (currPhysicalPos.X - UserSettings.ScrollDistance < 0 && oldPos.X > newPos.X) //move to left
+					{
 						selectedBoard.hScroll = (int) Math.Max(0,
 							selectedBoard.hScroll -
 							Math.Pow(UserSettings.ScrollBase,
 								(UserSettings.ScrollDistance - currPhysicalPos.X) * UserSettings.ScrollExponentFactor) *
 							UserSettings.ScrollFactor);
-					else if (currPhysicalPos.X + UserSettings.ScrollDistance > parentBoard.Width &&
-					         oldPos.X < newPos.X) //move to right
+					} else if (currPhysicalPos.X + UserSettings.ScrollDistance > parentBoard.Width &&
+					           oldPos.X < newPos.X) //move to right
+					{
 						selectedBoard.hScroll = (int) Math.Min(
 							selectedBoard.hScroll +
 							Math.Pow(UserSettings.ScrollBase,
 								(currPhysicalPos.X - parentBoard.Width + UserSettings.ScrollDistance) *
 								UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, parentBoard.MaxHScroll);
+					}
+
 					if (currPhysicalPos.Y - UserSettings.ScrollDistance < 0 && oldPos.Y > newPos.Y) //move to top
+					{
 						selectedBoard.vScroll = (int) Math.Max(0,
 							selectedBoard.vScroll -
 							Math.Pow(UserSettings.ScrollBase,
 								(UserSettings.ScrollDistance - currPhysicalPos.Y) * UserSettings.ScrollExponentFactor) *
 							UserSettings.ScrollFactor);
-					else if (currPhysicalPos.Y + UserSettings.ScrollDistance > parentBoard.Height &&
-					         oldPos.Y < newPos.Y) //move to bottom
+					} else if (currPhysicalPos.Y + UserSettings.ScrollDistance > parentBoard.Height &&
+					           oldPos.Y < newPos.Y) //move to bottom
+					{
 						selectedBoard.vScroll = (int) Math.Min(
 							selectedBoard.vScroll +
 							Math.Pow(UserSettings.ScrollBase,
 								(currPhysicalPos.Y - parentBoard.Height + UserSettings.ScrollDistance) *
 								UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, parentBoard.MaxVScroll);
+					}
 				}
 			}
 		}
 
 		private UndoRedoAction CreateItemUndoMoveAction(BoardItem item, XNA.Point posChange) {
-			if (item is BackgroundInstance)
+			if (item is BackgroundInstance) {
 				return UndoRedoManager.BackgroundMoved((BackgroundInstance) item,
 					new XNA.Point(((BackgroundInstance) item).BaseX + posChange.X,
 						((BackgroundInstance) item).BaseY + posChange.Y),
 					new XNA.Point(((BackgroundInstance) item).BaseX, ((BackgroundInstance) item).BaseY));
-			else
+			} else {
 				return UndoRedoManager.ItemMoved(item, new XNA.Point(item.X + posChange.X, item.Y + posChange.Y),
 					new XNA.Point(item.X, item.Y));
+			}
 		}
 
 		/// <summary>
@@ -206,12 +218,16 @@ namespace HaCreator.MapEditor.Input {
 		/// <param name="key"></param>
 		private void ParentBoard_ShortcutKeyPressed(Board selectedBoard, bool ctrl, bool shift, bool alt, Keys key) {
 			lock (parentBoard) {
-				if (parentBoard == null || parentBoard.SelectedBoard == null)
+				if (parentBoard == null || parentBoard.SelectedBoard == null) {
 					return;
+				}
+
 				OnUserInteraction();
 				var actions = new List<UndoRedoAction>();
-				if (key == Keys.ControlKey || key == Keys.ShiftKey || key == Keys.Menu /*ALT key*/)
+				if (key == Keys.ControlKey || key == Keys.ShiftKey || key == Keys.Menu /*ALT key*/) {
 					return;
+				}
+
 				var clearRedo = true;
 
 				const int navigationSHVScrollSpeed = 16;
@@ -219,11 +235,12 @@ namespace HaCreator.MapEditor.Input {
 				switch (key) {
 					case Keys.Left: {
 						if (selectedBoard.SelectedItems.Count > 0) {
-							foreach (var item in selectedBoard.SelectedItems)
+							foreach (var item in selectedBoard.SelectedItems) {
 								if (!item.BoundToSelectedItem(selectedBoard)) {
 									item.X--;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(1, 0)));
 								}
+							}
 						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddHScrollbarValue(-navigationSHVScrollSpeed);
@@ -233,11 +250,12 @@ namespace HaCreator.MapEditor.Input {
 					}
 					case Keys.Right: {
 						if (selectedBoard.SelectedItems.Count > 0) {
-							foreach (var item in selectedBoard.SelectedItems)
+							foreach (var item in selectedBoard.SelectedItems) {
 								if (!item.BoundToSelectedItem(selectedBoard)) {
 									item.X++;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(-1, 0)));
 								}
+							}
 						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddHScrollbarValue(navigationSHVScrollSpeed);
@@ -247,11 +265,12 @@ namespace HaCreator.MapEditor.Input {
 					}
 					case Keys.Up: {
 						if (selectedBoard.SelectedItems.Count > 0) {
-							foreach (var item in selectedBoard.SelectedItems)
+							foreach (var item in selectedBoard.SelectedItems) {
 								if (!item.BoundToSelectedItem(selectedBoard)) {
 									item.Y--;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, 1)));
 								}
+							}
 						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddVScrollbarValue(-navigationSHVScrollSpeed);
@@ -261,11 +280,12 @@ namespace HaCreator.MapEditor.Input {
 					}
 					case Keys.Down: {
 						if (selectedBoard.SelectedItems.Count > 0) {
-							foreach (var item in selectedBoard.SelectedItems)
+							foreach (var item in selectedBoard.SelectedItems) {
 								if (!item.BoundToSelectedItem(selectedBoard)) {
 									item.Y++;
 									actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, -1)));
 								}
+							}
 						} else // if no item is being selected, shift the view instead
 						{
 							selectedBoard.ParentControl.AddVScrollbarValue(navigationSHVScrollSpeed);
@@ -289,7 +309,7 @@ namespace HaCreator.MapEditor.Input {
 								bool askedVr = false, askedMm = false;
 								var
 									selectedItems = selectedBoard.SelectedItems.ToList(); // Dupe the selection list
-								foreach (var item in selectedItems)
+								foreach (var item in selectedItems) {
 									if (item is ToolTipDot || item is MiscDot) {
 										continue;
 									} else if (item is VRDot) {
@@ -298,8 +318,9 @@ namespace HaCreator.MapEditor.Input {
 											if (MessageBox.Show(
 												    "This will remove the map's VR. This is not undoable, you must re-add VR from the map's main menu. Continue?",
 												    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
-											    DialogResult.Yes)
+											    DialogResult.Yes) {
 												selectedBoard.VRRectangle.RemoveItem(null);
+											}
 										}
 									} else if (item is MinimapDot) {
 										if (!askedMm) {
@@ -307,12 +328,14 @@ namespace HaCreator.MapEditor.Input {
 											if (MessageBox.Show(
 												    "This will remove the map's minimap. This is not undoable, you must re-add the minimap from the map's main menu. Continue?",
 												    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
-											    DialogResult.Yes)
+											    DialogResult.Yes) {
 												selectedBoard.MinimapRectangle.RemoveItem(null);
+											}
 										}
 									} else {
 										item.RemoveItem(actions);
 									}
+								}
 
 								break;
 							case MouseState.RandomTiles:
@@ -323,9 +346,11 @@ namespace HaCreator.MapEditor.Input {
 								break;
 							case MouseState.Footholds:
 								while (selectedBoard.Mouse.connectedLines.Count > 0 &&
-								       selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines.Count > 0)
+								       selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines.Count > 0) {
 									selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines[0]
 										.Remove(false, actions);
+								}
+
 								break;
 						}
 
@@ -377,17 +402,20 @@ namespace HaCreator.MapEditor.Input {
 						selectedBoard.BoardItems.Sort();
 						break;
 					case Keys.A:
-						if (ctrl)
-							foreach (var item in selectedBoard.BoardItems.Items)
+						if (ctrl) {
+							foreach (var item in selectedBoard.BoardItems.Items) {
 								if ((selectedBoard.EditedTypes & item.Type) == item.Type) {
 									if (item is LayeredItem) {
 										var li = (LayeredItem) item;
-										if (li.CheckIfLayerSelected(selectedBoard.GetUserSelectionInfo()))
+										if (li.CheckIfLayerSelected(selectedBoard.GetUserSelectionInfo())) {
 											item.Selected = true;
+										}
 									} else {
 										item.Selected = true;
 									}
 								}
+							}
+						}
 
 						clearRedo = false;
 						break;
@@ -399,10 +427,11 @@ namespace HaCreator.MapEditor.Input {
 							var selectedItemIndex = 0;
 							while (selectedBoard.SelectedItems.Count > selectedItemIndex) {
 								var item = selectedBoard.SelectedItems[selectedItemIndex];
-								if (item is ToolTipDot || item is MiscDot || item is VRDot || item is MinimapDot)
+								if (item is ToolTipDot || item is MiscDot || item is VRDot || item is MinimapDot) {
 									selectedItemIndex++;
-								else
+								} else {
 									item.RemoveItem(actions);
+								}
 							}
 
 							break;
@@ -410,10 +439,11 @@ namespace HaCreator.MapEditor.Input {
 
 						break;
 					case Keys.C: // Copy
-						if (ctrl)
+						if (ctrl) {
 							Clipboard.SetData(SerializationManager.HaClipboardData,
 								selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems
 									.Cast<ISerializableSelector>()));
+						}
 
 						break;
 					case Keys.V: // Paste
@@ -473,31 +503,46 @@ namespace HaCreator.MapEditor.Input {
 							// Calculate offsetting
 							var minPos = new XNA.Point(int.MaxValue, int.MaxValue);
 							var maxPos = new XNA.Point(int.MinValue, int.MinValue);
-							foreach (var item in items)
+							foreach (var item in items) {
 								if (item is BoardItem) {
 									var bi = (BoardItem) item;
-									if (bi.Left < minPos.X)
+									if (bi.Left < minPos.X) {
 										minPos.X = bi.Left;
-									if (bi.Top < minPos.Y)
+									}
+
+									if (bi.Top < minPos.Y) {
 										minPos.Y = bi.Top;
-									if (bi.Right > maxPos.X)
+									}
+
+									if (bi.Right > maxPos.X) {
 										maxPos.X = bi.Right;
-									if (bi.Bottom > maxPos.Y)
+									}
+
+									if (bi.Bottom > maxPos.Y) {
 										maxPos.Y = bi.Bottom;
+									}
 								} else if (item is Rope) {
 									var r = (Rope) item;
 									var x = r.FirstAnchor.X;
 									var minY = Math.Min(r.FirstAnchor.Y, r.SecondAnchor.Y);
 									var maxY = Math.Max(r.FirstAnchor.Y, r.SecondAnchor.Y);
-									if (x < minPos.X)
+									if (x < minPos.X) {
 										minPos.X = x;
-									if (x > maxPos.X)
+									}
+
+									if (x > maxPos.X) {
 										maxPos.X = x;
-									if (minY < minPos.Y)
+									}
+
+									if (minY < minPos.Y) {
 										minPos.Y = minY;
-									if (maxY > maxPos.Y)
+									}
+
+									if (maxY > maxPos.Y) {
 										maxPos.Y = maxY;
+									}
 								}
+							}
 
 							var center = new XNA.Point((maxPos.X + minPos.X) / 2, (maxPos.Y + minPos.Y) / 2);
 							var offset = new XNA.Point(selectedBoard.Mouse.X - center.X,
@@ -525,12 +570,16 @@ namespace HaCreator.MapEditor.Input {
 						clearRedo = false;
 						break;
 					case Keys.S:
-						if (ctrl)
+						if (ctrl) {
 							parentBoard.OnExportRequested();
+						}
+
 						break;
 					case Keys.O:
-						if (ctrl)
+						if (ctrl) {
 							parentBoard.OnLoadRequested();
+						}
+
 						break;
 					case Keys.Escape:
 						if (selectedBoard.Mouse.State == MouseState.Selection) {
@@ -548,12 +597,16 @@ namespace HaCreator.MapEditor.Input {
 						clearRedo = false;
 						break;
 					case Keys.W:
-						if (ctrl)
+						if (ctrl) {
 							parentBoard.OnCloseTabRequested();
+						}
+
 						break;
 					case Keys.Tab:
-						if (ctrl)
+						if (ctrl) {
 							parentBoard.OnSwitchTabRequested(shift);
+						}
+
 						break;
 					case Keys.F5:
 						UserSettings.altBackground = !UserSettings.altBackground;
@@ -565,10 +618,13 @@ namespace HaCreator.MapEditor.Input {
 						break;
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					selectedBoard.UndoRedoMan.AddUndoBatch(actions);
-				if (clearRedo)
+				}
+
+				if (clearRedo) {
 					selectedBoard.UndoRedoMan.RedoList.Clear();
+				}
 			}
 		}
 
@@ -599,14 +655,18 @@ namespace HaCreator.MapEditor.Input {
 				OnUserInteraction();
 				if (mouseState == MouseState.Selection) {
 					ClearBoundItems(selectedBoard);
-					if (ClickOnMinimap(selectedBoard, realPosition))
+					if (ClickOnMinimap(selectedBoard, realPosition)) {
 						return;
+					}
 
-					if (rightClickTarget == null)
+					if (rightClickTarget == null) {
 						return;
+					}
 
-					if (!rightClickTarget.Selected)
+					if (!rightClickTarget.Selected) {
 						ClearSelectedItems(selectedBoard);
+					}
+
 					rightClickTarget.Selected = true;
 					var bicm = new BoardItemContextMenu(parentBoard, selectedBoard, rightClickTarget);
 
@@ -626,30 +686,39 @@ namespace HaCreator.MapEditor.Input {
 			lock (parentBoard) {
 				OnUserInteraction();
 				if (selectedBoard.Mouse.State == MouseState.Selection) //handle drag-drop selection end
+				{
 					ClearBoundItems(selectedBoard);
-				else if (selectedBoard.Mouse.State == MouseState.StaticObjectAdding ||
-				         selectedBoard.Mouse.State == MouseState.RandomTiles ||
-				         selectedBoard.Mouse.State == MouseState.Chairs ||
-				         selectedBoard.Mouse.State == MouseState.Ropes ||
-				         selectedBoard.Mouse.State == MouseState.Tooltip ||
-				         selectedBoard.Mouse.State ==
-				         MouseState.Clock) //handle clicks that are meant to add an item to the board
+				} else if (selectedBoard.Mouse.State == MouseState.StaticObjectAdding ||
+				           selectedBoard.Mouse.State == MouseState.RandomTiles ||
+				           selectedBoard.Mouse.State == MouseState.Chairs ||
+				           selectedBoard.Mouse.State == MouseState.Ropes ||
+				           selectedBoard.Mouse.State == MouseState.Tooltip ||
+				           selectedBoard.Mouse.State ==
+				           MouseState.Clock) //handle clicks that are meant to add an item to the board
+				{
 					selectedBoard.Mouse.PlaceObject();
-				else if (selectedBoard.Mouse.State == MouseState.Footholds) selectedBoard.Mouse.TryConnectFoothold();
+				} else if (selectedBoard.Mouse.State == MouseState.Footholds) selectedBoard.Mouse.TryConnectFoothold();
 			}
 		}
 
 		private void HandleMinimapBrowse(Board selectedBoard, XNA.Point realPosition) {
 			var h = realPosition.X * selectedBoard.mag - (int) parentBoard.ActualWidth / 2;
 			var v = realPosition.Y * selectedBoard.mag - (int) parentBoard.ActualHeight / 2;
-			if (h < 0) selectedBoard.hScroll = 0;
-			else if (h > parentBoard.MaxHScroll)
+			if (h < 0) {
+				selectedBoard.hScroll = 0;
+			} else if (h > parentBoard.MaxHScroll) {
 				selectedBoard.hScroll = (int) parentBoard.MaxHScroll;
-			else selectedBoard.hScroll = h;
-			if (v < 0) selectedBoard.vScroll = 0;
-			else if (v > parentBoard.MaxVScroll)
+			} else {
+				selectedBoard.hScroll = h;
+			}
+
+			if (v < 0) {
+				selectedBoard.vScroll = 0;
+			} else if (v > parentBoard.MaxVScroll) {
 				selectedBoard.vScroll = (int) parentBoard.MaxVScroll;
-			else selectedBoard.vScroll = v;
+			} else {
+				selectedBoard.vScroll = v;
+			}
 		}
 
 		private void parentBoard_LeftMouseDown(Board selectedBoard, BoardItem item, BoardItem selectedItem,
@@ -693,7 +762,9 @@ namespace HaCreator.MapEditor.Input {
 
 						if (!itemAlreadySelected &&
 						    !ctrlDown) // If we are changing selection and ctrl is not down, clear current selected items
+						{
 							ClearSelectedItems(selectedBoard);
+						}
 
 						if (ctrlDown) // If we are clicking an item and ctrl IS down, we need to toggle its selection
 						{
@@ -718,11 +789,12 @@ namespace HaCreator.MapEditor.Input {
 			foreach (var itemToSelect in selectedBoard.SelectedItems) {
 				selectedBoard.Mouse.BindItem(itemToSelect,
 					new XNA.Point(itemToSelect.X - mousePosition.X, itemToSelect.Y - mousePosition.Y));
-				if (itemToSelect is BackgroundInstance)
+				if (itemToSelect is BackgroundInstance) {
 					itemToSelect.moveStartPos = new XNA.Point(((BackgroundInstance) itemToSelect).BaseX,
 						((BackgroundInstance) itemToSelect).BaseY);
-				else
+				} else {
 					itemToSelect.moveStartPos = new XNA.Point(itemToSelect.X, itemToSelect.Y);
+				}
 			}
 		}
 
@@ -742,20 +814,22 @@ namespace HaCreator.MapEditor.Input {
 					board.Mouse.ReleaseItem(item);
 					if (addUndo) {
 						if (item is BackgroundInstance && (((BackgroundInstance) item).BaseX != item.moveStartPos.X ||
-						                                   ((BackgroundInstance) item).BaseY != item.moveStartPos.Y))
+						                                   ((BackgroundInstance) item).BaseY != item.moveStartPos.Y)) {
 							undoActions.Add(UndoRedoManager.BackgroundMoved((BackgroundInstance) item,
 								new XNA.Point(item.moveStartPos.X, item.moveStartPos.Y),
 								new XNA.Point(((BackgroundInstance) item).BaseX, ((BackgroundInstance) item).BaseY)));
-						else if (!(item is BackgroundInstance) &&
-						         (item.X != item.moveStartPos.X || item.Y != item.moveStartPos.Y))
+						} else if (!(item is BackgroundInstance) &&
+						           (item.X != item.moveStartPos.X || item.Y != item.moveStartPos.Y)) {
 							undoActions.Add(UndoRedoManager.ItemMoved(item,
 								new XNA.Point(item.moveStartPos.X, item.moveStartPos.Y),
 								new XNA.Point(item.X, item.Y)));
+						}
 					}
 				}
 
-				if (undoActions.Count > 0)
+				if (undoActions.Count > 0) {
 					board.UndoRedoMan.AddUndoBatch(undoActions);
+				}
 			}
 		}
 	}

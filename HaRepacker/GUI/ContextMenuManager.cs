@@ -6,17 +6,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
+using HaRepacker.GUI;
+using HaRepacker.GUI.Input;
+using HaRepacker.GUI.Panels;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using System.Collections;
-using HaRepacker.GUI.Interaction;
-using HaRepacker.GUI;
-using HaRepacker.GUI.Panels;
-using HaRepacker.GUI.Input;
 
 namespace HaRepacker {
 	public class ContextMenuManager {
@@ -80,16 +75,18 @@ namespace HaRepacker {
 
 			Unload = new ToolStripMenuItem("Unload", Properties.Resources.delete, new EventHandler(
 				delegate(object sender, EventArgs e) {
-					if (!Warning.Warn("Are you sure you want to unload this file?"))
+					if (!Warning.Warn("Are you sure you want to unload this file?")) {
 						return;
+					}
 
 					var nodesSelected = GetNodes(sender);
 					foreach (var node in nodesSelected) parentPanel.MainForm.UnloadWzFile(node.Tag as WzFile);
 				}));
 			Reload = new ToolStripMenuItem("Reload", Properties.Resources.arrow_refresh, new EventHandler(
 				delegate(object sender, EventArgs e) {
-					if (!Warning.Warn("Are you sure you want to reload this file?"))
+					if (!Warning.Warn("Are you sure you want to reload this file?")) {
 						return;
+					}
 
 					var nodesSelected = GetNodes(sender);
 					foreach (var node in nodesSelected) // selected nodes
@@ -130,8 +127,9 @@ namespace HaRepacker {
 					}
 
 					string name;
-					if (NameInputBox.Show("Add Image", 0, out name))
+					if (NameInputBox.Show("Add Image", 0, out name)) {
 						nodes[0].AddObject(new WzImage(name) {Changed = true}, undoMan);
+					}
 				}));
 			AddDirectory = new ToolStripMenuItem("Directory", null, new EventHandler(
 				delegate(object sender, EventArgs e) {
@@ -329,10 +327,11 @@ namespace HaRepacker {
 			toolStripmenuItems.Add(CollapseAllChildNode);
 			toolStripmenuItems.Add(AddEtcMenu);
 
-			if (Tag.GetType() == typeof(WzSubProperty))
+			if (Tag.GetType() == typeof(WzSubProperty)) {
 				toolStripmenuItems.Add(AddSortMenu);
-			else
+			} else {
 				toolStripmenuItems.Add(AddSortMenu_WithoutPropSort);
+			}
 
 			// Add
 			foreach (var toolStripItem in toolStripmenuItems) menu.Items.Add(toolStripItem);

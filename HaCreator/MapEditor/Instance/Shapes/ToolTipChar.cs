@@ -4,14 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Collections.Generic;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -50,10 +46,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
 			base.Draw(sprite, dotColor, xShift, yShift);
 
-			if (boundTooltip != null)
+			if (boundTooltip != null) {
 				Board.ParentControl.DrawLine(sprite, new XNA.Vector2(X + Width / 2 + xShift, Y + Height / 2 + yShift),
 					new XNA.Vector2(boundTooltip.X + boundTooltip.Width / 2 + xShift,
 						boundTooltip.Y + boundTooltip.Height / 2 + yShift), UserSettings.ToolTipBindingLine);
+			}
 		}
 
 		public override void OnItemPlaced(List<UndoRedoAction> undoPipe) {

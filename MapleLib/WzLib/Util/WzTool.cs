@@ -16,13 +16,11 @@
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using MapleLib.Configuration;
 using MapleLib.MapleCryptoLib;
-using MapleLib.PacketLib;
 
 namespace MapleLib.WzLib.Util {
 	public class WzTool {
@@ -37,23 +35,27 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public static int GetCompressedIntLength(int i) {
-			if (i > 127 || i < -127)
+			if (i > 127 || i < -127) {
 				return 5;
+			}
+
 			return 1;
 		}
 
 		public static int GetEncodedStringLength(string s) {
-			if (string.IsNullOrEmpty(s))
+			if (string.IsNullOrEmpty(s)) {
 				return 1;
+			}
 
 			var unicode = false;
 			var length = s.Length;
 
-			foreach (var c in s)
+			foreach (var c in s) {
 				if (c > 255) {
 					unicode = true;
 					break;
 				}
+			}
 
 			var prefixLength = length > (unicode ? 126 : 127) ? 5 : 1;
 			var encodedLength = unicode ? length * 2 : length;
@@ -119,7 +121,6 @@ namespace MapleLib.WzLib.Util {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool TryBruteforcingWzIVKey(string wzPath, byte[] wzIvKey) {
 			using (var wzf = new WzFile(wzPath, wzIvKey)) {
-				var parseErrorMessage = string.Empty;
 				var parseStatus = wzf.ParseMainWzDirectory(true);
 				if (parseStatus != WzFileParseStatus.Success) {
 					wzf.Dispose();
@@ -139,10 +140,11 @@ namespace MapleLib.WzLib.Util {
 
 		private static double GetDecryptionSuccessRate(string wzPath, WzMapleVersion encVersion, ref short? version) {
 			WzFile wzf;
-			if (version == null)
+			if (version == null) {
 				wzf = new WzFile(wzPath, encVersion);
-			else
+			} else {
 				wzf = new WzFile(wzPath, (short) version, encVersion);
+			}
 
 			var parseStatus = wzf.ParseWzFile();
 			if (parseStatus != WzFileParseStatus.Success) return 0.0d;
@@ -177,15 +179,18 @@ namespace MapleLib.WzLib.Util {
 			var mostSuitableVersion = WzMapleVersion.GMS;
 			double maxSuccessRate = 0;
 
-			foreach (DictionaryEntry mapleVersionEntry in mapleVersionSuccessRates)
+			foreach (DictionaryEntry mapleVersionEntry in mapleVersionSuccessRates) {
 				if ((double) mapleVersionEntry.Value > maxSuccessRate) {
 					mostSuitableVersion = (WzMapleVersion) mapleVersionEntry.Key;
 					maxSuccessRate = (double) mapleVersionEntry.Value;
 				}
+			}
 
-			if (maxSuccessRate < 0.7 && File.Exists(Path.Combine(Path.GetDirectoryName(wzFilePath), "ZLZ.dll")))
+			if (maxSuccessRate < 0.7 && File.Exists(Path.Combine(Path.GetDirectoryName(wzFilePath), "ZLZ.dll"))) {
 				return WzMapleVersion.GETFROMZLZ;
-			else return mostSuitableVersion;
+			} else {
+				return mostSuitableVersion;
+			}
 		}
 
 		public const int WzHeader = 0x31474B50; //PKG1

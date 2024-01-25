@@ -7,9 +7,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib;
 using HaSharedLibrary.SharpApng;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaRepacker {
 	/// <summary>
@@ -24,28 +24,37 @@ namespace HaRepacker {
 		/// <param name="prop"></param>
 		/// <returns></returns>
 		public static bool IsValidAnimationWzObject(WzObject prop) {
-			if (!(prop is WzSubProperty))
+			if (!(prop is WzSubProperty)) {
 				return false;
+			}
 
 			var castedProp = (WzSubProperty) prop;
 			var props = new List<WzCanvasProperty>(castedProp.WzProperties.Count);
 			int foo;
 
 			foreach (var subprop in castedProp.WzProperties) {
-				if (!(subprop is WzCanvasProperty))
+				if (!(subprop is WzCanvasProperty)) {
 					continue;
-				if (!int.TryParse(subprop.Name, out foo))
+				}
+
+				if (!int.TryParse(subprop.Name, out foo)) {
 					return false;
+				}
+
 				props.Add((WzCanvasProperty) subprop);
 			}
 
-			if (props.Count < 2)
+			if (props.Count < 2) {
 				return false;
+			}
 
 			props.Sort(new Comparison<WzCanvasProperty>(PropertySorter));
-			for (var i = 0; i < props.Count; i++)
-				if (i.ToString() != props[i].Name)
+			for (var i = 0; i < props.Count; i++) {
+				if (i.ToString() != props[i].Name) {
 					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -64,8 +73,10 @@ namespace HaRepacker {
 		private static int PropertySorter(WzCanvasProperty a, WzCanvasProperty b) {
 			var aIndex = 0;
 			var bIndex = 0;
-			if (!int.TryParse(a.Name, out aIndex) || !int.TryParse(b.Name, out bIndex))
+			if (!int.TryParse(a.Name, out aIndex) || !int.TryParse(b.Name, out bIndex)) {
 				return 0;
+			}
+
 			return aIndex.CompareTo(bIndex);
 		}
 
@@ -75,18 +86,22 @@ namespace HaRepacker {
 			var biggestPng = new Point(0, 0);
 			var SmallestEmptySpace = new Point(65535, 65535);
 			var MaximumPngMappingEndingPts = new Point(0, 0);
-			foreach (var subprop in parent.WzProperties)
+			foreach (var subprop in parent.WzProperties) {
 				if (subprop is WzCanvasProperty) {
 					//System.Drawing.PointF origin = ((WzCanvasProperty)subprop).GetCanvasOriginPosition();
 					var png = ((WzCanvasProperty) subprop).PngProperty;
-					if (png.Height > biggestPng.Y)
+					if (png.Height > biggestPng.Y) {
 						biggestPng.Y = png.Height;
-					if (png.Width > biggestPng.X)
+					}
+
+					if (png.Width > biggestPng.X) {
 						biggestPng.X = png.Width;
+					}
 				}
+			}
 
 			var sortedProps = new List<WzCanvasProperty>();
-			foreach (var subprop in parent.WzProperties)
+			foreach (var subprop in parent.WzProperties) {
 				if (subprop is WzCanvasProperty property) {
 					sortedProps.Add(property);
 					var png = property.PngProperty;
@@ -94,15 +109,23 @@ namespace HaRepacker {
 
 					var StartPoints = new Point(biggestPng.X - (int) origin.X, biggestPng.Y - (int) origin.Y);
 					var PngMapppingEndingPts = new Point(StartPoints.X + png.Width, StartPoints.Y + png.Height);
-					if (StartPoints.X < SmallestEmptySpace.X)
+					if (StartPoints.X < SmallestEmptySpace.X) {
 						SmallestEmptySpace.X = StartPoints.X;
-					if (StartPoints.Y < SmallestEmptySpace.Y)
+					}
+
+					if (StartPoints.Y < SmallestEmptySpace.Y) {
 						SmallestEmptySpace.Y = StartPoints.Y;
-					if (PngMapppingEndingPts.X > MaximumPngMappingEndingPts.X)
+					}
+
+					if (PngMapppingEndingPts.X > MaximumPngMappingEndingPts.X) {
 						MaximumPngMappingEndingPts.X = PngMapppingEndingPts.X;
-					if (PngMapppingEndingPts.Y > MaximumPngMappingEndingPts.Y)
+					}
+
+					if (PngMapppingEndingPts.Y > MaximumPngMappingEndingPts.Y) {
 						MaximumPngMappingEndingPts.Y = PngMapppingEndingPts.Y;
+					}
 				}
+			}
 
 			sortedProps.Sort(new Comparison<WzCanvasProperty>(PropertySorter));
 			for (var i = 0; i < sortedProps.Count; i++) {
@@ -118,21 +141,24 @@ namespace HaRepacker {
 					SmallestEmptySpace, MaximumPngMappingEndingPts));
 
 				var delay = subprop[WzCanvasProperty.AnimationDelayPropertyName]?.GetInt();
-				if (delay == null)
+				if (delay == null) {
 					delay = 100;
+				}
 
 				delayList.Add((int) delay);
 			}
 
 			var apngBuilder = new SharpApng();
-			if (apngFirstFrame)
+			if (apngFirstFrame) {
 				apngBuilder.AddFrame(
 					new SharpApngFrame(CreateIncompatibilityFrame(new Size(bmpList[0].Width, bmpList[0].Height)), 1,
 						1));
+			}
 
-			for (var i = 0; i < bmpList.Count; i++)
+			for (var i = 0; i < bmpList.Count; i++) {
 				apngBuilder.AddFrame(new SharpApngFrame(bmpList[i], GetNumByDelay(delayList[i]),
 					GetDenByDelay(delayList[i])));
+			}
 
 			apngBuilder.WriteApng(savePath, apngFirstFrame, true);
 		}

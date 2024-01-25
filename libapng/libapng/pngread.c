@@ -1132,7 +1132,7 @@ png_destroy_read_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr,
 	png_infop info_ptr = NULL, end_info_ptr = NULL;
 #ifdef PNG_USER_MEM_SUPPORTED
 	png_free_ptr free_fn = NULL;
-	png_voidp mem_ptr = NULL;
+	auto mem_ptr = NULL;
 #endif
 
 	png_debug(1, "in png_destroy_read_struct");

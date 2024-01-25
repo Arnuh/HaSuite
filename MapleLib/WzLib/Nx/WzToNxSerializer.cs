@@ -1,7 +1,4 @@
-﻿using LZ4;
-using MapleLib.WzLib.Serialization;
-using MapleLib.WzLib.WzProperties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -9,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using LZ4;
+using MapleLib.WzLib.Serialization;
+using MapleLib.WzLib.WzProperties;
 
 /// <summary>
 /// The code was modified from https://github.com/angelsl/wz2nx
@@ -17,8 +17,10 @@ namespace MapleLib.WzLib.Nx {
 	internal static class Extension {
 		public static void EnsureMultiple(this Stream s, int multiple) {
 			var skip = (int) (multiple - s.Position % multiple);
-			if (skip == multiple)
+			if (skip == multiple) {
 				return;
+			}
+
 			s.Write(new byte[skip], 0, skip);
 		}
 
@@ -166,10 +168,11 @@ namespace MapleLib.WzLib.Nx {
 			var nextChildId = (uint) ((ulong) ds.GetNextNodeID() + (ulong) (long) nodeLevel.Count);
 			foreach (var levelNode in nodeLevel) {
 				var flag = levelNode is WzUOLProperty;
-				if (flag)
+				if (flag) {
 					WriteUOL((WzUOLProperty) levelNode, ds, bw);
-				else
+				} else {
 					WriteNode(levelNode, ds, bw, nextChildId);
+				}
 
 				nextChildId += (uint) GetChildCount(levelNode);
 			}
@@ -227,22 +230,23 @@ namespace MapleLib.WzLib.Nx {
 			ushort type;
 
 			if (node is WzDirectory || node is WzImage || node is WzSubProperty || node is WzConvexProperty ||
-			    node is WzNullProperty)
+			    node is WzNullProperty) {
 				type = 0; // no data; children only (8)
-			else if (node is WzIntProperty || node is WzShortProperty || node is WzLongProperty)
+			} else if (node is WzIntProperty || node is WzShortProperty || node is WzLongProperty) {
 				type = 1; // int32 (4)
-			else if (node is WzDoubleProperty || node is WzFloatProperty)
+			} else if (node is WzDoubleProperty || node is WzFloatProperty) {
 				type = 2; // Double (0)
-			else if (node is WzStringProperty || node is WzLuaProperty)
+			} else if (node is WzStringProperty || node is WzLuaProperty) {
 				type = 3; // String (4)
-			else if (node is WzVectorProperty)
+			} else if (node is WzVectorProperty) {
 				type = 4; // (0)
-			else if (node is WzCanvasProperty)
+			} else if (node is WzCanvasProperty) {
 				type = 5; // (4)
-			else if (node is WzBinaryProperty)
+			} else if (node is WzBinaryProperty) {
 				type = 6; // (4)
-			else
+			} else {
 				throw new InvalidOperationException("Unhandled WZ node type [1]");
+			}
 
 			bw.Write(type);
 			if (node is WzIntProperty) {
@@ -275,10 +279,11 @@ namespace MapleLib.WzLib.Nx {
 				var wzmp = (WzBinaryProperty) node;
 				bw.Write(ds.AddMP3(wzmp));
 				var flag18 = true;
-				if (flag18)
+				if (flag18) {
 					bw.Write((uint) wzmp.GetBytes().Length);
-				else
+				} else {
 					bw.Write(0);
+				}
 			}
 
 			switch (type) {
@@ -323,8 +328,10 @@ namespace MapleLib.WzLib.Nx {
 			}
 
 			public uint AddString(string str) {
-				if (Strings.ContainsKey(str))
+				if (Strings.ContainsKey(str)) {
 					return Strings[str];
+				}
+
 				var ret = (uint) Strings.Count;
 				Strings.Add(str, ret);
 				return ret;

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapleLib.WzLib.WzStructure.Data {
-	public static class PortalType 
-	{
+﻿namespace MapleLib.WzLib.WzStructure.Data {
+	public static class PortalType {
 		public const string
 			StartPoint = "sp",
 			Invisible = "pi",

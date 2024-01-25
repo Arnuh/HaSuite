@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
+using System.Linq;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
-using System.Linq;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -197,9 +197,12 @@ namespace MapleLib.WzLib {
 		/// </summary>
 		public override WzObjectType ObjectType {
 			get {
-				if (reader != null)
-					if (!parsed)
+				if (reader != null) {
+					if (!parsed) {
 						ParseImage();
+					}
+				}
+
 				return WzObjectType.Image;
 			}
 		}
@@ -232,9 +235,11 @@ namespace MapleLib.WzLib {
 		/// <returns>The wz property with the specified name</returns>
 		public new WzImageProperty this[string name] {
 			get {
-				if (reader != null)
-					if (!parsed)
+				if (reader != null) {
+					if (!parsed) {
 						ParseImage();
+					}
+				}
 
 				// Find the first WzImageProperty with a matching name (case-insensitive)
 				return properties.FirstOrDefault(iwp => iwp.Name.ToLower() == name.ToLower());
@@ -257,15 +262,18 @@ namespace MapleLib.WzLib {
 		/// <param name="path">path to object</param>
 		/// <returns>the selected WzImageProperty</returns>
 		public WzImageProperty GetFromPath(string path) {
-			if (reader != null)
-				if (!parsed)
+			if (reader != null) {
+				if (!parsed) {
 					ParseImage();
+				}
+			}
 
 			var segments = path.Split(new char[1] {'/'}, StringSplitOptions.RemoveEmptyEntries);
 
 			// If the first segment is "..", return null
-			if (segments[0] == "..")
+			if (segments[0] == "..") {
 				return null;
+			}
 
 			WzImageProperty ret = null;
 
@@ -275,8 +283,9 @@ namespace MapleLib.WzLib {
 					.FirstOrDefault(iwp => iwp.Name == segment);
 
 				// If no matching child was found, return null
-				if (ret == null)
+				if (ret == null) {
 					return null;
+				}
 			}
 
 			return ret;
@@ -288,8 +297,10 @@ namespace MapleLib.WzLib {
 		/// <param name="prop">Property to add</param>
 		public void AddProperty(WzImageProperty prop) {
 			prop.Parent = this;
-			if (reader != null && !parsed)
+			if (reader != null && !parsed) {
 				ParseImage();
+			}
+
 			properties.Add(prop);
 		}
 
@@ -306,8 +317,10 @@ namespace MapleLib.WzLib {
 		/// </summary>
 		/// <param name="name">The name of the property to remove</param>
 		public void RemoveProperty(WzImageProperty prop) {
-			if (reader != null && !parsed)
+			if (reader != null && !parsed) {
 				ParseImage();
+			}
+
 			prop.Parent = null;
 			properties.Remove(prop);
 		}

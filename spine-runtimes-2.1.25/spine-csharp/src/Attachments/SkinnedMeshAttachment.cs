@@ -28,9 +28,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
 namespace Spine {
 	/// <summary>Attachment that displays a texture region.</summary>
 	public class SkinnedMeshAttachment : Attachment {
@@ -146,16 +143,17 @@ namespace Spine {
 			var regionUVs = this.regionUVs;
 			if (this.uvs == null || this.uvs.Length != regionUVs.Length) this.uvs = new float[regionUVs.Length];
 			var uvs = this.uvs;
-			if (RegionRotate)
+			if (RegionRotate) {
 				for (int i = 0, n = uvs.Length; i < n; i += 2) {
 					uvs[i] = u + regionUVs[i + 1] * width;
 					uvs[i + 1] = v + height - regionUVs[i] * height;
 				}
-			else
+			} else {
 				for (int i = 0, n = uvs.Length; i < n; i += 2) {
 					uvs[i] = u + regionUVs[i] * width;
 					uvs[i + 1] = v + regionUVs[i + 1] * height;
 				}
+			}
 		}
 
 		public void ComputeWorldVertices(Slot slot, float[] worldVertices) {

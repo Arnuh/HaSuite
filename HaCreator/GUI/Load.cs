@@ -9,15 +9,14 @@
 #define SPACETIME
 
 using System;
-using System.Windows.Forms;
 using System.IO;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
+using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
-using MapleLib.WzLib.Serialization;
-using System.Collections.Generic;
 using HaSharedLibrary.Wz;
+using MapleLib.WzLib;
+using MapleLib.WzLib.Serialization;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaCreator.GUI {
 	public partial class FieldSelector : Form {
@@ -154,8 +153,9 @@ namespace HaCreator.GUI {
 					return;
 				}
 			} else if (WZSelect.Checked) {
-				if (mapBrowser.SelectedItem == null)
+				if (mapBrowser.SelectedItem == null) {
 					return; // racing event
+				}
 
 				var selectedName = mapBrowser.SelectedItem;
 
@@ -163,8 +163,9 @@ namespace HaCreator.GUI {
 					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
 					foreach (var uiWzDir in uiWzDirs) {
 						mapImage = (WzImage) uiWzDir?[selectedName + ".img"];
-						if (mapImage != null)
+						if (mapImage != null) {
 							break;
+						}
 					}
 
 					mapName = streetName = categoryName = selectedName;
@@ -172,8 +173,9 @@ namespace HaCreator.GUI {
 					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
 					foreach (var uiWzDir in uiWzDirs) {
 						mapImage = (WzImage) uiWzDir?["CashShopPreview.img"];
-						if (mapImage != null)
+						if (mapImage != null) {
 							break;
+						}
 					}
 
 					mapName = streetName = categoryName = "CashShopPreview";
@@ -191,8 +193,9 @@ namespace HaCreator.GUI {
 			DialogResult = DialogResult.OK;
 			ww.EndWait();
 
-			if (_bAutoCloseUponSelection)
+			if (_bAutoCloseUponSelection) {
 				Close();
+			}
 		}
 
 		public static WzImage GetMapLoadData(int mapId, out WzSubProperty strMapProp, out string mapName, out string streetName, out string categoryName) {
@@ -212,9 +215,9 @@ namespace HaCreator.GUI {
 		}
 
 		private void Load_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape) {
 				Close();
-			else if (e.KeyCode == Keys.Enter) LoadButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) LoadButton_Click(null, null);
 		}
 
 		private void HAMBox_TextChanged(object sender, EventArgs e) {

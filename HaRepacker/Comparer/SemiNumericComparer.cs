@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HaRepacker.Comparer {
 	/// <summary>
@@ -20,12 +17,13 @@ namespace HaRepacker.Comparer {
 				var s1val = Convert.ToInt32(s1Text);
 				var s2val = Convert.ToInt32(s2Text);
 
-				if (s1val > s2val)
+				if (s1val > s2val) {
 					return 1;
-				else if (s1val < s2val)
+				} else if (s1val < s2val) {
 					return -1;
-				else if (s1val == s2val)
+				} else if (s1val == s2val) {
 					return 0;
+				}
 			} else if (isS1Numeric && !isS2Numeric) {
 				return -1;
 			} else if (!isS1Numeric && isS2Numeric) {

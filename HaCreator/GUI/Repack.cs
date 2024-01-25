@@ -4,20 +4,14 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using MapleLib.WzLib;
-using MapleLib.WzLib.Serialization;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using MapleLib.WzLib;
+using MapleLib.WzLib.Serialization;
 
 namespace HaCreator.GUI {
 	public partial class Repack : Form {
@@ -41,7 +35,9 @@ namespace HaCreator.GUI {
 		private void Repack_FormClosing(object sender, FormClosingEventArgs e) {
 			if (!button_repack.Enabled && !Program.Restarting)
 				//Do not let the user close the form while saving
+			{
 				e.Cancel = true;
+			}
 		}
 
 		/// <summary>
@@ -50,9 +46,9 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Repack_KeyDown(object sender, KeyEventArgs e) {
-			if (e.KeyCode == Keys.Escape)
+			if (e.KeyCode == Keys.Escape) {
 				Close();
-			else if (e.KeyCode == Keys.Enter) button_repack_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) button_repack_Click(null, null);
 		}
 
 		/// <summary>
@@ -141,8 +137,9 @@ namespace HaCreator.GUI {
 			var XMLDir = Path.Combine(rootDir, "XML");
 
 			try {
-				if (!Directory.Exists(XMLDir))
+				if (!Directory.Exists(XMLDir)) {
 					Directory.CreateDirectory(XMLDir);
+				}
 			} catch (Exception e) {
 				ShowErrorMessageThreadSafe(e, "backup files");
 				return;
@@ -157,8 +154,10 @@ namespace HaCreator.GUI {
 				try {
 					var xmlPath = Path.Combine(XMLDir, img.FullPath);
 					var xmlPathDir = Path.GetDirectoryName(xmlPath);
-					if (!Directory.Exists(xmlPathDir))
+					if (!Directory.Exists(xmlPathDir)) {
 						Directory.CreateDirectory(xmlPathDir);
+					}
+
 					xmlSer.SerializeImage(img, xmlPath);
 				} catch (Exception e) {
 					ShowErrorMessageThreadSafe(e, "XMLs");
@@ -193,11 +192,13 @@ namespace HaCreator.GUI {
 					tmpFile = Path.Combine(folderPath, wzf.Name);
 
 					try {
-						if (!Directory.Exists(folderPath))
+						if (!Directory.Exists(folderPath)) {
 							Directory.CreateDirectory(folderPath);
+						}
 
-						if (!File.Exists(tmpFile))
+						if (!File.Exists(tmpFile)) {
 							File.Create(tmpFile).Close();
+						}
 					} catch (Exception e) {
 						ShowErrorMessageThreadSafe(e, wzf.Name);
 						return;

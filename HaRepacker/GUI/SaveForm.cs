@@ -5,14 +5,14 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Windows.Forms;
-using MapleLib.WzLib;
-using System.IO;
-using MapleLib.WzLib.Util;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using HaRepacker.GUI.Panels;
 using MapleLib.MapleCryptoLib;
-using System.Linq;
+using MapleLib.WzLib;
+using MapleLib.WzLib.Util;
 
 namespace HaRepacker.GUI {
 	public partial class SaveForm : Form {
@@ -104,8 +104,9 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void encryptionBox_SelectedIndexChanged(object sender, EventArgs e) {
-			if (bIsLoading)
+			if (bIsLoading) {
 				return;
+			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
 			var wzMapleVersion = MainForm.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
@@ -134,8 +135,9 @@ namespace HaRepacker.GUI {
 				       Filter = string.Format("{0}|*.wz",
 					       Properties.Resources.WzFilter)
 			       }) {
-				if (dialog.ShowDialog() != DialogResult.OK)
+				if (dialog.ShowDialog() != DialogResult.OK) {
 					return;
+				}
 
 				var bSaveAs64BitWzFile = checkBox_64BitFile.Checked; // no version number
 				var wzMapleVersionSelected =
@@ -193,8 +195,9 @@ namespace HaRepacker.GUI {
 
 					// Reload the new file
 					var img = Program.WzFileManager.LoadDataWzHotfixFile(dialog.FileName, wzMapleVersionSelected);
-					if (img == null || error_noAdminPriviledge)
+					if (img == null || error_noAdminPriviledge) {
 						MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
+					}
 
 					_mainPanel.MainForm.AddLoadedWzObjectToMainPanel(img);
 				}
@@ -216,8 +219,9 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void checkBox_64BitFile_CheckedChanged(object sender, EventArgs e) {
-			if (bIsLoading)
+			if (bIsLoading) {
 				return;
+			}
 
 			var checkbox_64 = (CheckBox) sender;
 			versionBox.Enabled =

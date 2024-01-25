@@ -5,15 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HaCreator.MapEditor;
-using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class TnSelector : EditorBase {
@@ -28,9 +20,11 @@ namespace HaCreator.GUI.InstanceEditor {
 		public TnSelector(Board board) {
 			InitializeComponent();
 
-			foreach (var pi in board.BoardItems.Portals)
-				if (pi.pn != null && pi.pn != "" && pi.pn != "sp" && pi.pn != "pt")
+			foreach (var pi in board.BoardItems.Portals) {
+				if (pi.pn != null && pi.pn != "" && pi.pn != "sp" && pi.pn != "pt") {
 					pnList.Items.Add(pi.pn);
+				}
+			}
 		}
 
 		protected override void cancelButton_Click(object sender, EventArgs e) {

@@ -31,8 +31,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-
 #if WINDOWS_STOREAPP
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -119,12 +117,13 @@ namespace Spine {
 					var direction = readValue(reader);
 					page.uWrap = TextureWrap.ClampToEdge;
 					page.vWrap = TextureWrap.ClampToEdge;
-					if (direction == "x")
+					if (direction == "x") {
 						page.uWrap = TextureWrap.Repeat;
-					else if (direction == "y")
+					} else if (direction == "y") {
 						page.vWrap = TextureWrap.Repeat;
-					else if (direction == "xy")
+					} else if (direction == "xy") {
 						page.uWrap = page.vWrap = TextureWrap.Repeat;
+					}
 
 					textureLoader.Load(page, Path.Combine(imagesDir, line));
 
@@ -225,9 +224,12 @@ namespace Spine {
 		/// should be cached rather than calling this method multiple times.</summary>
 		/// <returns>The region, or null.</returns>
 		public AtlasRegion FindRegion(string name) {
-			for (int i = 0, n = regions.Count; i < n; i++)
-				if (regions[i].name == name)
+			for (int i = 0, n = regions.Count; i < n; i++) {
+				if (regions[i].name == name) {
 					return regions[i];
+				}
+			}
+
 			return null;
 		}
 

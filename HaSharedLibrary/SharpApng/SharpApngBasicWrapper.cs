@@ -5,13 +5,10 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HaSharedLibrary.SharpApng {
 	public static class SharpApngBasicWrapper {
@@ -23,14 +20,17 @@ namespace HaSharedLibrary.SharpApng {
 			var apnglib = LoadLibrary(Environment.Is64BitProcess ? "apng64.dll" : "apng32.dll");
 			if (apnglib != IntPtr.Zero) {
 				var createFramePtr = GetProcAddress(apnglib, "CreateFrame");
-				if (createFramePtr != null)
+				if (createFramePtr != null) {
 					CreateFrame =
 						(CreateFrameDelegate) Marshal.GetDelegateForFunctionPointer(createFramePtr,
 							typeof(CreateFrameDelegate));
+				}
+
 				var saveApngPtr = GetProcAddress(apnglib, "SaveAPNG");
-				if (saveApngPtr != null)
+				if (saveApngPtr != null) {
 					SaveAPNG = (SaveAPNGDelegate) Marshal.GetDelegateForFunctionPointer(saveApngPtr,
 						typeof(SaveAPNGDelegate));
+				}
 			} else {
 				throw new Exception("apng64.dll or apng32.dll not found.");
 			}

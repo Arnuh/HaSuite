@@ -7,11 +7,6 @@
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc {
@@ -32,8 +27,9 @@ namespace HaCreator.MapEditor.Instance.Misc {
 			this.zVal = zVal;
 			this.tMove = tMove;
 			this.shipKind = shipKind;
-			if (flip)
+			if (flip) {
 				X -= Width - 2 * Origin.X;
+			}
 		}
 
 		public int X0 {
@@ -73,8 +69,11 @@ namespace HaCreator.MapEditor.Instance.Misc {
 				if (flip == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip) X -= xFlipShift;
-				else X += xFlipShift;
+				if (flip) {
+					X -= xFlipShift;
+				} else {
+					X += xFlipShift;
+				}
 			}
 		}
 

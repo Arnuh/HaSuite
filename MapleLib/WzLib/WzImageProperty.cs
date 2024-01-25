@@ -15,15 +15,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
-using System.Drawing;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
-using System.Diagnostics;
-using MapleLib.PacketLib;
-using System.Text;
-using MapleLib.MapleCryptoLib;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -51,12 +46,13 @@ namespace MapleLib.WzLib {
 		public WzImage ParentImage {
 			get {
 				var parent = Parent;
-				while (parent != null)
+				while (parent != null) {
 					if (parent is WzImage image) {
 						return image;
 					} else {
 						parent = parent.Parent;
 					}
+				}
 
 				return null;
 			}
@@ -94,10 +90,11 @@ namespace MapleLib.WzLib {
 				writer.WriteCompressedInt(properties.Count);
 				foreach (var imgProperty in properties) {
 					writer.WriteStringValue(imgProperty.Name, 0x00, 0x01);
-					if (imgProperty is WzExtended extended)
+					if (imgProperty is WzExtended extended) {
 						WriteExtendedValue(writer, extended);
-					else
+					} else {
 						imgProperty.WriteValue(writer);
+					}
 				}
 			}
 		}
@@ -150,10 +147,12 @@ namespace MapleLib.WzLib {
 						break;
 					case 4:
 						var type = reader.ReadByte();
-						if (type == 0x80)
+						if (type == 0x80) {
 							properties.Add(new WzFloatProperty(name, reader.ReadSingle()) {Parent = parent});
-						else if (type == 0)
+						} else if (type == 0) {
 							properties.Add(new WzFloatProperty(name, 0f) {Parent = parent});
+						}
+
 						break;
 					case 5:
 						properties.Add(new WzDoubleProperty(name, reader.ReadDouble()) {Parent = parent});
@@ -214,6 +213,7 @@ namespace MapleLib.WzLib {
 					if (imgParent.ParseEverything) {
 						canvasProp.PngProperty.ParsePng(true);
 					}
+
 					return canvasProp;
 				case "Shape2D#Vector2D":
 					var vecProp = new WzVectorProperty(name) {Parent = parent};
@@ -272,11 +272,14 @@ namespace MapleLib.WzLib {
 		/// <returns></returns>
 		public WzImageProperty GetLinkedWzImageProperty() {
 			var thisWzImage = this;
-			while (thisWzImage is WzUOLProperty)
-				if ((thisWzImage as WzUOLProperty).LinkValue is WzImageProperty newWzImage)
+			while (thisWzImage is WzUOLProperty) {
+				if ((thisWzImage as WzUOLProperty).LinkValue is WzImageProperty newWzImage) {
 					thisWzImage = newWzImage;
-				else // broken link
+				} else // broken link
+				{
 					return this;
+				}
+			}
 
 			return thisWzImage;
 		}

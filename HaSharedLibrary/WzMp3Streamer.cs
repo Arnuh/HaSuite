@@ -5,14 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MapleLib;
-using MapleLib.WzLib;
+using System.IO;
 using MapleLib.WzLib.WzProperties;
 using NAudio.Wave;
-using System.IO;
 
 namespace HaSharedLibrary {
 	public class WzMp3Streamer {
@@ -57,10 +52,11 @@ namespace HaSharedLibrary {
 
 		private void wavePlayer_PlaybackStopped(object sender, StoppedEventArgs e) {
 			if (repeat && !disposed) {
-				if (mpegStream != null)
+				if (mpegStream != null) {
 					mpegStream.Seek(0, SeekOrigin.Begin);
-				else
+				} else {
 					waveFileStream.Seek(0, SeekOrigin.Begin);
+				}
 
 				wavePlayer.Pause();
 				wavePlayer.Play();
@@ -72,8 +68,9 @@ namespace HaSharedLibrary {
 		public bool Disposed => disposed;
 
 		public void Dispose() {
-			if (!playbackSuccessfully)
+			if (!playbackSuccessfully) {
 				return;
+			}
 
 			disposed = true;
 			wavePlayer.Dispose();
@@ -91,15 +88,17 @@ namespace HaSharedLibrary {
 		}
 
 		public void Play() {
-			if (!playbackSuccessfully)
+			if (!playbackSuccessfully) {
 				return;
+			}
 
 			wavePlayer.Play();
 		}
 
 		public void Pause() {
-			if (!playbackSuccessfully)
+			if (!playbackSuccessfully) {
 				return;
+			}
 
 			wavePlayer.Pause();
 		}
@@ -125,18 +124,20 @@ namespace HaSharedLibrary {
 
 		public int Position {
 			get {
-				if (mpegStream != null)
+				if (mpegStream != null) {
 					return (int) (mpegStream.Position / mpegStream.WaveFormat.AverageBytesPerSecond);
-				else if (waveFileStream != null)
+				} else if (waveFileStream != null) {
 					return (int) (waveFileStream.Position / waveFileStream.WaveFormat.AverageBytesPerSecond);
+				}
 
 				return 0;
 			}
 			set {
-				if (mpegStream != null)
+				if (mpegStream != null) {
 					mpegStream.Seek(value * mpegStream.WaveFormat.AverageBytesPerSecond, SeekOrigin.Begin);
-				else if (waveFileStream != null)
+				} else if (waveFileStream != null) {
 					waveFileStream.Seek(value * waveFileStream.WaveFormat.AverageBytesPerSecond, SeekOrigin.Begin);
+				}
 			}
 		}
 	}

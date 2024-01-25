@@ -4,26 +4,19 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaSharedLibrary.GUI;
-using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace HaCreator.GUI.EditorPanels {
 	public partial class BackgroundPanel : UserControl {
@@ -49,8 +42,10 @@ namespace HaCreator.GUI.EditorPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void bgSetListBox_SelectedIndexChanged(object sender, EventArgs e) {
-			if (bgSetListBox.SelectedItem == null)
+			if (bgSetListBox.SelectedItem == null) {
 				return;
+			}
+
 			bgImageContainer.Controls.Clear();
 
 			string path;
@@ -67,14 +62,16 @@ namespace HaCreator.GUI.EditorPanels {
 			}
 
 			var parentProp = Program.InfoManager.BackgroundSets[(string) bgSetListBox.SelectedItem][path];
-			if (parentProp == null || parentProp.WzProperties == null)
+			if (parentProp == null || parentProp.WzProperties == null) {
 				return;
+			}
 
 			foreach (var prop in parentProp.WzProperties) {
 				var bgInfo = BackgroundInfo.Get(hcsm.MultiBoard.GraphicsDevice,
 					(string) bgSetListBox.SelectedItem, infoType, prop.Name);
-				if (bgInfo == null)
+				if (bgInfo == null) {
 					continue;
+				}
 
 				var item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
 				item.Tag = bgInfo;

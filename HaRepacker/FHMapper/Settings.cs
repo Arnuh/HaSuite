@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using HaRepacker.GUI;
 
 namespace HaRepacker {
 	public partial class Settings : Form {
@@ -143,38 +142,45 @@ namespace HaRepacker {
 
 
 		private void PrevTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void NextTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void ForceTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void XTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void YTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void TypeTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 
 		private void SizeTBox_KeyPress(object sender, KeyPressEventArgs e) {
-			if (e.KeyChar == (char) Keys.Space)
+			if (e.KeyChar == (char) Keys.Space) {
 				e.Handled = true;
+			}
 		}
 	}
 }

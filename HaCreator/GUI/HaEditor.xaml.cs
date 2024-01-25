@@ -1,22 +1,9 @@
-﻿using HaCreator.GUI.EditorPanels;
-using HaCreator.MapEditor;
-using HaCreator.MapEditor.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using HaCreator.MapEditor;
+using HaCreator.MapEditor.Input;
 
 namespace HaCreator.GUI {
 	/// <summary>
@@ -113,12 +100,14 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void HaEditor2_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-			if (!Program.Restarting && System.Windows.MessageBox.Show("Are you sure you want to quit?", "Quit",
-				    MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+			if (!Program.Restarting && MessageBox.Show("Are you sure you want to quit?", "Quit",
+				    MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) {
 				e.Cancel = true;
-			else
+			} else
 				// Thread safe without locks since reference assignment is atomic
+			{
 				Program.AbortThreads = true;
+			}
 		}
 
 		/// <summary>

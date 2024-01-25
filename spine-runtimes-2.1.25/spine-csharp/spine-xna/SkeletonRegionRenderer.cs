@@ -28,10 +28,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Spine {
 	/// <summary>Draws region attachments.</summary>
@@ -110,10 +108,12 @@ namespace Spine {
 
 					Color color;
 					var a = skeletonA * slot.A;
-					if (premultipliedAlpha)
+					if (premultipliedAlpha) {
 						color = new Color(skeletonR * slot.R * a, skeletonG * slot.G * a, skeletonB * slot.B * a, a);
-					else
+					} else {
 						color = new Color(skeletonR * slot.R, skeletonG * slot.G, skeletonB * slot.B, a);
+					}
+
 					item.vertexTL.Color = color;
 					item.vertexBL.Color = color;
 					item.vertexBR.Color = color;

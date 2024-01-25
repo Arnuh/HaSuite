@@ -4,18 +4,10 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Collections;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
 using HaCreator.CustomControls;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaCreator.GUI {
 	public partial class TileSetBrowser : Form {
@@ -33,11 +25,14 @@ namespace HaCreator.GUI {
 				var tSImage = Program.InfoManager.TileSets[tS];
 				if (!tSImage.Parsed) tSImage.ParseImage();
 				var enh0 = tSImage["enH0"];
-				if (enh0 == null)
+				if (enh0 == null) {
 					continue;
+				}
+
 				var image = (WzCanvasProperty) enh0["0"];
-				if (image == null)
+				if (image == null) {
 					continue;
+				}
 
 				var item = koolkLVContainer.Add(image.GetLinkedWzCanvasBitmap(), tS, true);
 				item.MouseDown += new MouseEventHandler(item_Click);
@@ -52,8 +47,10 @@ namespace HaCreator.GUI {
 		}
 
 		private void item_Click(object sender, MouseEventArgs e) {
-			if (selectedItem != null)
+			if (selectedItem != null) {
 				selectedItem.IsActive = false;
+			}
+
 			selectedItem = (ImageViewer) sender;
 			selectedItem.IsActive = true;
 		}

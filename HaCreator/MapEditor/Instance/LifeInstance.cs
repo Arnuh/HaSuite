@@ -5,7 +5,6 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using HaCreator.MapEditor.Info;
-using MapleLib.WzLib.WzStructure;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
@@ -35,7 +34,9 @@ namespace HaCreator.MapEditor.Instance {
 			if (flip == true)
 				// We need to use the data from baseInfo directly because BaseInfo property is only instantiated in the child ctor,
 				// which will execute after we are finished.
+			{
 				X -= baseInfo.Width - 2 * baseInfo.Origin.X;
+			}
 
 			this.hide = hide;
 		}
@@ -55,8 +56,11 @@ namespace HaCreator.MapEditor.Instance {
 				if (flip == true == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip == true) X -= xFlipShift;
-				else X += xFlipShift;
+				if (flip == true) {
+					X -= xFlipShift;
+				} else {
+					X += xFlipShift;
+				}
 			}
 		}
 

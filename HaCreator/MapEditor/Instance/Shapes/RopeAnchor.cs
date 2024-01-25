@@ -4,15 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -58,8 +55,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			FootholdLine closestLine = null;
 			var closestDistanceLine = double.MaxValue;
 			foreach (var fh in Board.BoardItems.FootholdLines) {
-				if (fh.FirstDot.Selected || fh.SecondDot.Selected)
+				if (fh.FirstDot.Selected || fh.SecondDot.Selected) {
 					continue;
+				}
+
 				if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) &&
 				    BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
 					var targetY = fh.CalculateY(X) + 2;
@@ -76,17 +75,21 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			var closestDistanceRope = double.MaxValue;
 			var closestIsLadder = false;
 			foreach (var li in Board.BoardItems.TileObjs) {
-				if (!(li is ObjectInstance) || li.Selected)
+				if (!(li is ObjectInstance) || li.Selected) {
 					continue;
+				}
+
 				var objInst = (ObjectInstance) li;
 				var objInfo = (ObjectInfo) objInst.BaseInfo;
-				if (objInfo.RopeOffsets != null)
+				if (objInfo.RopeOffsets != null) {
 					LookupSnapInOffsetMap(objInst, objInfo.RopeOffsets, false, ref closestRopeHint,
 						ref closestDistanceRope, ref closestIsLadder);
+				}
 
-				if (objInfo.LadderOffsets != null)
+				if (objInfo.LadderOffsets != null) {
 					LookupSnapInOffsetMap(objInst, objInfo.LadderOffsets, true, ref closestRopeHint,
 						ref closestDistanceRope, ref closestIsLadder);
+				}
 			}
 
 			if (closestDistanceRope >= closestDistanceLine && closestLine != null) {
@@ -106,11 +109,15 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			foreach (var offset in offsetList) {
 				var dx = objInst.X + offset.X - X;
 				var dy = objInst.Y + offset.Y - Y;
-				if (Math.Abs(dx) > UserSettings.SnapDistance || Math.Abs(dy) > UserSettings.SnapDistance)
+				if (Math.Abs(dx) > UserSettings.SnapDistance || Math.Abs(dy) > UserSettings.SnapDistance) {
 					continue;
+				}
+
 				var distance = InputHandler.Distance(dx, dy);
-				if (distance > UserSettings.SnapDistance)
+				if (distance > UserSettings.SnapDistance) {
 					continue;
+				}
+
 				if (closestDistanceRope > distance) {
 					closestDistanceRope = distance;
 					closestRopeHint = new XNA.Point(objInst.X + offset.X, objInst.Y + offset.Y);

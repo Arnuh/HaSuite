@@ -22,16 +22,8 @@ SOFTWARE.
 */
 
 using MapleLib.WzLib.WzProperties;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static MapleLib.WzDataReader;
 
 namespace MapleLib.WzLib.Spine {
 	public class WzSpineAnimationItem {
@@ -71,10 +63,11 @@ namespace MapleLib.WzLib.Spine {
 			if (skeletonData == null) return;
 
 			bool pma;
-			if (wzSpineAtlasPropertyNode.parent is WzImageProperty imgProperty)
+			if (wzSpineAtlasPropertyNode.parent is WzImageProperty imgProperty) {
 				pma = imgProperty["PMA"].ReadValue(0) > 0;
-			else
+			} else {
 				pma = ((WzImage) wzSpineAtlasPropertyNode.parent)["PMA"].ReadValue(0) > 0;
+			}
 
 			SkeletonData = skeletonData;
 			PremultipliedAlpha =

@@ -5,12 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
-using System.Collections;
-using System.Drawing;
-using HaRepacker.Comparer;
 
 namespace HaRepacker {
 	public class WzNode : TreeNode {
@@ -34,17 +31,20 @@ namespace HaRepacker {
 			Tag = SourceObject ?? throw new NullReferenceException("Cannot create a null WzNode");
 			SourceObject.HRTag = this;
 
-			if (SourceObject is WzFile)
+			if (SourceObject is WzFile) {
 				SourceObject = ((WzFile) SourceObject).WzDirectory;
+			}
+
 			if (SourceObject is WzDirectory) {
 				foreach (var dir in ((WzDirectory) SourceObject).WzDirectories)
 					Nodes.Add(new WzNode(dir));
 				foreach (var img in ((WzDirectory) SourceObject).WzImages)
 					Nodes.Add(new WzNode(img));
 			} else if (SourceObject is WzImage image) {
-				if (image.Parsed)
+				if (image.Parsed) {
 					foreach (var prop in image.WzProperties)
 						Nodes.Add(new WzNode(prop));
+				}
 			} else if (SourceObject is IPropertyContainer container) {
 				foreach (var prop in container.WzProperties)
 					Nodes.Add(new WzNode(prop));
@@ -56,7 +56,10 @@ namespace HaRepacker {
 
 			if (Tag is WzImageProperty property) {
 				if (property.ParentImage == null) // _inlink WzNode doesnt have a parent
+				{
 					return;
+				}
+
 				property.ParentImage.Changed = true;
 			}
 
@@ -75,39 +78,47 @@ namespace HaRepacker {
 			Tag is IPropertyContainer;
 
 		public static WzNode GetChildNode(WzNode parentNode, string name) {
-			foreach (WzNode node in parentNode.Nodes)
-				if (node.Text == name)
+			foreach (WzNode node in parentNode.Nodes) {
+				if (node.Text == name) {
 					return node;
+				}
+			}
+
 			return null;
 		}
 
 		public static bool CanNodeBeInserted(WzNode parentNode, string name) {
 			var obj = (WzObject) parentNode.Tag;
-			if (obj is IPropertyContainer container)
+			if (obj is IPropertyContainer container) {
 				return container[name] == null;
-			else if (obj is WzDirectory directory)
+			} else if (obj is WzDirectory directory) {
 				return directory[name] == null;
-			else if (obj is WzFile file)
+			} else if (obj is WzFile file) {
 				return file.WzDirectory?[name] == null;
-			else
+			} else {
 				return false;
+			}
 		}
 
 		private bool AddObjInternal(WzObject obj) {
 			var TaggedObject = (WzObject) Tag;
-			if (TaggedObject is WzFile file)
+			if (TaggedObject is WzFile file) {
 				TaggedObject = file.WzDirectory;
+			}
 
 			if (TaggedObject is WzDirectory directory) {
-				if (obj is WzDirectory wzDirectory)
+				if (obj is WzDirectory wzDirectory) {
 					directory.AddDirectory(wzDirectory);
-				else if (obj is WzImage wzImgProperty)
+				} else if (obj is WzImage wzImgProperty) {
 					directory.AddImage(wzImgProperty);
-				else
+				} else {
 					return false;
+				}
 			} else if (TaggedObject is WzImage wzImageProperty) {
-				if (!wzImageProperty.Parsed)
+				if (!wzImageProperty.Parsed) {
 					wzImageProperty.ParseImage();
+				}
+
 				if (obj is WzImageProperty imgProperty) {
 					wzImageProperty.AddProperty(imgProperty);
 					wzImageProperty.Changed = true;
@@ -117,8 +128,9 @@ namespace HaRepacker {
 			} else if (TaggedObject is IPropertyContainer container) {
 				if (obj is WzImageProperty property) {
 					container.AddProperty(property);
-					if (TaggedObject is WzImageProperty imgProperty)
+					if (TaggedObject is WzImageProperty imgProperty) {
 						imgProperty.ParentImage.Changed = true;
+					}
 				} else {
 					return false;
 				}
@@ -207,8 +219,9 @@ namespace HaRepacker {
 		public void ChangeName(string name) {
 			Text = name;
 			((WzObject) Tag).Name = name;
-			if (Tag is WzImageProperty property)
+			if (Tag is WzImageProperty property) {
 				property.ParentImage.Changed = true;
+			}
 
 			isWzObjectAddedManually = true;
 			ForeColor = NewObjectForeColor;

@@ -146,8 +146,9 @@ namespace MapleLib.WzLib.WzStructure {
 		/// <param name="source"></param>
 		/// <returns></returns>
 		public static WzVectorProperty GetOptionalVector(this WzImageProperty source) {
-			if (source == null)
+			if (source == null) {
 				return new WzVectorProperty(string.Empty, 0, 0);
+			}
 
 			return GetVector(source);
 		}

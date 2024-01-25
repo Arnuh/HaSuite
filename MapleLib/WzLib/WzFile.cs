@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using MapleLib.ClientLib;
+using MapleLib.MapleCryptoLib;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
-using MapleLib.MapleCryptoLib;
-using System.Linq;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
-using MapleLib.ClientLib;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -181,12 +180,13 @@ namespace MapleLib.WzLib {
 			mapleStoryPatchVersion = gameVersion;
 			maplepLocalVersion = version;
 
-			if (version == WzMapleVersion.GETFROMZLZ)
+			if (version == WzMapleVersion.GETFROMZLZ) {
 				using (var zlzStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(filePath), "ZLZ.dll"))) {
 					WzIv = WzKeyGenerator.GetIvFromZlz(zlzStream);
 				}
-			else
+			} else {
 				WzIv = WzTool.GetIvByMapleVersion(version);
+			}
 		}
 
 		/// <summary>
@@ -258,12 +258,16 @@ namespace MapleLib.WzLib {
 			if (mapleStoryPatchVersion == -1) {
 				// for 64-bit client, return immediately if version 777 works correctly.
 				// -- the latest KMS update seems to have changed it to 778? 779?
-				if (!wz_withEncryptVersionHeader)
+				if (!wz_withEncryptVersionHeader) {
 					for (var maplestoryVerToDecode = wzVersionHeader64bit_start;
 					     maplestoryVerToDecode < wzVersionHeader64bit_start + 10;
 					     maplestoryVerToDecode++) // 770 ~ 780
-						if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, maplestoryVerToDecode, lazyParse))
+					{
+						if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, maplestoryVerToDecode, lazyParse)) {
 							return WzFileParseStatus.Success;
+						}
+					}
+				}
 
 				// Attempt to get version from MapleStory.exe first
 				var maplestoryVerDetectedFromClient = GetMapleStoryVerFromExe(path, out mapleLocaleVersion);
@@ -274,8 +278,11 @@ namespace MapleLib.WzLib {
 
 				for (int j = maplestoryVerDetectedFromClient; j < MAX_PATCH_VERSION; j++)
 					//Debug.WriteLine("Try decode 1 with maplestory ver: " + j);
-					if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, j, lazyParse))
+				{
+					if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, j, lazyParse)) {
 						return WzFileParseStatus.Success;
+					}
+				}
 
 				//parseErrorMessage = "Error with game version hash : The specified game version is incorrect and WzLib was unable to determine the version itself";
 				return WzFileParseStatus.Error_Game_Ver_Hash;
@@ -313,8 +320,9 @@ namespace MapleLib.WzLib {
 					if (Header.FSize >= 5) {
 						reader.BaseStream.Position = header.FStart; // go back to 0x3C
 						var propCount = reader.ReadInt32();
-						if (propCount > 0 && (propCount & 0xff) == 0 && propCount <= 0xffff)
+						if (propCount > 0 && (propCount & 0xff) == 0 && propCount <= 0xffff) {
 							wz_withEncryptVersionHeader = false;
+						}
 					}
 				} else {
 					// old wz file with header version
@@ -450,10 +458,13 @@ namespace MapleLib.WzLib {
 
 				var exeFileInfo = new List<FileInfo>();
 				if (msTExeFileInfos.Length > 0 && msTExeFileInfos[0].Exists) // prioritize MapleStoryT.exe first
+				{
 					exeFileInfo.Add(msTExeFileInfos[0]);
+				}
 
-				if (msAdminExeFileInfos.Length > 0 && msAdminExeFileInfos[0].Exists)
+				if (msAdminExeFileInfos.Length > 0 && msAdminExeFileInfos[0].Exists) {
 					exeFileInfo.Add(msAdminExeFileInfos[0]);
+				}
 
 				if (msExeFileInfos.Length > 0 && msExeFileInfos[0].Exists) exeFileInfo.Add(msExeFileInfos[0]);
 
@@ -465,12 +476,15 @@ namespace MapleLib.WzLib {
 					     versionInfo.FileBuildPart == 0)
 					    || (versionInfo.FileMajorPart == 0 && versionInfo.FileMinorPart == 0 &&
 					        versionInfo.FileBuildPart == 0)) // older client uses 1.0.0.1 
+					{
 						continue;
+					}
 
 					var locale = versionInfo.FileMajorPart;
 					var localeVersion = MapleStoryLocalisation.Not_Known;
-					if (Enum.IsDefined(typeof(MapleStoryLocalisation), locale))
+					if (Enum.IsDefined(typeof(MapleStoryLocalisation), locale)) {
 						localeVersion = (MapleStoryLocalisation) locale;
+					}
 
 					var msVersion = versionInfo.FileMinorPart;
 					var msMinorPatchVersion = versionInfo.FileBuildPart;
@@ -480,8 +494,9 @@ namespace MapleLib.WzLib {
 				}
 
 				currentDirectory = currentDirectory.Parent; // check the parent folder on the next run
-				if (currentDirectory == null)
+				if (currentDirectory == null) {
 					break;
+				}
 			}
 
 			mapleLocaleVersion = MapleStoryLocalisation.Not_Known; // set
@@ -499,14 +514,17 @@ namespace MapleLib.WzLib {
 
 			foreach (var ch in maplestoryPatchVersion.ToString()) versionHash = versionHash * 32 + (byte) ch + 1;
 
-			if (wzVersionHeader == wzVersionHeader64bit_start)
+			if (wzVersionHeader == wzVersionHeader64bit_start) {
 				return (uint) versionHash; // always 59192
+			}
 
 			int decryptedVersionNumber = (byte) ~(((versionHash >> 24) & 0xFF) ^ ((versionHash >> 16) & 0xFF) ^
 			                                      ((versionHash >> 8) & 0xFF) ^ (versionHash & 0xFF));
 
-			if (wzVersionHeader == decryptedVersionNumber)
+			if (wzVersionHeader == decryptedVersionNumber) {
 				return (uint) versionHash;
+			}
+
 			return 0; // invalid
 		}
 
@@ -531,10 +549,11 @@ namespace MapleLib.WzLib {
 		public void SaveToDisk(string path, bool? override_saveAs64BitWZ = null,
 			WzMapleVersion savingToPreferredWzVer = WzMapleVersion.UNKNOWN) {
 			// WZ IV
-			if (savingToPreferredWzVer == WzMapleVersion.UNKNOWN)
+			if (savingToPreferredWzVer == WzMapleVersion.UNKNOWN) {
 				WzIv = WzTool.GetIvByMapleVersion(maplepLocalVersion); // get from local WzFile
-			else
+			} else {
 				WzIv = WzTool.GetIvByMapleVersion(savingToPreferredWzVer); // custom selected
+			}
 
 			var bIsWzIvSimilar = WzIv.SequenceEqual(wzDir.WzIv); // check if its saving to the same IV.
 			wzDir.WzIv = WzIv;
@@ -577,7 +596,9 @@ namespace MapleLib.WzLib {
 					if (extraHeaderLength > 0) wzWriter.Write(new byte[(int) extraHeaderLength]);
 
 					if (!saveAs64BitWz) // 64 bit doesnt have a version number.
+					{
 						wzWriter.Write((ushort) wzVersionHeader);
+					}
 
 					wzWriter.Header = Header;
 					wzDir.SaveDirectory(wzWriter);
@@ -633,8 +654,9 @@ namespace MapleLib.WzLib {
 			}
 
 			var seperatedNames = path.Split("/".ToCharArray());
-			if (seperatedNames.Length == 2 && seperatedNames[1] == "*")
+			if (seperatedNames.Length == 2 && seperatedNames[1] == "*") {
 				return GetObjectsFromDirectory(WzDirectory);
+			}
 
 			// Use Linq to flatten the sequence of paths returned by the GetPathsFromImage and GetPathsFromDirectory methods
 			// and filter the paths that match the given wildcard pattern
@@ -650,8 +672,9 @@ namespace MapleLib.WzLib {
 		}
 
 		public List<WzObject> GetObjectsFromRegexPath(string path) {
-			if (path.ToLower() == name.ToLower())
+			if (path.ToLower() == name.ToLower()) {
 				return new List<WzObject> {WzDirectory};
+			}
 
 			// Use Linq to flatten the sequence of paths returned by the GetPathsFromImage and GetPathsFromDirectory methods
 			// and filter the paths that match the given regular expression
@@ -717,8 +740,9 @@ namespace MapleLib.WzLib {
 					break;
 			}
 
-			if (bAddRange)
+			if (bAddRange) {
 				objList.AddRange(subProperties.SelectMany(p => GetObjectsFromProperty(p)));
+			}
 
 			return objList;
 		}
@@ -777,8 +801,9 @@ namespace MapleLib.WzLib {
 					break;
 			}
 
-			if (bAddRange)
+			if (bAddRange) {
 				objList.AddRange(subProperties.SelectMany(p => GetPathsFromProperty(p, curPath + "/" + p.Name)));
+			}
 
 			return objList;
 		}
@@ -791,8 +816,9 @@ namespace MapleLib.WzLib {
 		/// <returns></returns>
 		public WzObject GetObjectFromPath(string path, bool checkFirstDirectoryName = true) {
 			var seperatedPath = path.Split("/".ToCharArray());
-			if (seperatedPath.Length == 1)
+			if (seperatedPath.Length == 1) {
 				return WzDirectory;
+			}
 
 			WzObject checkObjInOtherWzFile = null;
 
@@ -813,8 +839,10 @@ namespace MapleLib.WzLib {
 						{
 							checkObjInOtherWzFile = WzFileManager.fileManager.FindWzImageByName(
 								seperatedPath[0] + Path.DirectorySeparatorChar + seperatedPath[1], seperatedPath[2]);
-							if (checkObjInOtherWzFile == null)
+							if (checkObjInOtherWzFile == null) {
 								return null;
+							}
+
 							seperatedPath = seperatedPath.Skip(2).ToArray();
 						} else {
 							seperatedPath = seperatedPath.Skip(1).ToArray();
@@ -828,8 +856,9 @@ namespace MapleLib.WzLib {
 			}
 
 			var curObj = checkObjInOtherWzFile ?? WzDirectory;
-			if (curObj == null)
+			if (curObj == null) {
 				return null;
+			}
 
 			var bFirst = true;
 			foreach (var pathPart in seperatedPath) {
@@ -838,8 +867,9 @@ namespace MapleLib.WzLib {
 					continue;
 				}
 
-				if (curObj == null)
+				if (curObj == null) {
 					return null;
+				}
 
 				switch (curObj.ObjectType) {
 					case WzObjectType.Directory:
@@ -860,12 +890,13 @@ namespace MapleLib.WzLib {
 								curObj = ((WzSubProperty) curObj)[pathPart];
 								continue;
 							case WzPropertyType.Vector:
-								if (pathPart == "X")
+								if (pathPart == "X") {
 									return ((WzVectorProperty) curObj).X;
-								else if (pathPart == "Y")
+								} else if (pathPart == "Y") {
 									return ((WzVectorProperty) curObj).Y;
-								else
+								} else {
 									return null;
+								}
 							default: // Wut?
 								return null;
 						}
@@ -896,7 +927,7 @@ namespace MapleLib.WzLib {
 			var wildCardIndex = 0;
 			var compareIndex = 0;
 
-			while (wildCardIndex < wildCardLength && compareIndex < compareLength)
+			while (wildCardIndex < wildCardLength && compareIndex < compareLength) {
 				if (strWildCard[wildCardIndex] == '*') {
 					// If there are multiple * in the wildcard, move to the last *
 					while (wildCardIndex < wildCardLength && strWildCard[wildCardIndex] == '*') wildCardIndex++;
@@ -907,8 +938,9 @@ namespace MapleLib.WzLib {
 					// Try to match the remaining part of the wildcard with the remaining part of the compare string
 					// starting from the current compare index.
 					while (compareIndex < compareLength) {
-						if (StringMatch(strWildCard.Substring(wildCardIndex), strCompare.Substring(compareIndex)))
+						if (StringMatch(strWildCard.Substring(wildCardIndex), strCompare.Substring(compareIndex))) {
 							return true;
+						}
 
 						compareIndex++;
 					}
@@ -924,6 +956,7 @@ namespace MapleLib.WzLib {
 					// return false.
 					return false;
 				}
+			}
 
 			// If we reached here, it means one of the strings has been fully processed.
 			// If both strings have been fully processed, return true, else return false.

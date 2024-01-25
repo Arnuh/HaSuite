@@ -24,13 +24,9 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace HaCreator.CustomControls {
 	public partial class ImageViewer : UserControl {
@@ -112,9 +108,12 @@ namespace HaCreator.CustomControls {
 
 			if (MaxHeight > 0 && m_Image.Height > MaxHeight) dy = (float) MaxHeight / m_Image.Height;
 
-			if (dx != 0 && dy == 0) mp = dx;
-			else if (dy != 0 && dx == 0) mp = dy;
-			else if (dx != 0 && dy != 0) mp = Math.Min(dx, dy);
+			if (dx != 0 && dy == 0) {
+				mp = dx;
+			} else if (dy != 0 && dx == 0) {
+				mp = dy;
+			} else if (dx != 0 && dy != 0) mp = Math.Min(dx, dy);
+
 			return mp;
 		}
 
@@ -132,10 +131,11 @@ namespace HaCreator.CustomControls {
 				g.DrawRectangle(new Pen(Color.Blue, 2), 1, 1, m_Image.Width * mp + 6, m_Image.Height * mp + 6);
 			}
 
-			if (IsText)
+			if (IsText) {
 				g.DrawString(Name,
 					new Font("Microsoft Sans Serif", 8.5F, FontStyle.Regular,
 						GraphicsUnit.Point, (byte) 177), Brushes.Black, 0, m_Image.Height * mp + 7);
+			}
 			/*g.DrawRectangle(new Pen(Color.Gray), dl, dt, dw, dh);
 
 			if (m_IsThumbnail)

@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace MapleLib.Helpers {
 	public static class ErrorLogger {
@@ -60,8 +58,9 @@ namespace MapleLib.Helpers {
 		/// </summary>
 		/// <param name="filename"></param>
 		public static void SaveToFile(string filename) {
-			if (!ErrorsPresent())
+			if (!ErrorsPresent()) {
 				return;
+			}
 
 			using (var sw =
 			       new StreamWriter(File.Open(filename, FileMode.Append, FileAccess.Write, FileShare.Read))) {

@@ -1,20 +1,9 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>
@@ -73,8 +62,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// </summary>
 		public ReadOnlyCollection<IHighlightingDefinition> HighlightingDefinitions {
 			get {
-				if (_highlightingManager != null)
+				if (_highlightingManager != null) {
 					return _highlightingManager.HighlightingDefinitions;
+				}
 
 				return null;
 			}
@@ -104,8 +94,9 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void comboBox_SyntaxHighlightingType_SelectionChanged_1(object sender, SelectionChangedEventArgs e) {
-			if (e.AddedItems.Count == 0)
+			if (e.AddedItems.Count == 0) {
 				return;
+			}
 
 			var definition = e.AddedItems[0] as IHighlightingDefinition;
 			if (definition != null) HighlightingDefinition = definition;

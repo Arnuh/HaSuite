@@ -22,13 +22,8 @@ SOFTWARE.
 */
 
 using MapleLib.WzLib.WzProperties;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace MapleLib.WzLib.Spine {
 	public class WzSpineTextureLoader : TextureLoader {
@@ -48,8 +43,9 @@ namespace MapleLib.WzLib.Spine {
 		/// <param name="path"></param>
 		public void Load(AtlasPage page, string path) {
 			var frameNode = ParentNode[path];
-			if (frameNode == null)
+			if (frameNode == null) {
 				return;
+			}
 
 			WzCanvasProperty canvasProperty = null;
 

@@ -15,11 +15,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json.Linq;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MapleLib.WzLib {
 	public class WzSettingsManager {
@@ -181,8 +181,9 @@ namespace MapleLib.WzLib {
 			mainJson.Add(APP_SETTING_JSON, appSettingJson);
 
 			var settingsExist = File.Exists(settingFilePath);
-			if (settingsExist)
+			if (settingsExist) {
 				File.Delete(settingFilePath);
+			}
 
 			using (var file = File.CreateText(settingFilePath)) {
 				var serializer = new JsonSerializer();
@@ -217,9 +218,9 @@ namespace MapleLib.WzLib {
 
 			fieldJsonObject.Add("type", fieldInfo.FieldType.FullName); // i.e System.Int
 
-			if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum")
+			if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum") {
 				fieldJsonObject.Add("value", (int) fieldInfo.GetValue(null));
-			else
+			} else {
 				switch (fieldInfo.FieldType.FullName) {
 					//case "Microsoft.Xna.Framework.Graphics.Color":
 					case "Microsoft.Xna.Framework.Color": {
@@ -289,6 +290,7 @@ namespace MapleLib.WzLib {
 						throw new Exception("Unsupported data type for WzSettings.");
 					}
 				}
+			}
 		}
 
 		#endregion

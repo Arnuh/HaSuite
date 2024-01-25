@@ -4,14 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
+using System.Collections.Generic;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
@@ -117,18 +114,22 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
 			var lineColor = ab.Color;
-			if (Selected)
+			if (Selected) {
 				lineColor = dotColor;
-			int x, y;
-			if (a.X < b.X)
-				x = a.X + xShift;
-			else
-				x = b.X + xShift;
+			}
 
-			if (b.Y < c.Y)
+			int x, y;
+			if (a.X < b.X) {
+				x = a.X + xShift;
+			} else {
+				x = b.X + xShift;
+			}
+
+			if (b.Y < c.Y) {
 				y = b.Y + yShift;
-			else
+			} else {
 				y = c.Y + yShift;
+			}
 
 			Board.ParentControl.FillRectangle(sprite, new XNA.Rectangle(x, y, Width, Height), Color);
 			ab.Draw(sprite, lineColor, xShift, yShift);
@@ -259,9 +260,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void PostDeserializationActions(bool? selected, XNA.Point? offset) {
 			if (selected.HasValue) Selected = selected.Value;
 
-			if (offset.HasValue)
+			if (offset.HasValue) {
 				foreach (var dot in new[] {a, b, c, d})
 					dot.MoveSilent(dot.X + offset.Value.X, dot.Y + offset.Value.Y);
+			}
 		}
 
 		#endregion

@@ -29,9 +29,8 @@
  *****************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.IO;
 #if WINDOWS_STOREAPP
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -103,8 +102,9 @@ namespace Spine {
 				BoneData parent = null;
 				if (boneMap.ContainsKey("parent")) {
 					parent = skeletonData.FindBone((string) boneMap["parent"]);
-					if (parent == null)
+					if (parent == null) {
 						throw new Exception("Parent bone not found: " + boneMap["parent"]);
+					}
 				}
 
 				var boneData = new BoneData((string) boneMap["name"], parent);
@@ -122,7 +122,7 @@ namespace Spine {
 			}
 
 			// IK constraints.
-			if (root.ContainsKey("ik"))
+			if (root.ContainsKey("ik")) {
 				foreach (Dictionary<string, object> ikMap in (List<object>) root["ik"]) {
 					var ikConstraintData = new IkConstraintData((string) ikMap["name"]);
 
@@ -141,15 +141,18 @@ namespace Spine {
 
 					skeletonData.ikConstraints.Add(ikConstraintData);
 				}
+			}
 
 			// Slots.
-			if (root.ContainsKey("slots"))
+			if (root.ContainsKey("slots")) {
 				foreach (Dictionary<string, object> slotMap in (List<object>) root["slots"]) {
 					var slotName = (string) slotMap["name"];
 					var boneName = (string) slotMap["bone"];
 					var boneData = skeletonData.FindBone(boneName);
-					if (boneData == null)
+					if (boneData == null) {
 						throw new Exception("Slot bone not found: " + boneName);
+					}
+
 					var slotData = new SlotData(slotName, boneData);
 
 					if (slotMap.ContainsKey("color")) {
@@ -160,17 +163,20 @@ namespace Spine {
 						slotData.a = ToColor(color, 3);
 					}
 
-					if (slotMap.ContainsKey("attachment"))
+					if (slotMap.ContainsKey("attachment")) {
 						slotData.attachmentName = (string) slotMap["attachment"];
+					}
 
-					if (slotMap.ContainsKey("additive"))
+					if (slotMap.ContainsKey("additive")) {
 						slotData.additiveBlending = (bool) slotMap["additive"];
+					}
 
 					skeletonData.slots.Add(slotData);
 				}
+			}
 
 			// Skins.
-			if (root.ContainsKey("skins"))
+			if (root.ContainsKey("skins")) {
 				foreach (var entry in (Dictionary<string, object>) root["skins"]) {
 					var skin = new Skin(entry.Key);
 					foreach (var slotEntry in (Dictionary<string, object>) entry.Value) {
@@ -184,12 +190,14 @@ namespace Spine {
 					}
 
 					skeletonData.skins.Add(skin);
-					if (skin.name == "default")
+					if (skin.name == "default") {
 						skeletonData.defaultSkin = skin;
+					}
 				}
+			}
 
 			// Events.
-			if (root.ContainsKey("events"))
+			if (root.ContainsKey("events")) {
 				foreach (var entry in (Dictionary<string, object>) root["events"]) {
 					var entryMap = (Dictionary<string, object>) entry.Value;
 					var eventData = new EventData(entry.Key);
@@ -198,11 +206,13 @@ namespace Spine {
 					eventData.String = GetString(entryMap, "string", null);
 					skeletonData.events.Add(eventData);
 				}
+			}
 
 			// Animations.
-			if (root.ContainsKey("animations"))
+			if (root.ContainsKey("animations")) {
 				foreach (var entry in (Dictionary<string, object>) root["animations"])
 					ReadAnimation(entry.Key, (Dictionary<string, object>) entry.Value, skeletonData);
+			}
 
 			skeletonData.bones.TrimExcess();
 			skeletonData.slots.TrimExcess();
@@ -214,16 +224,19 @@ namespace Spine {
 		}
 
 		private Attachment ReadAttachment(Skin skin, string name, Dictionary<string, object> map) {
-			if (map.ContainsKey("name"))
+			if (map.ContainsKey("name")) {
 				name = (string) map["name"];
+			}
 
 			var type = AttachmentType.region;
-			if (map.ContainsKey("type"))
+			if (map.ContainsKey("type")) {
 				type = (AttachmentType) Enum.Parse(typeof(AttachmentType), (string) map["type"], false);
+			}
 
 			var path = name;
-			if (map.ContainsKey("path"))
+			if (map.ContainsKey("path")) {
 				path = (string) map["path"];
+			}
 
 			switch (type) {
 				case AttachmentType.region:
@@ -329,12 +342,13 @@ namespace Spine {
 		private float[] GetFloatArray(Dictionary<string, object> map, string name, float scale) {
 			var list = (List<object>) map[name];
 			var values = new float[list.Count];
-			if (scale == 1)
+			if (scale == 1) {
 				for (int i = 0, n = list.Count; i < n; i++)
 					values[i] = (float) list[i];
-			else
+			} else {
 				for (int i = 0, n = list.Count; i < n; i++)
 					values[i] = (float) list[i] * scale;
+			}
 
 			return values;
 		}
@@ -348,32 +362,42 @@ namespace Spine {
 		}
 
 		private float GetFloat(Dictionary<string, object> map, string name, float defaultValue) {
-			if (!map.ContainsKey(name))
+			if (!map.ContainsKey(name)) {
 				return defaultValue;
+			}
+
 			return (float) map[name];
 		}
 
 		private int GetInt(Dictionary<string, object> map, string name, int defaultValue) {
-			if (!map.ContainsKey(name))
+			if (!map.ContainsKey(name)) {
 				return defaultValue;
+			}
+
 			return (int) (float) map[name];
 		}
 
 		private bool GetBoolean(Dictionary<string, object> map, string name, bool defaultValue) {
-			if (!map.ContainsKey(name))
+			if (!map.ContainsKey(name)) {
 				return defaultValue;
+			}
+
 			return (bool) map[name];
 		}
 
 		private string GetString(Dictionary<string, object> map, string name, string defaultValue) {
-			if (!map.ContainsKey(name))
+			if (!map.ContainsKey(name)) {
 				return defaultValue;
+			}
+
 			return (string) map[name];
 		}
 
 		private float ToColor(string hexString, int colorIndex) {
-			if (hexString.Length != 8)
+			if (hexString.Length != 8) {
 				throw new ArgumentException("Color hexidecimal length must be 8, recieved: " + hexString);
+			}
+
 			return Convert.ToInt32(hexString.Substring(colorIndex * 2, 2), 16) / (float) 255;
 		}
 
@@ -382,7 +406,7 @@ namespace Spine {
 			float duration = 0;
 			var scale = Scale;
 
-			if (map.ContainsKey("slots"))
+			if (map.ContainsKey("slots")) {
 				foreach (var entry in (Dictionary<string, object>) map["slots"]) {
 					var slotName = entry.Key;
 					var slotIndex = skeletonData.FindSlotIndex(slotName);
@@ -425,13 +449,15 @@ namespace Spine {
 						}
 					}
 				}
+			}
 
-			if (map.ContainsKey("bones"))
+			if (map.ContainsKey("bones")) {
 				foreach (var entry in (Dictionary<string, object>) map["bones"]) {
 					var boneName = entry.Key;
 					var boneIndex = skeletonData.FindBoneIndex(boneName);
-					if (boneIndex == -1)
+					if (boneIndex == -1) {
 						throw new Exception("Bone not found: " + boneName);
+					}
 
 					var timelineMap = (Dictionary<string, object>) entry.Value;
 					foreach (var timelineEntry in timelineMap) {
@@ -498,8 +524,9 @@ namespace Spine {
 						}
 					}
 				}
+			}
 
-			if (map.ContainsKey("ik"))
+			if (map.ContainsKey("ik")) {
 				foreach (var ikMap in (Dictionary<string, object>) map["ik"]) {
 					var ikConstraint = skeletonData.FindIkConstraint(ikMap.Key);
 					var values = (List<object>) ikMap.Value;
@@ -520,8 +547,9 @@ namespace Spine {
 					timelines.Add(timeline);
 					duration = Math.Max(duration, timeline.frames[timeline.FrameCount * 3 - 3]);
 				}
+			}
 
-			if (map.ContainsKey("ffd"))
+			if (map.ContainsKey("ffd")) {
 				foreach (var ffdMap in (Dictionary<string, object>) map["ffd"]) {
 					var skin = skeletonData.FindSkin(ffdMap.Key);
 					foreach (var slotMap in (Dictionary<string, object>) ffdMap.Value) {
@@ -535,29 +563,32 @@ namespace Spine {
 							timeline.attachment = attachment;
 
 							int vertexCount;
-							if (attachment is MeshAttachment)
+							if (attachment is MeshAttachment) {
 								vertexCount = ((MeshAttachment) attachment).vertices.Length;
-							else
+							} else {
 								vertexCount = ((SkinnedMeshAttachment) attachment).Weights.Length / 3 * 2;
+							}
 
 							var frameIndex = 0;
 							foreach (Dictionary<string, object> valueMap in values) {
 								float[] vertices;
 								if (!valueMap.ContainsKey("vertices")) {
-									if (attachment is MeshAttachment)
+									if (attachment is MeshAttachment) {
 										vertices = ((MeshAttachment) attachment).vertices;
-									else
+									} else {
 										vertices = new float[vertexCount];
+									}
 								} else {
 									var verticesValue = (List<object>) valueMap["vertices"];
 									vertices = new float[vertexCount];
 									var start = GetInt(valueMap, "offset", 0);
-									if (scale == 1)
+									if (scale == 1) {
 										for (int i = 0, n = verticesValue.Count; i < n; i++)
 											vertices[i + start] = (float) verticesValue[i];
-									else
+									} else {
 										for (int i = 0, n = verticesValue.Count; i < n; i++)
 											vertices[i + start] = (float) verticesValue[i] * scale;
+									}
 
 									if (attachment is MeshAttachment) {
 										var meshVertices = ((MeshAttachment) attachment).vertices;
@@ -576,6 +607,7 @@ namespace Spine {
 						}
 					}
 				}
+			}
 
 			if (map.ContainsKey("drawOrder") || map.ContainsKey("draworder")) {
 				var values = (List<object>) map[map.ContainsKey("drawOrder") ? "drawOrder" : "draworder"];
@@ -606,9 +638,11 @@ namespace Spine {
 						while (originalIndex < slotCount)
 							unchanged[unchangedIndex++] = originalIndex++;
 						// Fill in unchanged items.
-						for (var i = slotCount - 1; i >= 0; i--)
-							if (drawOrder[i] == -1)
+						for (var i = slotCount - 1; i >= 0; i--) {
+							if (drawOrder[i] == -1) {
 								drawOrder[i] = unchanged[--unchangedIndex];
+							}
+						}
 					}
 
 					timeline.SetFrame(frameIndex++, (float) drawOrderMap["time"], drawOrder);
@@ -641,8 +675,10 @@ namespace Spine {
 		}
 
 		private void ReadCurve(CurveTimeline timeline, int frameIndex, Dictionary<string, object> valueMap) {
-			if (!valueMap.ContainsKey("curve"))
+			if (!valueMap.ContainsKey("curve")) {
 				return;
+			}
+
 			var curveObject = valueMap["curve"];
 			if (curveObject.Equals("stepped")) {
 				timeline.SetStepped(frameIndex);

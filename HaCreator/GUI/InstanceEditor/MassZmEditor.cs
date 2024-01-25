@@ -6,12 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
@@ -41,8 +35,9 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.PlatformNumber = newZM;
 				}
 
-				if (actions.Count > 0)
+				if (actions.Count > 0) {
 					board.UndoRedoMan.AddUndoBatch(actions);
+				}
 			}
 
 			Close();

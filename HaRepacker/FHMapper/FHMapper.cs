@@ -1,20 +1,18 @@
-﻿using Footholds;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Security.Cryptography;
-using System.Diagnostics;
-using MapleLib;
+using Footholds;
 using HaRepacker.GUI.Panels;
+using MapleLib;
 using MapleLib.Configuration;
-using HaRepacker.GUI;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaRepacker.FHMapper {
 	public class FHMapper {
@@ -52,7 +50,9 @@ namespace HaRepacker.FHMapper {
 					if (mapMarkCanvas != null &&
 					    mapMark.ToString() !=
 					    "None") // Doesnt have to render mapmark if its not available. Actual client does not crash
+					{
 						drawBuf.DrawImage(mapMarkCanvas.GetLinkedWzCanvasBitmap(), 10, 10);
+					}
 				}
 
 				// Get map name
@@ -64,12 +64,13 @@ namespace HaRepacker.FHMapper {
 					(WzImage) WzFile.GetObjectFromMultipleWzFilePath(mapNameStringPath,
 						Program.WzFileManager.WzFileList);
 				foreach (WzSubProperty subAreaImgProp in mapNameImages.WzProperties)
-				foreach (WzSubProperty mapImg in subAreaImgProp.WzProperties)
+				foreach (WzSubProperty mapImg in subAreaImgProp.WzProperties) {
 					if (mapImg.Name == mapIdName) {
 						mapName = mapImg["mapName"].ReadString(string.Empty);
 						streetName = mapImg["streetName"].ReadString(string.Empty);
 						break;
 					}
+				}
 
 				// Draw map name and ID
 				//drawBuf.FillRectangle(new SolidBrush(Color.CornflowerBlue), 0, 0, bmpSize.Width, bmpSize.Height);
@@ -78,12 +79,13 @@ namespace HaRepacker.FHMapper {
 				drawBuf.DrawString(mapName, FONT_DISPLAY_MAPID, new SolidBrush(Color.Black), new PointF(60, 30));
 
 				// Draw mini map
-				if (miniMapSubProperty != null)
+				if (miniMapSubProperty != null) {
 					drawBuf.DrawImage(((WzCanvasProperty) miniMapSubProperty["canvas"]).GetLinkedWzCanvasBitmap(), 10,
 						80);
-				else
+				} else {
 					drawBuf.DrawString("Minimap not availible", FONT_DISPLAY_MINIMAP_NOT_AVAILABLE,
 						new SolidBrush(Color.Black), new PointF(10, 45));
+				}
 			}
 
 			minimapRender.Save("Renders\\" + mapIdName + "\\" + mapIdName + "_miniMapRender.bmp");
@@ -118,7 +120,7 @@ namespace HaRepacker.FHMapper {
 				center = new Point(((WzIntProperty) miniMapSubProperty["centerX"]).Value,
 					((WzIntProperty) miniMapSubProperty["centerY"]).Value);
 			} catch (Exception exp) {
-				if (exp is KeyNotFoundException || exp is NullReferenceException)
+				if (exp is KeyNotFoundException || exp is NullReferenceException) {
 					try {
 						var infoSubProperty = (WzSubProperty) img["info"];
 
@@ -134,8 +136,9 @@ namespace HaRepacker.FHMapper {
 						              ".img/info/VRRight; VRLeft; VRBottom; VRTop\r\n OR info/miniMap/width ; height; centerX; centerY");
 						return false;
 					}
-				else
+				} else {
 					return false;
+				}
 			}
 
 			// Render minimap
@@ -154,16 +157,19 @@ namespace HaRepacker.FHMapper {
 					var tm = ((WzIntProperty) p["tm"]).ReadValue(999999999);
 
 					var pColor = Color.Red;
-					if (pt == 0)
+					if (pt == 0) {
 						pColor = Color.Orange;
-					else if (pt == 2 || pt == 7) //Normal
+					} else if (pt == 2 || pt == 7) //Normal
+					{
 						pColor = Color.Blue;
-					else if (pt == 3) //Auto-enter
+					} else if (pt == 3) //Auto-enter
+					{
 						pColor = Color.Magenta;
-					else if (pt == 1 || pt == 8)
+					} else if (pt == 1 || pt == 8) {
 						pColor = Color.BlueViolet;
-					else
+					} else {
 						pColor = Color.IndianRed;
+					}
 
 					// Draw portal preview image
 					var drewPortalImg = false;
@@ -246,10 +252,11 @@ namespace HaRepacker.FHMapper {
 								lifeStrId = lifeId.ToString().PadLeft(7, '0');
 							}
 
-							if (!isNPC)
+							if (!isNPC) {
 								mobLinkWzPath = string.Format("Mob.wz/{0}.img/stand/0", lifeStrId);
-							else
+							} else {
 								mobLinkWzPath = string.Format("Npc.wz/{0}.img/stand/0", lifeStrId);
+							}
 
 							var lifeImg =
 								(WzCanvasProperty) WzFile.GetObjectFromMultipleWzFilePath(mobLinkWzPath,
@@ -260,8 +267,9 @@ namespace HaRepacker.FHMapper {
 
 								var renderMobbitmap = lifeImg.GetLinkedWzCanvasBitmap();
 
-								if (!facingLeft)
+								if (!facingLeft) {
 									renderMobbitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
+								}
 
 								drawBuf.DrawImage(renderMobbitmap, renderXY);
 							} else {
@@ -275,13 +283,15 @@ namespace HaRepacker.FHMapper {
 							var stringName =
 								(WzStringProperty) WzFile.GetObjectFromMultipleWzFilePath(mobNamePath,
 									Program.WzFileManager.WzFileList);
-							if (stringName != null)
+							if (stringName != null) {
 								drawBuf.DrawString(
 									string.Format("SP: {0}, Name: {1}, ID: {2}", sp.Name, stringName.GetString(),
 										lifeId), FONT_DISPLAY_PORTAL_LFIE_FOOTHOLD, new SolidBrush(Color.Red),
 									x_text + 7, y_text + 7.3F);
-							else
+							} else {
 								errorList.Add("Missing monster/npc string object. Path: " + mobNamePath);
+							}
+
 							break;
 						}
 						default: {
@@ -311,8 +321,10 @@ namespace HaRepacker.FHMapper {
 							height = -height;
 						}
 
-						if (width == 0 || width < 15)
+						if (width == 0 || width < 15) {
 							width = 15;
+						}
+
 						height += 10;
 
 						var nFH = new FootHold.Foothold();
@@ -334,7 +346,7 @@ namespace HaRepacker.FHMapper {
 			var backgroundRender = new Bitmap(bmpSize.Width, bmpSize.Height);
 			using (var tileBuf = Graphics.FromImage(backgroundRender)) {
 				var backImg = (WzSubProperty) img["back"];
-				if (backImg != null)
+				if (backImg != null) {
 					foreach (WzSubProperty bgItem in backImg.WzProperties) {
 						var bS = ((WzStringProperty) bgItem["bS"]).Value;
 						var front = ((WzIntProperty) bgItem["front"]).Value;
@@ -350,8 +362,9 @@ namespace HaRepacker.FHMapper {
 						var a = ((WzIntProperty) bgItem["a"]).Value;
 						var facingLeft = ((WzIntProperty) bgItem["f"]).ReadValue(0) == 0;
 
-						if (bS == string.Empty)
+						if (bS == string.Empty) {
 							continue;
+						}
 
 						var bgObjImagePath = "Map.wz/Back/" + bS + ".img/Back/" + no;
 						var wzBgCanvas =
@@ -364,14 +377,16 @@ namespace HaRepacker.FHMapper {
 
 							var drawImage = wzBgCanvas.GetLinkedWzCanvasBitmap();
 
-							if (!facingLeft)
+							if (!facingLeft) {
 								drawImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+							}
 
 							tileBuf.DrawImage(drawImage, renderXY);
 						} else {
 							errorList.Add("Missing Map BG object. Path: " + bgObjImagePath);
 						}
 					}
+				}
 			}
 
 			backgroundRender.Save("Renders\\" + mapIdName + "\\" + mapIdName + "_backgroundRender.bmp");
@@ -393,8 +408,9 @@ namespace HaRepacker.FHMapper {
 					for (var i = 0; i < 99; i++) // starts from 0
 					{
 						var toolTipItem = (WzSubProperty) tooltipProperty[i.ToString()];
-						if (toolTipItem == null)
+						if (toolTipItem == null) {
 							break;
+						}
 
 						var x1 = toolTipItem["x1"].ReadValue();
 						var x2 = toolTipItem["x2"].ReadValue();
@@ -403,14 +419,16 @@ namespace HaRepacker.FHMapper {
 
 						// Check String.wz
 						var wzToolTipForI = (WzSubProperty) wzToolTip[i.ToString()];
-						if (wzToolTipForI == null)
+						if (wzToolTipForI == null) {
 							errorList.Add("Map tooltip is missing. Path: " + stringTooltipPath + "/" + i);
+						}
 
 						var title = wzToolTipForI["Title"].ReadString(null);
 						var desc = wzToolTipForI["Desc"].ReadString(null);
 
-						if (title == null)
+						if (title == null) {
 							errorList.Add("Map tooltip is missing. Path: " + stringTooltipPath + "/" + i + "/Title");
+						}
 
 						toolTipBuf.DrawString(string.Format("{0}\n{1}", title, desc == null ? string.Empty : desc),
 							FONT_GAME_TOOLTIP, new SolidBrush(Color.Black), new PointF(x1 + center.X, y1 + center.Y));
@@ -431,7 +449,7 @@ namespace HaRepacker.FHMapper {
 					var infoProperties = (WzSubProperty) iProperty["info"];
 					var tileProperties = (WzSubProperty) iProperty["tile"];
 
-					if (objProperties.WzProperties.Count > 0)
+					if (objProperties.WzProperties.Count > 0) {
 						foreach (WzSubProperty obj in objProperties.WzProperties) {
 							//WzSubProperty obj = (WzSubProperty)oe.ExtendedProperty;
 							var imgName = ((WzStringProperty) obj["oS"]).Value + ".img";
@@ -456,7 +474,7 @@ namespace HaRepacker.FHMapper {
 								origin = ((WzCanvasProperty) objData).GetCanvasOriginPosition();
 							} else if (objData is WzUOLProperty) {
 								var currProp = objData.Parent;
-								foreach (var directive in ((WzUOLProperty) objData).Value.Split("/".ToCharArray()))
+								foreach (var directive in ((WzUOLProperty) objData).Value.Split("/".ToCharArray())) {
 									if (directive == "..") {
 										currProp = currProp.Parent;
 									} else {
@@ -473,6 +491,7 @@ namespace HaRepacker.FHMapper {
 											return false;
 										}
 									}
+								}
 
 								objData = (WzImageProperty) currProp;
 								goto tryagain;
@@ -485,12 +504,15 @@ namespace HaRepacker.FHMapper {
 							//WzPngProperty png = (WzPngProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0/PNG");
 							tileBuf.DrawImage(png.GetLinkedWzCanvasBitmap(), x - origin.X, y - origin.Y);
 						}
+					}
 
-					if (infoProperties.WzProperties.Count == 0)
+					if (infoProperties.WzProperties.Count == 0) {
 						continue;
+					}
 
-					if (tileProperties.WzProperties.Count == 0)
+					if (tileProperties.WzProperties.Count == 0) {
 						continue;
+					}
 
 					// Ok, we have some tiles and a tileset
 					var tileSetName = ((WzStringProperty) infoProperties["tS"]).Value;
@@ -499,8 +521,9 @@ namespace HaRepacker.FHMapper {
 					var tilePath = wzFile.WzDirectory.Name + "/Tile/" + tileSetName + ".img";
 					var tileSet =
 						(WzImage) WzFile.GetObjectFromMultipleWzFilePath(tilePath, Program.WzFileManager.WzFileList);
-					if (!tileSet.Parsed)
+					if (!tileSet.Parsed) {
 						tileSet.ParseImage();
+					}
 
 					foreach (WzSubProperty tile in tileProperties.WzProperties) {
 						//WzSubProperty tile = (WzSubProperty)te.ExtendedProperty;
@@ -512,8 +535,9 @@ namespace HaRepacker.FHMapper {
 
 						var tilePack = (WzSubProperty) tileSet[tilePackName];
 						var tileCanvas = (WzCanvasProperty) tilePack[tileID];
-						if (tileCanvas == null)
+						if (tileCanvas == null) {
 							errorList.Add(string.Format("Tile {0}, ID: {1} is not found.", tilePackName, tileID));
+						}
 
 						var tileVector = tileCanvas.GetCanvasOriginPosition();
 						tileBuf.DrawImage(tileCanvas.GetLinkedWzCanvasBitmap(), x - tileVector.X, y - tileVector.Y);
@@ -532,7 +556,7 @@ namespace HaRepacker.FHMapper {
 					var start = 0;
 					var end = 0;
 
-					foreach (var nodeInfoImg in nodeInfoProperty.WzProperties)
+					foreach (var nodeInfoImg in nodeInfoProperty.WzProperties) {
 						switch (nodeInfoImg.Name) {
 							case "edgeInfo": {
 								break;
@@ -570,6 +594,7 @@ namespace HaRepacker.FHMapper {
 								break;
 							}
 						}
+					}
 				}
 
 				nodeInfoRender.Save("Renders\\" + mapIdName + "\\" + mapIdName + "_nodeInfoRender.bmp");
@@ -600,8 +625,9 @@ namespace HaRepacker.FHMapper {
 			toolTip?.Dispose();
 			minimapRender.Dispose();
 
-			if (errorList.Count() > 0)
+			if (errorList.Count() > 0) {
 				return false;
+			}
 
 			// Display render map
 			var showMap = new DisplayMap {
@@ -639,9 +665,11 @@ namespace HaRepacker.FHMapper {
 			try {
 				// Add the new ones
 				string theSettings;
-				if (!File.Exists(SettingsPath))
+				if (!File.Exists(SettingsPath)) {
 					File.WriteAllText(SettingsPath,
 						"!TAB1-!DPt:0!DPc:False!DNt:0!DNc:True!DFt:-230!DFc:False!\r\n!TAB2-!DXt:100!DXc:False!DYt:100!DYc:False!DTt:2!DTc:False!\r\n!TAB3-!DFPt:C:\\NEXON\\MapleStory\\Map.wz!DFPc:False!DSt:1!DSc:True!");
+				}
+
 				using (TextReader settingsFile = new StreamReader(SettingsPath)) {
 					theSettings = settingsFile.ReadToEnd();
 				}

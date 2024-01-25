@@ -115,10 +115,11 @@ namespace Spine {
 
 				var previous = current.previous;
 				if (previous == null) {
-					if (current.mix == 1)
+					if (current.mix == 1) {
 						current.animation.Apply(skeleton, current.lastTime, time, loop, events);
-					else
+					} else {
 						current.animation.Mix(skeleton, current.lastTime, time, loop, events, current.mix);
+					}
 				} else {
 					var previousTime = previous.time;
 					if (!previous.loop && previousTime > previous.endTime) previousTime = previous.endTime;
@@ -180,10 +181,11 @@ namespace Spine {
 				if (entry.mixDuration > 0) {
 					entry.mixTime = 0;
 					// If a mix is in progress, mix from the closest animation.
-					if (previous != null && current.mixTime / current.mixDuration < 0.5f)
+					if (previous != null && current.mixTime / current.mixDuration < 0.5f) {
 						entry.previous = previous;
-					else
+					} else {
 						entry.previous = current;
+					}
 				}
 			}
 
@@ -237,10 +239,11 @@ namespace Spine {
 			}
 
 			if (delay <= 0) {
-				if (last != null)
+				if (last != null) {
 					delay += last.endTime - data.GetMix(last.animation, animation);
-				else
+				} else {
 					delay = 0;
+				}
 			}
 
 			entry.delay = delay;

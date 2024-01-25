@@ -4,16 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.MapEditor.Info;
-using HaCreator.MapEditor.Input;
-using MapleLib.WzLib.WzStructure;
-using MapleLib.WzLib.WzStructure.Data;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Input;
+using MapleLib.WzLib.WzStructure.Data;
+using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
@@ -46,8 +42,9 @@ namespace HaCreator.MapEditor.Instance {
 			_cy = cy;
 			_tags = tags;
 			this.questInfo = questInfo;
-			if (flip)
+			if (flip) {
 				X -= Width - 2 * Origin.X;
+			}
 		}
 
 		public override ItemTypes Type => ItemTypes.Objects;
@@ -66,8 +63,11 @@ namespace HaCreator.MapEditor.Instance {
 				if (flip == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip) X -= xFlipShift;
-				else X += xFlipShift;
+				if (flip) {
+					X -= xFlipShift;
+				} else {
+					X += xFlipShift;
+				}
 			}
 		}
 
@@ -75,9 +75,10 @@ namespace HaCreator.MapEditor.Instance {
 
 		private void DrawOffsetMap(SpriteBatch sprite, List<List<XNA.Point>> offsetMap, int xBase, int yBase) {
 			foreach (var offsetList in offsetMap)
-			foreach (var offset in offsetList)
+			foreach (var offset in offsetList) {
 				Board.ParentControl.DrawDot(sprite, xBase + offset.X, yBase + offset.Y,
 					MultiBoard.RopeInactiveColor, 1);
+			}
 		}
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
@@ -90,10 +91,13 @@ namespace HaCreator.MapEditor.Instance {
 				var xBase = (int) X + xShift;
 				var yBase = (int) Y + yShift;
 				var oi = (ObjectInfo) baseInfo;
-				if (oi.RopeOffsets != null)
+				if (oi.RopeOffsets != null) {
 					DrawOffsetMap(sprite, oi.RopeOffsets, xBase, yBase);
-				if (oi.LadderOffsets != null)
+				}
+
+				if (oi.LadderOffsets != null) {
 					DrawOffsetMap(sprite, oi.LadderOffsets, xBase, yBase);
+				}
 			}
 
 			base.Draw(sprite, color, xShift, yShift);
@@ -108,35 +112,46 @@ namespace HaCreator.MapEditor.Instance {
 		public override System.Drawing.Point Origin => baseInfo.Origin;
 
 		public void DoSnap() {
-			if (!baseInfo.Connect)
+			if (!baseInfo.Connect) {
 				return;
+			}
+
 			XNA.Point? closestDestPoint = null;
 			var closestDistance = double.MaxValue;
 			foreach (var li in Board.BoardItems.TileObjs) {
 				// Trying to snap to other selected items can mess up some of the mouse bindings
-				if (!(li is ObjectInstance) || li.Selected || li.Equals(this))
+				if (!(li is ObjectInstance) || li.Selected || li.Equals(this)) {
 					continue;
+				}
+
 				var objInst = (ObjectInstance) li;
 				var objInfo = (ObjectInfo) objInst.BaseInfo;
-				if (!objInfo.Connect)
+				if (!objInfo.Connect) {
 					continue;
+				}
+
 				var snapPoint = new XNA.Point(objInst.X,
 					objInst.Y - objInst.Origin.Y + objInst.Height + Origin.Y);
 				double dx = snapPoint.X - X;
 				double dy = snapPoint.Y - Y;
-				if (dx > UserSettings.SnapDistance || dy > UserSettings.SnapDistance)
+				if (dx > UserSettings.SnapDistance || dy > UserSettings.SnapDistance) {
 					continue;
+				}
+
 				var distance = InputHandler.Distance(dx, dy);
-				if (distance > UserSettings.SnapDistance)
+				if (distance > UserSettings.SnapDistance) {
 					continue;
+				}
+
 				if (closestDistance > distance) {
 					closestDistance = distance;
 					closestDestPoint = snapPoint;
 				}
 			}
 
-			if (closestDestPoint.HasValue)
+			if (closestDestPoint.HasValue) {
 				SnapMoveAllMouseBoundItems(new XNA.Point(closestDestPoint.Value.X, closestDestPoint.Value.Y));
+			}
 		}
 
 		public string Name {
@@ -245,8 +260,9 @@ namespace HaCreator.MapEditor.Instance {
 			_cx = json.cx;
 			_cy = json.cy;
 			tags = json.tags;
-			if (json.quest != null)
+			if (json.quest != null) {
 				questInfo = json.quest.ToList();
+			}
 		}
 	}
 }

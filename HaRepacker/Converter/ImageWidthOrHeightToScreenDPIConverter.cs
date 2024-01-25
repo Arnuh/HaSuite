@@ -6,13 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-using HaRepacker.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
+using HaRepacker.Utils;
 
 namespace HaRepacker.Converter {
 	/// <summary>

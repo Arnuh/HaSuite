@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using HaSharedLibrary.Wz;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 
 namespace HaCreator.CustomControls {
 	public partial class MapBrowser : UserControl {
@@ -58,12 +58,15 @@ namespace HaCreator.CustomControls {
 				var uiWzFiles = Program.WzManager.GetWzDirectoriesFromBase("ui");
 				foreach (var uiWzFile in uiWzFiles) {
 					mapLogin = uiWzFile?[imageName];
-					if (mapLogin != null)
+					if (mapLogin != null) {
 						break;
+					}
 				}
 
-				if (mapLogin == null)
+				if (mapLogin == null) {
 					break;
+				}
+
 				mapLogins.Add(imageName);
 			}
 
@@ -96,15 +99,17 @@ namespace HaCreator.CustomControls {
 			var searchBox = (TextBox) sender;
 			var tosearch = searchBox.Text.ToLower();
 
-			if (_previousSeachText == tosearch)
+			if (_previousSeachText == tosearch) {
 				return;
+			}
 
 			_previousSeachText = tosearch; // set
 
 
 			// Cancel existing task if any
-			if (_existingSearchTaskToken != null && !_existingSearchTaskToken.IsCancellationRequested)
+			if (_existingSearchTaskToken != null && !_existingSearchTaskToken.IsCancellationRequested) {
 				_existingSearchTaskToken.Cancel();
+			}
 
 			// Clear 
 			mapNamesBox.Items.Clear();
@@ -115,18 +120,20 @@ namespace HaCreator.CustomControls {
 				mapNamesBox_SelectedIndexChanged(null, null);
 			} else {
 				var currentDispatcher = Dispatcher.CurrentDispatcher;
-				
+
 				_existingSearchTaskToken = new CancellationTokenSource();
 				var cancellationToken = _existingSearchTaskToken.Token;
 
 				var t = Task.Run(() => {
 					var mapsFiltered = new List<string>();
 					foreach (var map in maps) {
-						if (_existingSearchTaskToken.IsCancellationRequested)
+						if (_existingSearchTaskToken.IsCancellationRequested) {
 							return;
+						}
 
-						if (map.ToLower().Contains(tosearch))
+						if (map.ToLower().Contains(tosearch)) {
 							mapsFiltered.Add(map);
+						}
 					}
 
 					currentDispatcher.BeginInvoke(new Action(() => {
@@ -135,8 +142,9 @@ namespace HaCreator.CustomControls {
 						}
 
 						mapNamesBox.Items.AddRange(mapsFiltered.ToArray<object>());
-						if (mapNamesBox.Items.Count > 0)
+						if (mapNamesBox.Items.Count > 0) {
 							mapNamesBox.SelectedIndex = 0; // set default selection to reduce clicks
+						}
 					}));
 				}, cancellationToken);
 			}
@@ -188,10 +196,11 @@ namespace HaCreator.CustomControls {
 
 							loadMapAvailable = true;
 							var minimap = (WzCanvasProperty) mapImage.GetFromPath("miniMap/canvas");
-							if (minimap != null)
+							if (minimap != null) {
 								minimapBox.Image = minimap.GetLinkedWzCanvasBitmap();
-							else
+							} else {
 								minimapBox.Image = new Bitmap(1, 1);
+							}
 
 							loadMapAvailable = true;
 						}

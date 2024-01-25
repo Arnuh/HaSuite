@@ -4,15 +4,12 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using HaCreator.GUI;
+using System.Drawing;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
-using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
-using MapleLib.WzLib.WzStructure;
-using System.Drawing;
-using HaCreator.MapEditor.Info.Default;
 
 namespace HaCreator.MapEditor.Info {
 	public class MobInfo : MapleExtractableInfo {
@@ -48,9 +45,11 @@ namespace HaCreator.MapEditor.Info {
 
 		public override void ParseImage() {
 			if (LinkedWzImage != null) // load from here too
+			{
 				ExtractPNGFromImage(_LinkedWzImage);
-			else
+			} else {
 				ExtractPNGFromImage((WzImage) ParentObject);
+			}
 		}
 
 		/// <summary>
@@ -62,8 +61,9 @@ namespace HaCreator.MapEditor.Info {
 			var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
 
 			var mobImage = (WzImage) Program.WzManager.FindWzImageByName("mob", imgName);
-			if (mobImage == null)
+			if (mobImage == null) {
 				return null;
+			}
 
 			if (!mobImage.Parsed) mobImage.ParseImage();
 
@@ -81,8 +81,9 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
-			if (Image == null)
+			if (Image == null) {
 				ParseImage();
+			}
 
 			return new MobInstance(this, board, x, y, UserSettings.Mobrx0Offset, UserSettings.Mobrx1Offset, 20, Defaults.Life.LimitedName,
 				UserSettings.defaultMobTime, flip, Defaults.Life.Hide, Defaults.Life.Info, Defaults.Life.Team);
@@ -90,8 +91,9 @@ namespace HaCreator.MapEditor.Info {
 
 		public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift,
 			string limitedname, int mobTime, bool flip, bool hide, int info, int team) {
-			if (Image == null)
+			if (Image == null) {
 				ParseImage();
+			}
 
 			return new MobInstance(this, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide,
 				info, team);
