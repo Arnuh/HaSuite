@@ -17,7 +17,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using HaRepacker.Comparer;
 using HaRepacker.GUI.Input;
@@ -34,6 +36,9 @@ using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using static MapleLib.Configuration.UserSettings;
 using Application = System.Windows.Forms.Application;
+using DataFormats = System.Windows.Forms.DataFormats;
+using DragDropEffects = System.Windows.Forms.DragDropEffects;
+using DragEventArgs = System.Windows.Forms.DragEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Size = System.Drawing.Size;
 
@@ -123,7 +128,6 @@ namespace HaRepacker.GUI {
 			// flag. loaded
 			mainFormLoaded = true;
 		}
-
 
 		#region Load, unload WZ files + Panels & TreeView management
 
@@ -666,9 +670,8 @@ namespace HaRepacker.GUI {
 			tabPage.Controls.Add(elemHost);
 
 
-			string tabName = null;
 			if (defaultName == null) {
-				if (!NameInputBox.Show(Resources.MainAddTabTitle, 25, out tabName)) return;
+				if (!NameInputBox.Show(Resources.MainAddTabTitle, 25, out var tabName)) return;
 
 				defaultName = tabName;
 			} else {

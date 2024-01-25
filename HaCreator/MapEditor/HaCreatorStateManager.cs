@@ -931,11 +931,11 @@ namespace HaCreator.MapEditor {
 				sb.Append(firstLineSpacer).Append(((BackgroundInfo) item.BaseInfo).bS).Append(@"\")
 					.Append(((BackgroundInfo) item.BaseInfo).Type.ToString()).Append(@"\")
 					.Append(((BackgroundInfo) item.BaseInfo).no);
-			} else if (item is PortalInstance) {
+			} else if (item is PortalInstance instance) {
 				sb.Append("[Portal]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("Name: ").Append(((PortalInstance) item).pn)
+				sb.Append(firstLineSpacer).Append("Name: ").Append(instance.pn)
 					.Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("Type: ").Append(Tables.PortalTypeNames[((PortalInstance) item).pt]);
+				sb.Append(firstLineSpacer).Append("Type: ").Append(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[instance.pt]]);
 			} else if (item is MobInstance) {
 				sb.Append("[Mob]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Name: ").Append(((MobInfo) item.BaseInfo).Name)

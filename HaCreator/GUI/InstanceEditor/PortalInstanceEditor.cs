@@ -57,7 +57,7 @@ namespace HaCreator.GUI.InstanceEditor {
 
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
-			ptComboBox.SelectedIndex = Program.InfoManager.PortalIdByType[item.pt];
+			ptComboBox.SelectedIndex = item.pt;
 			pnBox.Text = item.pn;
 			if (item.tm == item.Board.MapInfo.id) {
 				thisMap.Checked = true;
@@ -94,7 +94,7 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
 				}
 
-				item.pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
+				item.pt = ptComboBox.SelectedIndex;
 
 				item.hRange = Defaults.Portal.HRange;
 				item.vRange = Defaults.Portal.VRange;
@@ -230,7 +230,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void ptComboBox_SelectedIndexChanged(object sender, EventArgs e) {
 			btnBrowseTn.Enabled = thisMap.Checked;
 			var script = false;
-			switch (Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]) {
+			switch (ptComboBox.SelectedIndex) {
 				case PortalType.StartPoint:
 					rowMan.SetInvisible("pn");
 					rowMan.SetInvisible("tm");
@@ -360,20 +360,21 @@ namespace HaCreator.GUI.InstanceEditor {
 				rowMan.SetInvisible("script");
 			}
 
-			var pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
+			var pt = ptComboBox.SelectedIndex;
+			var ptName = Program.InfoManager.PortalTypeById[pt];
 			leftBlankLabel.Visible = pt == PortalType.CollisionVerticalJump;
 			if (pt == PortalType.CollisionVerticalJump) {
 				btnBrowseTn.Enabled = true;
 			}
 
-			if (!Program.InfoManager.GamePortals.ContainsKey(pt)) {
+			if (!Program.InfoManager.GamePortals.ContainsKey(ptName)) {
 				rowMan.SetInvisible("image");
 			} else {
 				portalImageList.Items.Clear();
 				portalImageList.Items.Add("default");
 				portalImageBox.Image = null;
 				rowMan.SetVisible("image");
-				foreach (DictionaryEntry image in Program.InfoManager.GamePortals[pt])
+				foreach (DictionaryEntry image in Program.InfoManager.GamePortals[ptName])
 					portalImageList.Items.Add(image.Key);
 				portalImageList.SelectedIndex = 0;
 			}

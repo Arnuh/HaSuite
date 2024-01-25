@@ -718,9 +718,13 @@ namespace HaCreator.GUI {
 
 			var portalParent = (WzSubProperty) mapImg["portal"];
 			var editorParent = (WzSubProperty) portalParent["editor"];
-			for (var i = 0; i < editorParent.WzProperties.Count; i++) {
-				var portal = (WzCanvasProperty) editorParent.WzProperties[i];
-				Program.InfoManager.PortalTypeById.Add(portal.Name);
+			foreach (var key in Program.InfoManager.PortalIdByType.Keys) {
+				if (editorParent[key] == null) continue;
+				Program.InfoManager.PortalTypeById.Add(key);
+			}
+
+			foreach (var key in editorParent.WzProperties) {
+				var portal = (WzCanvasProperty) key;
 				PortalInfo.Load(portal);
 			}
 
@@ -759,9 +763,6 @@ namespace HaCreator.GUI {
 					} //nexon likes to toss ints in here zType etc
 				}
 			}
-
-			for (var i = 0; i < Program.InfoManager.PortalTypeById.Count; i++)
-				Program.InfoManager.PortalIdByType[Program.InfoManager.PortalTypeById[i]] = i;
 		}
 
 		#endregion

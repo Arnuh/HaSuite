@@ -381,7 +381,7 @@ namespace HaCreator.MapSimulator {
 			//string portalType = portalInstance.pt;
 			//int portalId = Program.InfoManager.PortalIdByType[portalInstance.pt];
 
-			var portalTypeProperty = (WzSubProperty) gameParent[portalInstance.pt];
+			var portalTypeProperty = (WzSubProperty) gameParent[Program.InfoManager.PortalTypeById[portalInstance.pt]];
 			if (portalTypeProperty == null) {
 				portalTypeProperty = (WzSubProperty) gameParent["pv"];
 			} else {

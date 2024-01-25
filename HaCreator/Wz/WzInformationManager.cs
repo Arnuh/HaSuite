@@ -10,6 +10,7 @@ using System.Drawing;
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.Wz {
 	public class WzInformationManager {
@@ -25,9 +26,28 @@ namespace HaCreator.Wz {
 		public Dictionary<string, Bitmap> MapMarks = new Dictionary<string, Bitmap>();
 		public Dictionary<string, Tuple<string, string>> Maps = new Dictionary<string, Tuple<string, string>>();
 
-		public Dictionary<string, PortalInfo> Portals = new Dictionary<string, PortalInfo>();
+		public Dictionary<int, PortalInfo> Portals = new Dictionary<int, PortalInfo>();
+
 		public List<string> PortalTypeById = new List<string>();
-		public Dictionary<string, int> PortalIdByType = new Dictionary<string, int>();
+
+		public Dictionary<string, int> PortalIdByType = new Dictionary<string, int> {
+			{PortalType.Names.StartPoint, PortalType.StartPoint},
+			{PortalType.Names.Invisible, PortalType.Invisible},
+			{PortalType.Names.Visible, PortalType.Visible},
+			{PortalType.Names.Collision, PortalType.Collision},
+			{PortalType.Names.Changeable, PortalType.Changeable},
+			{PortalType.Names.ChangeableInvisible, PortalType.ChangeableInvisible},
+			{PortalType.Names.TownPortalPoint, PortalType.TownPortalPoint},
+			{PortalType.Names.Script, PortalType.Script},
+			{PortalType.Names.ScriptInvisible, PortalType.ScriptInvisible},
+			{PortalType.Names.CollisionScript, PortalType.CollisionScript},
+			{PortalType.Names.Hidden, PortalType.Hidden},
+			{PortalType.Names.ScriptHidden, PortalType.ScriptHidden},
+			{PortalType.Names.CollisionVerticalJump, PortalType.CollisionVerticalJump},
+			{PortalType.Names.CollisionCustomImpact, PortalType.CollisionCustomImpact},
+			{PortalType.Names.CollisionUnknownPcig, PortalType.CollisionUnknownPcig},
+			{PortalType.Names.ScriptHiddenUng, PortalType.ScriptHiddenUng}
+		};
 		public Dictionary<string, PortalGameImageInfo> GamePortals = new Dictionary<string, PortalGameImageInfo>();
 
 		/// <summary>
@@ -45,7 +65,7 @@ namespace HaCreator.Wz {
 			Maps.Clear();
 			Portals.Clear();
 			PortalTypeById.Clear();
-			PortalIdByType.Clear();
+			//PortalIdByType.Clear();
 			GamePortals.Clear();
 		}
 	}

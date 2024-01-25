@@ -18,25 +18,26 @@ using System.Collections.Generic;
 
 namespace MapleLib.WzLib.WzStructure.Data {
 	public static class Tables {
-		public static Dictionary<string, string> PortalTypeNames = new Dictionary<string, string>() {
-			{"sp", "Start Point"},
-			{"pi", "Invisible"},
-			{"pv", "Visible"},
-			{"pc", "Collision"},
-			{"pg", "Changable"},
-			{"pgi", "Changable Invisible"},
-			{"tp", "Town Portal"},
-			{"ps", "Script"},
-			{"psi", "Script Invisible"},
-			{"pcs", "Script Collision"},
-			{"ph", "Hidden"},
-			{"psh", "Script Hidden"},
-			{"pcj", "Vertical Spring"},
-			{"pci", "Custom Impact Spring"},
-			{"pcig", "Unknown (PCIG)"}
+		public static Dictionary<string, string> PortalTypeNames = new Dictionary<string, string> {
+			{PortalType.Names.StartPoint, "Start Point"},
+			{PortalType.Names.Invisible, "Invisible"},
+			{PortalType.Names.Visible, "Visible"},
+			{PortalType.Names.Collision, "Collision"},
+			{PortalType.Names.Changeable, "Changeable"},
+			{PortalType.Names.ChangeableInvisible, "Changeable Invisible"},
+			{PortalType.Names.TownPortalPoint, "Town Portal"},
+			{PortalType.Names.Script, "Script"},
+			{PortalType.Names.ScriptInvisible, "Script Invisible"},
+			{PortalType.Names.CollisionScript, "Script Collision"},
+			{PortalType.Names.Hidden, "Hidden"},
+			{PortalType.Names.ScriptHidden, "Script Hidden"},
+			{PortalType.Names.CollisionVerticalJump, "Vertical Spring"},
+			{PortalType.Names.CollisionCustomImpact, "Custom Impact Spring"},
+			{PortalType.Names.CollisionUnknownPcig, "Unknown (PCIG)"},
+			{PortalType.Names.ScriptHiddenUng, "Unknown Script Hidden"}
 		};
 
-		public static string[] BackgroundTypeNames = new string[] {
+		public static string[] BackgroundTypeNames = {
 			"Regular",
 			"Horizontal Copies",
 			"Vertical Copies",

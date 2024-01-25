@@ -271,7 +271,7 @@ namespace HaCreator.Wz {
 
 				portal["x"] = InfoTool.SetInt(portalInst.X);
 				portal["y"] = InfoTool.SetInt(portalInst.Y);
-				portal["pt"] = InfoTool.SetInt(Program.InfoManager.PortalIdByType[portalInst.pt]);
+				portal["pt"] = InfoTool.SetInt(portalInst.pt);
 				portal["tm"] = InfoTool.SetInt(portalInst.tm);
 				portal["tn"] = InfoTool.SetString(portalInst.tn);
 				portal["pn"] = InfoTool.SetString(portalInst.pn);

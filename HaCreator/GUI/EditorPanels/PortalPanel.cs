@@ -23,12 +23,13 @@ namespace HaCreator.GUI.EditorPanels {
 			this.hcsm = hcsm;
 
 			foreach (var pt in Program.InfoManager.PortalTypeById) {
-				var pInfo = PortalInfo.GetPortalInfoByType(pt);
+				var pInfo = PortalInfo.GetPortalInfoByType(Program.InfoManager.PortalIdByType[pt]);
+				if (pInfo == null) continue;
 				try {
 					var item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[pt], true);
 					item.Tag = pInfo;
-					item.MouseDown += new MouseEventHandler(portal_MouseDown);
-					item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+					item.MouseDown += portal_MouseDown;
+					item.MouseUp += ImageViewer.item_MouseUp;
 				} catch (KeyNotFoundException) {
 				}
 			}

@@ -15,16 +15,16 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor.Info {
 	public class PortalInfo : MapleDrawableInfo {
-		private string type;
+		private int type;
 
-		public PortalInfo(string type, Bitmap image, Point origin, WzObject parentObject)
+		public PortalInfo(int type, Bitmap image, Point origin, WzObject parentObject)
 			: base(image, origin, parentObject) {
 			this.type = type;
 		}
 
 		public static PortalInfo Load(WzCanvasProperty parentObject) {
 			var portal = new PortalInfo(
-				parentObject.Name,
+				Program.InfoManager.PortalIdByType[parentObject.Name],
 				parentObject.GetLinkedWzCanvasBitmap(),
 				WzInfoTools.PointFToSystemPoint(parentObject.GetCanvasOriginPosition()), parentObject);
 			Program.InfoManager.Portals.Add(portal.type, portal);
@@ -85,9 +85,9 @@ namespace HaCreator.MapEditor.Info {
 				horizontalImpact, verticalImpact, image, hRange, vRange);
 		}
 
-		public string Type => type;
+		public int Type => type;
 
-		public static PortalInfo GetPortalInfoByType(string type) {
+		public static PortalInfo GetPortalInfoByType(int type) {
 			return Program.InfoManager.Portals[type];
 		}
 	}

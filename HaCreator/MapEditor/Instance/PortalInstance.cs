@@ -13,7 +13,7 @@ namespace HaCreator.MapEditor.Instance {
 	public class PortalInstance : BoardItem, ISerializable {
 		private PortalInfo baseInfo;
 		private string _pn;
-		private string _pt;
+		private int _pt;
 		private string _tn;
 		private int _tm;
 		private string _script;
@@ -26,7 +26,7 @@ namespace HaCreator.MapEditor.Instance {
 		private int _hRange;
 		private int _vRange;
 
-		public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, string pt, string tn, int tm,
+		public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, int pt, string tn, int tm,
 			string script, int delay, bool hideTooltip, bool onlyOnce, int horizontalImpact,
 			int verticalImpact, string image, int hRange, int vRange)
 			: base(board, x, y, -1) {
@@ -79,7 +79,7 @@ namespace HaCreator.MapEditor.Instance {
 			set => _pn = value;
 		}
 
-		public string pt {
+		public int pt {
 			get => _pt;
 			set {
 				_pt = value;
@@ -138,7 +138,8 @@ namespace HaCreator.MapEditor.Instance {
 		}
 
 		public new class SerializationForm : BoardItem.SerializationForm {
-			public string pn, pt, tn;
+			public string pn, tn;
+			public int pt;
 			public int tm;
 			public string script;
 			public int delay;

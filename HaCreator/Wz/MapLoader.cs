@@ -495,7 +495,7 @@ namespace HaCreator.Wz {
 			foreach (WzSubProperty portal in portalParent.WzProperties) {
 				var x = InfoTool.GetInt(portal["x"]);
 				var y = InfoTool.GetInt(portal["y"]);
-				var pt = Program.InfoManager.PortalTypeById[InfoTool.GetInt(portal["pt"])];
+				var pt = InfoTool.GetInt(portal["pt"]);
 				var tm = InfoTool.GetInt(portal["tm"]);
 				var tn = InfoTool.GetString(portal["tn"]);
 				var pn = InfoTool.GetString(portal["pn"]);
