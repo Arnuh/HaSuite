@@ -62,9 +62,12 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public override WzImageProperty DeepClone() {
 			var clone = new WzPngProperty();
+			clone.width = width;
+			clone.height = height;
 			clone.pixFormat = pixFormat;
 			clone.magLevel = magLevel;
-			clone.SetImage(GetImage(false));
+			clone.listWzUsed = listWzUsed;
+			clone.SetValue(GetCompressedBytes(false));
 			return clone;
 		}
 
