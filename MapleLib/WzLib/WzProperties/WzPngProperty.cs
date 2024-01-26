@@ -304,6 +304,8 @@ namespace MapleLib.WzLib.WzProperties {
 					// Read image into zlib
 					while (reader.BaseStream.Position < endOfPng) {
 						var blockSize = reader.ReadInt32();
+						// Old MapleLib versions will incorrectly write extra bytes, just ignore them
+						if (blockSize == 0) break;
 						for (var i = 0; i < blockSize; i++) {
 							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
 						}
@@ -328,7 +330,7 @@ namespace MapleLib.WzLib.WzProperties {
 
 		internal byte[] Compress(byte[] decompressedBuffer, WzMutableKey WzKey) {
 			using (var zlibStream = new MemoryStream()) {
-				byte[] header = {0x78, 0x9C};
+				byte[] header = {0x78, 0x9C}; // Should we save the original header?
 				using (var zip = new DeflateStream(zlibStream, CompressionMode.Compress, true)) {
 					zip.Write(decompressedBuffer, 0, decompressedBuffer.Length);
 				}
@@ -347,7 +349,9 @@ namespace MapleLib.WzLib.WzProperties {
 							stream.WriteByte((byte) (buffer[i] ^ WzKey[i]));
 						return stream.ToArray();
 					}
-				} else {
+				}
+
+				{
 					zlibStream.Position = 0;
 					var buffer = new byte[zlibStream.Length + 2];
 					zlibStream.Read(buffer, 2, buffer.Length - 2);
@@ -428,6 +432,7 @@ namespace MapleLib.WzLib.WzProperties {
 
 				while (reader.BaseStream.Position < endOfPng) {
 					var blockSize = reader.ReadInt32();
+					if (blockSize == 0) break;
 					dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
 					for (var i = 0; i < blockSize; i++) {
 						dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i] ^ WzKey[i]));
