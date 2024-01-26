@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.Properties;
 using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.EditorPanels {
@@ -80,7 +81,7 @@ namespace HaCreator.GUI.EditorPanels {
 						return;
 					}
 
-					if (info.Height == 1 && info.Width == 1) info.Image = Properties.Resources.placeholder;
+					if (info.Height == 1 && info.Width == 1) info.Image = Resources.placeholder;
 
 					lifePictureBox.Image = new Bitmap(info.Image);
 					hcsm.EnterEditMode(ItemTypes.NPCs);

@@ -7,6 +7,7 @@
 
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
@@ -18,14 +19,14 @@ namespace HaRepacker.Converter {
 	/// </summary>
 	public class PointFToVisibilityConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var point = (PointF?) value;
 
 			return point == null ? Visibility.Collapsed : Visibility.Visible;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			return new PointF(0, 0); // anyway wtf
 		}
 	}

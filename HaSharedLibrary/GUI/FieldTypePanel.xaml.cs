@@ -11,10 +11,10 @@ namespace HaSharedLibrary.GUI {
 	public partial class FieldTypePanel : UserControl {
 		private readonly List<string> fieldTypes = new List<string>();
 
-		private bool bIsLoading = false;
+		private bool bIsLoading;
 
 		// UI
-		private ChangeableTextBox setTextboxOnFieldTypeChange = null;
+		private ChangeableTextBox setTextboxOnFieldTypeChange;
 
 		public FieldTypePanel() {
 			InitializeComponent();

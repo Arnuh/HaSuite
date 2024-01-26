@@ -6,6 +6,7 @@
 
 using System;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 using MapleLib.WzLib;
 
 namespace HaRepacker.GUI.Interaction {
@@ -33,7 +34,7 @@ namespace HaRepacker.GUI.Interaction {
 				(int) Program.ConfigurationManager.ApplicationSettings.MapleVersion;
 
 			// Localization
-			label_wzEncrytionType.Text = Properties.Resources.InteractionWzMapleVersionInfo;
+			label_wzEncrytionType.Text = Resources.InteractionWzMapleVersionInfo;
 		}
 
 		private void keyPress(object sender, KeyPressEventArgs e) {
@@ -44,8 +45,8 @@ namespace HaRepacker.GUI.Interaction {
 
 		private void okButton_Click(object sender, EventArgs e) {
 			if (comboBox_wzEncryptionType.SelectedIndex == -1) {
-				MessageBox.Show(Properties.Resources.EnterValidInput,
-					Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(Resources.EnterValidInput,
+					Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			} else {
 				DialogResult = DialogResult.OK;
 			}

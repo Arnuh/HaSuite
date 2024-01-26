@@ -159,13 +159,13 @@ namespace Spine {
 					region.height = Math.Abs(height);
 
 					if (readTuple(reader, tuple) == 4) { // split is optional
-						region.splits = new int[] {
+						region.splits = new[] {
 							int.Parse(tuple[0]), int.Parse(tuple[1]),
 							int.Parse(tuple[2]), int.Parse(tuple[3])
 						};
 
 						if (readTuple(reader, tuple) == 4) { // pad is optional, but only present with splits
-							region.pads = new int[] {
+							region.pads = new[] {
 								int.Parse(tuple[0]), int.Parse(tuple[1]),
 								int.Parse(tuple[2]), int.Parse(tuple[3])
 							};

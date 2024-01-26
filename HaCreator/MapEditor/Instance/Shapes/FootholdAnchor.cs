@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using XNA = Microsoft.Xna.Framework;
 
@@ -40,37 +41,47 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public static int FHAnchorSorter(FootholdAnchor c, FootholdAnchor d) {
 			if (c.X > d.X) {
 				return 1;
-			} else if (c.X < d.X) {
-				return -1;
-			} else {
-				if (c.Y > d.Y) {
-					return 1;
-				} else if (c.Y < d.Y) {
-					return -1;
-				} else {
-					if (c.LayerNumber > d.LayerNumber) {
-						return 1;
-					} else if (c.LayerNumber < d.LayerNumber) {
-						return -1;
-					} else {
-						if (c.PlatformNumber > d.PlatformNumber) {
-							return 1;
-						} else if (c.PlatformNumber < d.PlatformNumber) {
-							return -1;
-						} else {
-							if (c.Parent != null && c.Parent is TileInstance &&
-							    ((TileInfo) c.Parent.BaseInfo).u == "edU") {
-								return -1;
-							} else if (d.Parent != null && d.Parent is TileInstance &&
-							           ((TileInfo) d.Parent.BaseInfo).u == "edU") {
-								return 1;
-							} else {
-								return 0;
-							}
-						}
-					}
-				}
 			}
+
+			if (c.X < d.X) {
+				return -1;
+			}
+
+			if (c.Y > d.Y) {
+				return 1;
+			}
+
+			if (c.Y < d.Y) {
+				return -1;
+			}
+
+			if (c.LayerNumber > d.LayerNumber) {
+				return 1;
+			}
+
+			if (c.LayerNumber < d.LayerNumber) {
+				return -1;
+			}
+
+			if (c.PlatformNumber > d.PlatformNumber) {
+				return 1;
+			}
+
+			if (c.PlatformNumber < d.PlatformNumber) {
+				return -1;
+			}
+
+			if (c.Parent != null && c.Parent is TileInstance &&
+			    ((TileInfo) c.Parent.BaseInfo).u == "edU") {
+				return -1;
+			}
+
+			if (d.Parent != null && d.Parent is TileInstance &&
+			    ((TileInfo) d.Parent.BaseInfo).u == "edU") {
+				return 1;
+			}
+
+			return 0;
 		}
 
 		public static void MergeAnchors(FootholdAnchor a, FootholdAnchor b) {
@@ -185,10 +196,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override void DeserializeBindings(IDictionary<string, object> bindSer,
 			Dictionary<long, ISerializable> refDict) {
 			// No bindings
-			return;
 		}
 
-		public override void AddToBoard(List<UndoRedo.UndoRedoAction> undoPipe) {
+		public override void AddToBoard(List<UndoRedoAction> undoPipe) {
 			if (undoPipe != null) {
 				user = true;
 				layer = board.SelectedLayerIndex;

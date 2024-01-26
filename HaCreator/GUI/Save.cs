@@ -47,11 +47,13 @@ namespace HaCreator.GUI {
 		private MapType GetIdBoxMapType() {
 			if (idBox_mapId.Text.StartsWith("MapLogin")) {
 				return MapType.MapLogin;
-			} else if (idBox_mapId.Text == "CashShopPreview") {
-				return MapType.CashShopPreview;
-			} else {
-				return MapType.RegularMap;
 			}
+
+			if (idBox_mapId.Text == "CashShopPreview") {
+				return MapType.CashShopPreview;
+			}
+
+			return MapType.RegularMap;
 		}
 
 		/// <summary>
@@ -121,7 +123,7 @@ namespace HaCreator.GUI {
 				saver.SaveMapImage();
 				saver.UpdateMapLists();
 
-				MessageBox.Show("Saved map with ID: " + newId.ToString());
+				MessageBox.Show("Saved map with ID: " + newId);
 			} else {
 				board.MapInfo.strMapName = idBox_mapId.Text;
 				((TabItemContainer) board.TabPage.Tag).Text = board.MapInfo.strMapName;

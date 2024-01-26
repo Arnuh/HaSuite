@@ -5,7 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 namespace HaSharedLibrary.Render.DX {
-	public enum RenderResolution : int {
+	public enum RenderResolution {
 		Res_All = 0,
 
 		Res_800x600 = 0x1, // 800x600 4:3

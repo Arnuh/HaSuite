@@ -1,9 +1,10 @@
-﻿using HaCreator.MapEditor;
+﻿using System.Windows.Controls;
+using HaCreator.MapEditor;
 
 namespace HaCreator.GUI {
 	public class TabItemContainer {
 		public TabItemContainer(string text, MultiBoard multiBoard, string tooltip,
-			System.Windows.Controls.ContextMenu menu, Board board) {
+			ContextMenu menu, Board board) {
 			this.text = text;
 			this.multiBoard = multiBoard;
 			this.tooltip = tooltip;
@@ -32,9 +33,9 @@ namespace HaCreator.GUI {
 			private set { }
 		}
 
-		private System.Windows.Controls.ContextMenu menu;
+		private ContextMenu menu;
 
-		public System.Windows.Controls.ContextMenu Menu {
+		public ContextMenu Menu {
 			get => menu;
 			private set { }
 		}

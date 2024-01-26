@@ -47,7 +47,7 @@ namespace HaCreator.GUI.InstanceEditor {
 				pieceEnable.CheckState = CheckState.Indeterminate;
 			} else {
 				pieceEnable.Checked = force != 0;
-				if (pieceEnable.Checked) pieceInt.Value = (int) piece;
+				if (pieceEnable.Checked) pieceInt.Value = piece;
 			}
 
 			indeterminate = false;

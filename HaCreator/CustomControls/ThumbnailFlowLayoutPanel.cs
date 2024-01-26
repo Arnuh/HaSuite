@@ -25,6 +25,7 @@
 
 using System.Drawing;
 using System.Windows.Forms;
+using HaCreator.Properties;
 
 namespace HaCreator.CustomControls {
 	public class ThumbnailFlowLayoutPanel : FlowLayoutPanel {
@@ -43,7 +44,7 @@ namespace HaCreator.CustomControls {
 			imageViewer.Dock = DockStyle.Left;
 
 			if (bitmap == null) {
-				var fallbackBmp = Properties.Resources.placeholder;
+				var fallbackBmp = Resources.placeholder;
 
 				imageViewer.Image = fallbackBmp; // fallback in case its null
 				imageViewer.Width = fallbackBmp.Width + 8;

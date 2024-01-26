@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 using MapleLib.WzLib.WzProperties;
 
 namespace Footholds {
@@ -57,8 +58,8 @@ namespace Footholds {
 					portal.Data["y"].ParentImage.Changed = true;
 				}
 			} catch (FormatException) {
-				MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput,
-					HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(Resources.FHMapperInvalidInput,
+					Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
 			Close();

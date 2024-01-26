@@ -414,7 +414,7 @@ namespace Spine {
 
 					foreach (var timelineEntry in timelineMap) {
 						var values = (List<object>) timelineEntry.Value;
-						var timelineName = (string) timelineEntry.Key;
+						var timelineName = timelineEntry.Key;
 						if (timelineName == "color") {
 							var timeline = new ColorTimeline(values.Count);
 							timeline.slotIndex = slotIndex;
@@ -462,7 +462,7 @@ namespace Spine {
 					var timelineMap = (Dictionary<string, object>) entry.Value;
 					foreach (var timelineEntry in timelineMap) {
 						var values = (List<object>) timelineEntry.Value;
-						var timelineName = (string) timelineEntry.Key;
+						var timelineName = timelineEntry.Key;
 						if (timelineName == "rotate") {
 							var timeline = new RotateTimeline(values.Count);
 							timeline.boneIndex = boneIndex;
@@ -494,8 +494,8 @@ namespace Spine {
 								var time = (float) valueMap["time"];
 								var x = valueMap.ContainsKey("x") ? (float) valueMap["x"] : 0;
 								var y = valueMap.ContainsKey("y") ? (float) valueMap["y"] : 0;
-								timeline.SetFrame(frameIndex, time, (float) x * timelineScale,
-									(float) y * timelineScale);
+								timeline.SetFrame(frameIndex, time, x * timelineScale,
+									y * timelineScale);
 								ReadCurve(timeline, frameIndex, valueMap);
 								frameIndex++;
 							}

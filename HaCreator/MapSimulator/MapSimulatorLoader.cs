@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
@@ -8,6 +9,7 @@ using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapSimulator.MapObjects.UIObject;
 using HaCreator.MapSimulator.Objects.FieldObject;
 using HaCreator.MapSimulator.Objects.UIObject;
+using HaCreator.Properties;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
 using HaSharedLibrary.Wz;
@@ -18,9 +20,10 @@ using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
+using Color = System.Drawing.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.MapSimulator {
 	public class MapSimulatorLoader {
@@ -104,7 +107,7 @@ namespace HaCreator.MapSimulator {
 					frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture));
 				} else // fallback
 				{
-					var texture = Properties.Resources.placeholder.ToTexture2D(device);
+					var texture = Resources.placeholder.ToTexture2D(device);
 					var origin = property.GetCanvasOriginPosition();
 
 					frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture));
@@ -117,7 +120,7 @@ namespace HaCreator.MapSimulator {
 				while ((_frameProp = WzInfoTools.GetRealProperty(source[(i++).ToString()])) != null) {
 					if (_frameProp is WzSubProperty) // issue with 867119250
 					{
-						frames.AddRange(LoadFrames(texturePool, _frameProp, x, y, device, ref usedProps, null));
+						frames.AddRange(LoadFrames(texturePool, _frameProp, x, y, device, ref usedProps));
 					} else {
 						WzCanvasProperty frameProp;
 
@@ -133,7 +136,7 @@ namespace HaCreator.MapSimulator {
 							frameProp = (WzCanvasProperty) _frameProp;
 						}
 
-						var delay = (int) InfoTool.GetOptionalInt(frameProp["delay"], 100);
+						var delay = frameProp["delay"].GetOptionalInt(100);
 
 						var bLoadedSpine = LoadSpineMapObjectItem((WzImageProperty) frameProp.Parent, frameProp,
 							device, spineAni);
@@ -165,7 +168,7 @@ namespace HaCreator.MapSimulator {
 
 							frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture, delay));
 						} else {
-							var texture = Properties.Resources.placeholder.ToTexture2D(device);
+							var texture = Resources.placeholder.ToTexture2D(device);
 							var origin = frameProp.GetCanvasOriginPosition();
 
 							frames.Add(new DXObject(x - (int) origin.X, y - (int) origin.Y, texture, delay));
@@ -327,7 +330,7 @@ namespace HaCreator.MapSimulator {
 
 			var linkedReactorImage = reactorInfo.LinkedWzImage;
 			if (linkedReactorImage != null) {
-				var framesImage = (WzImageProperty) linkedReactorImage?["0"]?["0"];
+				var framesImage = linkedReactorImage?["0"]?["0"];
 				if (framesImage != null) {
 					frames = LoadFrames(texturePool, framesImage, reactorInstance.X, reactorInstance.Y, device,
 						ref usedProps);
@@ -402,7 +405,7 @@ namespace HaCreator.MapSimulator {
 					if (portalImageProperty["portalContinue"] != null) {
 						framesPropertyParent = (WzSubProperty) portalImageProperty["portalContinue"];
 					} else {
-						framesPropertyParent = (WzSubProperty) portalImageProperty;
+						framesPropertyParent = portalImageProperty;
 					}
 
 					if (framesPropertyParent != null) {
@@ -554,8 +557,8 @@ namespace HaCreator.MapSimulator {
 			const float TOOLTIP_FONTSIZE = 10f;
 			const int MAPMARK_IMAGE_ALIGN_LEFT = 7; // the number of pixels from the left to draw the map mark image
 			const int MAP_IMAGE_PADDING = 2; // the number of pixels from the left to draw the minimap image
-			var color_bgFill = System.Drawing.Color.Transparent;
-			var color_foreGround = System.Drawing.Color.White;
+			var color_bgFill = Color.Transparent;
+			var color_foreGround = Color.White;
 
 			var renderText = string.Format("{0}{1}{2}", StreetName, Environment.NewLine, MapName);
 
@@ -567,10 +570,10 @@ namespace HaCreator.MapSimulator {
 			var effective_height = miniMapImage.Height + n.Height + s.Height;
 
 			using (var font =
-			       new System.Drawing.Font(GLOBAL_FONT, TOOLTIP_FONTSIZE / UserScreenScaleFactor)) {
+			       new Font(GLOBAL_FONT, TOOLTIP_FONTSIZE / UserScreenScaleFactor)) {
 				// Get the width of the 'streetName' or 'mapName'
 				var graphics_dummy =
-					System.Drawing.Graphics.FromImage(new System.Drawing.Bitmap(1,
+					Graphics.FromImage(new Bitmap(1,
 						1)); // dummy image just to get the Graphics object for measuring string
 				var tooltipSize = graphics_dummy.MeasureString(renderText, font);
 
@@ -584,8 +587,8 @@ namespace HaCreator.MapSimulator {
 					miniMapAlignXFromLeft = (effective_width - miniMapImage.Width) / 2 /* - miniMapAlignXFromLeft*/;
 				}
 
-				var miniMapUIImage = new System.Drawing.Bitmap(effective_width, effective_height);
-				using (var graphics = System.Drawing.Graphics.FromImage(miniMapUIImage)) {
+				var miniMapUIImage = new Bitmap(effective_width, effective_height);
+				using (var graphics = Graphics.FromImage(miniMapUIImage)) {
 					// Frames and background
 					UIFrameHelper.DrawUIFrame(graphics, color_bgFill, ne, nw, se, sw, e, w, n, s, null, effective_width,
 						effective_height);
@@ -593,7 +596,7 @@ namespace HaCreator.MapSimulator {
 					// Map name + street name
 					graphics.DrawString(
 						renderText,
-						font, new System.Drawing.SolidBrush(color_foreGround), 50, 20);
+						font, new SolidBrush(color_foreGround), 50, 20);
 
 					// Map mark
 					if (Program.InfoManager.MapMarks.ContainsKey(mapBoard.MapInfo.mapMark)) {
@@ -610,14 +613,14 @@ namespace HaCreator.MapSimulator {
 				}
 
 				// Dots pixel 
-				var bmp_DotPixel = new System.Drawing.Bitmap(2, 4);
-				using (var graphics = System.Drawing.Graphics.FromImage(bmp_DotPixel)) {
-					graphics.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.Yellow),
-						new System.Drawing.RectangleF(0, 0, bmp_DotPixel.Width, bmp_DotPixel.Height));
+				var bmp_DotPixel = new Bitmap(2, 4);
+				using (var graphics = Graphics.FromImage(bmp_DotPixel)) {
+					graphics.FillRectangle(new SolidBrush(Color.Yellow),
+						new RectangleF(0, 0, bmp_DotPixel.Width, bmp_DotPixel.Height));
 					graphics.Flush();
 				}
 
-				IDXObject dxObj_miniMapPixel = new DXObject(0, n.Height, bmp_DotPixel.ToTexture2D(device), 0);
+				IDXObject dxObj_miniMapPixel = new DXObject(0, n.Height, bmp_DotPixel.ToTexture2D(device));
 				var item_pixelDot = new BaseDXDrawableItem(dxObj_miniMapPixel, false) {
 					Position = new Point(
 						miniMapAlignXFromLeft, // map is on the center
@@ -627,7 +630,7 @@ namespace HaCreator.MapSimulator {
 				// Map
 				var texturer_miniMap = miniMapUIImage.ToTexture2D(device);
 
-				IDXObject dxObj = new DXObject(0, 0, texturer_miniMap, 0);
+				IDXObject dxObj = new DXObject(0, 0, texturer_miniMap);
 				var minimapItem = new MinimapItem(dxObj, item_pixelDot);
 
 				////////////// Minimap buttons////////////////////
@@ -747,36 +750,36 @@ namespace HaCreator.MapSimulator {
 			//System.Drawing.Color color_bgFill = System.Drawing.Color.FromArgb(230, 17, 54, 82); // pre V patch (dark blue theme used post-bb), leave this here in case someone needs it
 			var
 				color_bgFill =
-					System.Drawing.Color.FromArgb(255, 17, 17,
+					Color.FromArgb(255, 17, 17,
 						17); // post V patch (dark black theme used), use color picker on paint via image extracted from WZ if you need to get it
-			var color_foreGround = System.Drawing.Color.White;
+			var color_foreGround = Color.White;
 			const int WIDTH_PADDING = 10;
 			const int HEIGHT_PADDING = 6;
 
 			// Create
 			using (var font =
-			       new System.Drawing.Font(GLOBAL_FONT, TOOLTIP_FONTSIZE / UserScreenScaleFactor)) {
+			       new Font(GLOBAL_FONT, TOOLTIP_FONTSIZE / UserScreenScaleFactor)) {
 				var graphics_dummy =
-					System.Drawing.Graphics.FromImage(new System.Drawing.Bitmap(1,
+					Graphics.FromImage(new Bitmap(1,
 						1)); // dummy image just to get the Graphics object for measuring string
 				var tooltipSize = graphics_dummy.MeasureString(renderText, font);
 
 				var effective_width = (int) tooltipSize.Width + WIDTH_PADDING;
 				var effective_height = (int) tooltipSize.Height + HEIGHT_PADDING;
 
-				var bmp_tooltip = new System.Drawing.Bitmap(effective_width, effective_height);
-				using (var graphics = System.Drawing.Graphics.FromImage(bmp_tooltip)) {
+				var bmp_tooltip = new Bitmap(effective_width, effective_height);
+				using (var graphics = Graphics.FromImage(bmp_tooltip)) {
 					// Frames and background
 					UIFrameHelper.DrawUIFrame(graphics, color_bgFill, ne, nw, se, sw, e, w, n, s, c, effective_width,
 						effective_height);
 
 					// Text
-					graphics.DrawString(renderText, font, new System.Drawing.SolidBrush(color_foreGround),
+					graphics.DrawString(renderText, font, new SolidBrush(color_foreGround),
 						WIDTH_PADDING / 2, HEIGHT_PADDING / 2);
 					graphics.Flush();
 				}
 
-				IDXObject dxObj = new DXObject(tooltip.X, tooltip.Y, bmp_tooltip.ToTexture2D(device), 0);
+				IDXObject dxObj = new DXObject(tooltip.X, tooltip.Y, bmp_tooltip.ToTexture2D(device));
 				var item = new TooltipItem(tooltip, dxObj);
 
 				return item;

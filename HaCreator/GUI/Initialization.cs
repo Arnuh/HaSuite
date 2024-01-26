@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
+using HaCreator.Properties;
 using HaCreator.Wz;
 using HaRepacker;
 using HaSharedLibrary.Wz;
@@ -21,11 +22,13 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
+using MapleLib.WzLib.WzStructure.Data;
 using Path = System.IO.Path;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI {
 	public partial class Initialization : Form {
-		public HaEditor editor = null;
+		public HaEditor editor;
 
 
 		private static WzMapleVersion
@@ -109,7 +112,7 @@ namespace HaCreator.GUI {
 		private bool InitializeWzFiles(string wzPath, WzMapleVersion fileVersion) {
 			// Check if directory exist
 			if (!Directory.Exists(wzPath)) {
-				MessageBox.Show(string.Format(Properties.Resources.Initialization_Error_MSDirectoryNotExist, wzPath),
+				MessageBox.Show(string.Format(Resources.Initialization_Error_MSDirectoryNotExist, wzPath),
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
@@ -330,7 +333,7 @@ namespace HaCreator.GUI {
 		}
 
 		private void button2_Click(object sender, EventArgs e) {
-			using (var mapleSelect = new FolderBrowserDialog() {
+			using (var mapleSelect = new FolderBrowserDialog {
 				       ShowNewFolderButton = true,
 				       //   RootFolder = Environment.SpecialFolder.ProgramFilesX86,
 				       Description = "Select the MapleStory folder."
@@ -373,13 +376,13 @@ namespace HaCreator.GUI {
 
 			var mb = new MultiBoard();
 			var mapBoard = new Board(
-				new Microsoft.Xna.Framework.Point(),
-				new Microsoft.Xna.Framework.Point(),
+				new Point(),
+				new Point(),
 				mb,
 				false,
 				null,
-				MapleLib.WzLib.WzStructure.Data.ItemTypes.None,
-				MapleLib.WzLib.WzStructure.Data.ItemTypes.None);
+				ItemTypes.None,
+				ItemTypes.None);
 
 			foreach (var mapid in Program.InfoManager.Maps.Keys) {
 				var mapImage = WzInfoTools.FindMapImage(mapid, Program.WzManager);
@@ -418,12 +421,12 @@ namespace HaCreator.GUI {
 					allBackgrounds.AddRange(mapBoard.BoardItems.FrontBackgrounds);
 
 					foreach (var bg in allBackgrounds) {
-						if (bg.type != MapleLib.WzLib.WzStructure.Data.BackgroundType.Regular) {
+						if (bg.type != BackgroundType.Regular) {
 							if (bg.cx < 0 || bg.cy < 0) {
 								var error = string.Format(
 									"Negative CX/ CY moving background object. CX='{0}', CY={1}, Type={2}, {3}{4}",
 									bg.cx, bg.cy, bg.type.ToString(), Environment.NewLine,
-									mapImage.ToString() /*overrides, see WzImage.ToString*/);
+									mapImage /*overrides, see WzImage.ToString*/);
 								ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
 							}
 						}
@@ -432,7 +435,7 @@ namespace HaCreator.GUI {
 					allBackgrounds.Clear();
 				} catch (Exception exp) {
 					var error = string.Format("Exception occured loading {0}{1}{2}{3}", Environment.NewLine,
-						mapImage.ToString() /*overrides, see WzImage.ToString*/, Environment.NewLine, exp.ToString());
+						mapImage /*overrides, see WzImage.ToString*/, Environment.NewLine, exp);
 					ErrorLogger.Log(ErrorLevel.Crash, error);
 				} finally {
 					mapBoard.Dispose();
@@ -584,9 +587,8 @@ namespace HaCreator.GUI {
 						}
 					} catch (Exception e) {
 						var error = string.Format("[ExtractSoundFile] Error parsing {0}, {1} file.\r\nError: {2}",
-							soundWzDir.Name, soundImage.Name, e.ToString());
+							soundWzDir.Name, soundImage.Name, e);
 						ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
-						continue;
 					}
 				}
 			}
@@ -759,7 +761,6 @@ namespace HaCreator.GUI {
 
 						Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
 					} catch (InvalidCastException) {
-						continue;
 					} //nexon likes to toss ints in here zType etc
 				}
 			}

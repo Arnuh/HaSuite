@@ -60,7 +60,6 @@ namespace HaCreator.GUI {
 			mapPhysicsImage = (WzImage) Program.WzManager.FindWzImageByName(WZ_FILE_NAME, WZ_FILE_IMAGE);
 			if (!LoadWzValues()) {
 				Close();
-				return;
 			}
 		}
 
@@ -97,7 +96,7 @@ namespace HaCreator.GUI {
 					bLoadedSuccessfully = true;
 				}
 			} catch (Exception exp) {
-				MessageBox.Show("Map.wz is not loaded, or Map.wz/Physics.img do not exist.\r\n" + exp.ToString());
+				MessageBox.Show("Map.wz is not loaded, or Map.wz/Physics.img do not exist.\r\n" + exp);
 				return false;
 			}
 
@@ -153,9 +152,9 @@ namespace HaCreator.GUI {
 				MessageBox.Show("Updated. Please save the changes to .wz via File -> 'Repack WZ Files'.", "Success");
 				Close(); // close window directly
 				return true;
-			} else {
-				label_error.Text = errorMessage;
 			}
+
+			label_error.Text = errorMessage;
 
 			return false;
 		}

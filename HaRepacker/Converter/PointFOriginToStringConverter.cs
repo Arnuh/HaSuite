@@ -8,6 +8,7 @@
 
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace HaRepacker.Converter {
@@ -16,14 +17,14 @@ namespace HaRepacker.Converter {
 	/// </summary>
 	public class PointFOriginToStringConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var point = (PointF) value;
 
 			return string.Format("X {0}, Y {1}", point.X, point.Y);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			return new PointF(0, 0); // anyway wtf
 		}
 	}

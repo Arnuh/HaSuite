@@ -5,10 +5,13 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaSharedLibrary.Render.DX {
 	public class DXObject : IDXObject {
@@ -34,7 +37,7 @@ namespace HaSharedLibrary.Render.DX {
 			this.delay = delay;
 		}
 
-		public DXObject(System.Drawing.PointF point, Texture2D texture, int delay = 0) {
+		public DXObject(PointF point, Texture2D texture, int delay = 0) {
 			_x = (int) point.X;
 			_y = (int) point.Y;
 			this.texture = texture;

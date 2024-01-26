@@ -20,8 +20,8 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 		private readonly bool front;
 		private readonly int screenMode;
 
-		private double bgMoveShiftX = 0;
-		private double bgMoveShiftY = 0;
+		private double bgMoveShiftX;
+		private double bgMoveShiftY;
 
 		// Custom property
 		private readonly bool
@@ -179,8 +179,8 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 			frame.DrawBackground(sprite, skeletonRenderer, gameTime, x, y, Color, flip, null);
 		}
 
-		private int LastShiftIncreaseX = 0;
-		private int LastShiftIncreaseY = 0;
+		private int LastShiftIncreaseX;
+		private int LastShiftIncreaseY;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void IncreaseShiftX(int cx, int TickCount) {
@@ -246,8 +246,6 @@ namespace HaCreator.MapSimulator.Objects.FieldObject {
 					DrawHVCopies(sprite, skeletonMeshRenderer, gameTime, renderWidth, renderHeight, X,
 						Y + (int) bgMoveShiftY, _cx, _cy, drawFrame);
 					IncreaseShiftX(_cy, TickCount);
-					break;
-				default:
 					break;
 			}
 		}

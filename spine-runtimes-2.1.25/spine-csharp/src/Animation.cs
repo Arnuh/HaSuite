@@ -508,7 +508,9 @@ namespace Spine {
 			if (time < frames[0]) {
 				if (lastTime > time) Apply(skeleton, lastTime, int.MaxValue, null, 0);
 				return;
-			} else if (lastTime > time) //
+			}
+
+			if (lastTime > time) //
 			{
 				lastTime = -1;
 			}
@@ -822,7 +824,9 @@ namespace Spine {
 			if (time < frames[0]) {
 				if (lastTime > time) Apply(skeleton, lastTime, int.MaxValue, null, 0);
 				return;
-			} else if (lastTime > time) //
+			}
+
+			if (lastTime > time) //
 			{
 				lastTime = -1;
 			}

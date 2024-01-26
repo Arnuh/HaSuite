@@ -62,7 +62,7 @@ namespace HaRepacker.GUI {
 					} catch (Exception exp) {
 						MessageBox.Show(
 							"Invalid KeyGen position. This version of MapleStory may be unsupported.\r\n" +
-							exp.ToString(), "Error");
+							exp, "Error");
 					} finally {
 						kernel32.FreeLibrary(module);
 					}
@@ -109,9 +109,9 @@ namespace HaRepacker.GUI {
 			sb2 = sb2.Remove(sb2.Length - 2, 2);
 
 			textBox_aesOdin.Text = sb.ToString();
-			textBox_aesOthers.Text = sb2.ToString()
+			textBox_aesOthers.Text = sb2
 			                         + Environment.NewLine + Environment.NewLine
-			                         + sb_sharkCombined.ToString();
+			                         + sb_sharkCombined;
 			;
 		}
 	}

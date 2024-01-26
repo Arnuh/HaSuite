@@ -14,8 +14,8 @@ namespace HaSharedLibrary.GUI {
 
 		private readonly DispatcherTimer timer;
 
-		private bool isPlaying = false;
-		private bool isUpdatingTimeLabel = false;
+		private bool isPlaying;
+		private bool isUpdatingTimeLabel;
 
 		public SoundPlayer() {
 			InitializeComponent();

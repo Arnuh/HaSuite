@@ -13,9 +13,9 @@ namespace HaCreator.MapEditor {
 
 		public GraphicsDeviceService(GraphicsDevice device) {
 			this.device = device;
-			device.Disposing += new EventHandler<EventArgs>(device_Disposing);
-			device.DeviceResetting += new EventHandler<EventArgs>(device_DeviceResetting);
-			device.DeviceReset += new EventHandler<EventArgs>(device_DeviceReset);
+			device.Disposing += device_Disposing;
+			device.DeviceResetting += device_DeviceResetting;
+			device.DeviceReset += device_DeviceReset;
 			if (DeviceCreated != null) DeviceCreated.Invoke(device, new EventArgs());
 		}
 

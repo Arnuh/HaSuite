@@ -58,9 +58,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public virtual XNA.Color GetColorSide(SelectionInfo sel) {
 			if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel)) {
 				return Selected ? UserSettings.SelectedColor : UserSettings.FootholdSideColor;
-			} else {
-				return MultiBoard.FootholdSideInactiveColor;
 			}
+
+			return MultiBoard.FootholdSideInactiveColor;
 		}
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
@@ -187,11 +187,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public FootholdAnchor GetOtherAnchor(FootholdAnchor first) {
 			if (FirstDot == first) {
 				return (FootholdAnchor) SecondDot;
-			} else if (SecondDot == first) {
-				return (FootholdAnchor) FirstDot;
-			} else {
-				throw new Exception("GetOtherAnchor: line is not properly connected");
 			}
+
+			if (SecondDot == first) {
+				return (FootholdAnchor) FirstDot;
+			}
+
+			throw new Exception("GetOtherAnchor: line is not properly connected");
 		}
 
 		#region ISerializable Implementation

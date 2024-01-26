@@ -263,7 +263,7 @@ namespace Spine {
 				var entry = tracks[i];
 				if (entry == null) continue;
 				if (buffer.Length > 0) buffer.Append(", ");
-				buffer.Append(entry.ToString());
+				buffer.Append(entry);
 			}
 
 			if (buffer.Length == 0) return "<none>";

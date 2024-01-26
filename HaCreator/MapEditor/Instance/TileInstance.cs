@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.TilesDesign;
@@ -30,9 +31,9 @@ namespace HaCreator.MapEditor.Instance {
 					Board.BoardItems.TileObjs.Remove(this);
 					layer.Items.Remove(this);
 					throw new Exception("tile added to a layer with different tS");
-				} else {
-					layer.tS = baseInfo.tS;
 				}
+
+				layer.tS = baseInfo.tS;
 			}
 		}
 
@@ -40,7 +41,7 @@ namespace HaCreator.MapEditor.Instance {
 			Predicate<TileInstance> pred = null) {
 			var result =
 				new List<Tuple<double, TileInstance, MapTileDesignPotential>>();
-			var tilegroup = (MapTileDesign) TileSnap.tileCats[baseInfo.u];
+			var tilegroup = TileSnap.tileCats[baseInfo.u];
 			var mag = baseInfo.mag;
 			var first_threshold = MultiBoard.FirstSnapVerification * mag;
 			foreach (var item in Board.BoardItems.Items) {
@@ -122,7 +123,7 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
-				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f,
 				new XNA.Vector2(0f, 0f), /*Flip ? SpriteEffects.FlipHorizontally : */SpriteEffects.None,
 				0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
@@ -134,13 +135,13 @@ namespace HaCreator.MapEditor.Instance {
 			baseInfo = newInfo;
 		}
 
-		public override System.Drawing.Bitmap Image => baseInfo.Image;
+		public override Bitmap Image => baseInfo.Image;
 
 		public override int Width => baseInfo.Width;
 
 		public override int Height => baseInfo.Height;
 
-		public override System.Drawing.Point Origin => baseInfo.Origin;
+		public override Point Origin => baseInfo.Origin;
 
 		public new class SerializationForm : LayeredItem.SerializationForm {
 			public string ts, u, no;

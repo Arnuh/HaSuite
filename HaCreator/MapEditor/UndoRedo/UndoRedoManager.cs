@@ -26,7 +26,7 @@ namespace HaCreator.MapEditor.UndoRedo {
 				return;
 			}
 
-			var batch = new UndoRedoBatch() {Actions = actions};
+			var batch = new UndoRedoBatch {Actions = actions};
 			UndoList.Add(batch);
 			RedoList.Clear();
 			parentBoard.ParentControl.UndoListChanged();

@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 using MapleLib.WzLib.Serialization;
 
 namespace HaRepacker.GUI {
@@ -56,7 +57,7 @@ namespace HaRepacker.GUI {
 
 		private void okButton_Click(object sender, EventArgs e) {
 			if (indentBox.Value < 0) {
-				Warning.Error(Properties.Resources.OptionsIndentError);
+				Warning.Error(Resources.OptionsIndentError);
 				return;
 			}
 
@@ -82,7 +83,7 @@ namespace HaRepacker.GUI {
 		}
 
 		private void browse_Click(object sender, EventArgs e) {
-			defXmlFolderBox.Text = SavedFolderBrowser.Show(Properties.Resources.SelectDefaultXmlFolder);
+			defXmlFolderBox.Text = SavedFolderBrowser.Show(Resources.SelectDefaultXmlFolder);
 		}
 
 		private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e) {

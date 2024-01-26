@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class NewPlatform : Form {
-		public int result = 0;
+		public int result;
 		private SortedSet<int> zms;
 
 		public NewPlatform(SortedSet<int> zms) {

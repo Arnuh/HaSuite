@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Forms;
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
@@ -15,13 +16,15 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
+using Clipboard = System.Windows.Forms.Clipboard;
+using MessageBox = System.Windows.Forms.MessageBox;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Input {
 	public class InputHandler {
 		private MultiBoard parentBoard;
-		private int lastUserInteraction = 0;
-		private int lastBackup = 0;
+		private int lastUserInteraction;
+		private int lastBackup;
 
 		public void OnUserInteraction() {
 			lastUserInteraction = Environment.TickCount;
@@ -57,12 +60,12 @@ namespace HaCreator.MapEditor.Input {
 		public InputHandler(MultiBoard parentBoard) {
 			this.parentBoard = parentBoard;
 
-			parentBoard.LeftMouseDown += new MultiBoard.LeftMouseDownDelegate(parentBoard_LeftMouseDown);
-			parentBoard.LeftMouseUp += new MultiBoard.LeftMouseUpDelegate(parentBoard_LeftMouseUp);
-			parentBoard.RightMouseClick += new MultiBoard.RightMouseClickDelegate(parentBoard_RightMouseClick);
-			parentBoard.MouseDoubleClick += new MultiBoard.MouseDoubleClickDelegate(parentBoard_MouseDoubleClick);
-			parentBoard.ShortcutKeyPressed += new MultiBoard.ShortcutKeyPressedDelegate(ParentBoard_ShortcutKeyPressed);
-			parentBoard.MouseMoved += new MultiBoard.MouseMovedDelegate(parentBoard_MouseMoved);
+			parentBoard.LeftMouseDown += parentBoard_LeftMouseDown;
+			parentBoard.LeftMouseUp += parentBoard_LeftMouseUp;
+			parentBoard.RightMouseClick += parentBoard_RightMouseClick;
+			parentBoard.MouseDoubleClick += parentBoard_MouseDoubleClick;
+			parentBoard.ShortcutKeyPressed += ParentBoard_ShortcutKeyPressed;
+			parentBoard.MouseMoved += parentBoard_MouseMoved;
 		}
 
 		public static XNA.Rectangle CreateRectangle(XNA.Point a, XNA.Point b) {
@@ -202,10 +205,10 @@ namespace HaCreator.MapEditor.Input {
 					new XNA.Point(((BackgroundInstance) item).BaseX + posChange.X,
 						((BackgroundInstance) item).BaseY + posChange.Y),
 					new XNA.Point(((BackgroundInstance) item).BaseX, ((BackgroundInstance) item).BaseY));
-			} else {
-				return UndoRedoManager.ItemMoved(item, new XNA.Point(item.X + posChange.X, item.Y + posChange.Y),
-					new XNA.Point(item.X, item.Y));
 			}
+
+			return UndoRedoManager.ItemMoved(item, new XNA.Point(item.X + posChange.X, item.Y + posChange.Y),
+				new XNA.Point(item.X, item.Y));
 		}
 
 		/// <summary>
@@ -312,7 +315,9 @@ namespace HaCreator.MapEditor.Input {
 								foreach (var item in selectedItems) {
 									if (item is ToolTipDot || item is MiscDot) {
 										continue;
-									} else if (item is VRDot) {
+									}
+
+									if (item is VRDot) {
 										if (!askedVr) {
 											askedVr = true;
 											if (MessageBox.Show(
@@ -422,8 +427,7 @@ namespace HaCreator.MapEditor.Input {
 					case Keys.X: // Cut
 						if (ctrl && selectedBoard.Mouse.State == MouseState.Selection) {
 							Clipboard.SetData(SerializationManager.HaClipboardData,
-								selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems
-									.Cast<ISerializableSelector>()));
+								selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems));
 							var selectedItemIndex = 0;
 							while (selectedBoard.SelectedItems.Count > selectedItemIndex) {
 								var item = selectedBoard.SelectedItems[selectedItemIndex];
@@ -433,16 +437,13 @@ namespace HaCreator.MapEditor.Input {
 									item.RemoveItem(actions);
 								}
 							}
-
-							break;
 						}
 
 						break;
 					case Keys.C: // Copy
 						if (ctrl) {
 							Clipboard.SetData(SerializationManager.HaClipboardData,
-								selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems
-									.Cast<ISerializableSelector>()));
+								selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems));
 						}
 
 						break;
@@ -456,7 +457,7 @@ namespace HaCreator.MapEditor.Input {
 								MessageBox.Show(de.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 								return;
 							} catch (Exception e) {
-								MessageBox.Show(string.Format("An error occurred: {0}", e.ToString()), "Error",
+								MessageBox.Show(string.Format("An error occurred: {0}", e), "Error",
 									MessageBoxButtons.OK, MessageBoxIcon.Error);
 								return;
 							}
@@ -672,7 +673,7 @@ namespace HaCreator.MapEditor.Input {
 
 					// be warned when run under visual studio. it inherits VS's scaling and VS's window location
 					var point =
-						parentBoard.PointToScreen(new System.Windows.Point(realPosition.X, realPosition.Y));
+						parentBoard.PointToScreen(new Point(realPosition.X, realPosition.Y));
 
 					bicm.Menu.Show(new System.Drawing.Point((int) point.X, (int) point.Y));
 				} else {

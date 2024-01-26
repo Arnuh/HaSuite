@@ -5,7 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.IO;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public partial class SoundInputBox : Form {
@@ -17,8 +19,8 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string nameResult = null;
-		private string soundResult = null;
+		private string nameResult;
+		private string soundResult;
 
 		public SoundInputBox(string title) {
 			InitializeComponent();
@@ -34,13 +36,13 @@ namespace HaRepacker.GUI.Input {
 
 		private void okButton_Click(object sender, EventArgs e) {
 			if (pathBox.Text != "" && pathBox.Text != null && nameBox.Text != "" && nameBox.Text != null &&
-			    System.IO.File.Exists(pathBox.Text)) {
+			    File.Exists(pathBox.Text)) {
 				nameResult = nameBox.Text;
 				soundResult = pathBox.Text;
 				DialogResult = DialogResult.OK;
 				Close();
 			} else {
-				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
+				MessageBox.Show(Resources.EnterValidInput, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
@@ -52,8 +54,8 @@ namespace HaRepacker.GUI.Input {
 
 		private void browseButton_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog {
-				Title = Properties.Resources.SelectMp3,
-				Filter = string.Format("{0}|*.mp3", Properties.Resources.Mp3Filter)
+				Title = Resources.SelectMp3,
+				Filter = string.Format("{0}|*.mp3", Resources.Mp3Filter)
 			};
 			if (dialog.ShowDialog() == DialogResult.OK) pathBox.Text = dialog.FileName;
 		}

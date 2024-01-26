@@ -13,7 +13,7 @@ namespace HaCreator.Collections {
 	internal class SerializableEnumerator : IEnumerable<ISerializable>, IEnumerator<ISerializable> {
 		private HashSet<ISerializableSelector> visited;
 		private Queue<ISerializableSelector> queue;
-		private ISerializableSelector current = null;
+		private ISerializableSelector current;
 
 		public SerializableEnumerator(IEnumerable<ISerializableSelector> startList) {
 			visited = new HashSet<ISerializableSelector>(startList);

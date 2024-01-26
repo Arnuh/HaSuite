@@ -27,11 +27,11 @@ namespace MapleLib.WzLib.Util {
 		public static Hashtable StringCache = new Hashtable();
 
 		public static uint RotateLeft(uint x, byte n) {
-			return (uint) ((x << n) | (x >> (32 - n)));
+			return (x << n) | (x >> (32 - n));
 		}
 
 		public static uint RotateRight(uint x, byte n) {
-			return (uint) ((x >> n) | (x << (32 - n)));
+			return (x >> n) | (x << (32 - n));
 		}
 
 		public static int GetCompressedIntLength(int i) {
@@ -67,10 +67,10 @@ namespace MapleLib.WzLib.Util {
 			var storeName = type + "_" + s;
 			if (s.Length > 4 && StringCache.ContainsKey(storeName)) {
 				return 5;
-			} else {
-				StringCache[storeName] = 1;
-				return 1 + GetEncodedStringLength(s);
 			}
+
+			StringCache[storeName] = 1;
+			return 1 + GetEncodedStringLength(s);
 		}
 
 		public static T StringToEnum<T>(string name) {
@@ -163,7 +163,7 @@ namespace MapleLib.WzLib.Util {
 			}
 
 			wzf.Dispose();
-			return (double) recognizedChars / (double) totalChars;
+			return recognizedChars / (double) totalChars;
 		}
 
 		public static WzMapleVersion DetectMapleVersion(string wzFilePath, out short fileVersion) {
@@ -188,9 +188,9 @@ namespace MapleLib.WzLib.Util {
 
 			if (maxSuccessRate < 0.7 && File.Exists(Path.Combine(Path.GetDirectoryName(wzFilePath), "ZLZ.dll"))) {
 				return WzMapleVersion.GETFROMZLZ;
-			} else {
-				return mostSuitableVersion;
 			}
+
+			return mostSuitableVersion;
 		}
 
 		public const int WzHeader = 0x31474B50; //PKG1

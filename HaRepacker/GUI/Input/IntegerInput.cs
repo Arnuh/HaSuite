@@ -5,12 +5,13 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace HaRepacker.GUI.Input {
 	public class IntegerInput : TextBox {
 		public IntegerInput() {
-			KeyPress += new KeyPressEventHandler(HandleKeyPress);
+			KeyPress += HandleKeyPress;
 		}
 
 		private void HandleKeyPress(object sender, KeyPressEventArgs e) {
@@ -37,9 +38,9 @@ namespace HaRepacker.GUI.Input {
 				var result = 0;
 				if (int.TryParse(Text, out result)) {
 					return result;
-				} else {
-					return 0;
 				}
+
+				return 0;
 			}
 			set => Text = value.ToString();
 		}
@@ -49,8 +50,8 @@ namespace HaRepacker.GUI.Input {
 			// 
 			// IntegerInput
 			// 
-			Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular,
-				System.Drawing.GraphicsUnit.Point, (byte) 0);
+			Font = new Font("Segoe UI", 8F, FontStyle.Regular,
+				GraphicsUnit.Point, 0);
 			ResumeLayout(false);
 		}
 	}

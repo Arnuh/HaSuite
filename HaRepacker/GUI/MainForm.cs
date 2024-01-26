@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Interop;
+using System.Windows.Forms.Integration;
 using System.Windows.Threading;
 using HaRepacker.Comparer;
 using HaRepacker.GUI.Input;
@@ -27,6 +27,7 @@ using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using HaSharedLibrary;
+using MapleLib.Helpers;
 using MapleLib.MapleCryptoLib;
 using MapleLib.PacketLib;
 using MapleLib.WzLib;
@@ -40,13 +41,15 @@ using DataFormats = System.Windows.Forms.DataFormats;
 using DragDropEffects = System.Windows.Forms.DragDropEffects;
 using DragEventArgs = System.Windows.Forms.DragEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
+using ProgressBar = System.Windows.Controls.ProgressBar;
 using Size = System.Drawing.Size;
+using Timer = System.Timers.Timer;
 
 namespace HaRepacker.GUI {
 	public partial class MainForm : Form {
-		private readonly bool mainFormLoaded = false;
+		private readonly bool mainFormLoaded;
 
-		private MainPanel MainPanel = null;
+		private MainPanel MainPanel;
 
 		/// <summary>
 		/// Constructor
@@ -639,7 +642,7 @@ namespace HaRepacker.GUI {
 			var selectedTab = tabControl_MainPanels.SelectedTab;
 			if (selectedTab != null && selectedTab.Controls.Count > 0) {
 				var elemntHost =
-					(System.Windows.Forms.Integration.ElementHost) selectedTab.Controls[0];
+					(ElementHost) selectedTab.Controls[0];
 
 				MainPanel = (MainPanel) elemntHost?.Child;
 			}
@@ -660,10 +663,10 @@ namespace HaRepacker.GUI {
 		private void AddTabsInternal(string defaultName = null) {
 			if (tabControl_MainPanels.TabCount > 10) return;
 
-			var tabPage = new TabPage() {
+			var tabPage = new TabPage {
 				Margin = new Padding(1, 1, 1, 1)
 			};
-			var elemHost = new System.Windows.Forms.Integration.ElementHost {
+			var elemHost = new ElementHost {
 				Dock = DockStyle.Fill,
 				Child = new MainPanel(this)
 			};
@@ -690,11 +693,11 @@ namespace HaRepacker.GUI {
 
 		#region WZ IV Key bruteforcing
 
-		private ulong wzKeyBruteforceTries = 0;
+		private ulong wzKeyBruteforceTries;
 		private DateTime wzKeyBruteforceStartTime = DateTime.Now;
-		private bool wzKeyBruteforceCompleted = false;
+		private bool wzKeyBruteforceCompleted;
 
-		private System.Timers.Timer aTimer_wzKeyBruteforce = null;
+		private Timer aTimer_wzKeyBruteforce;
 
 		/// <summary>
 		/// Find needles in a haystack o_O
@@ -709,7 +712,7 @@ namespace HaRepacker.GUI {
 
 			// Show splash screen
 			MainPanel.OnSetPanelLoading(currentDispatcher);
-			MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(System.Windows.Visibility.Visible);
+			MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(Visibility.Visible);
 
 
 			// Reset variables
@@ -731,8 +734,8 @@ namespace HaRepacker.GUI {
 				aTimer_wzKeyBruteforce = null;
 			}
 
-			aTimer_wzKeyBruteforce = new System.Timers.Timer();
-			aTimer_wzKeyBruteforce.Elapsed += new ElapsedEventHandler(OnWzIVKeyUIUpdateEvent);
+			aTimer_wzKeyBruteforce = new Timer();
+			aTimer_wzKeyBruteforce.Elapsed += OnWzIVKeyUIUpdateEvent;
 			aTimer_wzKeyBruteforce.Interval = 5000;
 			aTimer_wzKeyBruteforce.Enabled = true;
 
@@ -763,7 +766,7 @@ namespace HaRepacker.GUI {
 				aTimer_wzKeyBruteforce.Stop();
 				aTimer_wzKeyBruteforce = null;
 
-				MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(System.Windows.Visibility.Collapsed);
+				MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(Visibility.Collapsed);
 			}
 
 			MainPanel.loadingPanel.WzIvKeyDuration = DateTime.Now.Ticks - wzKeyBruteforceStartTime.Ticks;
@@ -817,7 +820,7 @@ namespace HaRepacker.GUI {
 					// Hide panel splash sdcreen
 					Action action = () => {
 						MainPanel.OnSetPanelLoadingCompleted(currentDispatcher);
-						MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(System.Windows.Visibility
+						MainPanel.loadingPanel.SetWzIvBruteforceStackpanelVisiblity(Visibility
 							.Collapsed);
 					};
 					currentDispatcher.BeginInvoke(action);
@@ -961,7 +964,7 @@ namespace HaRepacker.GUI {
 		/// <param name="e"></param>
 		private void openToolStripMenuItem_Click(object sender, EventArgs e) {
 			// Load WZ file
-			using (var dialog = new OpenFileDialog() {
+			using (var dialog = new OpenFileDialog {
 				       Title = Resources.SelectWz,
 				       Filter = $"{Resources.WzFilter}|*.wz;ZLZ.dll",
 				       Multiselect = true
@@ -988,7 +991,7 @@ namespace HaRepacker.GUI {
 				GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
 
 			// Load WZ file
-			using (var fbd = new FolderBrowserDialog() {
+			using (var fbd = new FolderBrowserDialog {
 				       Description = "Select the WZ folder (Base, Mob, Character, etc)",
 				       ShowNewFolderButton = true
 			       }) {
@@ -1210,8 +1213,8 @@ namespace HaRepacker.GUI {
 		}
 
 		//yes I know this is a stupid way to synchronize threads, I'm just too lazy to use events or locks
-		private bool threadDone = false;
-		private Thread runningThread = null;
+		private bool threadDone;
+		private Thread runningThread;
 
 
 		private delegate void ChangeAppStateDelegate(bool enabled);
@@ -1225,7 +1228,7 @@ namespace HaRepacker.GUI {
 		}
 
 		private void ChangeApplicationState(bool enabled) {
-			Invoke(new ChangeAppStateDelegate(ChangeApplicationStateCallback), new object[] {enabled});
+			Invoke(new ChangeAppStateDelegate(ChangeApplicationStateCallback), enabled);
 		}
 
 		private void xMLToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1267,7 +1270,7 @@ namespace HaRepacker.GUI {
 		/// <param name="value"></param>
 		/// <param name="setMaxValue"></param>
 		/// <param name="absolute"></param>
-		private void UpdateProgressBar(System.Windows.Controls.ProgressBar pbar, int value, bool setMaxValue,
+		private void UpdateProgressBar(ProgressBar pbar, int value, bool setMaxValue,
 			bool absolute) {
 			pbar.Dispatcher.Invoke(() => {
 				if (setMaxValue) {
@@ -1626,7 +1629,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var dialog = new OpenFileDialog() {
+			var dialog = new OpenFileDialog {
 				Title = Resources.SelectXml,
 				Filter = $"{Resources.XmlFilter}|*.xml",
 				Multiselect = true,
@@ -1653,7 +1656,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var dialog = new OpenFileDialog() {
+			var dialog = new OpenFileDialog {
 				Title = Resources.SelectWzImg,
 				Filter = $"{Resources.WzImgFilter}|*.img",
 				Multiselect = true,
@@ -1892,36 +1895,38 @@ namespace HaRepacker.GUI {
 			MainPanel.Dispatcher.Invoke(() => { InsertWzNodeCallback(node, parent); });
 		}
 
-		private bool yesToAll = false;
-		private bool noToAll = false;
+		private bool yesToAll;
+		private bool noToAll;
 		private ReplaceResult result;
 
 		private bool ShowReplaceDialog(string name) {
 			if (yesToAll) {
 				return true;
-			} else if (noToAll) {
+			}
+
+			if (noToAll) {
 				return false;
-			} else {
-				ReplaceBox.Show(name, out result);
-				switch (result) {
-					case ReplaceResult.NoToAll:
-						noToAll = true;
-						return false;
-					case ReplaceResult.No:
-						return false;
-					case ReplaceResult.YesToAll:
-						yesToAll = true;
-						return true;
-					case ReplaceResult.Yes:
-						return true;
-				}
+			}
+
+			ReplaceBox.Show(name, out result);
+			switch (result) {
+				case ReplaceResult.NoToAll:
+					noToAll = true;
+					return false;
+				case ReplaceResult.No:
+					return false;
+				case ReplaceResult.YesToAll:
+					yesToAll = true;
+					return true;
+				case ReplaceResult.Yes:
+					return true;
 			}
 
 			throw new Exception("cant get here anyway");
 		}
 
 		private void nXForamtToolStripMenuItem_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
+			var dialog = new OpenFileDialog {
 				Title = Resources.SelectWz,
 				Filter = $"{Resources.WzFilter}|*.wz",
 				Multiselect = true,
@@ -2081,7 +2086,7 @@ namespace HaRepacker.GUI {
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
 
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzImport_Errors.txt");
+			ErrorLogger.SaveToFile("WzImport_Errors.txt");
 
 			threadDone = true;
 		}
@@ -2118,7 +2123,7 @@ namespace HaRepacker.GUI {
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
 
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
+			ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 
 			// Reset progress bar to 0
 			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
@@ -2157,7 +2162,7 @@ namespace HaRepacker.GUI {
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
 
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
+			ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 
 			// Reset progress bar to 0
 			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
@@ -2191,7 +2196,7 @@ namespace HaRepacker.GUI {
 				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
 			}
 
-			MapleLib.Helpers.ErrorLogger.SaveToFile("WzExtract_Errors.txt");
+			ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 #if DEBUG
 			// test benchmark
 			watch.Stop();

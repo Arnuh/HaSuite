@@ -5,7 +5,11 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using System.Windows;
 using System.Windows.Forms;
+using ColorDialog = WPFColorPickerLib.ColorDialog;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 namespace HaCreator.CustomControls {
 	public class AlphaColorPicker : UserControl {
@@ -35,10 +39,10 @@ namespace HaCreator.CustomControls {
 		protected override void OnMouseClick(MouseEventArgs e) {
 			base.OnMouseClick(e);
 			var dialog =
-				new WPFColorPickerLib.ColorDialog(
+				new ColorDialog(
 					System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
 			dialog.Topmost = true;
-			dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+			dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 			if (!(bool) dialog.ShowDialog()) return;
 			Color = Color.FromArgb(dialog.SelectedColor.A, dialog.SelectedColor.R, dialog.SelectedColor.G,
 				dialog.SelectedColor.B);

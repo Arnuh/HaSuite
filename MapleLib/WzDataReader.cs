@@ -21,7 +21,9 @@ namespace MapleLib {
 			if (value != null) {
 				if (value.PropertyType == WzPropertyType.String) {
 					return ((WzStringProperty) value).Value;
-				} else if (value.PropertyType == WzPropertyType.Int) {
+				}
+
+				if (value.PropertyType == WzPropertyType.Int) {
 					return ((WzIntProperty) value).Value.ToString();
 				}
 			}
@@ -51,11 +53,17 @@ namespace MapleLib {
 		public static long ReadLong(this WzImageProperty value, long def = 0) {
 			if (value == null) {
 				return 0;
-			} else if (value.PropertyType == WzPropertyType.Int) {
+			}
+
+			if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			} else if (value.PropertyType == WzPropertyType.Long) {
+			}
+
+			if (value.PropertyType == WzPropertyType.Long) {
 				return ((WzLongProperty) value).Value;
-			} else if (value.PropertyType == WzPropertyType.String) {
+			}
+
+			if (value.PropertyType == WzPropertyType.String) {
 				try {
 					return long.Parse(((WzStringProperty) value).Value);
 				} catch {
@@ -80,9 +88,13 @@ namespace MapleLib {
 		public static int ReadValue(this WzImageProperty value) {
 			if (value == null) {
 				return 0;
-			} else if (value.PropertyType == WzPropertyType.Int) {
+			}
+
+			if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			} else if (value.PropertyType == WzPropertyType.String) {
+			}
+
+			if (value.PropertyType == WzPropertyType.String) {
 				return int.Parse(((WzStringProperty) value).Value);
 			}
 
@@ -103,9 +115,13 @@ namespace MapleLib {
 		public static int ReadValue(this WzImageProperty value, int def) {
 			if (value == null) {
 				return def;
-			} else if (value.PropertyType == WzPropertyType.Int) {
+			}
+
+			if (value.PropertyType == WzPropertyType.Int) {
 				return ((WzIntProperty) value).Value;
-			} else if (value.PropertyType == WzPropertyType.String) {
+			}
+
+			if (value.PropertyType == WzPropertyType.String) {
 				var strdata = ((WzStringProperty) value).Value;
 				try {
 					return int.Parse(strdata);

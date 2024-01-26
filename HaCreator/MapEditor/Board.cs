@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Threading;
+using System.Windows.Controls;
 using HaCreator.Collections;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
@@ -37,32 +38,32 @@ namespace HaCreator.MapEditor {
 		private MultiBoard parent;
 		private readonly Mouse mouse;
 		private MapInfo mapInfo = new MapInfo();
-		private bool bIsNewMapDesign = false; // determines if this board is a new map design or editing an existing map.
-		private System.Drawing.Bitmap miniMap;
+		private bool bIsNewMapDesign; // determines if this board is a new map design or editing an existing map.
+		private Bitmap miniMap;
 		private System.Drawing.Point miniMapPos;
 		private Texture2D miniMapTexture;
 
 		// App settings
 		private int selectedLayerIndex = ApplicationSettings.lastDefaultLayer;
-		private int selectedPlatform = 0;
+		private int selectedPlatform;
 		private bool selectedAllLayers = ApplicationSettings.lastAllLayers;
 		private bool selectedAllPlats = true;
-		private int _hScroll = 0;
-		private int _vScroll = 0;
+		private int _hScroll;
+		private int _vScroll;
 		private int _mag = 16;
 		private readonly UndoRedoManager undoRedoMan;
 		private ItemTypes visibleTypes;
 		private ItemTypes editedTypes;
-		private bool loading = false;
-		private VRRectangle vrRect = null;
-		private MinimapRectangle mmRect = null;
-		private System.Windows.Controls.ContextMenu menu = null;
-		private readonly SerializationManager serMan = null;
-		private System.Windows.Controls.TabItem page = null;
+		private bool loading;
+		private VRRectangle vrRect;
+		private MinimapRectangle mmRect;
+		private ContextMenu menu;
+		private readonly SerializationManager serMan;
+		private TabItem page;
 		private bool dirty;
 		private readonly int uid;
 
-		private static int uidCounter = 0;
+		private static int uidCounter;
 
 		public ItemTypes VisibleTypes {
 			get => visibleTypes;
@@ -84,7 +85,7 @@ namespace HaCreator.MapEditor {
 		/// <param name="menu"></param>
 		/// <param name="visibleTypes"></param>
 		/// <param name="editedTypes"></param>
-		public Board(Point mapSize, Point centerPoint, MultiBoard parent, bool bIsNewMapDesign, System.Windows.Controls.ContextMenu menu,
+		public Board(Point mapSize, Point centerPoint, MultiBoard parent, bool bIsNewMapDesign, ContextMenu menu,
 			ItemTypes visibleTypes, ItemTypes editedTypes) {
 			uid = Interlocked.Increment(ref uidCounter);
 			MapSize = mapSize;
@@ -130,17 +131,17 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap FullsizeImage, float coeff) {
-			return (System.Drawing.Bitmap) FullsizeImage.GetThumbnailImage(
+		public static Bitmap ResizeImage(Bitmap FullsizeImage, float coeff) {
+			return (Bitmap) FullsizeImage.GetThumbnailImage(
 				(int) Math.Round(FullsizeImage.Width / coeff), (int) Math.Round(FullsizeImage.Height / coeff), null,
 				IntPtr.Zero);
 		}
 
-		public static System.Drawing.Bitmap CropImage(System.Drawing.Bitmap img, System.Drawing.Rectangle selection) {
-			var result = new System.Drawing.Bitmap(selection.Width, selection.Height);
-			using (var g = System.Drawing.Graphics.FromImage(result)) {
+		public static Bitmap CropImage(Bitmap img, System.Drawing.Rectangle selection) {
+			var result = new Bitmap(selection.Width, selection.Height);
+			using (var g = Graphics.FromImage(result)) {
 				g.DrawImage(img, new System.Drawing.Rectangle(0, 0, selection.Width, selection.Height), selection,
-					System.Drawing.GraphicsUnit.Pixel);
+					GraphicsUnit.Pixel);
 			}
 
 			return result;
@@ -153,8 +154,8 @@ namespace HaCreator.MapEditor {
 					if (MinimapRectangle == null) {
 						MiniMap = null;
 					} else {
-						var bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
-						var processor = System.Drawing.Graphics.FromImage(bmp);
+						var bmp = new Bitmap(mapSize.X, mapSize.Y);
+						var processor = Graphics.FromImage(bmp);
 						foreach (var item in BoardItems.TileObjs) {
 							var flip = false;
 							if (item is IFlippable flippable) {
@@ -176,7 +177,7 @@ namespace HaCreator.MapEditor {
 						bmp = CropImage(bmp,
 							new System.Drawing.Rectangle(MinimapRectangle.X + centerPoint.X,
 								MinimapRectangle.Y + centerPoint.Y, MinimapRectangle.Width, MinimapRectangle.Height));
-						MiniMap = ResizeImage(bmp, (float) _mag);
+						MiniMap = ResizeImage(bmp, _mag);
 						MinimapPosition = new System.Drawing.Point(MinimapRectangle.X, MinimapRectangle.Y);
 					}
 				}
@@ -307,7 +308,7 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		public bool IsNewMapDesign => bIsNewMapDesign;
 
-		public System.Drawing.Bitmap MiniMap {
+		public Bitmap MiniMap {
 			get => miniMap;
 			set {
 				lock (parent) {
@@ -368,7 +369,7 @@ namespace HaCreator.MapEditor {
 			get => vrRect;
 			set {
 				vrRect = value;
-				((System.Windows.Controls.MenuItem) menu.Items[1]).IsEnabled = value == null;
+				((MenuItem) menu.Items[1]).IsEnabled = value == null;
 			}
 		}
 
@@ -376,7 +377,7 @@ namespace HaCreator.MapEditor {
 			get => mmRect;
 			set {
 				mmRect = value;
-				((System.Windows.Controls.MenuItem) menu.Items[2]).IsEnabled = value == null;
+				((MenuItem) menu.Items[2]).IsEnabled = value == null;
 				parent.OnMinimapStateChanged(this, mmRect != null);
 			}
 		}
@@ -417,7 +418,7 @@ namespace HaCreator.MapEditor {
 			set => selectedAllLayers = value;
 		}
 
-		public System.Windows.Controls.ContextMenu Menu => menu;
+		public ContextMenu Menu => menu;
 
 		public Layer SelectedLayer => Layers[SelectedLayerIndex];
 
@@ -443,7 +444,7 @@ namespace HaCreator.MapEditor {
 
 		public SerializationManager SerializationManager => serMan;
 
-		public System.Windows.Controls.TabItem TabPage {
+		public TabItem TabPage {
 			get => page;
 			set => page = value;
 		}

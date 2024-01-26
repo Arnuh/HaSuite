@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 using MapleLib;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
@@ -305,10 +306,10 @@ namespace HaRepacker.GUI {
 
 							if (LoadedVersion == string.Empty) {
 								LoadedVersion = "MapleStory v." + File.Version + " WZ version: " +
-								                File.MapleVersion.ToString();
+								                File.MapleVersion;
 							}
 						} else {
-							MessageBox.Show(parseStatus.GetErrorDescription(), Properties.Resources.Error);
+							MessageBox.Show(parseStatus.GetErrorDescription(), Resources.Error);
 						}
 					}
 

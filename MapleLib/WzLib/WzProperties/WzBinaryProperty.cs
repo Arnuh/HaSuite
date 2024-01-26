@@ -36,7 +36,7 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Fields
 
 		internal string name;
-		internal byte[] mp3bytes = null;
+		internal byte[] mp3bytes;
 		internal WzObject parent;
 		internal int len_ms;
 
@@ -44,11 +44,11 @@ namespace MapleLib.WzLib.WzProperties {
 
 		//internal WzImage imgParent;
 		internal WzBinaryReader wzReader;
-		internal bool headerEncrypted = false;
+		internal bool headerEncrypted;
 		internal long offs;
 		internal int soundDataLen;
 
-		public static readonly byte[] soundHeader = new byte[] {
+		public static readonly byte[] soundHeader = {
 			0x02,
 			0x83, 0xEB, 0x36, 0xE4, 0x4F, 0x52, 0xCE, 0x11, 0x9F, 0x53, 0x00, 0x20, 0xAF, 0x0B, 0xA7, 0x70,
 			0x8B, 0xEB, 0x36, 0xE4, 0x4F, 0x52, 0xCE, 0x11, 0x9F, 0x53, 0x00, 0x20, 0xAF, 0x0B, 0xA7, 0x70,
@@ -71,7 +71,6 @@ namespace MapleLib.WzLib.WzProperties {
 		public override object WzValue => GetBytes(false);
 
 		public override void SetValue(object value) {
-			return;
 		}
 
 		/// <summary>
@@ -252,7 +251,7 @@ namespace MapleLib.WzLib.WzProperties {
 			this.name = name;
 			var reader = new Mp3FileReader(file);
 			wavFormat = reader.Mp3WaveFormat;
-			len_ms = (int) ((double) reader.Length * 1000d / (double) reader.WaveFormat.AverageBytesPerSecond);
+			len_ms = (int) (reader.Length * 1000d / reader.WaveFormat.AverageBytesPerSecond);
 			RebuildHeader();
 			reader.Dispose();
 			mp3bytes = File.ReadAllBytes(file);
@@ -297,7 +296,7 @@ namespace MapleLib.WzLib.WzProperties {
 			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 			try {
 				var obj = (T) FormatterServices.GetUninitializedObject(typeof(T));
-				Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject(), obj);
+				Marshal.PtrToStructure(handle.AddrOfPinnedObject(), obj);
 				return obj;
 			} finally {
 				handle.Free();
@@ -345,23 +344,23 @@ namespace MapleLib.WzLib.WzProperties {
 		public byte[] GetBytes(bool saveInMemory) {
 			if (mp3bytes != null) {
 				return mp3bytes;
-			} else {
-				if (wzReader == null) {
-					return null;
-				}
-
-				var currentPos = wzReader.BaseStream.Position;
-				wzReader.BaseStream.Position = offs;
-				mp3bytes = wzReader.ReadBytes(soundDataLen);
-				wzReader.BaseStream.Position = currentPos;
-				if (saveInMemory) {
-					return mp3bytes;
-				} else {
-					var result = mp3bytes;
-					mp3bytes = null;
-					return result;
-				}
 			}
+
+			if (wzReader == null) {
+				return null;
+			}
+
+			var currentPos = wzReader.BaseStream.Position;
+			wzReader.BaseStream.Position = offs;
+			mp3bytes = wzReader.ReadBytes(soundDataLen);
+			wzReader.BaseStream.Position = currentPos;
+			if (saveInMemory) {
+				return mp3bytes;
+			}
+
+			var result = mp3bytes;
+			mp3bytes = null;
+			return result;
 		}
 
 		public void SaveToFile(string file) {

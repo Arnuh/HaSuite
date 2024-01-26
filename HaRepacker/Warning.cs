@@ -5,16 +5,17 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker {
 	public static class Warning {
 		public static bool Warn(string text) {
 			return Program.ConfigurationManager.UserSettings.SuppressWarnings || MessageBox.Show(text,
-				Properties.Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+				Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
 		}
 
 		public static void Error(string text) {
-			MessageBox.Show(text, Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(text, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 	}
 }

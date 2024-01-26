@@ -18,7 +18,7 @@ namespace HaRepacker {
 		}
 
 		public void AddUndoBatch(List<UndoRedoAction> actions) {
-			var batch = new UndoRedoBatch() {Actions = actions};
+			var batch = new UndoRedoBatch {Actions = actions};
 			UndoList.Add(batch);
 			RedoList.Clear();
 		}
@@ -91,7 +91,7 @@ namespace HaRepacker {
 		}
 
 
-		public unsafe void SwitchAction() {
+		public void SwitchAction() {
 			switch (type) {
 				case UndoRedoType.ObjectAdded:
 					type = UndoRedoType.ObjectRemoved;

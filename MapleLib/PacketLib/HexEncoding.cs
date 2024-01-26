@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System;
+using System.Globalization;
 
 namespace MapleLib.PacketLib {
 	/// <summary>
@@ -45,7 +46,7 @@ namespace MapleLib.PacketLib {
 				throw new ArgumentException("hex must be 1 or 2 characters in length");
 			}
 
-			var newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+			var newByte = byte.Parse(hex, NumberStyles.HexNumber);
 			return newByte;
 		}
 
@@ -73,7 +74,7 @@ namespace MapleLib.PacketLib {
 			string hex;
 			var j = 0;
 			for (var i = 0; i < bytes.Length; i++) {
-				hex = new string(new char[] {newString[j], newString[j + 1]});
+				hex = new string(new[] {newString[j], newString[j + 1]});
 				bytes[i] = HexToByte(hex);
 				j += 2;
 			}
@@ -90,7 +91,7 @@ namespace MapleLib.PacketLib {
 			var ret = new char[bytes.Length];
 			for (var x = 0; x < bytes.Length; x++)
 				// Use a ternary operator to avoid an if statement
-				ret[x] = bytes[x] < 32 && bytes[x] >= 0 ? '.' : (char) ((short) bytes[x] & 0xFF);
+				ret[x] = bytes[x] < 32 && bytes[x] >= 0 ? '.' : (char) (bytes[x] & 0xFF);
 
 			return new string(ret);
 		}

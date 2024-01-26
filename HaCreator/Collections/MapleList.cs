@@ -12,8 +12,7 @@ namespace HaCreator.Collections {
 		private ItemTypes listType;
 		private bool item;
 
-		public MapleList(ItemTypes listType, bool item)
-			: base() {
+		public MapleList(ItemTypes listType, bool item) {
 			this.listType = listType;
 			this.item = item;
 		}

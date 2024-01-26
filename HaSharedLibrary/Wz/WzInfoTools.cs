@@ -21,15 +21,15 @@ namespace HaSharedLibrary.Wz {
 			return new Point(source.X.Value, source.Y.Value);
 		}
 
-		public static Microsoft.Xna.Framework.Point VectorToXNAPoint(WzVectorProperty source) {
-			return new Microsoft.Xna.Framework.Point(source.X.Value, source.Y.Value);
+		public static XNA.Point VectorToXNAPoint(WzVectorProperty source) {
+			return new XNA.Point(source.X.Value, source.Y.Value);
 		}
 
 		public static WzVectorProperty PointToVector(string name, Point source) {
 			return new WzVectorProperty(name, new WzIntProperty("X", source.X), new WzIntProperty("Y", source.Y));
 		}
 
-		public static WzVectorProperty PointToVector(string name, Microsoft.Xna.Framework.Point source) {
+		public static WzVectorProperty PointToVector(string name, XNA.Point source) {
 			return new WzVectorProperty(name, new WzIntProperty("X", source.X), new WzIntProperty("Y", source.Y));
 		}
 
@@ -51,7 +51,9 @@ namespace HaSharedLibrary.Wz {
 				{
 					firstNonZeroIndex = i;
 					break;
-				} else if (i == source.Length - 1) //all chars are 0, return 0
+				}
+
+				if (i == source.Length - 1) //all chars are 0, return 0
 				{
 					return "0";
 				}
@@ -149,7 +151,7 @@ namespace HaSharedLibrary.Wz {
 		}
 
 		public static WzObject ResolveUOL(WzUOLProperty uol) {
-			var wzObjectInCurrentWz = (WzObject) GetObjectByRelativePath(uol.Parent, uol.Value);
+			var wzObjectInCurrentWz = GetObjectByRelativePath(uol.Parent, uol.Value);
 
 			return wzObjectInCurrentWz;
 		}
@@ -165,9 +167,9 @@ namespace HaSharedLibrary.Wz {
 		public static WzImageProperty GetRealProperty(WzImageProperty prop) {
 			if (prop is WzUOLProperty) {
 				return (WzImageProperty) ResolveUOL((WzUOLProperty) prop);
-			} else {
-				return prop;
 			}
+
+			return prop;
 		}
 
 		public static WzCanvasProperty GetMobImage(WzImage parentImage) {
@@ -253,10 +255,10 @@ namespace HaSharedLibrary.Wz {
 
 			if (fileManager.Is64Bit) {
 				return (WzDirectory) mapObject;
-			} else {
-				var mapImage = (WzDirectory) mapObject?[mapcat];
-				return mapImage;
 			}
+
+			var mapImage = (WzDirectory) mapObject?[mapcat];
+			return mapImage;
 		}
 
 		public static Color XNAToDrawingColor(XNA.Color c) {

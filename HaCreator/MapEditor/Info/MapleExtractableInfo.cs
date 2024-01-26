@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.Properties;
 using MapleLib.WzLib;
 
 namespace HaCreator.MapEditor.Info {
@@ -20,7 +21,7 @@ namespace HaCreator.MapEditor.Info {
 				}
 
 				if (base.Image == null || (base.Image.Width == 1 && base.Image.Height == 1)) {
-					return Properties.Resources.placeholder;
+					return Resources.placeholder;
 				}
 
 				return base.Image;

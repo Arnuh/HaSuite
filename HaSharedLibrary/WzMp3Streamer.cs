@@ -47,7 +47,7 @@ namespace HaSharedLibrary {
 			}
 
 			Volume = 0.5f; // default volume
-			wavePlayer.PlaybackStopped += new EventHandler<StoppedEventArgs>(wavePlayer_PlaybackStopped);
+			wavePlayer.PlaybackStopped += wavePlayer_PlaybackStopped;
 		}
 
 		private void wavePlayer_PlaybackStopped(object sender, StoppedEventArgs e) {
@@ -63,7 +63,7 @@ namespace HaSharedLibrary {
 			}
 		}
 
-		private bool disposed = false;
+		private bool disposed;
 
 		public bool Disposed => disposed;
 
@@ -126,7 +126,9 @@ namespace HaSharedLibrary {
 			get {
 				if (mpegStream != null) {
 					return (int) (mpegStream.Position / mpegStream.WaveFormat.AverageBytesPerSecond);
-				} else if (waveFileStream != null) {
+				}
+
+				if (waveFileStream != null) {
 					return (int) (waveFileStream.Position / waveFileStream.WaveFormat.AverageBytesPerSecond);
 				}
 

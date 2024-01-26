@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using HaRepacker.Utils;
@@ -10,6 +11,8 @@ using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaRepacker.GUI.Panels {
 	public class ImageAnimationPreviewWindow : Game {
@@ -28,7 +31,7 @@ namespace HaRepacker.GUI.Panels {
 
 		// Rendering objects
 		private readonly List<WzObject> selectedAnimationNodes;
-		private BaseDXDrawableItem dxDrawableItem = null;
+		private BaseDXDrawableItem dxDrawableItem;
 
 		// Debug
 		private SpriteFont font_DebugValues;
@@ -110,7 +113,7 @@ namespace HaRepacker.GUI.Panels {
 					WzCanvasProperty canvasProperty;
 
 					// Get image property
-					System.Drawing.Bitmap image;
+					Bitmap image;
 					if (!isUOLProperty) {
 						canvasProperty = (WzCanvasProperty) obj;
 						image = canvasProperty.GetLinkedWzCanvasBitmap();
@@ -145,7 +148,7 @@ namespace HaRepacker.GUI.Panels {
 
 
 			// Debug items
-			var bitmap_debug = new System.Drawing.Bitmap(1, 1);
+			var bitmap_debug = new Bitmap(1, 1);
 			bitmap_debug.SetPixel(0, 0, System.Drawing.Color.White);
 			texture_debugBoundaryRect = bitmap_debug.ToTexture2D(graphicsDeviceMgr.GraphicsDevice);
 		}

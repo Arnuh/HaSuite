@@ -4,6 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -70,7 +72,7 @@ namespace HaCreator.MapEditor.Instance {
 			}
 
 			var destinationRectangle =
-				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
 
@@ -79,13 +81,13 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override MapleDrawableInfo BaseInfo => baseInfo;
 
-		public override System.Drawing.Bitmap Image => baseInfo.Image;
+		public override Bitmap Image => baseInfo.Image;
 
 		public override int Width => baseInfo.Width;
 
 		public override int Height => baseInfo.Height;
 
-		public override System.Drawing.Point Origin => baseInfo.Origin;
+		public override Point Origin => baseInfo.Origin;
 
 		// Parallax + Undo\Redo is troublesome. I don't like this way either.
 		public int BaseX {
@@ -108,31 +110,31 @@ namespace HaCreator.MapEditor.Instance {
 			set => _ry = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public int cx {
 			get => _cx;
 			set => _cx = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public int cy {
 			get => _cy;
 			set => _cy = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public int a {
 			get => _a;
 			set => _a = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public BackgroundType type {
 			get => _type;
 			set => _type = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public bool front {
 			get => _front;
 			set => _front = value;
@@ -199,9 +201,9 @@ namespace HaCreator.MapEditor.Instance {
 			get {
 				if (UserSettings.emulateParallax) {
 					return CalculateBackgroundPosX();
-				} else {
-					return base.X;
 				}
+
+				return base.X;
 			}
 			set {
 				int newX;
@@ -219,9 +221,9 @@ namespace HaCreator.MapEditor.Instance {
 			get {
 				if (UserSettings.emulateParallax) {
 					return CalculateBackgroundPosY();
-				} else {
-					return base.Y;
 				}
+
+				return base.Y;
 			}
 			set {
 				int newY;

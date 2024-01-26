@@ -10,8 +10,8 @@ using System.Threading;
 namespace HaCreator.MapEditor {
 	public class FPSCounter : IDisposable {
 		private Thread resetThread;
-		private int frames = 0;
-		private int frames_next = 0;
+		private int frames;
+		private int frames_next;
 
 		public FPSCounter() {
 			resetThread = new Thread(new ThreadStart(delegate {

@@ -5,22 +5,25 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Windows;
 using System.Windows.Forms;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib.WzProperties;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TabControl = System.Windows.Controls.TabControl;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.GUI {
 	public partial class New : Form {
 		private readonly MultiBoard multiBoard;
-		private readonly System.Windows.Controls.TabControl Tabs;
-		private readonly System.Windows.RoutedEventHandler[] rightClickHandler;
+		private readonly TabControl Tabs;
+		private readonly RoutedEventHandler[] rightClickHandler;
 
-		public New(MultiBoard board, System.Windows.Controls.TabControl Tabs,
-			System.Windows.RoutedEventHandler[] rightClickHandler) {
+		public New(MultiBoard board, TabControl Tabs,
+			RoutedEventHandler[] rightClickHandler) {
 			InitializeComponent();
 			multiBoard = board;
 			this.Tabs = Tabs;

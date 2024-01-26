@@ -128,15 +128,15 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Cast Values
 
 		public override float GetFloat() {
-			return (float) val;
+			return val;
 		}
 
 		public override double GetDouble() {
-			return (double) val;
+			return val;
 		}
 
 		public override int GetInt() {
-			return (int) val;
+			return val;
 		}
 
 		public override short GetShort() {
@@ -144,7 +144,7 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		public override long GetLong() {
-			return (long) val;
+			return val;
 		}
 
 		public override string ToString() {

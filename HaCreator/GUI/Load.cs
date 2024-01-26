@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
@@ -17,16 +18,19 @@ using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.WzProperties;
+using Application = System.Windows.Forms.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TabControl = System.Windows.Controls.TabControl;
 
 namespace HaCreator.GUI {
 	public partial class FieldSelector : Form {
 		private readonly MultiBoard multiBoard;
-		private readonly System.Windows.Controls.TabControl Tabs;
-		private readonly System.Windows.RoutedEventHandler[] rightClickHandler;
+		private readonly TabControl Tabs;
+		private readonly RoutedEventHandler[] rightClickHandler;
 
 		private readonly string defaultMapNameFilter;
 
-		private bool _bAutoCloseUponSelection = false;
+		private bool _bAutoCloseUponSelection;
 
 		/// <summary>
 		/// 
@@ -35,8 +39,8 @@ namespace HaCreator.GUI {
 		/// <param name="Tabs"></param>
 		/// <param name="rightClickHandler"></param>
 		/// <param name="defaultMapNameFilter">The default text to set for the map name filter</param>
-		public FieldSelector(MultiBoard board, System.Windows.Controls.TabControl Tabs,
-			System.Windows.RoutedEventHandler[] rightClickHandler, bool bAutoCloseUponSelection,
+		public FieldSelector(MultiBoard board, TabControl Tabs,
+			RoutedEventHandler[] rightClickHandler, bool bAutoCloseUponSelection,
 			string defaultMapNameFilter = null) {
 			InitializeComponent();
 
@@ -143,7 +147,9 @@ namespace HaCreator.GUI {
 				ww.EndWait();
 				Close();
 				return;
-			} else if (XMLSelect.Checked) {
+			}
+
+			if (XMLSelect.Checked) {
 				try {
 					mapImage = (WzImage) new WzXmlDeserializer(false, null).ParseXML(XMLBox.Text)[0];
 				} catch {

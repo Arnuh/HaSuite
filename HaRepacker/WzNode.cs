@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MapleLib.WzLib;
@@ -15,7 +16,7 @@ namespace HaRepacker {
 
 		public static ContextMenuBuilderDelegate ContextMenuBuilder = null;
 
-		private bool isWzObjectAddedManually = false;
+		private bool isWzObjectAddedManually;
 		public static Color NewObjectForeColor = Color.Red;
 
 		public WzNode(WzObject SourceObject, bool isWzObjectAddedManually = false)
@@ -91,13 +92,17 @@ namespace HaRepacker {
 			var obj = (WzObject) parentNode.Tag;
 			if (obj is IPropertyContainer container) {
 				return container[name] == null;
-			} else if (obj is WzDirectory directory) {
-				return directory[name] == null;
-			} else if (obj is WzFile file) {
-				return file.WzDirectory?[name] == null;
-			} else {
-				return false;
 			}
+
+			if (obj is WzDirectory directory) {
+				return directory[name] == null;
+			}
+
+			if (obj is WzFile file) {
+				return file.WzDirectory?[name] == null;
+			}
+
+			return false;
 		}
 
 		private bool AddObjInternal(WzObject obj) {
@@ -152,13 +157,13 @@ namespace HaRepacker {
 				Nodes.Add(node);
 				AddObjInternal((WzObject) node.Tag);
 				return true;
-			} else {
-				MessageBox.Show(
-					"Cannot insert node \"" + node.Text +
-					"\" because a node with the same name already exists. Skipping.", "Skipping Node",
-					MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return false;
 			}
+
+			MessageBox.Show(
+				"Cannot insert node \"" + node.Text +
+				"\" because a node with the same name already exists. Skipping.", "Skipping Node",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+			return false;
 		}
 
 		/// <summary>
@@ -186,21 +191,21 @@ namespace HaRepacker {
 
 					if (node.Tag is WzImageProperty property) property.ParentImage.Changed = true;
 
-					undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction>
+					undoRedoMan.AddUndoBatch(new List<UndoRedoAction>
 						{UndoRedoManager.ObjectAdded(this, node)});
 					node.EnsureVisible();
 					return node;
-				} else {
-					Warning.Error("Could not insert property, make sure all types are correct");
-					return null;
 				}
-			} else {
-				MessageBox.Show(
-					"Cannot insert object \"" + obj.Name +
-					"\" because an object with the same name already exists. Skipping.", "Skipping Object",
-					MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+				Warning.Error("Could not insert property, make sure all types are correct");
 				return null;
 			}
+
+			MessageBox.Show(
+				"Cannot insert object \"" + obj.Name +
+				"\" because an object with the same name already exists. Skipping.", "Skipping Object",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+			return null;
 		}
 
 		public void Reparse() {

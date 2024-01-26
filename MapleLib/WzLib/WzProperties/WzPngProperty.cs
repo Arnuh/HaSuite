@@ -22,8 +22,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using MapleLib.Helpers;
 using MapleLib.WzLib.Util;
 using Microsoft.Xna.Framework.Graphics;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -408,7 +410,7 @@ namespace MapleLib.WzLib.WzProperties {
 					return new byte[width * height];
 				}
 				default:
-					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
+					ErrorLogger.Log(ErrorLevel.MissingFeature,
 						string.Format("Unknown PNG format {0} {1}", pixFormat, magLevel));
 					return null;
 			}
@@ -512,15 +514,15 @@ namespace MapleLib.WzLib.WzProperties {
 						break;
 					}
 					default:
-						Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature, $"Unknown PNG format {pixFormat} {magLevel}");
+						ErrorLogger.Log(ErrorLevel.MissingFeature, $"Unknown PNG format {pixFormat} {magLevel}");
 						break;
 				}
 
 				if (bmp != null) {
 					if (texture2d != null) {
 						var rect = new Microsoft.Xna.Framework.Rectangle(
-							Microsoft.Xna.Framework.Point.Zero,
-							new Microsoft.Xna.Framework.Point(width, height));
+							Point.Zero,
+							new Point(width, height));
 						texture2d.SetData(0, 0, rect, rawBytes, 0, rawBytes.Length);
 					}
 				}
@@ -844,7 +846,7 @@ namespace MapleLib.WzLib.WzProperties {
 					break;
 				}
 				default:
-					Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
+					ErrorLogger.Log(ErrorLevel.MissingFeature,
 						$"Unknown PNG format {pixFormat} {magLevel}");
 					return;
 			}

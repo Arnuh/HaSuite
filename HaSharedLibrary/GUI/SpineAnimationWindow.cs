@@ -47,7 +47,7 @@ namespace HaSharedLibrary.GUI {
 		private Matrix matrixScale;
 
 		// 
-		private int spineSkinIndex = 0;
+		private int spineSkinIndex;
 
 		/// <summary>
 		/// Constructor

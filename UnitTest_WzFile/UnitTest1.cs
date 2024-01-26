@@ -69,7 +69,7 @@ namespace UnitTest_WzFile {
 
 				using (var oldfs = File.Open(tmpFilePath, FileMode.OpenOrCreate)) {
 					using (var wzWriter = new WzBinaryWriter(oldfs, WzIv)) {
-						wzImg.SaveImage(wzWriter, true); // Write to temp folder
+						wzImg.SaveImage(wzWriter); // Write to temp folder
 						wzImg.Dispose(); // unload
 					}
 				}
@@ -106,7 +106,7 @@ namespace UnitTest_WzFile {
 				Debug.WriteLine("Running test for " + fileName);
 
 				try {
-					var f = new WzFile(filePath, (short) -1, wzMapleVerEnc);
+					var f = new WzFile(filePath, -1, wzMapleVerEnc);
 
 					var parseStatus = f.ParseWzFile();
 

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using HaCreator.GUI;
 using HaCreator.MapEditor;
+using HaCreator.Properties;
 using HaCreator.Wz;
 using MapleLib;
 using MapleLib.WzLib;
@@ -58,7 +59,7 @@ namespace HaCreator {
 
 			// Localisation
 			var ci = GetMainCulture(CultureInfo.CurrentCulture);
-			Properties.Resources.Culture = ci;
+			Resources.Culture = ci;
 
 			Thread.CurrentThread.CurrentCulture = ci;
 			Thread.CurrentThread.CurrentUICulture = ci;
@@ -69,7 +70,7 @@ namespace HaCreator {
 			CultureInfo.DefaultThreadCurrentUICulture = ci;
 
 
-			Properties.Resources.Culture = CultureInfo.CurrentCulture;
+			Resources.Culture = CultureInfo.CurrentCulture;
 			InfoManager = new WzInformationManager();
 			SettingsManager =
 				new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings));
@@ -118,9 +119,9 @@ namespace HaCreator {
 				case "zh":
 					if (ci.EnglishName.Contains("Simplified")) {
 						return new CultureInfo("zh-CHS");
-					} else {
-						return new CultureInfo("zh-CHT");
 					}
+
+					return new CultureInfo("zh-CHT");
 				default:
 					return ci;
 			}

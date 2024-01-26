@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
+using Microsoft.Xna.Framework;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class RopeInstanceEditor : EditorBase {
@@ -37,8 +38,8 @@ namespace HaCreator.GUI.InstanceEditor {
 			lock (item.Board.ParentControl) {
 				var actions = new List<UndoRedoAction>();
 				if (xInput.Value != item.X || yInput.Value != item.Y) {
-					actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y),
-						new Microsoft.Xna.Framework.Point((int) xInput.Value, (int) yInput.Value)));
+					actions.Add(UndoRedoManager.ItemMoved(item, new Point(item.X, item.Y),
+						new Point((int) xInput.Value, (int) yInput.Value)));
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 

@@ -75,7 +75,7 @@ namespace HaCreator.MapEditor {
 				string dataTypeName = serData2.dataType;
 				var dataType = Type.GetType(dataTypeName);
 				var dataObject = JsonConvert.DeserializeObject(data, dataType);
-				var item = (ISerializable) ConstructObject(typeName, new object[] {board, dataObject},
+				var item = (ISerializable) ConstructObject(typeName, new[] {board, dataObject},
 					new[] {typeof(Board), dataType});
 				items.Add(item);
 
@@ -164,17 +164,21 @@ namespace HaCreator.MapEditor {
 				foreach (var pair in (JObject) obj) result.Add(pair.Key, Deserialize2(pair.Value));
 
 				return result;
-			} else if (obj is JValue) {
+			}
+
+			if (obj is JValue) {
 				return ((JValue) obj).Value;
-			} else if (obj is JArray) {
+			}
+
+			if (obj is JArray) {
 				var jarr = (JArray) obj;
 				var arr = new object[jarr.Count];
 				for (var i = 0; i < jarr.Count; i++) arr[i] = Deserialize2(jarr[i]);
 
 				return arr;
-			} else {
-				throw new Exception();
 			}
+
+			throw new Exception();
 		}
 
 		private object ConstructObject(string typeName, object[] args, Type[] ctorTemplate) {

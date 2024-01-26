@@ -22,10 +22,10 @@ namespace HaCreator.MapEditor.Info {
 		private string _l0;
 		private string _l1;
 		private string _l2;
-		private List<List<XNA.Point>> footholdOffsets = null;
-		private List<List<XNA.Point>> ropeOffsets = null;
-		private List<List<XNA.Point>> ladderOffsets = null;
-		private List<XNA.Point> chairOffsets = null;
+		private List<List<XNA.Point>> footholdOffsets;
+		private List<List<XNA.Point>> ropeOffsets;
+		private List<List<XNA.Point>> ladderOffsets;
+		private List<XNA.Point> chairOffsets;
 		private bool connect;
 
 		public ObjectInfo(Bitmap image, Point origin, string oS, string l0, string l1, string l2,

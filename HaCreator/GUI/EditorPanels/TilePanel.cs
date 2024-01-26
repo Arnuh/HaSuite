@@ -65,7 +65,7 @@ namespace HaCreator.GUI.EditorPanels {
 				}
 
 				var tileSetImage = Program.InfoManager.TileSets[selectedSetName];
-				var mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"], Defaults.Tile.Mag);
+				var mag = tileSetImage["info"]["mag"].GetOptionalInt(Defaults.Tile.Mag);
 				foreach (WzSubProperty tCat in tileSetImage.WzProperties) {
 					if (tCat.Name == "info") {
 						continue;
@@ -86,15 +86,15 @@ namespace HaCreator.GUI.EditorPanels {
 						}
 
 						item.Tag = randomInfos;
-						item.MouseDown += new MouseEventHandler(tileItem_Click);
-						item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+						item.MouseDown += tileItem_Click;
+						item.MouseUp += ImageViewer.item_MouseUp;
 					} else {
 						foreach (WzCanvasProperty tile in tCat.WzProperties) {
 							var item = tileImagesContainer.Add(tile.GetLinkedWzCanvasBitmap(),
 								tCat.Name + "/" + tile.Name, true);
 							item.Tag = TileInfo.Get((string) tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
-							item.MouseDown += new MouseEventHandler(tileItem_Click);
-							item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+							item.MouseDown += tileItem_Click;
+							item.MouseUp += ImageViewer.item_MouseUp;
 						}
 					}
 				}

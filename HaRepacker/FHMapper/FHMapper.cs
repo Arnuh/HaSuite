@@ -294,9 +294,6 @@ namespace HaRepacker.FHMapper {
 
 							break;
 						}
-						default: {
-							break;
-						}
 					}
 				}
 
@@ -637,7 +634,7 @@ namespace HaRepacker.FHMapper {
 				settings = settings,
 				MobSpawnPoints = MSPs
 			};
-			showMap.FormClosed += new FormClosedEventHandler(DisplayMapClosed);
+			showMap.FormClosed += DisplayMapClosed;
 			try {
 				showMap.scale = zoom;
 				showMap.Show();

@@ -10,18 +10,18 @@ using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class CancelableWaitWindow : Form {
-		private bool finished = false;
+		private bool finished;
 		private Thread actionThread;
-		public object result = null;
+		public object result;
 
 		public CancelableWaitWindow(string message, Func<object> action) {
 			InitializeComponent();
 			label1.Text = message;
-			actionThread = new Thread(new ParameterizedThreadStart(x => {
+			actionThread = new Thread(x => {
 				var cww = (CancelableWaitWindow) x;
 				cww.result = action();
 				cww.Invoke((Action) delegate { cww.EndWait(); });
-			}));
+			});
 		}
 
 		private void button1_Click(object sender, EventArgs e) {

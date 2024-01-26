@@ -39,7 +39,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public int PlatformNumber {
 			get => -1;
-			set { return; }
+			set { }
 		}
 
 		protected override bool RemoveConnectedLines => throw

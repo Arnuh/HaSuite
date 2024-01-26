@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker {
 	public partial class Settings : Form {
@@ -45,23 +46,23 @@ namespace HaRepacker {
 			var errorTBox = "";
 			try {
 				//Can this be done better?
-				errorTBox = Properties.Resources.FHSettingsPrevValue;
+				errorTBox = Resources.FHSettingsPrevValue;
 				int.Parse(PrevTBox.Text);
-				errorTBox = Properties.Resources.FHSettingsNextValue;
+				errorTBox = Resources.FHSettingsNextValue;
 				int.Parse(NextTBox.Text);
-				errorTBox = Properties.Resources.FHSettingsForceValue;
+				errorTBox = Resources.FHSettingsForceValue;
 				int.Parse(ForceTBox.Text);
-				errorTBox = Properties.Resources.FHSettingsXValue;
+				errorTBox = Resources.FHSettingsXValue;
 				int.Parse(XTBox.Text);
-				errorTBox = Properties.Resources.FHSettingsYValue;
+				errorTBox = Resources.FHSettingsYValue;
 				int.Parse(YTBox.Text);
-				errorTBox = Properties.Resources.FHSettingsPortalValue;
+				errorTBox = Resources.FHSettingsPortalValue;
 				int.Parse(TypeTBox.Text);
 				double.Parse(SizeTBox.Text);
 			} catch {
 				doOverwrite = false;
-				MessageBox.Show(string.Format(Properties.Resources.FHSettingsInvalidMessage, errorTBox),
-					Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(string.Format(Resources.FHSettingsInvalidMessage, errorTBox),
+					Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 
 			if (doOverwrite) {

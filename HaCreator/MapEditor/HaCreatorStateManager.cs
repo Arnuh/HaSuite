@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,19 +24,23 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
+using HaCreator.MapSimulator;
 using HaCreator.Wz;
+using HaRepacker.GUI;
 using MapleLib;
 using MapleLib.Helpers;
 using MapleLib.WzLib.WzStructure.Data;
 using SystemWinCtl = System.Windows.Controls;
 using Application = System.Windows.Forms.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapEditor {
 	public class HaCreatorStateManager {
 		private readonly MultiBoard multiBoard;
 		private readonly HaRibbon ribbon;
-		private readonly System.Windows.Controls.TabControl tabs;
+		private readonly SystemWinCtl.TabControl tabs;
 
 		// StatusBar (bottom)
 		private readonly SystemWinCtl.TextBlock textblock_CursorX;
@@ -48,11 +53,11 @@ namespace HaCreator.MapEditor {
 		private readonly InputHandler input;
 		private TilePanel tilePanel;
 		private ObjPanel objPanel;
-		private System.Windows.Controls.ScrollViewer editorPanel;
+		private SystemWinCtl.ScrollViewer editorPanel;
 		public readonly BackupManager backupMan;
 
-		public HaCreatorStateManager(MultiBoard multiBoard, HaRibbon ribbon, System.Windows.Controls.TabControl tabs,
-			InputHandler input, System.Windows.Controls.ScrollViewer editorPanel,
+		public HaCreatorStateManager(MultiBoard multiBoard, HaRibbon ribbon, SystemWinCtl.TabControl tabs,
+			InputHandler input, SystemWinCtl.ScrollViewer editorPanel,
 			SystemWinCtl.TextBlock textblock_CursorX, SystemWinCtl.TextBlock textblock_CursorY,
 			SystemWinCtl.TextBlock textblock_RCursorX, SystemWinCtl.TextBlock textblock_RCursorY,
 			SystemWinCtl.TextBlock textblock_Scale, SystemWinCtl.TextBlock textblock_selectedItem) {
@@ -161,8 +166,8 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		private void MultiBoard_ImageDropped(Board selectedBoard, System.Drawing.Bitmap bmp, string name,
-			Microsoft.Xna.Framework.Point pos) {
+		private void MultiBoard_ImageDropped(Board selectedBoard, Bitmap bmp, string name,
+			Point pos) {
 			var ww = new WaitWindow("Processing \"" + name + "\"...");
 			ww.Show();
 			Application.DoEvents();
@@ -190,8 +195,8 @@ namespace HaCreator.MapEditor {
 		/// <param name="oldPos"></param>
 		/// <param name="newPos"></param>
 		/// <param name="currPhysicalPos"></param>
-		private void MultiBoard_MouseMoved(Board selectedBoard, Microsoft.Xna.Framework.Point oldPos,
-			Microsoft.Xna.Framework.Point newPos, Microsoft.Xna.Framework.Point currPhysicalPos) {
+		private void MultiBoard_MouseMoved(Board selectedBoard, Point oldPos,
+			Point newPos, Point currPhysicalPos) {
 			textblock_CursorX.Text = currPhysicalPos.X.ToString();
 			textblock_CursorY.Text = currPhysicalPos.Y.ToString();
 
@@ -277,7 +282,7 @@ namespace HaCreator.MapEditor {
 				}
 			} catch (Exception e) {
 				MessageBox.Show(string.Format("An error occurred while presenting the instance editor for {0}:\r\n{1}",
-					item.GetType().Name, e.ToString()));
+					item.GetType().Name, e));
 			}
 		}
 
@@ -332,12 +337,12 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MapEditInfo(object sender, EventArgs e) {
-			var item = (System.Windows.Controls.MenuItem) sender;
+			var item = (SystemWinCtl.MenuItem) sender;
 			if (item == null) {
 				return;
 			}
 
-			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var tabItem = (SystemWinCtl.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
 
 			var selectedBoard = container.Board;
@@ -356,25 +361,25 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MapAddVR(object sender, EventArgs e) {
-			var item = (System.Windows.Controls.MenuItem) sender;
+			var item = (SystemWinCtl.MenuItem) sender;
 			if (item == null) {
 				return;
 			}
 
-			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var tabItem = (SystemWinCtl.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
 			var selectedBoard = container.Board;
 			lock (selectedBoard.ParentControl) {
 				if (selectedBoard.MapInfo.Image != null) {
-					Microsoft.Xna.Framework.Rectangle VR;
-					Microsoft.Xna.Framework.Point mapCenter, mapSize, minimapCenter, minimapSize;
+					Rectangle VR;
+					Point mapCenter, mapSize, minimapCenter, minimapSize;
 					bool hasVR, hasMinimap;
 					MapLoader.GetMapDimensions(selectedBoard.MapInfo.Image, out VR, out mapCenter, out mapSize,
 						out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
 					selectedBoard.VRRectangle = new VRRectangle(selectedBoard, VR);
 				} else {
 					selectedBoard.VRRectangle = new VRRectangle(selectedBoard,
-						new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100,
+						new Rectangle(-selectedBoard.CenterPoint.X + 100,
 							-selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200,
 							selectedBoard.MapSize.Y - 200));
 				}
@@ -387,27 +392,27 @@ namespace HaCreator.MapEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MapAddMinimap(object sender, EventArgs e) {
-			var item = (System.Windows.Controls.MenuItem) sender;
+			var item = (SystemWinCtl.MenuItem) sender;
 			if (item == null) {
 				return;
 			}
 
-			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var tabItem = (SystemWinCtl.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
 			var selectedBoard = container.Board;
 			lock (selectedBoard.ParentControl) {
 				if (selectedBoard.MapInfo.Image != null) {
-					Microsoft.Xna.Framework.Rectangle VR;
-					Microsoft.Xna.Framework.Point mapCenter, mapSize, minimapCenter, minimapSize;
+					Rectangle VR;
+					Point mapCenter, mapSize, minimapCenter, minimapSize;
 					bool hasVR, hasMinimap;
 					MapLoader.GetMapDimensions(selectedBoard.MapInfo.Image, out VR, out mapCenter, out mapSize,
 						out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
 					selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard,
-						new Microsoft.Xna.Framework.Rectangle(-minimapCenter.X, -minimapCenter.Y, minimapSize.X,
+						new Rectangle(-minimapCenter.X, -minimapCenter.Y, minimapSize.X,
 							minimapSize.Y));
 				} else {
 					selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard,
-						new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100,
+						new Rectangle(-selectedBoard.CenterPoint.X + 100,
 							-selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200,
 							selectedBoard.MapSize.Y - 200));
 				}
@@ -417,12 +422,12 @@ namespace HaCreator.MapEditor {
 		}
 
 		private void ReloadMap(object sender, EventArgs e) {
-			var item = (System.Windows.Controls.MenuItem) sender;
+			var item = (SystemWinCtl.MenuItem) sender;
 			if (item == null) {
 				return;
 			}
 
-			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var tabItem = (SystemWinCtl.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
 			var selectedBoard = container.Board;
 
@@ -452,12 +457,12 @@ namespace HaCreator.MapEditor {
 				return;
 			}
 
-			var item = (System.Windows.Controls.MenuItem) sender;
+			var item = (SystemWinCtl.MenuItem) sender;
 			if (item == null) {
 				return;
 			}
 
-			var tabItem = (System.Windows.Controls.TabItem) item.Tag;
+			var tabItem = (SystemWinCtl.TabItem) item.Tag;
 			var container = (TabItemContainer) tabItem.Tag;
 			var selectedBoard = container.Board;
 			lock (selectedBoard.ParentControl) {
@@ -477,7 +482,7 @@ namespace HaCreator.MapEditor {
 			editorPanel.IsEnabled = tabs.Items.Count > 0; // at least 1 tabs for now
 		}
 
-		private void Tabs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+		private void Tabs_SelectionChanged(object sender, SystemWinCtl.SelectionChangedEventArgs e) {
 			if (multiBoard.SelectedBoard == null) {
 				return;
 			}
@@ -485,11 +490,11 @@ namespace HaCreator.MapEditor {
 			lock (multiBoard) {
 				MultiBoard_ReturnToSelectionState();
 
-				var selectedTab = (System.Windows.Controls.TabItem) tabs.SelectedItem;
+				var selectedTab = (SystemWinCtl.TabItem) tabs.SelectedItem;
 				if (selectedTab == null && tabs.Items.Count > 0) {
 					// Client just auto selects index 0 but tabs.SelectedItem is null
 					// Hacky fixed...
-					selectedTab = (System.Windows.Controls.TabItem) tabs.Items[0];
+					selectedTab = (SystemWinCtl.TabItem) tabs.Items[0];
 					// Try to fix any possible incorrect state issues.
 					tabs.SelectedIndex = 0;
 				}
@@ -546,11 +551,10 @@ namespace HaCreator.MapEditor {
 
 		#region Ribbon Handlers
 
-		private string lastSaveLoc = null;
+		private string lastSaveLoc;
 
 		public void Ribbon_ExportClicked() {
-			var ofd = new SaveFileDialog()
-				{Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham"};
+			var ofd = new SaveFileDialog {Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham"};
 			if (lastSaveLoc != null) {
 				ofd.FileName = lastSaveLoc;
 			}
@@ -592,7 +596,7 @@ namespace HaCreator.MapEditor {
 
 			HaRepacker.Program.WzFileManager = new WzFileManager();
 			var firstRun = HaRepacker.Program.PrepareApplication(false);
-			var mf = new HaRepacker.GUI.MainForm(null, false, firstRun);
+			var mf = new MainForm(null, false, firstRun);
 			mf.unloadAllToolStripMenuItem.Visible = false;
 			mf.reloadAllToolStripMenuItem.Visible = false;
 			foreach (var entry in Program.WzManager.WzFileList) mf.Interop_AddLoadedWzFileToManager(entry);
@@ -608,11 +612,13 @@ namespace HaCreator.MapEditor {
 		private bool? getTypes(ItemTypes visibleTypes, ItemTypes editedTypes, ItemTypes type) {
 			if ((editedTypes & type) == type) {
 				return true;
-			} else if ((visibleTypes & type) == type) {
-				return (bool?) null;
-			} else {
-				return false;
 			}
+
+			if ((visibleTypes & type) == type) {
+				return null;
+			}
+
+			return false;
 		}
 
 		private void ParseVisibleEditedTypes() {
@@ -659,7 +665,7 @@ namespace HaCreator.MapEditor {
 					"An error occured during minimap regeneration. The error has been logged. If possible, save the map report it via github.",
 					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				ErrorLogger.Log(ErrorLevel.Critical,
-					"error regenning minimap for map " + multiBoard.SelectedBoard.MapInfo.id.ToString());
+					"error regenning minimap for map " + multiBoard.SelectedBoard.MapInfo.id);
 			}
 		}
 
@@ -668,13 +674,13 @@ namespace HaCreator.MapEditor {
 
 
 			var selectedBoard = multiBoard.SelectedBoard;
-			var tab = (System.Windows.Controls.TabItem) tabs.SelectedItem;
+			var tab = (SystemWinCtl.TabItem) tabs.SelectedItem;
 			if (selectedBoard == null || tab == null) {
 				return;
 			}
 
 			var mapSimulator =
-				MapSimulator.MapSimulatorLoader.CreateAndShowMapSimulator(selectedBoard, (string) tab.Header);
+				MapSimulatorLoader.CreateAndShowMapSimulator(selectedBoard, (string) tab.Header);
 
 			multiBoard.DeviceReady = true;
 		}
@@ -848,7 +854,7 @@ namespace HaCreator.MapEditor {
 		private void ribbon_NewPlatformClicked() {
 			lock (multiBoard) {
 				var dlg = new NewPlatform(new SortedSet<int>(multiBoard.SelectedBoard.Layers
-					.Select(x => (IEnumerable<int>) x.zMList).Aggregate((x, y) => Enumerable.Concat(x, y))));
+					.Select(x => (IEnumerable<int>) x.zMList).Aggregate((x, y) => x.Concat(y))));
 				if (dlg.ShowDialog() != DialogResult.OK) {
 					return;
 				}

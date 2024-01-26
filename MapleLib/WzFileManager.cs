@@ -15,7 +15,7 @@ namespace MapleLib {
 		private static readonly string[] EXCLUDED_DIRECTORY_FROM_WZ_LIST =
 			{"bak", "backup", "original", "xml", "hshield", "blackcipher", "harepacker", "hacreator", "xml"};
 
-		public static readonly string[] COMMON_MAPLESTORY_DIRECTORY = new string[] {
+		public static readonly string[] COMMON_MAPLESTORY_DIRECTORY = {
 			@"C:\Nexon\MapleStory",
 			@"D:\Nexon\Maple",
 			@"C:\Program Files\WIZET\MapleStory",
@@ -218,43 +218,43 @@ namespace MapleLib {
 					var iniFile = iniFiles[0];
 					if (!File.Exists(iniFile)) {
 						throw new Exception(".ini file at the directory '" + dir + "' is missing.");
-					} else {
-						var iniFileLines = File.ReadAllLines(iniFile);
-						if (iniFileLines.Length <= 0) {
-							throw new Exception(".ini file does not contain LastWzIndex information.");
+					}
+
+					var iniFileLines = File.ReadAllLines(iniFile);
+					if (iniFileLines.Length <= 0) {
+						throw new Exception(".ini file does not contain LastWzIndex information.");
+					}
+
+					var iniFileSplit = iniFileLines[0].Split('|');
+					if (iniFileSplit.Length <= 1) {
+						throw new Exception(".ini file does not contain LastWzIndex information.");
+					}
+
+					var index = int.Parse(iniFileSplit[1]);
+
+					for (var i = 0; i <= index; i++) {
+						var partialWzFilePath =
+							string.Format(iniFile.Replace(".ini", "_{0}.wz"), i.ToString("D3")); // 3 padding '0's
+						var fileName = Path.GetFileName(partialWzFilePath);
+						var fileName2 = fileName.Replace(".wz", "");
+
+						var wzDirectoryNameOfWzFile = dir.Replace(baseDir, "").ToLower();
+
+						if (EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(item => fileName2.ToLower().Contains(item))) {
+							continue; // backup files
 						}
 
-						var iniFileSplit = iniFileLines[0].Split('|');
-						if (iniFileSplit.Length <= 1) {
-							throw new Exception(".ini file does not contain LastWzIndex information.");
+						//Debug.WriteLine(partialWzFileName);
+						//Debug.WriteLine(wzDirectoryOfWzFile);
+
+						if (_wzFilesList.ContainsKey(wzDirectoryNameOfWzFile)) {
+							_wzFilesList[wzDirectoryNameOfWzFile].Add(fileName2);
+						} else {
+							_wzFilesList.Add(wzDirectoryNameOfWzFile, new List<string> {fileName2});
 						}
 
-						var index = int.Parse(iniFileSplit[1]);
-
-						for (var i = 0; i <= index; i++) {
-							var partialWzFilePath =
-								string.Format(iniFile.Replace(".ini", "_{0}.wz"), i.ToString("D3")); // 3 padding '0's
-							var fileName = Path.GetFileName(partialWzFilePath);
-							var fileName2 = fileName.Replace(".wz", "");
-
-							var wzDirectoryNameOfWzFile = dir.Replace(baseDir, "").ToLower();
-
-							if (EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(item => fileName2.ToLower().Contains(item))) {
-								continue; // backup files
-							}
-
-							//Debug.WriteLine(partialWzFileName);
-							//Debug.WriteLine(wzDirectoryOfWzFile);
-
-							if (_wzFilesList.ContainsKey(wzDirectoryNameOfWzFile)) {
-								_wzFilesList[wzDirectoryNameOfWzFile].Add(fileName2);
-							} else {
-								_wzFilesList.Add(wzDirectoryNameOfWzFile, new List<string> {fileName2});
-							}
-
-							if (!_wzFilesDirectoryList.ContainsKey(fileName2)) {
-								_wzFilesDirectoryList.Add(fileName2, dir);
-							}
+						if (!_wzFilesDirectoryList.ContainsKey(fileName2)) {
+							_wzFilesDirectoryList.Add(fileName2, dir);
 						}
 					}
 				}
@@ -430,7 +430,7 @@ namespace MapleLib {
 			_readWriteLock.EnterReadLock();
 			try {
 				foreach (var wzFileUpdated in _wzFilesUpdated) {
-					if (wzFileUpdated.Value == true) {
+					if (wzFileUpdated.Value) {
 						updatedWzFiles.Add(wzFileUpdated.Key);
 					}
 				}
@@ -543,13 +543,13 @@ namespace MapleLib {
 				}
 
 				return _wzFilesList["data"];
-			} else {
-				if (!_wzFilesList.ContainsKey(baseName)) {
-					return new List<string>(); // return as an empty list if none
-				}
-
-				return _wzFilesList[baseName];
 			}
+
+			if (!_wzFilesList.ContainsKey(baseName)) {
+				return new List<string>(); // return as an empty list if none
+			}
+
+			return _wzFilesList[baseName];
 		}
 
 		/// <summary>
@@ -565,12 +565,12 @@ namespace MapleLib {
 					.Select(name => this["data"][baseName] as WzDirectory)
 					.Where(dir => dir != null)
 					.ToList();
-			} else {
-				return wzDirs
-					.Select(name => this[name])
-					.Where(dir => dir != null)
-					.ToList();
 			}
+
+			return wzDirs
+				.Select(name => this[name])
+				.Where(dir => dir != null)
+				.ToList();
 		}
 
 		/// <summary>

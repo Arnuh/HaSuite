@@ -8,7 +8,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 	/// Interaction logic for LoadingPanel.xaml
 	/// </summary>
 	public partial class LoadingPanel : UserControl, INotifyPropertyChanged {
-		private ImageAnimationController imageController = null;
+		private ImageAnimationController imageController;
 
 		public LoadingPanel() {
 			InitializeComponent();
@@ -50,7 +50,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 
 		#region Exported Fields
 
-		private ulong _WzIvKeyTries = 0;
+		private ulong _WzIvKeyTries;
 
 		public ulong WzIvKeyTries {
 			get => _WzIvKeyTries;
@@ -60,7 +60,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			}
 		}
 
-		private long _WzIvKeyDuration = 0; // number of ticks
+		private long _WzIvKeyDuration; // number of ticks
 
 		public long WzIvKeyDuration {
 			get => _WzIvKeyDuration;

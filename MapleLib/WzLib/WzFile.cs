@@ -22,6 +22,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using MapleLib.ClientLib;
+using MapleLib.Helpers;
 using MapleLib.MapleCryptoLib;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
@@ -38,11 +39,11 @@ namespace MapleLib.WzLib {
 		internal WzHeader header;
 		internal string name = "";
 
-		internal ushort wzVersionHeader = 0;
+		internal ushort wzVersionHeader;
 		internal const ushort wzVersionHeader64bit_start = 770; // 777 for KMS, GMS v230 uses 778.. wut
 
-		internal uint versionHash = 0;
-		internal short mapleStoryPatchVersion = 0;
+		internal uint versionHash;
+		internal short mapleStoryPatchVersion;
 		internal WzMapleVersion maplepLocalVersion;
 		internal MapleStoryLocalisation mapleLocaleVersion = MapleStoryLocalisation.Not_Known;
 
@@ -136,7 +137,7 @@ namespace MapleLib.WzLib {
 			wzDir.Dispose();
 		}
 
-		private bool _isUnloaded = false;
+		private bool _isUnloaded;
 
 		/// <summary>
 		/// Returns true if this WZ file has been unloaded
@@ -214,7 +215,7 @@ namespace MapleLib.WzLib {
 			}*/
 			if (WzIv != null) this.WzIv = WzIv;
 
-			return ParseMainWzDirectory(false);
+			return ParseMainWzDirectory();
 		}
 
 
@@ -226,7 +227,7 @@ namespace MapleLib.WzLib {
 		/// <returns></returns>
 		internal WzFileParseStatus ParseMainWzDirectory(bool lazyParse = false) {
 			if (path == null) {
-				Helpers.ErrorLogger.Log(Helpers.ErrorLevel.Critical, "[Error] Path is null");
+				ErrorLogger.Log(ErrorLevel.Critical, "[Error] Path is null");
 				return WzFileParseStatus.Path_Is_Null;
 			}
 
@@ -251,8 +252,8 @@ namespace MapleLib.WzLib {
 
 			Debug.WriteLine("----------------------------------------");
 			Debug.WriteLine(string.Format("Read Wz File {0}", Name));
-			Debug.WriteLine(string.Format("wz_withEncryptVersionHeader: {0}", wz_withEncryptVersionHeader));
-			Debug.WriteLine(string.Format("wzVersionHeader: {0}", wzVersionHeader));
+			Debug.WriteLine("wz_withEncryptVersionHeader: {0}", wz_withEncryptVersionHeader);
+			Debug.WriteLine("wzVersionHeader: {0}", wzVersionHeader);
 			Debug.WriteLine("----------------------------------------");
 
 			if (mapleStoryPatchVersion == -1) {
@@ -286,14 +287,14 @@ namespace MapleLib.WzLib {
 
 				//parseErrorMessage = "Error with game version hash : The specified game version is incorrect and WzLib was unable to determine the version itself";
 				return WzFileParseStatus.Error_Game_Ver_Hash;
-			} else {
-				versionHash = CheckAndGetVersionHash(wzVersionHeader, mapleStoryPatchVersion);
-				reader.Hash = versionHash;
-
-				var directory = new WzDirectory(reader, name, versionHash, WzIv, this);
-				directory.ParseDirectory();
-				wzDir = directory;
 			}
+
+			versionHash = CheckAndGetVersionHash(wzVersionHeader, mapleStoryPatchVersion);
+			reader.Hash = versionHash;
+
+			var directory = new WzDirectory(reader, name, versionHash, WzIv, this);
+			directory.ParseDirectory();
+			wzDir = directory;
 
 			return WzFileParseStatus.Success;
 		}
@@ -324,9 +325,8 @@ namespace MapleLib.WzLib {
 							wz_withEncryptVersionHeader = false;
 						}
 					}
-				} else {
-					// old wz file with header version
 				}
+				// old wz file with header version
 			} else {
 				// Obviously, if data part have only 1 byte, encver must be deleted.
 				wz_withEncryptVersionHeader = false;
@@ -364,68 +364,63 @@ namespace MapleLib.WzLib {
 
 			// test the image and see if its correct by parsing it 
 			var closeTestDirectory = true;
-			try {
-				var testImage = testDirectory.WzImages.FirstOrDefault();
-				if (testImage != null) {
-					try {
-						reader.BaseStream.Position = testImage.Offset;
-						var checkByte = reader.ReadByte();
-						reader.BaseStream.Position = fallbackOffsetPosition;
+			var testImage = testDirectory.WzImages.FirstOrDefault();
+			if (testImage != null) {
+				try {
+					reader.BaseStream.Position = testImage.Offset;
+					var checkByte = reader.ReadByte();
+					reader.BaseStream.Position = fallbackOffsetPosition;
 
-						switch (checkByte) {
-							case 0x73:
-							case 0x1b: {
-								var directory = new WzDirectory(reader, name, versionHash, WzIv,
-									this);
+					switch (checkByte) {
+						case 0x73:
+						case 0x1b: {
+							var directory = new WzDirectory(reader, name, versionHash, WzIv,
+								this);
 
-								directory.ParseDirectory(lazyParse);
-								wzDir = directory;
-								return true;
-							}
-							case 0x30:
-							case 0x6C: // idk
-							case 0xBC: // Map002.wz? KMST?
-							// v72 and v73 have a 79 and 193 check byte for mob.wz
-							// Idk what this is even for...  
-							default: {
-								var printError =
-									$"[WzFile.cs] New Wz image header found. checkByte = {checkByte} for version {mapleStoryPatchVersion}. File Name = {Name}";
-
-								Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature, printError);
-								Debug.WriteLine(printError);
-								// log or something
-								break;
-							}
+							directory.ParseDirectory(lazyParse);
+							wzDir = directory;
+							return true;
 						}
+						case 0x30:
+						case 0x6C: // idk
+						case 0xBC: // Map002.wz? KMST?
+						// v72 and v73 have a 79 and 193 check byte for mob.wz
+						// Idk what this is even for...  
+						default: {
+							var printError =
+								$"[WzFile.cs] New Wz image header found. checkByte = {checkByte} for version {mapleStoryPatchVersion}. File Name = {Name}";
 
-						reader.BaseStream.Position = fallbackOffsetPosition; // reset
-						return false;
-					} catch {
-						reader.BaseStream.Position = fallbackOffsetPosition; // reset
-						return false;
+							ErrorLogger.Log(ErrorLevel.MissingFeature, printError);
+							Debug.WriteLine(printError);
+							// log or something
+							break;
+						}
 					}
 
-					return true;
-				} else {
-					// if there's no image in the WZ file (new KMST Base.wz), test the directory instead
-					// coincidentally in msea v194 Map001.wz, the hash matches exactly using mapleStoryPatchVersion of 113, and it fails to decrypt later on (probably 1 in a million chance? o_O).
-					// damn, technical debt accumulating here
-					// also needs to check for 'Is64BitWzFile' as it may match TaiwanMS v113 (pre-bb) and return as false.
-					if (Is64BitWzFile && mapleStoryPatchVersion == 113) {
-						// hack for now
-						reader.BaseStream.Position = fallbackOffsetPosition; // reset
-						return false;
-					} else {
-						wzDir = testDirectory;
-						closeTestDirectory = false;
-
-						return true;
-					}
+					reader.BaseStream.Position = fallbackOffsetPosition; // reset
+					return false;
+				} catch {
+					reader.BaseStream.Position = fallbackOffsetPosition; // reset
+					return false;
 				}
-			} finally {
-				//     if (bCloseTestDirectory)
-				//         testDirectory.Dispose();
+
+				return true;
 			}
+
+			// if there's no image in the WZ file (new KMST Base.wz), test the directory instead
+			// coincidentally in msea v194 Map001.wz, the hash matches exactly using mapleStoryPatchVersion of 113, and it fails to decrypt later on (probably 1 in a million chance? o_O).
+			// damn, technical debt accumulating here
+			// also needs to check for 'Is64BitWzFile' as it may match TaiwanMS v113 (pre-bb) and return as false.
+			if (Is64BitWzFile && mapleStoryPatchVersion == 113) {
+				// hack for now
+				reader.BaseStream.Position = fallbackOffsetPosition; // reset
+				return false;
+			}
+
+			wzDir = testDirectory;
+			closeTestDirectory = false;
+
+			return true;
 		}
 
 		/// <summary>
@@ -515,14 +510,14 @@ namespace MapleLib.WzLib {
 			foreach (var ch in maplestoryPatchVersion.ToString()) versionHash = versionHash * 32 + (byte) ch + 1;
 
 			if (wzVersionHeader == wzVersionHeader64bit_start) {
-				return (uint) versionHash; // always 59192
+				return versionHash; // always 59192
 			}
 
 			int decryptedVersionNumber = (byte) ~(((versionHash >> 24) & 0xFF) ^ ((versionHash >> 16) & 0xFF) ^
 			                                      ((versionHash >> 8) & 0xFF) ^ (versionHash & 0xFF));
 
 			if (wzVersionHeader == decryptedVersionNumber) {
-				return (uint) versionHash;
+				return versionHash;
 			}
 
 			return 0; // invalid
@@ -597,7 +592,7 @@ namespace MapleLib.WzLib {
 
 					if (!saveAs64BitWz) // 64 bit doesnt have a version number.
 					{
-						wzWriter.Write((ushort) wzVersionHeader);
+						wzWriter.Write(wzVersionHeader);
 					}
 
 					wzWriter.Header = Header;
@@ -645,11 +640,15 @@ namespace MapleLib.WzLib {
 		public List<WzObject> GetObjectsFromWildcardPath(string path) {
 			if (path.ToLower() == name.ToLower()) {
 				return new List<WzObject> {WzDirectory};
-			} else if (path == "*") {
+			}
+
+			if (path == "*") {
 				var fullList = new List<WzObject> {WzDirectory};
 				fullList.AddRange(GetObjectsFromDirectory(WzDirectory));
 				return fullList;
-			} else if (!path.Contains("*")) {
+			}
+
+			if (!path.Contains("*")) {
 				return new List<WzObject> {GetObjectFromPath(path)};
 			}
 
@@ -892,11 +891,13 @@ namespace MapleLib.WzLib {
 							case WzPropertyType.Vector:
 								if (pathPart == "X") {
 									return ((WzVectorProperty) curObj).X;
-								} else if (pathPart == "Y") {
-									return ((WzVectorProperty) curObj).Y;
-								} else {
-									return null;
 								}
+
+								if (pathPart == "Y") {
+									return ((WzVectorProperty) curObj).Y;
+								}
+
+								return null;
 							default: // Wut?
 								return null;
 						}
@@ -948,7 +949,9 @@ namespace MapleLib.WzLib {
 					// If we reached here, it means the remaining part of the wildcard could not be matched
 					// with the remaining part of the compare string, so return false.
 					return false;
-				} else if (strWildCard[wildCardIndex] == strCompare[compareIndex]) {
+				}
+
+				if (strWildCard[wildCardIndex] == strCompare[compareIndex]) {
 					wildCardIndex++;
 					compareIndex++;
 				} else {

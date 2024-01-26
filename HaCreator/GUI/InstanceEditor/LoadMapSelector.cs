@@ -21,7 +21,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// <summary>
 		/// Or the textbox
 		/// </summary>
-		private TextBox textBox = null;
+		private TextBox textBox;
 
 		/// <summary>
 		/// Load map selector

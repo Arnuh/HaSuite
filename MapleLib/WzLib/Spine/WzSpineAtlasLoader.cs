@@ -85,17 +85,17 @@ namespace MapleLib.WzLib.Spine {
 					data = json.ReadSkeletonData(skeletonReader);
 
 					return true;
-				} else {
-					// try read binary based 
-					foreach (var property in childProperties) {
-						var linkedProperty = property.GetLinkedWzImageProperty();
+				}
 
-						if (linkedProperty is WzBinaryProperty soundProp) {
-							using (var ms = new MemoryStream(soundProp.GetBytes(false))) {
-								var skeletonBinary = new SkeletonBinary(atlas);
-								data = skeletonBinary.ReadSkeletonData(ms);
-								return true;
-							}
+				// try read binary based 
+				foreach (var property in childProperties) {
+					var linkedProperty = property.GetLinkedWzImageProperty();
+
+					if (linkedProperty is WzBinaryProperty soundProp) {
+						using (var ms = new MemoryStream(soundProp.GetBytes(false))) {
+							var skeletonBinary = new SkeletonBinary(atlas);
+							data = skeletonBinary.ReadSkeletonData(ms);
+							return true;
 						}
 					}
 				}

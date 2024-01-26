@@ -6,6 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
+using System.Windows;
+using System.Windows.Forms;
+
 namespace HaRepacker.Utils {
 	public class ScreenDPIUtil {
 		/// <summary>
@@ -13,8 +16,8 @@ namespace HaRepacker.Utils {
 		/// </summary>
 		/// <returns></returns>
 		public static double GetScreenScaleFactor() {
-			double resHeight = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-			var actualHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
+			double resHeight = Screen.PrimaryScreen.Bounds.Height;
+			var actualHeight = SystemParameters.PrimaryScreenHeight;
 			var ratio = actualHeight / resHeight;
 			var dpi = resHeight / actualHeight;
 

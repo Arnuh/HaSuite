@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using HaCreator.MapEditor.Instance;
@@ -67,7 +68,7 @@ namespace HaCreator.MapEditor.Info {
 					type == BackgroundInfoType.Spine ? "spine" : "back"]?[no];
 
 			if (bgInfoProp == null) {
-				var logError = string.Format("Background image {0}/{1} is null, {2}", bS, no, bsImg.ToString());
+				var logError = string.Format("Background image {0}/{1} is null, {2}", bS, no, bsImg);
 				ErrorLogger.Log(ErrorLevel.IncorrectStructure, logError);
 				return null;
 			}
@@ -78,11 +79,11 @@ namespace HaCreator.MapEditor.Info {
 				}
 
 				return (BackgroundInfo) bgInfoProp.HCTagSpine;
-			} else {
-				if (bgInfoProp.HCTag == null) bgInfoProp.HCTag = Load(graphicsDevice, bgInfoProp, bS, type, no);
-
-				return (BackgroundInfo) bgInfoProp.HCTag;
 			}
+
+			if (bgInfoProp.HCTag == null) bgInfoProp.HCTag = Load(graphicsDevice, bgInfoProp, bS, type, no);
+
+			return (BackgroundInfo) bgInfoProp.HCTag;
 		}
 
 		/// <summary>
@@ -127,11 +128,11 @@ namespace HaCreator.MapEditor.Info {
 
 					return new BackgroundInfo(parentObject, bitmap, WzInfoTools.PointFToSystemPoint(origin__), bS, type,
 						no, parentObject, wzSpineAnimationItem);
-				} else {
-					var origin_ = new PointF();
-					return new BackgroundInfo(parentObject, Resources.placeholder,
-						WzInfoTools.PointFToSystemPoint(origin_), bS, type, no, parentObject, null);
 				}
+
+				var origin_ = new PointF();
+				return new BackgroundInfo(parentObject, Resources.placeholder,
+					WzInfoTools.PointFToSystemPoint(origin_), bS, type, no, parentObject, null);
 			} else {
 				frame0 = (WzCanvasProperty) WzInfoTools.GetRealProperty(parentObject);
 			}
@@ -195,7 +196,7 @@ namespace HaCreator.MapEditor.Info {
 
 		#region Members
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public string bS {
 			get => _bS;
 			set => _bS = value;
@@ -209,7 +210,7 @@ namespace HaCreator.MapEditor.Info {
 			set => _type = value;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public string no {
 			get => _no;
 			set => _no = value;

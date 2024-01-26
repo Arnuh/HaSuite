@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using HaRepacker.GUI.Panels;
+using HaRepacker.Properties;
 using MapleLib.MapleCryptoLib;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Util;
@@ -21,13 +22,13 @@ namespace HaRepacker.GUI {
 		private readonly WzFile wzf; // it can either be a WzImage or a WzFile only.
 		private readonly WzImage wzImg; // it can either be a WzImage or a WzFile only.
 
-		private readonly bool IsRegularWzFile = false; // or data.wz
+		private readonly bool IsRegularWzFile; // or data.wz
 
 		public string path;
 		private readonly MainPanel _mainPanel;
 
 
-		private bool bIsLoading = false;
+		private bool bIsLoading;
 
 		/// <summary>
 		/// Constructor
@@ -125,15 +126,15 @@ namespace HaRepacker.GUI {
 		/// <param name="e"></param>
 		private void SaveButton_Click(object sender, EventArgs e) {
 			if (versionBox.Value < 0) {
-				Warning.Error(Properties.Resources.SaveVersionError);
+				Warning.Error(Resources.SaveVersionError);
 				return;
 			}
 
-			using (var dialog = new SaveFileDialog() {
-				       Title = Properties.Resources.SelectOutWz,
+			using (var dialog = new SaveFileDialog {
+				       Title = Resources.SelectOutWz,
 				       FileName = wzNode.Text,
 				       Filter = string.Format("{0}|*.wz",
-					       Properties.Resources.WzFilter)
+					       Resources.WzFilter)
 			       }) {
 				if (dialog.ShowDialog() != DialogResult.OK) {
 					return;
@@ -156,7 +157,7 @@ namespace HaRepacker.GUI {
 							File.Delete(dialog.FileName);
 							File.Move(dialog.FileName + "$tmp", dialog.FileName);
 						} catch (IOException ex) {
-							MessageBox.Show("Handle error overwriting WZ file", Properties.Resources.Error);
+							MessageBox.Show("Handle error overwriting WZ file", Resources.Error);
 						}
 					} else {
 						wzf.SaveToDisk(dialog.FileName, bSaveAs64BitWzFile, wzMapleVersionSelected);
@@ -177,7 +178,7 @@ namespace HaRepacker.GUI {
 					try {
 						using (var oldfs = File.Open(tmpFilePath, FileMode.OpenOrCreate)) {
 							using (var wzWriter = new WzBinaryWriter(oldfs, WzIv)) {
-								wzImg.SaveImage(wzWriter, true); // Write to temp folder
+								wzImg.SaveImage(wzWriter); // Write to temp folder
 							}
 						}
 
@@ -196,7 +197,7 @@ namespace HaRepacker.GUI {
 					// Reload the new file
 					var img = Program.WzFileManager.LoadDataWzHotfixFile(dialog.FileName, wzMapleVersionSelected);
 					if (img == null || error_noAdminPriviledge) {
-						MessageBox.Show(Properties.Resources.MainFileOpenFail, Properties.Resources.Error);
+						MessageBox.Show(Resources.MainFileOpenFail, Resources.Error);
 					}
 
 					_mainPanel.MainForm.AddLoadedWzObjectToMainPanel(img);

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
@@ -17,7 +18,7 @@ namespace HaCreator.MapEditor {
 		private readonly SortedSet<int> zms = new SortedSet<int>();
 		private readonly int num;
 		private readonly Board board;
-		private string _tS = null;
+		private string _tS;
 
 		public Layer(Board board) {
 			this.board = board;
@@ -36,7 +37,7 @@ namespace HaCreator.MapEditor {
 
 		public int LayerNumber => num;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public string tS {
 			get => _tS;
 			set {
@@ -87,19 +88,19 @@ namespace HaCreator.MapEditor {
 		/// <summary>
 		/// zM
 		/// </summary>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public int zMDefault => board.SelectedPlatform == -1 ? zMList.ElementAt(0) : board.SelectedPlatform;
 
 
 		/// <summary>
 		/// zM List
 		/// </summary>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
+		[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 		public SortedSet<int> zMList => zms;
 
 
 		public override string ToString() {
-			return LayerNumber.ToString() + (tS != null ? " - " + tS : "");
+			return LayerNumber + (tS != null ? " - " + tS : "");
 		}
 	}
 }

@@ -10,6 +10,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using HaSharedLibrary.Util;
 using Microsoft.Xna.Framework.Graphics;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapEditor.Text {
 	public class FontEngine {
@@ -30,7 +31,7 @@ namespace HaCreator.MapEditor.Text {
 			//format.Alignment = StringAlignment.Near;
 			//format.LineAlignment = StringAlignment.Near;
 
-			for (var ch = (char) 0; ch < 0x100; ch++) characters[(int) ch] = RasterizeCharacter(ch);
+			for (var ch = (char) 0; ch < 0x100; ch++) characters[ch] = RasterizeCharacter(ch);
 		}
 
 		private Brush brush = new SolidBrush(Color.White);
@@ -89,7 +90,7 @@ namespace HaCreator.MapEditor.Text {
 				var w = characters[c].w;
 				var h = characters[c].h;
 				sprite.Draw(characters[c].texture,
-					new Microsoft.Xna.Framework.Rectangle(position.X + xOffs, position.Y, w, h), color);
+					new Rectangle(position.X + xOffs, position.Y, w, h), color);
 				xOffs += w;
 			}
 		}

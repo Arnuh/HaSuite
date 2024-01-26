@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -36,7 +37,7 @@ namespace HaCreator.CustomControls {
 		//----------------------------------------------------------
 		public new object DataSource {
 			//Return our datatable variable
-			get => (object) dt;
+			get => dt;
 			set {
 				//Set our datatable variable
 				dt = (DataTable) value;
@@ -87,8 +88,8 @@ namespace HaCreator.CustomControls {
 		//----------------------------------------------------------
 		//Show our property under the Behavior section of the Properties window
 		//So that it can be set at design time
-		[System.ComponentModel.Description("Allow checkstate to be changed")]
-		[System.ComponentModel.Category("Behavior")]
+		[Description("Allow checkstate to be changed")]
+		[Category("Behavior")]
 		public bool AutoCheck {
 			//Return our checkstate variable
 			get => AllowChecks;
@@ -111,7 +112,7 @@ namespace HaCreator.CustomControls {
 		//
 		//  Obtain Checkstatus, Text, and Values via an items index
 		//----------------------------------------------------------
-		[System.ComponentModel.Description("Gets or sets the CheckMember")]
+		[Description("Gets or sets the CheckMember")]
 		public string CheckMember {
 			get => ChkMember;
 			set => ChkMember = value;
@@ -121,9 +122,9 @@ namespace HaCreator.CustomControls {
 			//Search for the item in CheckedIndices to see if its checked or not
 			if (CheckedIndices.IndexOf(index) != -1) {
 				return true;
-			} else {
-				return false;
 			}
+
+			return false;
 		}
 
 		public void SetChecked(int index, bool value) {

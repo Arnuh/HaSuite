@@ -112,7 +112,7 @@ namespace MapleLib.WzLib.Nx {
 					var result = pair.Key.LinkValue;
 					var flag3 = result == null;
 					if (!flag3) {
-						bw.BaseStream.Position = (long) (nodeOffset + (ulong) (state.GetNodeID(result) * 20U) + 4UL);
+						bw.BaseStream.Position = (long) (nodeOffset + state.GetNodeID(result) * 20U + 4UL);
 						bw.BaseStream.Read(uolReplace, 0, 16);
 						pair.Value(bw, uolReplace);
 					}
@@ -156,7 +156,7 @@ namespace MapleLib.WzLib.Nx {
 		}
 
 		private void WriteString(string s, BinaryWriter bw) {
-			var flag = s.Any(new Func<char, bool>(char.IsControl));
+			var flag = s.Any(char.IsControl);
 			if (flag) Console.WriteLine("Warning; control character in string. Perhaps toggle /wzn?");
 
 			var toWrite = Encoding.UTF8.GetBytes(s);
@@ -165,7 +165,7 @@ namespace MapleLib.WzLib.Nx {
 		}
 
 		private void WriteNodeLevel(ref List<WzObject> nodeLevel, DumpState ds, BinaryWriter bw) {
-			var nextChildId = (uint) ((ulong) ds.GetNextNodeID() + (ulong) (long) nodeLevel.Count);
+			var nextChildId = (uint) (ds.GetNextNodeID() + (ulong) nodeLevel.Count);
 			foreach (var levelNode in nodeLevel) {
 				var flag = levelNode is WzUOLProperty;
 				if (flag) {
@@ -218,7 +218,7 @@ namespace MapleLib.WzLib.Nx {
 		}
 
 		private int GetChildCount(WzObject node) {
-			return GetChildObjects(node).Count<WzObject>();
+			return GetChildObjects(node).Count();
 		}
 
 		private void WriteNode(WzObject node, DumpState ds, BinaryWriter bw, uint nextChildID) {

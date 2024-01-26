@@ -18,7 +18,7 @@ using MapleLib.WzLib.WzProperties;
 
 namespace HaCreator.CustomControls {
 	public partial class MapBrowser : UserControl {
-		private bool loadMapAvailable = false;
+		private bool loadMapAvailable;
 		private readonly List<string> maps = new List<string>();
 
 		public MapBrowser() {
@@ -88,7 +88,7 @@ namespace HaCreator.CustomControls {
 		}
 
 		private string _previousSeachText = string.Empty;
-		private CancellationTokenSource _existingSearchTaskToken = null;
+		private CancellationTokenSource _existingSearchTaskToken;
 
 		/// <summary>
 		/// On search box text changed
@@ -179,7 +179,7 @@ namespace HaCreator.CustomControls {
 					panel_linkWarning.Visible = false;
 					panel_mapExistWarning.Visible = true;
 
-					minimapBox.Image = (Image) new Bitmap(1, 1);
+					minimapBox.Image = new Bitmap(1, 1);
 					loadMapAvailable = false;
 				} else {
 					using (var rsrc = new WzImageResource(mapImage)) {

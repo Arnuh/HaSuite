@@ -75,8 +75,8 @@ namespace HaCreator.GUI.EditorPanels {
 
 				var item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
 				item.Tag = bgInfo;
-				item.MouseDown += new MouseEventHandler(bgItem_Click);
-				item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+				item.MouseDown += bgItem_Click;
+				item.MouseUp += ImageViewer.item_MouseUp;
 				item.MaxHeight = UserSettings.ImageViewerHeight;
 				item.MaxWidth = UserSettings.ImageViewerWidth;
 			}
@@ -108,7 +108,7 @@ namespace HaCreator.GUI.EditorPanels {
 					var menuItem = new MenuItem();
 					menuItem.Text = "Preview";
 					menuItem.Tag = bgInfo;
-					menuItem.Click += new EventHandler(delegate(object sender_, EventArgs e_) {
+					menuItem.Click += delegate(object sender_, EventArgs e_) {
 						var menuItem_ = sender_ as MenuItem;
 						var bgInfo_ = menuItem_.Tag as BackgroundInfo;
 
@@ -129,7 +129,7 @@ namespace HaCreator.GUI.EditorPanels {
 							thread.Start();
 							thread.Join();
 						}
-					});
+					};
 					cm.MenuItems.Add(menuItem);
 
 					cm.Show(imageViewer, new Point(0, 50));

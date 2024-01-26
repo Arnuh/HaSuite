@@ -6,10 +6,11 @@
 
 using System;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public partial class IntInputBox : Form {
-		private bool bHideNameInputBox = false;
+		private bool bHideNameInputBox;
 
 		public static bool Show(string title,
 			string defaultName, int defaultValue,
@@ -36,8 +37,8 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string nameResult = null;
-		private int? intResult = null;
+		private string nameResult;
+		private int? intResult;
 
 		public IntInputBox(string title) {
 			InitializeComponent();
@@ -63,7 +64,7 @@ namespace HaRepacker.GUI.Input {
 				DialogResult = DialogResult.OK;
 				Close();
 			} else {
-				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
+				MessageBox.Show(Resources.EnterValidInput, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}

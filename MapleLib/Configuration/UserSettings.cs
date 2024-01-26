@@ -24,20 +24,20 @@ namespace MapleLib.Configuration {
 		[JsonProperty(PropertyName = "AutoAssociate")]
 		public bool AutoAssociate = true;
 
-		[JsonProperty(PropertyName = "Sort")] public bool Sort = false;
+		[JsonProperty(PropertyName = "Sort")] public bool Sort;
 
 		[JsonProperty(PropertyName = "SuppressWarnings")]
-		public bool SuppressWarnings = false;
+		public bool SuppressWarnings;
 
 		[JsonProperty(PropertyName = "ParseImagesInSearch")]
-		public bool ParseImagesInSearch = false;
+		public bool ParseImagesInSearch;
 
 		[JsonProperty(PropertyName = "SearchStringValues")]
 		public bool SearchStringValues = true;
 
 		// Animate
 		[JsonProperty(PropertyName = "DevImgSequences")]
-		public bool DevImgSequences = false;
+		public bool DevImgSequences;
 
 		[JsonProperty(PropertyName = "CartesianPlane")]
 		public bool CartesianPlane = true;
@@ -64,7 +64,7 @@ namespace MapleLib.Configuration {
 		public double ImageZoomLevel = 3.0f;
 
 		[JsonProperty(PropertyName = "AutoloadRelatedWzFiles")]
-		public bool AutoloadRelatedWzFiles = false;
+		public bool AutoloadRelatedWzFiles;
 
 		[JsonProperty(PropertyName = "PreviousLoadFolder")]
 		public string PreviousLoadFolder = "";

@@ -104,7 +104,7 @@ namespace Spine {
 				TRUE,
 				FALSE,
 				NULL
-			};
+			}
 
 			private TextReader json;
 
@@ -501,7 +501,7 @@ namespace Spine {
 				    || value is ushort
 				    || value is ulong
 				    || value is decimal) {
-					builder.Append(value.ToString());
+					builder.Append(value);
 				} else {
 					SerializeString(value.ToString());
 				}

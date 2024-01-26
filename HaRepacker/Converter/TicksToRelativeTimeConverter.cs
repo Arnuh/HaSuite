@@ -6,7 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
+using HaRepacker.Properties;
 
 namespace HaRepacker.Converter {
 	/// <summary>
@@ -14,7 +16,7 @@ namespace HaRepacker.Converter {
 	/// </summary>
 	public class TicksToRelativeTimeConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var ticks = (long) value;
 
 			const int SECOND = 1;
@@ -26,43 +28,43 @@ namespace HaRepacker.Converter {
 			var ts = new TimeSpan(ticks);
 			var delta = Math.Abs(ts.TotalSeconds);
 
-			string.Format(Properties.Resources.RelativeTime_SecondsAgo, ts.Seconds);
+			string.Format(Resources.RelativeTime_SecondsAgo, ts.Seconds);
 			if (delta < 1 * MINUTE) {
-				return string.Format(Properties.Resources.RelativeTime_SecondsAgo, ts.Seconds);
+				return string.Format(Resources.RelativeTime_SecondsAgo, ts.Seconds);
 			}
 
 			//if (delta < 2 * MINUTE)
 			//    return "a minute ago";
 
 			if (delta < 45 * MINUTE) {
-				return string.Format(Properties.Resources.RelativeTime_MinutesAgo, ts.Minutes);
+				return string.Format(Resources.RelativeTime_MinutesAgo, ts.Minutes);
 			}
 
 			//if (delta < 90 * MINUTE)
 			//    return "an hour ago";
 
 			if (delta < 24 * HOUR) {
-				return string.Format(Properties.Resources.RelativeTime_HoursAgo, ts.Hours);
+				return string.Format(Resources.RelativeTime_HoursAgo, ts.Hours);
 			}
 
 			//if (delta < 48 * HOUR)
 			//    return "yesterday";
 
 			if (delta < 30 * DAY) {
-				return string.Format(Properties.Resources.RelativeTime_DaysAgo, ts.Days);
+				return string.Format(Resources.RelativeTime_DaysAgo, ts.Days);
 			}
 
 			if (delta < 12 * MONTH) {
 				var months = (int) Math.Floor((double) ts.Days / 30);
-				return string.Format(Properties.Resources.RelativeTime_MonthsAgo, months);
-			} else {
-				var years = (int) Math.Floor((double) ts.Days / 365);
-				return string.Format(Properties.Resources.RelativeTime_YearsAgo, years);
+				return string.Format(Resources.RelativeTime_MonthsAgo, months);
 			}
+
+			var years = (int) Math.Floor((double) ts.Days / 365);
+			return string.Format(Resources.RelativeTime_YearsAgo, years);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			return 0; // faek value
 		}
 	}

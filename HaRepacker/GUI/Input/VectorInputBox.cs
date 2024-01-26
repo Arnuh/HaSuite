@@ -18,8 +18,8 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string nameResult = null;
-		private Point? pointResult = null;
+		private string nameResult;
+		private Point? pointResult;
 
 		public VectorInputBox(string title) {
 			InitializeComponent();

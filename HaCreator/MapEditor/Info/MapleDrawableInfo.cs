@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.Properties;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,7 +40,7 @@ namespace HaCreator.MapEditor.Info {
 		public virtual Texture2D GetTexture(SpriteBatch sprite) {
 			if (texture == null) {
 				if (image != null && image.Width == 1 && image.Height == 1) {
-					texture = Properties.Resources.placeholder.ToTexture2D(sprite.GraphicsDevice);
+					texture = Resources.placeholder.ToTexture2D(sprite.GraphicsDevice);
 				} else {
 					texture = image.ToTexture2D(sprite.GraphicsDevice);
 				}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -99,7 +100,7 @@ namespace HaCreator.GUI {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void HaEditor2_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+		private void HaEditor2_Closing(object sender, CancelEventArgs e) {
 			if (!Program.Restarting && MessageBox.Show("Are you sure you want to quit?", "Quit",
 				    MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) {
 				e.Cancel = true;

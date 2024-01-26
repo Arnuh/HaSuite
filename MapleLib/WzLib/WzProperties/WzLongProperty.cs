@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System;
 using System.IO;
 using MapleLib.WzLib.Util;
 
@@ -32,7 +33,7 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Inherited Members
 
 		public override void SetValue(object value) {
-			val = System.Convert.ToInt64(value);
+			val = Convert.ToInt64(value);
 		}
 
 		public override WzImageProperty DeepClone() {
@@ -93,7 +94,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// </summary>
 		public long Value {
 			get => val;
-			set => val = (long) value;
+			set => val = value;
 		}
 
 		/// <summary>
@@ -125,11 +126,11 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Cast Values
 
 		public override float GetFloat() {
-			return (float) val;
+			return val;
 		}
 
 		public override double GetDouble() {
-			return (double) val;
+			return val;
 		}
 
 		public override long GetLong() {

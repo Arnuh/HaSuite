@@ -6,6 +6,7 @@ https://github.com/eaxvac/Harepacker-resurrected
 
 using System;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public partial class RenameInputBox : Form {
@@ -19,7 +20,7 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string newNameResult = null;
+		private string newNameResult;
 
 		public RenameInputBox(string title) {
 			InitializeComponent();
@@ -40,7 +41,7 @@ namespace HaRepacker.GUI.Input {
 				DialogResult = DialogResult.OK;
 				Close();
 			} else {
-				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
+				MessageBox.Show(Resources.EnterValidInput, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}

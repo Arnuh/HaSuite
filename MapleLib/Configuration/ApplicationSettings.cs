@@ -7,7 +7,7 @@ namespace MapleLib.Configuration {
 		#region Application Window
 
 		[JsonProperty(PropertyName = "WindowMaximized")]
-		public bool WindowMaximized = false;
+		public bool WindowMaximized;
 
 		[JsonProperty(PropertyName = "WindowWidth")]
 		public int Width = 1024;

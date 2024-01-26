@@ -95,12 +95,12 @@ namespace MapleLib.WzLib.Util {
 				Write((int) StringCache[storeName]);
 
 				return true;
-			} else {
-				var sOffset = (int) (BaseStream.Position - Header.FStart);
-				Write((byte) type);
-				Write(stringObjectValue);
-				if (!StringCache.ContainsKey(storeName)) StringCache[storeName] = sOffset;
 			}
+
+			var sOffset = (int) (BaseStream.Position - Header.FStart);
+			Write((byte) type);
+			Write(stringObjectValue);
+			if (!StringCache.ContainsKey(storeName)) StringCache[storeName] = sOffset;
 
 			return false;
 		}
@@ -219,11 +219,11 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		private uint RotateLeft(uint x, byte n) {
-			return (uint) ((x << n) | (x >> (32 - n)));
+			return (x << n) | (x >> (32 - n));
 		}
 
 		private uint RotateRight(uint x, byte n) {
-			return (uint) ((x >> n) | (x << (32 - n)));
+			return (x >> n) | (x << (32 - n));
 		}
 
 		public override void Close() {

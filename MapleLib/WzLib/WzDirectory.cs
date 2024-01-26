@@ -31,7 +31,7 @@ namespace MapleLib.WzLib {
 		private List<WzImage> images = new List<WzImage>();
 		internal List<WzDirectory> subDirs = new List<WzDirectory>();
 		internal WzBinaryReader reader;
-		internal uint offset = 0;
+		internal uint offset;
 		internal string name;
 		internal uint hash;
 		internal int size, checksum, offsetSize;

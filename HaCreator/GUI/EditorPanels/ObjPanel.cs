@@ -78,13 +78,12 @@ namespace HaCreator.GUI.EditorPanels {
 							(string) objL0ListBox.SelectedItem, (string) objL1ListBox.SelectedItem, l2Prop.Name);
 						var item = objImagesContainer.Add(info.Image, l2Prop.Name, true);
 						item.Tag = info;
-						item.MouseDown += new MouseEventHandler(objItem_Click);
-						item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+						item.MouseDown += objItem_Click;
+						item.MouseUp += ImageViewer.item_MouseUp;
 						item.MaxHeight = UserSettings.ImageViewerHeight;
 						item.MaxWidth = UserSettings.ImageViewerWidth;
 					}
 				} catch (InvalidCastException) {
-					return;
 				}
 			}
 		}

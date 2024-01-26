@@ -9,11 +9,11 @@ using MapleLib.WzLib.WzStructure.Data;
 namespace HaSharedLibrary.GUI {
 	public partial class FieldLimitPanel : UserControl {
 		// UI
-		private TextBox setTextboxOnFieldLimitChange = null;
-		private ChangeableTextBox setTextboxOnFieldLimitChange_wpf = null;
+		private TextBox setTextboxOnFieldLimitChange;
+		private ChangeableTextBox setTextboxOnFieldLimitChange_wpf;
 
 		// misc
-		private bool initializingListViewForFieldLimit = false;
+		private bool initializingListViewForFieldLimit;
 
 
 		public FieldLimitPanel() {
@@ -68,7 +68,7 @@ namespace HaSharedLibrary.GUI {
 			// Populate FieldLimitType
 			if (listView_fieldLimitType.Items.Count == 0) {
 				// dummy column
-				listView_fieldLimitType.Columns.Add(new ColumnHeader() {
+				listView_fieldLimitType.Columns.Add(new ColumnHeader {
 					Text = "",
 					Name = "col1",
 					Width = 550
@@ -104,7 +104,6 @@ namespace HaSharedLibrary.GUI {
 		/// <param name="e"></param>
 		private void ListView_fieldLimitType_ItemCheck(object sender, ItemCheckEventArgs e) {
 			if (initializingListViewForFieldLimit) {
-				return;
 			}
 
 			//System.Diagnostics.Debug.WriteLine("Set index at  " + e.Index + " to " + listView_fieldLimitType.Items[e.Index].Checked);
@@ -147,7 +146,7 @@ namespace HaSharedLibrary.GUI {
 
 		#region Member Values
 
-		private ulong _fieldLimit = 0;
+		private ulong _fieldLimit;
 
 		public ulong FieldLimit {
 			get => _fieldLimit;

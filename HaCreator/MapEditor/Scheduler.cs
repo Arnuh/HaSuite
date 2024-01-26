@@ -12,12 +12,12 @@ using System.Threading;
 namespace HaCreator.MapEditor {
 	public class Scheduler : IDisposable {
 		private Dictionary<Action, int> clients;
-		private Thread schedThread = null;
+		private Thread schedThread;
 
 		public Scheduler(Dictionary<Action, int> clients) {
 			this.clients = clients;
 			if (clients.Count > 0) {
-				schedThread = new Thread(new ThreadStart(SchedulerProc));
+				schedThread = new Thread(SchedulerProc);
 				schedThread.Start();
 			}
 		}
@@ -39,10 +39,10 @@ namespace HaCreator.MapEditor {
 
 				// If we have spare time, sleep it
 				var currTime = sw.ElapsedMilliseconds;
-				if (currTime < (long) nearestTime)
+				if (currTime < nearestTime)
 					// We can safely cast to int since nobody will ever add a timer with an interval > MAXINT
 				{
-					Thread.Sleep((int) ((long) nearestTime - currTime));
+					Thread.Sleep((int) (nearestTime - currTime));
 				}
 
 				// It is now guaranteed we are at (or past) the time needed to nearestAction, so we will execute it

@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
@@ -83,14 +84,14 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
-				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 
 			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
 			if (ApplicationSettings.InfoMode) {
-				var xBase = (int) X + xShift;
-				var yBase = (int) Y + yShift;
-				var oi = (ObjectInfo) baseInfo;
+				var xBase = X + xShift;
+				var yBase = Y + yShift;
+				var oi = baseInfo;
 				if (oi.RopeOffsets != null) {
 					DrawOffsetMap(sprite, oi.RopeOffsets, xBase, yBase);
 				}
@@ -103,13 +104,13 @@ namespace HaCreator.MapEditor.Instance {
 			base.Draw(sprite, color, xShift, yShift);
 		}
 
-		public override System.Drawing.Bitmap Image => baseInfo.Image;
+		public override Bitmap Image => baseInfo.Image;
 
 		public override int Width => baseInfo.Width;
 
 		public override int Height => baseInfo.Height;
 
-		public override System.Drawing.Point Origin => baseInfo.Origin;
+		public override Point Origin => baseInfo.Origin;
 
 		public void DoSnap() {
 			if (!baseInfo.Connect) {

@@ -48,6 +48,7 @@ namespace HaCreator.Wz {
 			{PortalType.Names.CollisionUnknownPcig, PortalType.CollisionUnknownPcig},
 			{PortalType.Names.ScriptHiddenUng, PortalType.ScriptHiddenUng}
 		};
+
 		public Dictionary<string, PortalGameImageInfo> GamePortals = new Dictionary<string, PortalGameImageInfo>();
 
 		/// <summary>

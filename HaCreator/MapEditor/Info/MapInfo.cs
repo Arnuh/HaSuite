@@ -30,7 +30,7 @@ namespace MapleLib.WzLib.WzStructure {
 	{
 		public static MapInfo Default = new MapInfo();
 
-		private WzImage image = null;
+		private WzImage image;
 
 		//Editor related, not actual properties
 		public MapType mapType = MapType.RegularMap;
@@ -47,18 +47,18 @@ namespace MapleLib.WzLib.WzStructure {
 		//Must have
 		public string bgm = "Bgm00/GoPicnic";
 		public string mapMark = "None";
-		public long fieldLimit = 0; // FieldLimitType a | FieldLimitType b | etc
+		public long fieldLimit; // FieldLimitType a | FieldLimitType b | etc
 		public int returnMap = Defaults.Info.InvalidMap;
 		public int forcedReturn = Defaults.Info.InvalidMap;
-		public bool cloud = false;
-		public bool swim = false;
-		public bool hideMinimap = false;
-		public bool town = false;
+		public bool cloud;
+		public bool swim;
+		public bool hideMinimap;
+		public bool town;
 		public float mobRate = Defaults.Info.MobRate;
 
 		//Optional
 		public bool VRLimit = Defaults.Info.VRLimit; //use vr's as limits?
-		public int VRTop = 0, VRBottom = 0, VRLeft = 0, VRRight = 0;
+		public int VRTop, VRBottom, VRLeft, VRRight;
 		public int timeLimit = Defaults.Info.TimeLimit;
 		public int lvLimit = Defaults.Info.LvLimit;
 		public FieldType fieldType = Defaults.Info.FieldTypeDefault;
@@ -88,7 +88,7 @@ namespace MapleLib.WzLib.WzStructure {
 		public int fixedMobCapacity = Defaults.Info.FixedMobCapacity; //mob capacity to target (used for massacre pqs)
 		public bool miniMapOnOff = Defaults.Info.MiniMapOnOff;
 		public bool noRegenMap = Defaults.Info.NoRegenMap; //610030400
-		public List<int> allowedItem = null;
+		public List<int> allowedItem;
 		public float recovery = Defaults.Info.Recovery; //recovery rate, like in sauna (3)
 		public bool blockPBossChange = Defaults.Info.BlockPBossChange; //something with monster carnival
 		public bool everlast = Defaults.Info.Everlast; //something with bonus stages of PQs
@@ -182,7 +182,7 @@ namespace MapleLib.WzLib.WzStructure {
 						returnMap = InfoTool.GetInt(prop);
 						break;
 					case "town":
-						town = InfoTool.GetBool(prop);
+						town = prop.GetBool();
 						break;
 					case "version":
 						version = InfoTool.GetInt(prop);
@@ -192,16 +192,16 @@ namespace MapleLib.WzLib.WzStructure {
 						fieldLimit = fl;
 						break;
 					case "VRTop":
-						VRTop = InfoTool.GetOptionalInt(prop, 0);
+						VRTop = prop.GetOptionalInt(0);
 						break;
 					case "VRBottom":
-						VRBottom = InfoTool.GetOptionalInt(prop, 0);
+						VRBottom = prop.GetOptionalInt(0);
 						break;
 					case "VRLeft":
-						VRLeft = InfoTool.GetOptionalInt(prop, 0);
+						VRLeft = prop.GetOptionalInt(0);
 						break;
 					case "VRRight":
-						VRRight = InfoTool.GetOptionalInt(prop, 0);
+						VRRight = prop.GetOptionalInt(0);
 						break;
 					case "link":
 						//link = InfoTool.GetInt(prop);
@@ -219,13 +219,13 @@ namespace MapleLib.WzLib.WzStructure {
 						onUserEnter = InfoTool.GetString(prop);
 						break;
 					case "fly":
-						fly = InfoTool.GetBool(prop);
+						fly = prop.GetBool();
 						break;
 					case "noMapCmd":
-						noMapCmd = InfoTool.GetBool(prop);
+						noMapCmd = prop.GetBool();
 						break;
 					case "partyOnly":
-						partyOnly = InfoTool.GetBool(prop);
+						partyOnly = prop.GetBool();
 						break;
 					case "fieldType":
 						var ft = InfoTool.GetInt(prop);
@@ -238,19 +238,19 @@ namespace MapleLib.WzLib.WzStructure {
 						fieldType = (FieldType) ft;
 						break;
 					case "miniMapOnOff":
-						miniMapOnOff = InfoTool.GetBool(prop);
+						miniMapOnOff = prop.GetBool();
 						break;
 					case "reactorShuffle":
-						reactorShuffle = InfoTool.GetBool(prop);
+						reactorShuffle = prop.GetBool();
 						break;
 					case "reactorShuffleName":
 						reactorShuffleName = InfoTool.GetString(prop);
 						break;
 					case "personalShop":
-						personalShop = InfoTool.GetBool(prop);
+						personalShop = prop.GetBool();
 						break;
 					case "entrustedShop":
-						entrustedShop = InfoTool.GetBool(prop);
+						entrustedShop = prop.GetBool();
 						break;
 					case "effect":
 						effect = InfoTool.GetString(prop);
@@ -274,10 +274,10 @@ namespace MapleLib.WzLib.WzStructure {
 						help = InfoTool.GetString(prop);
 						break;
 					case "snow":
-						snow = InfoTool.GetBool(prop);
+						snow = prop.GetBool();
 						break;
 					case "rain":
-						rain = InfoTool.GetBool(prop);
+						rain = prop.GetBool();
 						break;
 					case "dropExpire":
 						dropExpire = InfoTool.GetInt(prop);
@@ -296,7 +296,7 @@ namespace MapleLib.WzLib.WzStructure {
 						autoLieDetector = new AutoLieDetector(startHour, endHour, interval, propInt);
 						break;
 					case "expeditionOnly":
-						expeditionOnly = InfoTool.GetBool(prop);
+						expeditionOnly = prop.GetBool();
 						break;
 					case "fs":
 						fs = InfoTool.GetFloat(prop);
@@ -316,7 +316,7 @@ namespace MapleLib.WzLib.WzStructure {
 						streetName = InfoTool.GetString(prop);
 						break;
 					case "noRegenMap":
-						noRegenMap = InfoTool.GetBool(prop);
+						noRegenMap = prop.GetBool();
 						break;
 					case "allowedItem":
 						allowedItem = new List<int>();
@@ -330,40 +330,40 @@ namespace MapleLib.WzLib.WzStructure {
 						recovery = InfoTool.GetFloat(prop);
 						break;
 					case "blockPBossChange":
-						blockPBossChange = InfoTool.GetBool(prop);
+						blockPBossChange = prop.GetBool();
 						break;
 					case "everlast":
-						everlast = InfoTool.GetBool(prop);
+						everlast = prop.GetBool();
 						break;
 					case "damageCheckFree":
-						damageCheckFree = InfoTool.GetBool(prop);
+						damageCheckFree = prop.GetBool();
 						break;
 					case "dropRate":
 						dropRate = InfoTool.GetFloat(prop);
 						break;
 					case "scrollDisable":
-						scrollDisable = InfoTool.GetBool(prop);
+						scrollDisable = prop.GetBool();
 						break;
 					case "needSkillForFly":
-						needSkillForFly = InfoTool.GetBool(prop);
+						needSkillForFly = prop.GetBool();
 						break;
 					case "zakum2Hack":
-						zakum2Hack = InfoTool.GetBool(prop);
+						zakum2Hack = prop.GetBool();
 						break;
 					case "allMoveCheck":
-						allMoveCheck = InfoTool.GetBool(prop);
+						allMoveCheck = prop.GetBool();
 						break;
 					case "VRLimit":
-						VRLimit = InfoTool.GetBool(prop);
+						VRLimit = prop.GetBool();
 						break;
 					case "consumeItemCoolTime":
-						consumeItemCoolTime = InfoTool.GetBool(prop);
+						consumeItemCoolTime = prop.GetBool();
 						break;
 					case "zeroSideOnly":
-						zeroSideOnly = InfoTool.GetBool(prop);
+						zeroSideOnly = prop.GetBool();
 						break;
 					case "mirror_Bottom":
-						mirror_Bottom = InfoTool.GetBool(prop);
+						mirror_Bottom = prop.GetBool();
 						break;
 					case "AmbientBGM":
 					case "AmbientBGMv":

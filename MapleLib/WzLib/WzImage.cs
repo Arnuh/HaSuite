@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MapleLib.Helpers;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 
@@ -40,19 +41,19 @@ namespace MapleLib.WzLib {
 
 		#region Fields
 
-		internal bool parsed = false;
+		internal bool parsed;
 		internal string name;
 		internal int size;
 		private int checksum;
-		internal uint offset = 0;
+		internal uint offset;
 		internal WzBinaryReader reader;
 		internal List<WzImageProperty> properties = new List<WzImageProperty>();
 		internal WzObject parent;
-		internal int blockStart = 0;
+		internal int blockStart;
 		internal long tempFileStart = 0;
 		internal long tempFileEnd = 0;
-		internal bool bIsImageChanged = false;
-		private bool parseEverything = false;
+		internal bool bIsImageChanged;
+		private bool parseEverything;
 
 		/// <summary>
 		/// Wz image embedding .lua file.
@@ -357,7 +358,9 @@ namespace MapleLib.WzLib {
 			if (!forceReadFromData) { // only check if parsed or changed if its not false read
 				if (Parsed) {
 					return true;
-				} else if (Changed) {
+				}
+
+				if (Changed) {
 					Parsed = true;
 					return true;
 				}
@@ -393,7 +396,7 @@ namespace MapleLib.WzLib {
 					}
 					default: {
 						// todo: log this or warn.
-						Helpers.ErrorLogger.Log(Helpers.ErrorLevel.MissingFeature,
+						ErrorLogger.Log(ErrorLevel.MissingFeature,
 							"[WzImage] New Wz image header found. b = " + b);
 						return false;
 					}
@@ -486,7 +489,7 @@ namespace MapleLib.WzLib {
 			var loggerSuffix = string.Format("WzImage: '{0}' {1}", Name,
 				WzFileParent != null
 					? ", ver. " + Enum.GetName(typeof(WzMapleVersion), WzFileParent.MapleVersion) + ", v" +
-					  WzFileParent.Version.ToString()
+					  WzFileParent.Version
 					: "");
 
 			return loggerSuffix;

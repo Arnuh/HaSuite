@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.UndoRedo;
@@ -67,9 +68,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public override XNA.Color GetColor(SelectionInfo sel, bool selected) {
 			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel)) {
 				return selected ? UserSettings.SelectedColor : Color;
-			} else {
-				return InactiveColor;
 			}
+
+			return InactiveColor;
 		}
 
 		public override Point Origin => origin;
@@ -125,7 +126,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public virtual void DoSnap() {
-			if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey) && connectedLines.Count != 0 &&
+			if (InputHandler.IsKeyPushedDown(Keys.ShiftKey) && connectedLines.Count != 0 &&
 			    connectedLines[0] is FootholdLine && board.SelectedItems.Count == 1 &&
 			    board.SelectedItems[0].Equals(this)) {
 				FootholdAnchor closestAnchor = null;
@@ -134,8 +135,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				foreach (FootholdLine line in connectedLines) {
 					var otherAnchor =
 						(FootholdAnchor) (line.FirstDot == this ? line.SecondDot : line.FirstDot);
-					var xAngle = Math.Abs(Math.Atan((double) (Y - otherAnchor.Y) / (double) (X - otherAnchor.X)));
-					var yAngle = Math.Abs(Math.Atan((double) (X - otherAnchor.X) / (double) (Y - otherAnchor.Y)));
+					var xAngle = Math.Abs(Math.Atan((Y - otherAnchor.Y) / (double) (X - otherAnchor.X)));
+					var yAngle = Math.Abs(Math.Atan((X - otherAnchor.X) / (double) (Y - otherAnchor.Y)));
 					double minAngle;
 					var xSmaller = false;
 					if (xAngle < yAngle) {
@@ -168,9 +169,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public bool BetweenOrEquals(int value, int bounda, int boundb, int tolerance) {
 			if (bounda < boundb) {
 				return bounda - tolerance <= value && value <= boundb + tolerance;
-			} else {
-				return boundb - tolerance <= value && value <= bounda + tolerance;
 			}
+
+			return boundb - tolerance <= value && value <= bounda + tolerance;
 		}
 
 		public MapleDot(Board board, SerializationForm json)

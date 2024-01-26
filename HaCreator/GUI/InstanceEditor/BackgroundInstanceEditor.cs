@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
@@ -16,6 +15,7 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Render.DX;
 using MapleLib.WzLib.WzStructure.Data;
+using Microsoft.Xna.Framework;
 using Spine;
 
 namespace HaCreator.GUI.InstanceEditor {
@@ -35,7 +35,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			}
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-			typeBox.Items.AddRange((object[]) Tables.BackgroundTypeNames.Cast<object>());
+			typeBox.Items.AddRange((object[]) Tables.BackgroundTypeNames);
 			typeBox.SelectedIndex = (int) item.type;
 			alphaBox.Value = item.a;
 			front.Checked = item.front;
@@ -52,7 +52,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			foreach (RenderResolution val in Enum.GetValues(typeof(RenderResolution))) {
 				var comboBoxItem = new ComboBoxItem {
 					Tag = val,
-					Content = RenderResolutionExtensions.ToReadableString(val)
+					Content = val.ToReadableString()
 				};
 
 				comboBox_screenMode.Items.Add(comboBoxItem);
@@ -125,8 +125,8 @@ namespace HaCreator.GUI.InstanceEditor {
 				var sort = false;
 				if (xInput.Value != item.BaseX || yInput.Value != item.BaseY) {
 					actions.Add(UndoRedoManager.BackgroundMoved(item,
-						new Microsoft.Xna.Framework.Point(item.BaseX, item.BaseY),
-						new Microsoft.Xna.Framework.Point((int) xInput.Value, (int) yInput.Value)));
+						new Point(item.BaseX, item.BaseY),
+						new Point((int) xInput.Value, (int) yInput.Value)));
 					item.MoveBase((int) xInput.Value, (int) yInput.Value);
 				}
 

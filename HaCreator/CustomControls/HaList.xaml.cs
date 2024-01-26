@@ -58,9 +58,6 @@ namespace HaCreator.CustomControls {
 	public class HaListItemCollection : PropertyChangeNotifierBase {
 		private ObservableCollection<HaListItem> items = new ObservableCollection<HaListItem>();
 
-		public HaListItemCollection() {
-		}
-
 		public ObservableCollection<HaListItem> Items => items;
 	}
 

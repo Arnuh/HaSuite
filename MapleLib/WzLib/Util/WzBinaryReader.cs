@@ -85,7 +85,7 @@ namespace MapleLib.WzLib.Util {
 				if (smallLength == sbyte.MaxValue) {
 					length = ReadInt32();
 				} else {
-					length = (int) smallLength;
+					length = smallLength;
 				}
 
 				if (length <= 0) return string.Empty;
@@ -102,7 +102,7 @@ namespace MapleLib.WzLib.Util {
 				if (smallLength == sbyte.MinValue) {
 					length = ReadInt32();
 				} else {
-					length = (int) -smallLength;
+					length = -smallLength;
 				}
 
 				if (length <= 0) return string.Empty;
@@ -110,7 +110,7 @@ namespace MapleLib.WzLib.Util {
 				for (var i = 0; i < length; i++) {
 					var encryptedChar = ReadByte();
 					encryptedChar ^= mask;
-					encryptedChar ^= (byte) WzKey[i];
+					encryptedChar ^= WzKey[i];
 					retString.Append((char) encryptedChar);
 					mask++;
 				}

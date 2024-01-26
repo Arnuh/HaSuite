@@ -134,7 +134,7 @@ namespace HaCreator.CustomControls {
 			if (IsText) {
 				g.DrawString(Name,
 					new Font("Microsoft Sans Serif", 8.5F, FontStyle.Regular,
-						GraphicsUnit.Point, (byte) 177), Brushes.Black, 0, m_Image.Height * mp + 7);
+						GraphicsUnit.Point, 177), Brushes.Black, 0, m_Image.Height * mp + 7);
 			}
 			/*g.DrawRectangle(new Pen(Color.Gray), dl, dt, dw, dh);
 

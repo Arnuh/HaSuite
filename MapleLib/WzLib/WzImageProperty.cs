@@ -49,9 +49,9 @@ namespace MapleLib.WzLib {
 				while (parent != null) {
 					if (parent is WzImage image) {
 						return image;
-					} else {
-						parent = parent.Parent;
 					}
+
+					parent = parent.Parent;
 				}
 
 				return null;
@@ -252,7 +252,7 @@ namespace MapleLib.WzLib {
 			writer.Write((byte) 9);
 
 			var beforePos = writer.BaseStream.Position;
-			writer.Write((int) 0); // Placeholder
+			writer.Write(0); // Placeholder
 			property.WriteValue(writer);
 
 			var len = (int) (writer.BaseStream.Position - beforePos);

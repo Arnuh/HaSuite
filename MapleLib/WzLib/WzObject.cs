@@ -22,11 +22,11 @@ namespace MapleLib.WzLib {
 	/// An abstract class for wz objects
 	/// </summary>
 	public abstract class WzObject : IDisposable {
-		private object hcTag = null;
-		private object hcTag_spine = null;
-		private object msTag = null;
-		private object msTag_spine = null;
-		private object tag3 = null;
+		private object hcTag;
+		private object hcTag_spine;
+		private object msTag;
+		private object msTag_spine;
+		private object tag3;
 
 		public abstract void Dispose();
 
@@ -56,15 +56,21 @@ namespace MapleLib.WzLib {
 
 				if (wzObject is WzFile) {
 					return ((WzFile) this)[name];
-				} else if (wzObject is WzDirectory) {
-					return ((WzDirectory) this)[name];
-				} else if (wzObject is WzImage) {
-					return ((WzImage) this)[name];
-				} else if (wzObject is WzImageProperty) {
-					return ((WzImageProperty) this)[name];
-				} else {
-					throw new NotImplementedException();
 				}
+
+				if (wzObject is WzDirectory) {
+					return ((WzDirectory) this)[name];
+				}
+
+				if (wzObject is WzImage) {
+					return ((WzImage) this)[name];
+				}
+
+				if (wzObject is WzImageProperty) {
+					return ((WzImageProperty) this)[name];
+				}
+
+				throw new NotImplementedException();
 			}
 		}
 

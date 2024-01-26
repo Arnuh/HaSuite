@@ -23,7 +23,7 @@ namespace HaCreator.GUI.EditorPanels {
 		public void Initialize(HaCreatorStateManager hcsm) {
 			this.hcsm = hcsm;
 
-			var commonItems = new ImageViewer[] {
+			var commonItems = new[] {
 				miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.FootholdColor)),
 					"Foothold", true),
 				miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.RopeColor)),
@@ -36,8 +36,8 @@ namespace HaCreator.GUI.EditorPanels {
 					"Clock", true)
 			};
 			foreach (var item in commonItems) {
-				item.MouseDown += new MouseEventHandler(commonItem_Click);
-				item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+				item.MouseDown += commonItem_Click;
+				item.MouseUp += ImageViewer.item_MouseUp;
 			}
 		}
 

@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using HaCreator.Collections;
 using HaCreator.GUI;
@@ -45,7 +46,7 @@ namespace HaCreator.MapEditor {
 
 			var editInstance = new ToolStripMenuItem("Edit this instance...");
 			editInstance.Click += editInstance_Click;
-			editInstance.Font = new System.Drawing.Font(editInstance.Font, System.Drawing.FontStyle.Bold);
+			editInstance.Font = new Font(editInstance.Font, FontStyle.Bold);
 			generalCategory.Add(editInstance);
 
 			// Portal
@@ -69,10 +70,10 @@ namespace HaCreator.MapEditor {
 			// Background
 			if (target is BackgroundInstance || target is LayeredItem) {
 				var bringToFront = new ToolStripMenuItem("Bring to Front");
-				bringToFront.Click += new EventHandler(bringToFront_Click);
+				bringToFront.Click += bringToFront_Click;
 				zCategory.Add(bringToFront);
 				var sendToBack = new ToolStripMenuItem("Send to Back");
-				sendToBack.Click += new EventHandler(sendToBack_Click);
+				sendToBack.Click += sendToBack_Click;
 				zCategory.Add(sendToBack);
 			}
 
@@ -101,7 +102,7 @@ namespace HaCreator.MapEditor {
 
 
 			var hasItems = false;
-			foreach (var currList in new List<ToolStripMenuItem>[]
+			foreach (var currList in new[]
 				         {generalCategory, zCategory, platformCategory}) {
 				if (currList.Count > 0) {
 					if (hasItems) cms.Items.Add(new ToolStripSeparator());
@@ -170,14 +171,14 @@ namespace HaCreator.MapEditor {
 					: getZmOfSelectedFoothold();
 				foreach (var item in target.Board.BoardItems.Items) {
 					if (item is IContainsLayerInfo && ((IContainsLayerInfo) item).PlatformNumber == zm) {
-						((BoardItem) item).Selected = true;
+						item.Selected = true;
 					}
 				}
 
 				foreach (var line in target.Board.BoardItems.FootholdLines) {
 					if (line.PlatformNumber == zm) {
-						((FootholdLine) line).FirstDot.Selected = true;
-						((FootholdLine) line).SecondDot.Selected = true;
+						line.FirstDot.Selected = true;
+						line.SecondDot.Selected = true;
 					}
 				}
 			}

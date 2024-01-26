@@ -19,8 +19,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		protected MapleDot firstDot;
 		protected MapleDot secondDot;
 		private bool beforeConnecting;
-		private bool _xBind = false;
-		private bool _yBind = false;
+		private bool _xBind;
+		private bool _yBind;
 
 		public MapleLine(Board board, MapleDot firstDot) {
 			this.board = board;
@@ -82,8 +82,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public double CalculateY(int x) {
-			return (double) (FirstDot.Y - SecondDot.Y) / (double) (FirstDot.X - SecondDot.X) *
-				(double) (x - FirstDot.X) + FirstDot.Y; // y-y1=m(x-x1) => y=(d/dx)(x-x1)+y1
+			return (FirstDot.Y - SecondDot.Y) / (double) (FirstDot.X - SecondDot.X) *
+				(x - FirstDot.X) + FirstDot.Y; // y-y1=m(x-x1) => y=(d/dx)(x-x1)+y1
 		}
 
 		public bool Selected => firstDot != null && firstDot.Selected && secondDot != null && secondDot.Selected;
@@ -140,9 +140,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public virtual XNA.Color GetColor(SelectionInfo sel) {
 			if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel)) {
 				return Selected ? UserSettings.SelectedColor : Color;
-			} else {
-				return InactiveColor;
 			}
+
+			return InactiveColor;
 		}
 
 		public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
@@ -153,11 +153,13 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		public MapleDot GetOtherDot(MapleDot x) {
 			if (firstDot == x) {
 				return secondDot;
-			} else if (secondDot == x) {
-				return firstDot;
-			} else {
-				throw new Exception("GetOtherDot: line is not properly connected");
 			}
+
+			if (secondDot == x) {
+				return firstDot;
+			}
+
+			throw new Exception("GetOtherDot: line is not properly connected");
 		}
 	}
 }

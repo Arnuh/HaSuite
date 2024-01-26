@@ -1,9 +1,6 @@
 ﻿namespace HaCreator.MapSimulator.MapObjects.UIObject {
-	public partial class UIObjectViewModelBase {
-		public UIObjectViewModelBase() {
-			//this.Height = 1;
-		}
-/*
+	public class UIObjectViewModelBase {
+		/*
         //
         // Summary:
         //     Gets or sets the height.

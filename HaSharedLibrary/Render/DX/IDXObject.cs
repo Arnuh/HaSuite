@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Spine;
 
 namespace HaSharedLibrary.Render.DX {
 	public interface IDXObject {
-		void DrawObject(Microsoft.Xna.Framework.Graphics.SpriteBatch sprite, SkeletonMeshRenderer meshRenderer,
+		void DrawObject(SpriteBatch sprite, SkeletonMeshRenderer meshRenderer,
 			GameTime gameTime,
 			int mapShiftX, int mapShiftY, bool flip, ReflectionDrawableBoundary drawReflectionInfo);
 
-		void DrawBackground(Microsoft.Xna.Framework.Graphics.SpriteBatch sprite, SkeletonMeshRenderer meshRenderer,
+		void DrawBackground(SpriteBatch sprite, SkeletonMeshRenderer meshRenderer,
 			GameTime gameTime,
 			int x, int y, Color color, bool flip, ReflectionDrawableBoundary drawReflectionInfo);
 

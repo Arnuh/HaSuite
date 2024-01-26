@@ -97,7 +97,7 @@ namespace HaCreator.MapEditor.UndoRedo {
 					item.ReleaseItem((BoardItem) ParamA);
 					break;
 				case UndoRedoType.ItemsUnlinked:
-					item.BindItem((BoardItem) ParamA, (Microsoft.Xna.Framework.Point) ParamB);
+					item.BindItem((BoardItem) ParamA, (XNA.Point) ParamB);
 					break;
 				case UndoRedoType.ItemsLayerChanged:
 					InputHandler.ClearSelectedItems(((BoardItem) ((List<IContainsLayerInfo>) ParamC)[0]).Board);

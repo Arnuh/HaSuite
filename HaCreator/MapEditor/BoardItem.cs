@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
@@ -24,8 +25,8 @@ namespace HaCreator.MapEditor {
 			boundItems = new Dictionary<BoardItem, XNA.Point>(); //key = BoardItem; value = point (distance)
 
 		private readonly List<BoardItem> boundItemsList = new List<BoardItem>();
-		private BoardItem parent = null;
-		private bool selected = false;
+		private BoardItem parent;
+		private bool selected;
 		protected Board board;
 
 		/*temporary fields used by other functions*/
@@ -56,7 +57,7 @@ namespace HaCreator.MapEditor {
 				if (parent != null) {
 					if (!(parent is Mouse) && undoPipe != null) {
 						undoPipe.Add(UndoRedoManager.ItemsLinked(parent, this,
-							(Microsoft.Xna.Framework.Point) parent.boundItems[this]));
+							parent.boundItems[this]));
 					}
 				}
 			}
@@ -73,7 +74,7 @@ namespace HaCreator.MapEditor {
 				if (parent != null) {
 					if (!(parent is Mouse) && undoPipe != null) {
 						undoPipe.Add(UndoRedoManager.ItemsUnlinked(parent, this,
-							(Microsoft.Xna.Framework.Point) parent.boundItems[this]));
+							parent.boundItems[this]));
 					}
 
 					parent.ReleaseItem(this);
@@ -155,9 +156,9 @@ namespace HaCreator.MapEditor {
 		public virtual XNA.Color GetColor(SelectionInfo sel, bool selected) {
 			if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel)) {
 				return selected ? UserSettings.SelectedColor : XNA.Color.White;
-			} else {
-				return MultiBoard.InactiveColor;
 			}
+
+			return MultiBoard.InactiveColor;
 		}
 
 		public virtual bool IsPixelTransparent(int x, int y) {
@@ -177,9 +178,9 @@ namespace HaCreator.MapEditor {
 				while (currItem != null) {
 					if (board.SelectedItems.Contains(currItem)) {
 						return true;
-					} else {
-						currItem = currItem.Parent;
 					}
+
+					currItem = currItem.Parent;
 				}
 			}
 
@@ -209,8 +210,8 @@ namespace HaCreator.MapEditor {
 
 		#region Properties
 
-		public abstract System.Drawing.Bitmap Image { get; }
-		public abstract System.Drawing.Point Origin { get; }
+		public abstract Bitmap Image { get; }
+		public abstract Point Origin { get; }
 		public abstract ItemTypes Type { get; }
 		public abstract MapleDrawableInfo BaseInfo { get; }
 
@@ -234,13 +235,13 @@ namespace HaCreator.MapEditor {
 				    board.BoardItems.Sort();*/
 		}
 
-		public virtual int Left => (int) X - Origin.X;
+		public virtual int Left => X - Origin.X;
 
-		public virtual int Top => (int) Y - Origin.Y;
+		public virtual int Top => Y - Origin.Y;
 
-		public virtual int Right => (int) X - Origin.X + Width;
+		public virtual int Right => X - Origin.X + Width;
 
-		public virtual int Bottom => (int) Y - Origin.Y + Height;
+		public virtual int Bottom => Y - Origin.Y + Height;
 
 		public virtual bool Selected {
 			get => selected;

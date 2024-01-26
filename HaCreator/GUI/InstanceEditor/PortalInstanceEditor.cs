@@ -14,6 +14,7 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class PortalInstanceEditor : EditorBase {
@@ -28,14 +29,13 @@ namespace HaCreator.GUI.InstanceEditor {
 				try {
 					portals.Add(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[i]]);
 				} catch (KeyNotFoundException) {
-					continue;
 				}
 			}
 
 			ptComboBox.Items.AddRange(portals.ToArray());
 			this.item = item;
 
-			rowMan = new ControlRowManager(new ControlRow[] {
+			rowMan = new ControlRowManager(new[] {
 				new ControlRow(new Control[] {pnLabel, pnBox}, 26, "pn"),
 				new ControlRow(new Control[] {tmLabel, tmBox, btnBrowseMap, thisMap}, 26, "tm"),
 				new ControlRow(new Control[] {tnLabel, tnBox, btnBrowseTn, leftBlankLabel}, 26, "tn"),
@@ -85,8 +85,8 @@ namespace HaCreator.GUI.InstanceEditor {
 			lock (item.Board.ParentControl) {
 				var actions = new List<UndoRedoAction>();
 				if (xInput.Value != item.X || yInput.Value != item.Y) {
-					actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y),
-						new Microsoft.Xna.Framework.Point((int) xInput.Value, (int) yInput.Value)));
+					actions.Add(UndoRedoManager.ItemMoved(item, new Point(item.X, item.Y),
+						new Point((int) xInput.Value, (int) yInput.Value)));
 					item.Move((int) xInput.Value, (int) yInput.Value);
 				}
 
@@ -384,16 +384,17 @@ namespace HaCreator.GUI.InstanceEditor {
 			lock (item.Board.ParentControl) {
 				if (portalImageList.SelectedItem == null) {
 					return;
-				} else if ((string) portalImageList.SelectedItem == "default") {
+				}
+
+				if ((string) portalImageList.SelectedItem == "default") {
 					return;
 				}
 				//portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]].DefaultImage);
-				else {
-					portalImageBox.Image =
-						new Bitmap(Program.InfoManager.GamePortals[
-							Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][
-							(string) portalImageList.SelectedItem]);
-				}
+
+				portalImageBox.Image =
+					new Bitmap(Program.InfoManager.GamePortals[
+						Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][
+						(string) portalImageList.SelectedItem]);
 			}
 		}
 
@@ -417,7 +418,7 @@ namespace HaCreator.GUI.InstanceEditor {
 
 	public class ControlRow {
 		public Control[] controls;
-		public bool invisible = false;
+		public bool invisible;
 		public int rowSize;
 		public string rowName;
 
@@ -455,7 +456,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			for (var i = index + 1; i < rows.Length; i++) {
 				row = rows[i];
 				foreach (var c in row.controls)
-					c.Location = new Point(c.Location.X, c.Location.Y - size);
+					c.Location = new System.Drawing.Point(c.Location.X, c.Location.Y - size);
 			}
 
 			form.Height -= size;
@@ -475,7 +476,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			for (var i = index + 1; i < rows.Length; i++) {
 				row = rows[i];
 				foreach (var c in row.controls)
-					c.Location = new Point(c.Location.X, c.Location.Y + size);
+					c.Location = new System.Drawing.Point(c.Location.X, c.Location.Y + size);
 			}
 
 			form.Height += size;

@@ -9,6 +9,7 @@ using System;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance.Misc;
+using Microsoft.Xna.Framework;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class MirrorFieldEditor : EditorBase {
@@ -70,14 +71,14 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		protected override void okButton_Click(object sender, EventArgs e) {
 			lock (_mirrorFieldData.Board.ParentControl) {
-				_mirrorFieldData.ReflectionInfo.Reflection = checkBox_reflection.Checked == true;
-				_mirrorFieldData.ReflectionInfo.AlphaTest = checkBox_alphaTest.Checked == true;
+				_mirrorFieldData.ReflectionInfo.Reflection = checkBox_reflection.Checked;
+				_mirrorFieldData.ReflectionInfo.AlphaTest = checkBox_alphaTest.Checked;
 
 				_mirrorFieldData.ReflectionInfo.Gradient = (ushort) trackBar_gradient.Value;
 				_mirrorFieldData.ReflectionInfo.Alpha = (ushort) trackBar_alpha.Value;
 
 				_mirrorFieldData.Offset =
-					new Microsoft.Xna.Framework.Vector2((int) numericUpDown_xOffsetValue.Value,
+					new Vector2((int) numericUpDown_xOffsetValue.Value,
 						(int) numericUpDown_yOffsetValue.Value);
 
 				// combobox for objectForOverlay

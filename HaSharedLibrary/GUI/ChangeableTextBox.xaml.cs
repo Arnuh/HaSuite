@@ -55,7 +55,7 @@ namespace HaSharedLibrary.GUI {
 			}
 		}
 
-		private bool _AcceptsReturn = false;
+		private bool _AcceptsReturn;
 
 		public bool AcceptsReturn {
 			get => _AcceptsReturn;

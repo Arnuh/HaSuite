@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -25,6 +26,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Spine;
+using Color = Microsoft.Xna.Framework.Color;
+using Encoder = System.Drawing.Imaging.Encoder;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapSimulator {
 	/// <summary>
@@ -32,8 +37,8 @@ namespace HaCreator.MapSimulator {
 	/// http://rbwhitaker.wikidot.com/xna-tutorials
 	/// </summary>
 	public class MapSimulator : Game {
-		public int mapShiftX = 0;
-		public int mapShiftY = 0;
+		public int mapShiftX;
+		public int mapShiftY;
 		public Point minimapPos;
 
 		private int Width;
@@ -47,7 +52,7 @@ namespace HaCreator.MapSimulator {
 
 		private GraphicsDeviceManager _DxDeviceManager;
 		private readonly TexturePool texturePool = new TexturePool();
-		private bool bSaveScreenshot = false, bSaveScreenshotComplete = true; // flag for saving a screenshot file
+		private bool bSaveScreenshot, bSaveScreenshotComplete = true; // flag for saving a screenshot file
 
 		private SpriteBatch spriteBatch;
 
@@ -70,7 +75,7 @@ namespace HaCreator.MapSimulator {
 		// Boundary, borders
 		private Rectangle vr_fieldBoundary;
 		private const int VR_BORDER_WIDTHHEIGHT = 600; // the height or width of the VR border
-		private bool bDrawVRBorderLeftRight = false;
+		private bool bDrawVRBorderLeftRight;
 
 		private Texture2D texture_vrBoundaryRectLeft,
 			texture_vrBoundaryRectRight,
@@ -103,7 +108,7 @@ namespace HaCreator.MapSimulator {
 
 		// Debug
 		private Texture2D texture_debugBoundaryRect;
-		private bool bShowDebugMode = false;
+		private bool bShowDebugMode;
 
 		/// <summary>
 		/// MapSimulator Constructor
@@ -393,7 +398,7 @@ namespace HaCreator.MapSimulator {
 
 			// Cursor
 			var t_cursor = Task.Run(() => {
-				var cursorImageProperty = (WzImageProperty) uiBasicImage["Cursor"];
+				var cursorImageProperty = uiBasicImage["Cursor"];
 				mouseCursor = MapSimulatorLoader.CreateMouseCursorFromProperty(texturePool, cursorImageProperty, 0,
 					0, _DxDeviceManager.GraphicsDevice, ref usedProps, false);
 			});
@@ -452,11 +457,11 @@ namespace HaCreator.MapSimulator {
 			//rect_mirrorBottom
 			if (mapBoard.MapInfo.mirror_Bottom) {
 				if (mapBoard.MapInfo.VRLeft != null && mapBoard.MapInfo.VRRight != null) {
-					var vr_width = (int) mapBoard.MapInfo.VRRight - (int) mapBoard.MapInfo.VRLeft;
+					var vr_width = mapBoard.MapInfo.VRRight - mapBoard.MapInfo.VRLeft;
 					const int obj_mirrorBottom_height = 200;
 
-					rect_mirrorBottom = new Rectangle((int) mapBoard.MapInfo.VRLeft,
-						(int) mapBoard.MapInfo.VRBottom - obj_mirrorBottom_height, vr_width, obj_mirrorBottom_height);
+					rect_mirrorBottom = new Rectangle(mapBoard.MapInfo.VRLeft,
+						mapBoard.MapInfo.VRBottom - obj_mirrorBottom_height, vr_width, obj_mirrorBottom_height);
 
 					mirrorBottomReflection = new ReflectionDrawableBoundary(128, 255, "mirror", true, false);
 				}
@@ -479,7 +484,7 @@ namespace HaCreator.MapSimulator {
 			///////////// End Border
 
 			// Debug items
-			var bitmap_debug = new System.Drawing.Bitmap(1, 1);
+			var bitmap_debug = new Bitmap(1, 1);
 			bitmap_debug.SetPixel(0, 0, System.Drawing.Color.White);
 			texture_debugBoundaryRect = bitmap_debug.ToTexture2D(_DxDeviceManager.GraphicsDevice);
 
@@ -515,7 +520,7 @@ namespace HaCreator.MapSimulator {
 		/// <returns></returns>
 		private static Texture2D CreateVRBorder(int width, int height, GraphicsDevice graphicsDevice) {
 			var brBorderColor = System.Drawing.Color.Black;
-			var bitmap_vrBorder = new System.Drawing.Bitmap(width, height);
+			var bitmap_vrBorder = new Bitmap(width, height);
 
 			for (var x = 0; x < bitmap_vrBorder.Width; x++)
 			for (var y = 0; y < bitmap_vrBorder.Height; y++)
@@ -1108,7 +1113,7 @@ namespace HaCreator.MapSimulator {
 					{
 						texture.SaveAsPng(stream_png, backBufferWidth, backBufferHeight); // save to png stream
 
-						var bitmap = new System.Drawing.Bitmap(stream_png);
+						var bitmap = new Bitmap(stream_png);
 						var jpgEncoder = GetEncoder(ImageFormat.Jpeg);
 
 						// Create an EncoderParameters object.
@@ -1116,7 +1121,7 @@ namespace HaCreator.MapSimulator {
 						// objects. 
 						var myEncoderParameters = new EncoderParameters(1);
 						myEncoderParameters.Param[0] =
-							new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L); // max quality
+							new EncoderParameter(Encoder.Quality, 100L); // max quality
 
 						bitmap.Save(fileName, jpgEncoder, myEncoderParameters);
 
@@ -1224,7 +1229,7 @@ namespace HaCreator.MapSimulator {
 
 
 				if (bIsUpKeyPressed) {
-					mapShiftY = Math.Max((int) vr_fieldBoundary.Top, mapShiftY - moveOffset);
+					mapShiftY = Math.Max(vr_fieldBoundary.Top, mapShiftY - moveOffset);
 				} else if (bIsDownKeyPressed) {
 					mapShiftY = Math.Min((int) (vr_fieldBoundary.Bottom - RenderHeight / RenderObjectScaling),
 						mapShiftY + moveOffset);

@@ -9,6 +9,7 @@ using System.IO;
 using System.Windows.Forms;
 using HaCreator.MapEditor.Input;
 using HaCreator.Wz;
+using TabControl = System.Windows.Controls.TabControl;
 
 namespace HaCreator.MapEditor {
 	public class BackupManager {
@@ -17,11 +18,11 @@ namespace HaCreator.MapEditor {
 		private InputHandler input;
 		private MultiBoard multiBoard;
 		private readonly HaCreatorStateManager hcsm;
-		private System.Windows.Controls.TabControl tabs;
-		private bool enabled = false;
+		private TabControl tabs;
+		private bool enabled;
 
 		public BackupManager(MultiBoard multiBoard, InputHandler input, HaCreatorStateManager hcsm,
-			System.Windows.Controls.TabControl tabs) {
+			TabControl tabs) {
 			this.input = input;
 			this.multiBoard = multiBoard;
 			this.hcsm = hcsm;
@@ -75,7 +76,7 @@ namespace HaCreator.MapEditor {
 						foreach (var board in multiBoard.Boards) {
 							if (board.Dirty) {
 								board.Dirty = false;
-								serQueue.Add(board.UniqueID.ToString() + ".ham", board.SerializationManager);
+								serQueue.Add(board.UniqueID + ".ham", board.SerializationManager);
 							}
 						}
 					}
@@ -104,7 +105,7 @@ namespace HaCreator.MapEditor {
 		public void DeleteBackup(int uid) {
 			lock (this) {
 				var basePath = GetBasePath();
-				var backup = Path.Combine(basePath, uid.ToString() + ".ham");
+				var backup = Path.Combine(basePath, uid + ".ham");
 				if (File.Exists(backup)) {
 					File.Delete(backup);
 				}

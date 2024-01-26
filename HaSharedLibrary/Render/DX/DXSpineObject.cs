@@ -1,21 +1,23 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 using MapleLib.WzLib.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Spine;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace HaSharedLibrary.Render.DX {
 	public class DXSpineObject : IDXObject {
 		private readonly WzSpineObject spineObject;
 		private readonly int _x;
 		private readonly int _y;
-		private System.Drawing.PointF _origin;
+		private PointF _origin;
 
 		private readonly int delay;
 
 		private object _Tag;
 
-		public DXSpineObject(WzSpineObject spineObject, int x, int y, System.Drawing.PointF _origin, int delay = 0) {
+		public DXSpineObject(WzSpineObject spineObject, int x, int y, PointF _origin, int delay = 0) {
 			this.spineObject = spineObject;
 			_x = x;
 			_y = y;

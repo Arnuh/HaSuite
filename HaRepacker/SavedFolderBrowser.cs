@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace HaRepacker {
 	public static class SavedFolderBrowser {
 		public static string Show(string description) {
-			var dialog = new FolderBrowserDialog() {Description = description};
+			var dialog = new FolderBrowserDialog {Description = description};
 			if (Program.ConfigurationManager.ApplicationSettings.LastBrowserPath != "") {
 				dialog.SelectedPath = Program.ConfigurationManager.ApplicationSettings.LastBrowserPath;
 			}

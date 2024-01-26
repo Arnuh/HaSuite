@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace HaCreator.GUI {
 	public partial class WaitWindow : Form {
-		private bool finished = false;
+		private bool finished;
 
 		public WaitWindow(string message) {
 			InitializeComponent();

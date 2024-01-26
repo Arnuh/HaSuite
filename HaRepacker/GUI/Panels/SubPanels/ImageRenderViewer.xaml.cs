@@ -15,7 +15,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 	/// Interaction logic for ImageRenderViewer.xaml
 	/// </summary>
 	public partial class ImageRenderViewer : UserControl, INotifyPropertyChanged {
-		private bool isLoading = false;
+		private bool isLoading;
 
 		public ImageRenderViewer() {
 			isLoading = true; // set isloading 
@@ -52,7 +52,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 
 		#region Exported Fields
 
-		private WzNode _ParentWzNode = null;
+		private WzNode _ParentWzNode;
 
 		/// <summary>
 		/// The parent WZCanvasProperty to display from
@@ -62,7 +62,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			set => _ParentWzNode = value;
 		}
 
-		private WzCanvasProperty _ParentWzCanvasProperty = null;
+		private WzCanvasProperty _ParentWzCanvasProperty;
 
 		/// <summary>
 		/// The parent WZCanvasProperty to display from
@@ -72,7 +72,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			set => _ParentWzCanvasProperty = value;
 		}
 
-		private ImageSource _Image = null;
+		private ImageSource _Image;
 
 		/// <summary>
 		/// The image to display on the canvas
@@ -89,7 +89,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			}
 		}
 
-		private int _Delay = 0;
+		private int _Delay;
 
 		/// <summary>
 		/// Delay of the image
@@ -180,7 +180,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		public PointF? CanvasVectorRbOffset =>
 			CanvasVectorRb is PointF rb ? (PointF?) new PointF(rb.X + CanvasVectorOrigin.X, rb.Y + CanvasVectorOrigin.Y) : null;
 
-		private double _ImageWidth = 0;
+		private double _ImageWidth;
 
 		/// <summary>
 		/// The width of the image currently displayed on the canvas
@@ -193,7 +193,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			}
 		}
 
-		private double _ImageHeight = 0;
+		private double _ImageHeight;
 
 		/// <summary>
 		/// The Height of the image currently displayed on the canvas

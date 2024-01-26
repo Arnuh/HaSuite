@@ -55,9 +55,8 @@ namespace MapleLib.WzLib.Spine {
 
 				if (uolLink is WzCanvasProperty uolPropertyLink) {
 					canvasProperty = uolPropertyLink;
-				} else {
-					// other unimplemented prop?
 				}
+				// other unimplemented prop?
 			} else if (imageChild is WzCanvasProperty property) {
 				canvasProperty = property;
 			}

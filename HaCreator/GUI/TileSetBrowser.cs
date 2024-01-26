@@ -12,7 +12,7 @@ using MapleLib.WzLib.WzProperties;
 namespace HaCreator.GUI {
 	public partial class TileSetBrowser : Form {
 		private ListBox targetListBox;
-		public ImageViewer selectedItem = null;
+		public ImageViewer selectedItem;
 
 		public TileSetBrowser(ListBox target) {
 			InitializeComponent();
@@ -35,8 +35,8 @@ namespace HaCreator.GUI {
 				}
 
 				var item = koolkLVContainer.Add(image.GetLinkedWzCanvasBitmap(), tS, true);
-				item.MouseDown += new MouseEventHandler(item_Click);
-				item.MouseDoubleClick += new MouseEventHandler(item_DoubleClick);
+				item.MouseDown += item_Click;
+				item.MouseDoubleClick += item_DoubleClick;
 			}
 		}
 

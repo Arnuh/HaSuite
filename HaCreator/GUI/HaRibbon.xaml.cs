@@ -11,11 +11,15 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaSharedLibrary.Render.DX;
+using CheckBox = System.Windows.Controls.CheckBox;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaCreator.GUI {
 	/// <summary>
@@ -48,12 +52,12 @@ namespace HaCreator.GUI {
 			}
 		}
 
-		public int reducedHeight = 0;
-		private int actualLayerIndex = 0;
-		private int actualPlatform = 0;
-		private int changingIndexCnt = 0;
-		private ReadOnlyCollection<Layer> layers = null;
-		private bool hasMinimap = false;
+		public int reducedHeight;
+		private int actualLayerIndex;
+		private int actualPlatform;
+		private int changingIndexCnt;
+		private ReadOnlyCollection<Layer> layers;
+		private bool hasMinimap;
 
 		private void Ribbon_Loaded(object sender, RoutedEventArgs e) {
 			var child = VisualTreeHelper.GetChild((DependencyObject) sender, 0) as Grid;
@@ -66,7 +70,7 @@ namespace HaCreator.GUI {
 			foreach (RenderResolution val in Enum.GetValues(typeof(RenderResolution))) {
 				var comboBoxItem = new ComboBoxItem {
 					Tag = val,
-					Content = RenderResolutionExtensions.ToReadableString(val)
+					Content = val.ToReadableString()
 				};
 
 				comboBox_Resolution.Items.Add(comboBoxItem);
@@ -85,104 +89,104 @@ namespace HaCreator.GUI {
 		}
 
 		public static readonly RoutedUICommand New = new RoutedUICommand("New", "New", typeof(HaRibbon),
-			new InputGestureCollection() {new KeyGesture(Key.N, ModifierKeys.Control)});
+			new InputGestureCollection {new KeyGesture(Key.N, ModifierKeys.Control)});
 
 		public static readonly RoutedUICommand Open = new RoutedUICommand("Open", "Open", typeof(HaRibbon),
-			new InputGestureCollection() {new KeyGesture(Key.O, ModifierKeys.Control)});
+			new InputGestureCollection {new KeyGesture(Key.O, ModifierKeys.Control)});
 
 		public static readonly RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(HaRibbon),
-			new InputGestureCollection() {new KeyGesture(Key.S, ModifierKeys.Control)});
+			new InputGestureCollection {new KeyGesture(Key.S, ModifierKeys.Control)});
 
 		public static readonly RoutedUICommand Repack = new RoutedUICommand("Repack", "Repack", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand About = new RoutedUICommand("About", "About", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Help = new RoutedUICommand("Help", "Help", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Exit = new RoutedUICommand("Exit", "Exit", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand ViewBoxes = new RoutedUICommand("ViewBoxes", "ViewBoxes",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Minimap = new RoutedUICommand("Minimap", "Minimap", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Parallax = new RoutedUICommand("Parallax", "Parallax", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Finalize = new RoutedUICommand("Finalize", "Finalize", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand AllLayerView = new RoutedUICommand("AllLayerView", "AllLayerView",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand MapSim = new RoutedUICommand("MapSim", "MapSim", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand RegenMinimap = new RoutedUICommand("RegenMinimap", "RegenMinimap",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Snapping = new RoutedUICommand("Snapping", "Snapping", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Random = new RoutedUICommand("Random", "Random", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand InfoMode = new RoutedUICommand("InfoMode", "InfoMode", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("PheRepacker", "PheRepacker",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand LayerUp = new RoutedUICommand("LayerUp", "LayerUp", typeof(HaRibbon),
-			new InputGestureCollection() {new KeyGesture(Key.OemPlus, ModifierKeys.Control)});
+			new InputGestureCollection {new KeyGesture(Key.OemPlus, ModifierKeys.Control)});
 
 		public static readonly RoutedUICommand LayerDown = new RoutedUICommand("LayerDown", "LayerDown",
 			typeof(HaRibbon),
-			new InputGestureCollection() {new KeyGesture(Key.OemMinus, ModifierKeys.Control)});
+			new InputGestureCollection {new KeyGesture(Key.OemMinus, ModifierKeys.Control)});
 
 		public static readonly RoutedUICommand AllPlatformView = new RoutedUICommand("AllPlatformView",
 			"AllPlatformView", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand PlatformUp = new RoutedUICommand("PlatformUp", "PlatformUp",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand PlatformDown = new RoutedUICommand("PlatformDown", "PlatformDown",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand NewPlatform = new RoutedUICommand("NewPlatform", "NewPlatform",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand UserObjs = new RoutedUICommand("UserObjs", "UserObjs", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand Export = new RoutedUICommand("Export", "Export", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		public static readonly RoutedUICommand PhysicsEdit = new RoutedUICommand("PhysicsEdit", "PhysicsEdit",
 			typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		#region Debug Items
 
 		public static readonly RoutedUICommand ShowMapProperties = new RoutedUICommand("ShowMapProperties",
 			"ShowMapProperties", typeof(HaRibbon),
-			new InputGestureCollection() { });
+			new InputGestureCollection());
 
 		#endregion
 
@@ -509,7 +513,7 @@ namespace HaCreator.GUI {
 		public event EmptyEvent UserObjsClicked;
 		public event EmptyEvent MapPhysicsClicked;
 		public event EmptyEvent ShowMapPropertiesClicked;
-		public event EventHandler<System.Windows.Forms.KeyEventArgs> RibbonKeyDown;
+		public event EventHandler<KeyEventArgs> RibbonKeyDown;
 		public event ToggleEvent AltBackgroundToggled;
 		public event ToggleEvent FhSideToggled;
 
@@ -553,7 +557,7 @@ namespace HaCreator.GUI {
 		}
 
 		private void ChangeAllCheckboxes(bool? state) {
-			foreach (var cb in new CheckBox[] {
+			foreach (var cb in new[] {
 				         tilesCheck, objsCheck, npcsCheck, mobsCheck, reactCheck, portalCheck, fhCheck, ropeCheck,
 				         chairCheck, tooltipCheck, bgCheck, miscCheck, mirrorFieldDataCheck
 			         })
@@ -574,12 +578,12 @@ namespace HaCreator.GUI {
 			ChangeAllCheckboxes(false);
 		}
 
-		protected override void OnPreviewKeyDown(KeyEventArgs e) {
+		protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) {
 			base.OnPreviewKeyDown(e);
 			if (e.Key != Key.Down && e.Key != Key.Up && RibbonKeyDown != null) {
 				RibbonKeyDown.Invoke(this,
-					new System.Windows.Forms.KeyEventArgs(
-						(System.Windows.Forms.Keys) KeyInterop.VirtualKeyFromKey(e.Key)));
+					new KeyEventArgs(
+						(Keys) KeyInterop.VirtualKeyFromKey(e.Key)));
 			}
 		}
 

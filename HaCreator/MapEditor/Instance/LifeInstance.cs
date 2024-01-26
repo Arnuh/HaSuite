@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -31,7 +32,7 @@ namespace HaCreator.MapEditor.Instance {
 			this.info = info;
 			this.team = team;
 			this.flip = flip;
-			if (flip == true)
+			if (flip)
 				// We need to use the data from baseInfo directly because BaseInfo property is only instantiated in the child ctor,
 				// which will execute after we are finished.
 			{
@@ -43,7 +44,7 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
-				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 			//if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
 			sprite.Draw(BaseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
@@ -51,12 +52,12 @@ namespace HaCreator.MapEditor.Instance {
 		}
 
 		public bool Flip {
-			get => flip == true;
+			get => flip;
 			set {
-				if (flip == true == value) return;
+				if (flip == value) return;
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
-				if (flip == true) {
+				if (flip) {
 					X -= xFlipShift;
 				} else {
 					X += xFlipShift;
@@ -73,7 +74,7 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override XNA.Color GetColor(SelectionInfo sel, bool selected) {
 			var c = base.GetColor(sel, selected);
-			if (hide == true) c.R = (byte) UserSettings.HiddenLifeR;
+			if (hide) c.R = (byte) UserSettings.HiddenLifeR;
 			return c;
 		}
 
@@ -82,13 +83,13 @@ namespace HaCreator.MapEditor.Instance {
 			set => hide = value;
 		}
 
-		public override System.Drawing.Bitmap Image => BaseInfo.Image;
+		public override Bitmap Image => BaseInfo.Image;
 
 		public override int Width => BaseInfo.Width;
 
 		public override int Height => BaseInfo.Height;
 
-		public override System.Drawing.Point Origin => BaseInfo.Origin;
+		public override Point Origin => BaseInfo.Origin;
 
 		public int rx0Shift {
 			get => _rx0Shift;

@@ -6,6 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using MapleLib.MapleCryptoLib;
 using MapleLib.PacketLib;
@@ -374,7 +375,7 @@ namespace HaRepacker.GUI {
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			const string link = "http://forum.ragezone.com/f921/maplestorys-aes-userkey-1116849/";
 
-			System.Diagnostics.Process.Start(link);
+			Process.Start(link);
 		}
 	}
 }

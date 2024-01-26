@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -79,7 +80,7 @@ namespace MapleLib.Helpers {
 					"The hexadecimal string must be 1 or 2 characters in length.");
 			}
 
-			var newByte = byte.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+			var newByte = byte.Parse(hex, NumberStyles.HexNumber);
 			return newByte;
 		}
 	}

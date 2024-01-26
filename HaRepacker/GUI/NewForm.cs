@@ -122,9 +122,9 @@ namespace HaRepacker.GUI {
 				file.Name = name + ".wz";
 				file.WzDirectory.Name = name + ".wz";
 				panel.DataTree.Nodes.Add(new WzNode(file));
-			} else if (listBox.Checked == true) {
+			} else if (listBox.Checked) {
 				new ListEditor(null, (WzMapleVersion) encryptionBox.SelectedIndex).Show();
-			} else if (radioButton_hotfix.Checked == true) {
+			} else if (radioButton_hotfix.Checked) {
 				var img = new WzImage(name + ".wz");
 				img.MarkWzImageAsParsed();
 

@@ -15,7 +15,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			return ps.result;
 		}
 
-		private string result = null;
+		private string result;
 
 		public TnSelector(Board board) {
 			InitializeComponent();

@@ -21,6 +21,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml;
 using MapleLib.WzLib.Util;
@@ -31,8 +32,8 @@ using Newtonsoft.Json.Linq;
 
 namespace MapleLib.WzLib.Serialization {
 	public abstract class ProgressingWzSerializer {
-		protected int total = 0;
-		protected int curr = 0;
+		protected int total;
+		protected int curr;
 
 		public int Total => total;
 
@@ -71,7 +72,7 @@ namespace MapleLib.WzLib.Serialization {
 		protected string indent;
 		protected string lineBreak;
 		public static NumberFormatInfo formattingInfo;
-		protected bool bExportBase64Data = false;
+		protected bool bExportBase64Data;
 
 		protected static char[] amp = "&amp;".ToCharArray();
 		protected static char[] lt = "&lt;".ToCharArray();
@@ -522,7 +523,7 @@ namespace MapleLib.WzLib.Serialization {
 	}
 
 	public class NoBase64DataException : Exception {
-		public NoBase64DataException() : base() {
+		public NoBase64DataException() {
 		}
 
 		public NoBase64DataException(string message) : base(message) {
@@ -531,8 +532,8 @@ namespace MapleLib.WzLib.Serialization {
 		public NoBase64DataException(string message, Exception inner) : base(message, inner) {
 		}
 
-		protected NoBase64DataException(System.Runtime.Serialization.SerializationInfo info,
-			System.Runtime.Serialization.StreamingContext context) {
+		protected NoBase64DataException(SerializationInfo info,
+			StreamingContext context) {
 		}
 	}
 
@@ -587,8 +588,7 @@ namespace MapleLib.WzLib.Serialization {
 	public class WzImgDeserializer : ProgressingWzSerializer {
 		private readonly bool freeResources;
 
-		public WzImgDeserializer(bool freeResources)
-			: base() {
+		public WzImgDeserializer(bool freeResources) {
 			this.freeResources = freeResources;
 		}
 
@@ -988,8 +988,7 @@ namespace MapleLib.WzLib.Serialization {
 		private readonly byte[] iv;
 		private readonly WzImgDeserializer imgDeserializer = new WzImgDeserializer(false);
 
-		public WzXmlDeserializer(bool useMemorySaving, byte[] iv)
-			: base() {
+		public WzXmlDeserializer(bool useMemorySaving, byte[] iv) {
 			this.useMemorySaving = useMemorySaving;
 			this.iv = iv;
 		}

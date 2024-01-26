@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
@@ -15,16 +16,20 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure.Data.MapStructure;
+using Microsoft.VisualBasic;
+using Microsoft.Xna.Framework;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
+using CheckBox = System.Windows.Forms.CheckBox;
+using Control = System.Windows.Forms.Control;
 
 namespace HaCreator.GUI {
 	public partial class InfoEditor : EditorBase {
 		public MapInfo info;
 		private readonly MultiBoard multiBoard;
 		private readonly Board board;
-		private readonly System.Windows.Controls.TabItem tabItem;
+		private readonly TabItem tabItem;
 
-		public InfoEditor(Board board, MapInfo info, MultiBoard multiBoard, System.Windows.Controls.TabItem tabItem) {
+		public InfoEditor(Board board, MapInfo info, MultiBoard multiBoard, TabItem tabItem) {
 			InitializeComponent();
 
 			this.board = board;
@@ -398,7 +403,7 @@ namespace HaCreator.GUI {
 				}
 
 				if (board.MapSize.X != (int) xBox.Value || board.MapSize.Y != (int) yBox.Value) {
-					board.MapSize = new Microsoft.Xna.Framework.Point((int) xBox.Value, (int) yBox.Value);
+					board.MapSize = new Point((int) xBox.Value, (int) yBox.Value);
 				}
 			}
 
@@ -421,8 +426,8 @@ namespace HaCreator.GUI {
 			}
 		}
 
-		private int lastret = 0;
-		private int lastforcedret = 0;
+		private int lastret;
+		private int lastforcedret;
 
 		private void cannotReturnCBX_CheckedChanged(object sender, EventArgs e) {
 			returnBox.Enabled = !cannotReturnCBX.Checked;
@@ -452,7 +457,7 @@ namespace HaCreator.GUI {
 
 		private void allowedItemsAdd_Click(object sender, EventArgs e) {
 			allowedItems.Items.Add(
-				Microsoft.VisualBasic.Interaction.InputBox("Insert item ID", "Add Allowed Item", "", -1, -1));
+				Interaction.InputBox("Insert item ID", "Add Allowed Item"));
 		}
 
 		/// <summary>

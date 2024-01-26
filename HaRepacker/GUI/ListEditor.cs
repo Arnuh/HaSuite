@@ -35,14 +35,14 @@ namespace HaRepacker.GUI {
 		}
 
 		private void btnSave_Click(object sender, EventArgs e) {
-			var dialog = new SaveFileDialog() {
+			var dialog = new SaveFileDialog {
 				Title = "Select where to save the file", Filter = "List WZ File (*.wz)|*.wz"
 			};
 			if (dialog.ShowDialog() != DialogResult.OK) {
 				return;
 			}
 
-			var listEntries = textBox.Text.Replace("\r\n", "\n").Split("\n".ToCharArray()).ToList<string>();
+			var listEntries = textBox.Text.Replace("\r\n", "\n").Split("\n".ToCharArray()).ToList();
 			ListFileParser.SaveToDisk(dialog.FileName, version, listEntries);
 		}
 	}

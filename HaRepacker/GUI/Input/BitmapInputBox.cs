@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	/// <summary>
@@ -27,7 +28,7 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string nameResult = null;
+		private string nameResult;
 		private List<Bitmap> bmpResult = new List<Bitmap>();
 
 		public BitmapInputBox(string title) {
@@ -64,7 +65,7 @@ namespace HaRepacker.GUI.Input {
 				DialogResult = DialogResult.OK;
 				Close();
 			} else {
-				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
+				MessageBox.Show(Resources.EnterValidInput, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}
@@ -75,9 +76,9 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private void browseButton_Click(object sender, EventArgs e) {
-			var dialog = new OpenFileDialog() {
-				Title = Properties.Resources.SelectImage,
-				Filter = $"{Properties.Resources.ImagesFilter}|*.jpg;*.bmp;*.png;*.gif;*.tiff"
+			var dialog = new OpenFileDialog {
+				Title = Resources.SelectImage,
+				Filter = $"{Resources.ImagesFilter}|*.jpg;*.bmp;*.png;*.gif;*.tiff"
 			};
 			if (dialog.ShowDialog() == DialogResult.OK)
 				// Set path

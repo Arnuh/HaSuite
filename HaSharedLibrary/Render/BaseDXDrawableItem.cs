@@ -11,8 +11,8 @@ namespace HaSharedLibrary.Render.DX {
 	public class BaseDXDrawableItem : IBaseDXDrawableItem {
 		// multiple frame
 		private readonly List<IDXObject> frames;
-		private int currFrame = 0;
-		private int lastFrameSwitchTime = 0;
+		private int currFrame;
+		private int lastFrameSwitchTime;
 
 		// 1 frame
 		protected bool flip;
@@ -20,8 +20,8 @@ namespace HaSharedLibrary.Render.DX {
 		private readonly IDXObject frame0;
 
 		// Debug
-		private string _DebugText = null;
-		private int _lastDebugSwitchTime = 0;
+		private string _DebugText;
+		private int _lastDebugSwitchTime;
 
 		/// <summary>
 		/// Indexed debug text for developers. 
@@ -49,7 +49,7 @@ namespace HaSharedLibrary.Render.DX {
 		/// <summary>
 		/// The last frame drawn
 		/// </summary>
-		private IDXObject _LastFrameDrawn = null;
+		private IDXObject _LastFrameDrawn;
 
 		public IDXObject LastFrameDrawn {
 			get => _LastFrameDrawn;

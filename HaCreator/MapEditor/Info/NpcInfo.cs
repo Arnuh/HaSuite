@@ -7,6 +7,7 @@
 using System.Drawing;
 using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
+using HaCreator.Properties;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
@@ -31,7 +32,7 @@ namespace HaCreator.MapEditor.Info {
 			this.id = id;
 			this.name = name;
 			if (image != null && image.Width == 1 && image.Height == 1) {
-				image = Properties.Resources.placeholder;
+				image = Resources.placeholder;
 			}
 		}
 
@@ -39,7 +40,7 @@ namespace HaCreator.MapEditor.Info {
 			var npcImage = WzInfoTools.GetNpcImage(image);
 			if (npcImage != null) {
 				Image = npcImage.GetLinkedWzCanvasBitmap();
-				if (Image.Width == 1 && Image.Height == 1) Image = Properties.Resources.placeholder;
+				if (Image.Width == 1 && Image.Height == 1) Image = Resources.placeholder;
 
 				Origin = WzInfoTools.PointFToSystemPoint(npcImage.GetCanvasOriginPosition());
 			} else {

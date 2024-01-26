@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
@@ -54,7 +55,7 @@ namespace HaCreator.Wz {
 
 				WzDirectory parent;
 				if (board.IsNewMapDesign) {
-					parent = (WzDirectory) WzInfoTools.FindMapDirectoryParent(mapId, Program.WzManager);
+					parent = WzInfoTools.FindMapDirectoryParent(mapId, Program.WzManager);
 				} else {
 					WzObject mapImage = WzInfoTools.FindMapImage(mapId, Program.WzManager);
 					if (mapImage == null) {
@@ -69,7 +70,7 @@ namespace HaCreator.Wz {
 
 				Program.WzManager.SetWzFileUpdated(parent.GetTopMostWzDirectory().Name /* "map" */, image);
 			} else {
-				var mapDir = (WzDirectory) Program.WzManager["ui"];
+				var mapDir = Program.WzManager["ui"];
 				var mapImg = (WzImage) mapDir[image.Name];
 				if (mapImg != null) mapImg.Remove();
 
@@ -81,8 +82,8 @@ namespace HaCreator.Wz {
 		private void SaveMapInfo() {
 			board.MapInfo.Save(image,
 				board.VRRectangle == null
-					? (System.Drawing.Rectangle?) null
-					: new System.Drawing.Rectangle(board.VRRectangle.X, board.VRRectangle.Y, board.VRRectangle.Width,
+					? (Rectangle?) null
+					: new Rectangle(board.VRRectangle.X, board.VRRectangle.Y, board.VRRectangle.Width,
 						board.VRRectangle.Height));
 			if (board.MapInfo.mapType == MapType.RegularMap) {
 				var strMapImg = (WzImage) Program.WzManager.FindWzImageByName("string", "Map.img");
@@ -504,7 +505,7 @@ namespace HaCreator.Wz {
 			for (var i = 0; i < mobCount + npcCount; i++) {
 				var mob = i < mobCount;
 				var lifeInst = mob
-					? (LifeInstance) board.BoardItems.Mobs[i]
+					? board.BoardItems.Mobs[i]
 					: (LifeInstance) board.BoardItems.NPCs[i - mobCount];
 				var lifeProp = new WzSubProperty();
 
@@ -663,8 +664,7 @@ namespace HaCreator.Wz {
 						        lt.Y.Value - offset.Y.Value,
 						        width,
 						        height);*/
-						InfoTool.SetLtRbRectangle(itemProp,
-							new System.Drawing.Rectangle(rect.X, rect.Y, rect.Width,
+						itemProp.SetLtRbRectangle(new Rectangle(rect.X, rect.Y, rect.Width,
 								rect.Height) // convert Microsoft.Xna.Framework.Rectangle to System.Drawing.Rectangle
 						);
 

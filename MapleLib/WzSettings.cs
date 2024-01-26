@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace MapleLib.WzLib {
 	public class WzSettingsManager {
@@ -61,9 +62,8 @@ namespace MapleLib.WzLib {
 					// its fine if loading isnt possible
 					// fallback to default
 				}
-			} else {
-				// do nothing, default setting is in the value as specified in WzSettings.cs
 			}
+			// do nothing, default setting is in the value as specified in WzSettings.cs
 		}
 
 		/// <summary>
@@ -98,14 +98,14 @@ namespace MapleLib.WzLib {
 				switch (fieldType) {
 					case "Microsoft.Xna.Framework.Color": {
 						var value = (uint) jsonHoldingObject["value"];
-						var xnaColor = new Microsoft.Xna.Framework.Color(value);
+						var xnaColor = new Color(value);
 
 						fieldInfo.SetValue(null, xnaColor);
 						break;
 					}
 					case "System.Drawing.Color": {
 						var value = (int) jsonHoldingObject["value"];
-						var color = Color.FromArgb(value);
+						var color = System.Drawing.Color.FromArgb(value);
 
 						fieldInfo.SetValue(null, color);
 						break;
@@ -225,16 +225,16 @@ namespace MapleLib.WzLib {
 					//case "Microsoft.Xna.Framework.Graphics.Color":
 					case "Microsoft.Xna.Framework.Color": {
 						var xnaColor =
-							(Microsoft.Xna.Framework.Color) fieldInfo.GetValue(null);
+							(Color) fieldInfo.GetValue(null);
 						var uValue = xnaColor.PackedValue;
 
 						fieldJsonObject.Add("value", uValue);
 						break;
 					}
 					case "System.Drawing.Color": {
-						var argbColor = ((Color) fieldInfo.GetValue(null)).ToArgb();
+						var argbColor = ((System.Drawing.Color) fieldInfo.GetValue(null)).ToArgb();
 
-						fieldJsonObject.Add("value", (int) argbColor);
+						fieldJsonObject.Add("value", argbColor);
 						break;
 					}
 					case "System.Int32": {

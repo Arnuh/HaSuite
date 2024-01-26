@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +43,7 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
-				new XNA.Rectangle((int) X + xShift - Origin.X, (int) Y + yShift - Origin.Y, Width, Height);
+				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 			//if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
 			sprite.Draw(reactorInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
@@ -69,13 +70,13 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override ItemTypes Type => ItemTypes.Reactors;
 
-		public override System.Drawing.Bitmap Image => reactorInfo.Image;
+		public override Bitmap Image => reactorInfo.Image;
 
 		public override int Width => reactorInfo.Width;
 
 		public override int Height => reactorInfo.Height;
 
-		public override System.Drawing.Point Origin => reactorInfo.Origin;
+		public override Point Origin => reactorInfo.Origin;
 
 		public int ReactorTime {
 			get => reactorTime;

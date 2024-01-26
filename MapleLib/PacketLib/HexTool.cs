@@ -11,7 +11,7 @@ namespace MapleLib.PacketLib {
 		/// <returns></returns>
 		public static string ToString(byte byteValue) {
 			var tmp = byteValue << 8;
-			var retstr = new char[] {HEX[(tmp >> 12) & 0x0F], HEX[(tmp >> 8) & 0x0F]};
+			var retstr = new[] {HEX[(tmp >> 12) & 0x0F], HEX[(tmp >> 8) & 0x0F]};
 			return new string(retstr);
 		}
 

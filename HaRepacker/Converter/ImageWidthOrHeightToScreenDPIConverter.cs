@@ -7,6 +7,7 @@
 
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
 using HaRepacker.Utils;
 
@@ -16,7 +17,7 @@ namespace HaRepacker.Converter {
 	/// </summary>
 	public class ImageWidthOrHeightToScreenDPIConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var widthOrHeight = (double) value;
 			var realWidthOrHeightToDisplay = widthOrHeight * ScreenDPIUtil.GetScreenScaleFactor();
 
@@ -24,7 +25,7 @@ namespace HaRepacker.Converter {
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var value_ = (double) value;
 			var imageWidthOrHeight = value_ / ScreenDPIUtil.GetScreenScaleFactor();
 

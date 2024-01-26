@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Inherited Members
 
 		public override void SetValue(object value) {
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public override WzImageProperty DeepClone() {
@@ -101,7 +102,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <param name="path">path to property</param>
 		/// <returns>the wz property with the specified name</returns>
 		public override WzImageProperty GetFromPath(string path) {
-			var segments = path.Split(new char[1] {'/'}, System.StringSplitOptions.RemoveEmptyEntries);
+			var segments = path.Split(new char[1] {'/'}, StringSplitOptions.RemoveEmptyEntries);
 			if (segments[0] == "..") return ((WzImageProperty) Parent)[path.Substring(name.IndexOf('/') + 1)];
 
 			WzImageProperty ret = this;
@@ -212,8 +213,10 @@ namespace MapleLib.WzLib.WzProperties {
 			properties.Sort((img1, img2) => {
 				if (img1 == null) {
 					return 0;
-				} else if (img1.GetType() == typeof(WzCanvasProperty) || // frames
-				           img1.GetType() == typeof(WzSubProperty)) // footholds
+				}
+
+				if (img1.GetType() == typeof(WzCanvasProperty) || // frames
+				    img1.GetType() == typeof(WzSubProperty)) // footholds
 				{
 					int nodeId1, nodeId2;
 					if (int.TryParse(img1.Name, out nodeId1) && int.TryParse(img2.Name, out nodeId2)) {
@@ -226,12 +229,12 @@ namespace MapleLib.WzLib.WzProperties {
 						}
 
 						return -1;
-					} else { // default to string compare
-						return img1.Name.CompareTo(img2.Name);
-					}
-				} else {
-					return img1.Name.CompareTo(img2.Name); // (leave non canvas nodes at the very bottom, i.e "info")
+					} // default to string compare
+
+					return img1.Name.CompareTo(img2.Name);
 				}
+
+				return img1.Name.CompareTo(img2.Name); // (leave non canvas nodes at the very bottom, i.e "info")
 			});
 		}
 

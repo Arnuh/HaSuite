@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System.Drawing;
 using HaCreator.MapEditor.Instance.Shapes;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,7 +32,7 @@ namespace HaCreator.MapEditor.Instance.Misc {
 
 		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
 			base.Draw(sprite, dotColor, xShift, yShift);
-			board.ParentControl.FontEngine.DrawString(sprite, new System.Drawing.Point(X + xShift + 2, Y + yShift + 2),
+			board.ParentControl.FontEngine.DrawString(sprite, new Point(X + xShift + 2, Y + yShift + 2),
 				XNA.Color.Black, Name, Width);
 		}
 

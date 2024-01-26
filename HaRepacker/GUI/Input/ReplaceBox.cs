@@ -6,6 +6,7 @@
 
 using System;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public enum ReplaceResult {
@@ -26,7 +27,7 @@ namespace HaRepacker.GUI.Input {
 		public static bool Show(string name, out ReplaceResult result) {
 			var box = new ReplaceBox();
 
-			box.label1.Text = string.Format(Properties.Resources.ReplaceConfirm, name);
+			box.label1.Text = string.Format(Resources.ReplaceConfirm, name);
 
 			box.ShowDialog();
 			result = box.result;

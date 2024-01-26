@@ -12,9 +12,6 @@ namespace HaSharedLibrary.SharpApng {
 	public class SharpApng : IDisposable {
 		private readonly List<SharpApngFrame> m_frames = new List<SharpApngFrame>();
 
-		public SharpApng() {
-		}
-
 		public void Dispose() {
 			foreach (var frame in m_frames)
 				frame.Dispose();
@@ -25,9 +22,9 @@ namespace HaSharedLibrary.SharpApng {
 			get {
 				if (index < m_frames.Count) {
 					return m_frames[index];
-				} else {
-					return null;
 				}
+
+				return null;
 			}
 			set {
 				if (index < m_frames.Count) m_frames[index] = value;

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 using MapleLib.WzLib.WzProperties;
 
 namespace Footholds {
@@ -19,8 +20,8 @@ namespace Footholds {
 
 
 		public List<object> settings;
-		public int xOffset = 0;
-		public int yOffset = 0;
+		public int xOffset;
+		public int yOffset;
 		public double scale = 1;
 		public Image map;
 
@@ -63,15 +64,15 @@ namespace Footholds {
 			MapPBox.Size = theMap.Size;
 			MapPBox.Image = theMap;
 
-			xOffset = (int) ((thePortals.ToArray()[0].Shape.X + 20 -
-			                  ((WzIntProperty) thePortals.ToArray()[0].Data["x"]).Value) * -1);
-			yOffset = (int) ((thePortals.ToArray()[0].Shape.Y + 20 -
-			                  ((WzIntProperty) thePortals.ToArray()[0].Data["y"]).Value) * -1);
+			xOffset = (thePortals.ToArray()[0].Shape.X + 20 -
+			           ((WzIntProperty) thePortals.ToArray()[0].Data["x"]).Value) * -1;
+			yOffset = (thePortals.ToArray()[0].Shape.Y + 20 -
+			           ((WzIntProperty) thePortals.ToArray()[0].Data["y"]).Value) * -1;
 		}
 
 		public Bitmap ResizeBitMap(Bitmap img, int nWidth, int nHeight) {
 			var result = new Bitmap(nWidth, nHeight);
-			using (var g = Graphics.FromImage((Image) result)) {
+			using (var g = Graphics.FromImage(result)) {
 				g.DrawImage(img, 0, 0, nWidth, nHeight);
 			}
 
@@ -91,7 +92,7 @@ namespace Footholds {
 					(int) (foothold.Shape.Height * scale));
 				if (tempRect.IntersectsWith(new Rectangle(e.X, e.Y, 1, 1))) {
 					var editFoothold = new Edit();
-					editFoothold.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditFoothold,
+					editFoothold.Text = string.Format("{0}: {1}", Resources.EditFoothold,
 						foothold.Data.Name);
 					editFoothold.fh = Footholds.ToArray()[index];
 					editFoothold.settings = settings;
@@ -109,7 +110,7 @@ namespace Footholds {
 					(int) (portal.Shape.Height * scale));
 				if (tempRect.IntersectsWith(new Rectangle(e.X, e.Y, 1, 1))) {
 					var editPortals = new EditPortals();
-					editPortals.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditPortal,
+					editPortals.Text = string.Format("{0}: {1}", Resources.EditPortal,
 						portal.Data.Name);
 					editPortals.portal = thePortals.ToArray()[index];
 					editPortals.Settings = settings;
@@ -128,7 +129,7 @@ namespace Footholds {
 				if (tempRect.IntersectsWith(new Rectangle(e.X, e.Y, 1, 1))) {
 					var spawnInfo = new SpawnpointInfo();
 					spawnInfo.spawnpoint = spawnpoint;
-					spawnInfo.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditSP,
+					spawnInfo.Text = string.Format("{0}: {1}", Resources.EditSP,
 						spawnpoint.Data.Name);
 					spawnInfo.ShowDialog();
 				}
@@ -150,8 +151,8 @@ namespace Footholds {
 			// The commented code was an attempt to use the mouse to navigate around the map
 			// with the mouse. Unfortunately I did not get it to work properly.
 			//  if (!isDown)
-			Text = "Map X: " + ((int) (xOffset + e.X / scale)).ToString() + " Y: " +
-			       ((int) (yOffset + e.Y / scale)).ToString();
+			Text = "Map X: " + (int) (xOffset + e.X / scale) + " Y: " +
+			       ((int) (yOffset + e.Y / scale));
 			/*  else
 			  {
 			      if (sSwitch)

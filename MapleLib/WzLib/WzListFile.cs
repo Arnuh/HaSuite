@@ -67,7 +67,7 @@ namespace MapleLib.WzLib {
 			var wzWriter = new WzBinaryWriter(File.Create(path), WzIv);
 
 			foreach (var listEntry in listEntries) {
-				wzWriter.Write((int) listEntry.Length);
+				wzWriter.Write(listEntry.Length);
 				var encryptedChars = wzWriter.EncryptString(listEntry + (char) 0);
 				for (var j = 0; j < encryptedChars.Length; j++)
 					wzWriter.Write((short) encryptedChars[j]);

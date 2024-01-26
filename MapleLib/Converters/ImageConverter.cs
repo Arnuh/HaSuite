@@ -58,7 +58,7 @@ namespace MapleLib.Converters {
 		/// <param name="bitmap"></param>
 		/// <returns></returns>
 		public static Image ToImage(this Bitmap bitmap) {
-			return (Image) bitmap;
+			return bitmap;
 		}
 
 		/// <summary>

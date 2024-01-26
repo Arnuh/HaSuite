@@ -18,7 +18,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		private int _page; // aka layer
 		private bool _ladder;
-		private bool _ladderSetByUser = false;
+		private bool _ladderSetByUser;
 		private bool _uf; // Decides whether you can climb over the end of the rope (usually true)
 		// According to koolk it stands for "Upper Foothold"
 
@@ -64,7 +64,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public int PlatformNumber {
 			get => -1;
-			set { return; }
+			set { }
 		}
 
 		public bool ladder {
@@ -126,7 +126,6 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict) {
-			return;
 		}
 
 		public void AddToBoard(List<UndoRedoAction> undoPipe) {

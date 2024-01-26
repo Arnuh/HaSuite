@@ -8,7 +8,7 @@ using System;
 
 namespace HaCreator.Exceptions {
 	public class SerializationException : Exception {
-		public SerializationException() : base() {
+		public SerializationException() {
 		}
 
 		public SerializationException(string message) : base(message) {

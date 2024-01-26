@@ -2,7 +2,7 @@
 	/// <summary>
 	/// The localisation number for each regional MapleStory version.
 	/// </summary>
-	public enum MapleStoryLocalisation : int {
+	public enum MapleStoryLocalisation {
 		MapleStoryKorea = 1,
 		MapleStoryKoreaTespia = 2,
 		Unknown3 = 3,

@@ -16,6 +16,7 @@
 
 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -39,7 +40,9 @@ namespace MapleLib {
 		public static bool CheckAndLoadLibrary() {
 			if (_SquishLibLoadingState == SquishLibLoadingState.Initialised) {
 				return true; // shouldnt check again once its loaded anyway.
-			} else if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
+			}
+
+			if (_SquishLibLoadingState == SquishLibLoadingState.Uninitialised) // not init yet
 			{
 				//similarly to find process architecture  
 				var assemblyArchitecture = Assembly.GetExecutingAssembly().GetName().ProcessorArchitecture;
@@ -47,7 +50,7 @@ namespace MapleLib {
 				      assemblyArchitecture == ProcessorArchitecture.Amd64)) {
 					_SquishLibLoadingState = SquishLibLoadingState.WrongProcessorArchitecture;
 
-					System.Diagnostics.Debug.WriteLine("squish.dll library not loaded. MSIL assembly detected.");
+					Debug.WriteLine("squish.dll library not loaded. MSIL assembly detected.");
 					return false;
 				}
 
@@ -104,16 +107,16 @@ namespace MapleLib {
 
 					_SquishLibLoadingState = SquishLibLoadingState.Initialised; // flag as initialised
 
-					System.Diagnostics.Debug.WriteLine("Loaded squish.dll library.");
+					Debug.WriteLine("Loaded squish.dll library.");
 
 					return true;
-				} else {
-					_SquishLibLoadingState = SquishLibLoadingState.UnknownError;
-
-					System.Diagnostics.Debug.WriteLine("Error loaded squish.dll library, code = " + errorCode);
-					return false;
-					//throw new Exception("squish.dll not found in the program directory.");
 				}
+
+				_SquishLibLoadingState = SquishLibLoadingState.UnknownError;
+
+				Debug.WriteLine("Error loaded squish.dll library, code = " + errorCode);
+				return false;
+				//throw new Exception("squish.dll not found in the program directory.");
 			}
 
 			return false;
@@ -191,6 +194,6 @@ namespace MapleLib {
 
 			//! Weight the colour by alpha during cluster fit (disabled by default).
 			kWeightColourByAlpha = 1 << 7
-		};
+		}
 	}
 }

@@ -6,6 +6,7 @@
 
 using System;
 using System.Windows.Forms;
+using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public partial class NameValueInputBox : Form {
@@ -17,8 +18,8 @@ namespace HaRepacker.GUI.Input {
 			return result;
 		}
 
-		private string nameResult = null;
-		private string valResult = null;
+		private string nameResult;
+		private string valResult;
 
 		public NameValueInputBox(string title) {
 			InitializeComponent();
@@ -39,7 +40,7 @@ namespace HaRepacker.GUI.Input {
 				DialogResult = DialogResult.OK;
 				Close();
 			} else {
-				MessageBox.Show(Properties.Resources.EnterValidInput, Properties.Resources.Warning,
+				MessageBox.Show(Resources.EnterValidInput, Resources.Warning,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 		}

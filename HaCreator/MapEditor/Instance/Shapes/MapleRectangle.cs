@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
@@ -140,9 +141,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override MapleDrawableInfo BaseInfo => null;
 
-		public override System.Drawing.Bitmap Image => throw new NotImplementedException();
+		public override Bitmap Image => throw new NotImplementedException();
 
-		public override System.Drawing.Point Origin => System.Drawing.Point.Empty;
+		public override Point Origin => Point.Empty;
 
 		public override bool IsPixelTransparent(int x, int y) {
 			return false;

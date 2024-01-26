@@ -12,6 +12,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using HaRepacker.GUI;
+using HaRepacker.Properties;
 using MapleLib;
 using MapleLib.Configuration;
 using Microsoft.Win32;
@@ -46,7 +47,7 @@ namespace HaRepacker {
 
 			// Localisation
 			var ci = GetMainCulture(CultureInfo.CurrentCulture);
-			Properties.Resources.Culture = ci;
+			Resources.Culture = ci;
 
 			Thread.CurrentThread.CurrentCulture = ci;
 			Thread.CurrentThread.CurrentUICulture = ci;
@@ -99,9 +100,9 @@ namespace HaRepacker {
 				case "zh":
 					if (ci.EnglishName.Contains("Simplified")) {
 						return new CultureInfo("zh-CHS");
-					} else {
-						return new CultureInfo("zh-CHT");
 					}
+
+					return new CultureInfo("zh-CHT");
 				default:
 					return ci;
 			}

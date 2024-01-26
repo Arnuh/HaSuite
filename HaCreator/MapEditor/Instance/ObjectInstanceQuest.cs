@@ -20,7 +20,7 @@ namespace HaCreator.MapEditor.Instance {
 		}
 
 		public override string ToString() {
-			return questId.ToString() + " - " + Enum.GetName(typeof(QuestState), state);
+			return questId + " - " + Enum.GetName(typeof(QuestState), state);
 		}
 
 		/*public dynamic Serialize()

@@ -39,9 +39,13 @@ namespace HaRepacker.Comparer {
 
 				if (s1val > s2val) {
 					return 1;
-				} else if (s1val < s2val) {
+				}
+
+				if (s1val < s2val) {
 					return -1;
-				} else if (s1val == s2val) {
+				}
+
+				if (s1val == s2val) {
 					return 0;
 				}
 			} else if (isS1Numeric && !isS2Numeric) {

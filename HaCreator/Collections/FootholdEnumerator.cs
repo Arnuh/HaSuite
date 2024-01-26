@@ -12,7 +12,7 @@ using HaCreator.MapEditor.Instance.Shapes;
 
 namespace HaCreator.Collections {
 	public class FootholdEnumerator : IEnumerable<FootholdLine>, IEnumerator<FootholdLine> {
-		private bool started = false;
+		private bool started;
 		private FootholdLine firstLine;
 		private FootholdAnchor firstAnchor;
 		private FootholdLine currLine;
@@ -52,12 +52,12 @@ namespace HaCreator.Collections {
 				if (stashedLines.Count == 0) {
 					// Enumeration finished
 					return false;
-				} else {
-					// This path finished, pop a new path from the stack
-					var item = stashedLines.Pop();
-					currLine = item.Item1;
-					nextAnchor = item.Item2;
 				}
+
+				// This path finished, pop a new path from the stack
+				var item = stashedLines.Pop();
+				currLine = item.Item1;
+				nextAnchor = item.Item2;
 			} else if (nextLineOpts.Count == 1) {
 				currLine = nextLineOpts[0];
 				visited.Add(currLine);

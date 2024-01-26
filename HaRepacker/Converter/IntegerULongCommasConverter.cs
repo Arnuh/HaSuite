@@ -6,6 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace HaRepacker.Converter {
@@ -14,14 +15,14 @@ namespace HaRepacker.Converter {
 	/// </summary>
 	public class IntegerULongCommasConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			var value_ = (ulong) value;
 
 			return value_.ToString("N0");
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter,
-			System.Globalization.CultureInfo culture) {
+			CultureInfo culture) {
 			return 0;
 		}
 	}

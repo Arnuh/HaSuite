@@ -4,9 +4,9 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HaRepacker.Properties;
 using HaSharedLibrary.SharpApng;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
@@ -48,7 +48,7 @@ namespace HaRepacker {
 				return false;
 			}
 
-			props.Sort(new Comparison<WzCanvasProperty>(PropertySorter));
+			props.Sort(PropertySorter);
 			for (var i = 0; i < props.Count; i++) {
 				if (i.ToString() != props[i].Name) {
 					return false;
@@ -65,7 +65,7 @@ namespace HaRepacker {
 			var Size = new Point(biggestPng.X - SmallestEmptySpace.X, biggestPng.Y - SmallestEmptySpace.Y);
 			var empty = new Bitmap(MaximumMapEndingPts.X - SmallestEmptySpace.X,
 				MaximumMapEndingPts.Y - SmallestEmptySpace.Y);
-			var process = Graphics.FromImage((Image) empty);
+			var process = Graphics.FromImage(empty);
 			process.DrawImage(source, Size.X - origin.X.Value, Size.Y - origin.Y.Value);
 			return empty;
 		}
@@ -127,11 +127,11 @@ namespace HaRepacker {
 				}
 			}
 
-			sortedProps.Sort(new Comparison<WzCanvasProperty>(PropertySorter));
+			sortedProps.Sort(PropertySorter);
 			for (var i = 0; i < sortedProps.Count; i++) {
 				var subprop = sortedProps[i];
 				if (i.ToString() != subprop.Name) {
-					Warning.Error(string.Format(Properties.Resources.AnimError, i.ToString()));
+					Warning.Error(string.Format(Resources.AnimError, i.ToString()));
 					return;
 				}
 
@@ -188,7 +188,7 @@ namespace HaRepacker {
 		private static Bitmap CreateIncompatibilityFrame(Size frameSize) {
 			var frame = new Bitmap(frameSize.Width, frameSize.Height);
 			using (var g = Graphics.FromImage(frame)) {
-				g.DrawString(Properties.Resources.AnimCompatMessage, SystemFonts.MessageBoxFont,
+				g.DrawString(Resources.AnimCompatMessage, SystemFonts.MessageBoxFont,
 					Brushes.Black, new Rectangle(0, 0, frame.Width, frame.Height));
 			}
 

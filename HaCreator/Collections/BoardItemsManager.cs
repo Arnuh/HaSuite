@@ -16,6 +16,7 @@ using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
+using Microsoft.Xna.Framework;
 
 namespace HaCreator.Collections {
 	public class BoardItemsManager {
@@ -59,7 +60,7 @@ namespace HaCreator.Collections {
 				return null;
 			}
 
-			var pos = new Microsoft.Xna.Framework.Point(x, y - 60);
+			var pos = new Point(x, y - 60);
 			var reflectionBoundaryWithin = MirrorFieldDatas.FirstOrDefault(
 				mirror => { return mirror.Rectangle.Contains(pos) && mirror.MirrorFieldDataType == filter_objectForOverlay; });
 
@@ -179,41 +180,51 @@ namespace HaCreator.Collections {
 						delegate(LayeredItem a, LayeredItem b) {
 							if (a.Layer.LayerNumber > b.Layer.LayerNumber) {
 								return 1;
-							} else if (a.Layer.LayerNumber < b.Layer.LayerNumber) {
+							}
+
+							if (a.Layer.LayerNumber < b.Layer.LayerNumber) {
 								return -1;
-							} else {
-								if (a is TileInstance && b is TileInstance) {
-									var ai = (TileInfo) a.BaseInfo;
-									var bi = (TileInfo) b.BaseInfo;
-									if (ai.z > bi.z) {
-										return 1;
-									} else if (ai.z < bi.z) {
-										return -1;
-									} else {
-										if (a.Z > b.Z) {
-											return 1;
-										} else if (a.Z < b.Z) {
-											return -1;
-										} else {
-											return 0;
-										}
-									}
+							}
+
+							if (a is TileInstance && b is TileInstance) {
+								var ai = (TileInfo) a.BaseInfo;
+								var bi = (TileInfo) b.BaseInfo;
+								if (ai.z > bi.z) {
+									return 1;
 								}
 
-								if (a is ObjectInstance && b is ObjectInstance) {
-									if (a.Z > b.Z) {
-										return 1;
-									} else if (a.Z < b.Z) {
-										return -1;
-									} else {
-										return 0;
-									}
-								} else if (a is TileInstance && b is ObjectInstance) {
-									return 1;
-								} else {
+								if (ai.z < bi.z) {
 									return -1;
 								}
+
+								if (a.Z > b.Z) {
+									return 1;
+								}
+
+								if (a.Z < b.Z) {
+									return -1;
+								}
+
+								return 0;
 							}
+
+							if (a is ObjectInstance && b is ObjectInstance) {
+								if (a.Z > b.Z) {
+									return 1;
+								}
+
+								if (a.Z < b.Z) {
+									return -1;
+								}
+
+								return 0;
+							}
+
+							if (a is TileInstance && b is ObjectInstance) {
+								return 1;
+							}
+
+							return -1;
 						}
 					);
 				}
@@ -246,11 +257,13 @@ namespace HaCreator.Collections {
 					delegate(BackgroundInstance a, BackgroundInstance b) {
 						if (a.Z > b.Z) {
 							return 1;
-						} else if (a.Z < b.Z) {
-							return -1;
-						} else {
-							return 0;
 						}
+
+						if (a.Z < b.Z) {
+							return -1;
+						}
+
+						return 0;
 					}
 				);
 			}
@@ -262,11 +275,13 @@ namespace HaCreator.Collections {
 					delegate(BackgroundInstance a, BackgroundInstance b) {
 						if (a.Z > b.Z) {
 							return 1;
-						} else if (a.Z < b.Z) {
-							return -1;
-						} else {
-							return 0;
 						}
+
+						if (a.Z < b.Z) {
+							return -1;
+						}
+
+						return 0;
 					}
 				);
 			}

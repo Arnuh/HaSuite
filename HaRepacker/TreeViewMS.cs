@@ -222,7 +222,7 @@ namespace HaRepacker {
 			// TreeViewMS
 			// 
 			Font = new Font("Segoe UI", 8F, FontStyle.Regular,
-				GraphicsUnit.Point, (byte) 0);
+				GraphicsUnit.Point, 0);
 			ResumeLayout(false);
 		}
 

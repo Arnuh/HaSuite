@@ -10,7 +10,7 @@ using HaCreator.MapEditor.Instance.Shapes;
 
 namespace HaCreator.Collections {
 	public class AnchorEnumerator : IEnumerable<FootholdAnchor>, IEnumerator<FootholdAnchor> {
-		private bool started = false;
+		private bool started;
 		private FootholdAnchor first;
 		private FootholdAnchor curr;
 		private readonly HashSet<FootholdAnchor> visited = new HashSet<FootholdAnchor>();
@@ -45,9 +45,9 @@ namespace HaCreator.Collections {
 			if (anchors.Count == 0) {
 				if (toVisit.Count == 0) {
 					return false;
-				} else {
-					curr = toVisit.Pop();
 				}
+
+				curr = toVisit.Pop();
 			} else if (anchors.Count == 1) {
 				curr = anchors[0];
 				visited.Add(curr);

@@ -15,6 +15,7 @@ using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
+using Microsoft.Xna.Framework.Graphics;
 using Xna = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Input {
@@ -82,7 +83,7 @@ namespace HaCreator.MapEditor.Input {
 
 					Board.BoardItems.Add(currAddedObj, false);
 					BindItem(currAddedObj,
-						new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2,
+						new Xna.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2,
 							currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
 				} else if (state == MouseState.Chairs) // Chair
 				{
@@ -90,7 +91,7 @@ namespace HaCreator.MapEditor.Input {
 					ReleaseItem(currAddedObj);
 					currAddedObj = new Chair(Board, X, Y);
 					Board.BoardItems.Add(currAddedObj, false);
-					BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
+					BindItem(currAddedObj, new Xna.Point());
 				} else if (state == MouseState.Ropes) // Ropes
 				{
 					var count = BoundItems.Count;
@@ -262,7 +263,7 @@ namespace HaCreator.MapEditor.Input {
 				Board.BoardItems.Add(currAddedObj, false);
 
 				BindItem(currAddedObj,
-					new Microsoft.Xna.Framework.Point(newInfo.Origin.X - newInfo.Image.Width / 2,
+					new Xna.Point(newInfo.Origin.X - newInfo.Image.Width / 2,
 						newInfo.Origin.Y - newInfo.Image.Height / 2));
 				/*    if (currAddedInfo.Image.Width == 1 && currAddedInfo.Image.Height == 1)
 				    {
@@ -302,7 +303,7 @@ namespace HaCreator.MapEditor.Input {
 				Clear();
 				currAddedObj = new Chair(Board, X, Y);
 				Board.BoardItems.Add(currAddedObj, false);
-				BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
+				BindItem(currAddedObj, new Xna.Point());
 				state = MouseState.Chairs;
 			}
 		}
@@ -384,8 +385,8 @@ namespace HaCreator.MapEditor.Input {
 
 		public override MapleDrawableInfo BaseInfo => null;
 
-		public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch sprite,
-			Microsoft.Xna.Framework.Color color, int xShift, int yShift) {
+		public override void Draw(SpriteBatch sprite,
+			Xna.Color color, int xShift, int yShift) {
 		}
 
 		public override Bitmap Image => placeholder;
@@ -394,11 +395,11 @@ namespace HaCreator.MapEditor.Input {
 
 		public override ItemTypes Type => ItemTypes.None;
 
-		public override Microsoft.Xna.Framework.Color Color => Microsoft.Xna.Framework.Color.White;
+		public override Xna.Color Color => Xna.Color.White;
 
-		public override Microsoft.Xna.Framework.Color InactiveColor => Microsoft.Xna.Framework.Color.White;
+		public override Xna.Color InactiveColor => Xna.Color.White;
 
-		public override void BindItem(BoardItem item, Microsoft.Xna.Framework.Point distance) {
+		public override void BindItem(BoardItem item, Xna.Point distance) {
 			lock (Board.ParentControl) {
 				if (BoundItems.ContainsKey(item)) {
 					return;

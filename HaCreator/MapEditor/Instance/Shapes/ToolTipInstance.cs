@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 	{
 		private string title;
 		private string desc;
-		private ToolTipChar ttc = null;
+		private ToolTipChar ttc;
 		private int originalNum;
 
 		public ToolTipInstance(Board board, XNA.Rectangle rect, string title, string desc, int originalNum = -1)
@@ -61,15 +62,15 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			base.Draw(sprite, dotColor, xShift, yShift);
 			if (title != null) {
 				Board.ParentControl.FontEngine.DrawString(sprite,
-					new System.Drawing.Point(X + xShift + 2, Y + yShift + 2), Microsoft.Xna.Framework.Color.Black,
+					new Point(X + xShift + 2, Y + yShift + 2), XNA.Color.Black,
 					title, Width);
 			}
 
 			if (desc != null) {
 				var titleHeight = (int) Math.Ceiling(Board.ParentControl.FontEngine.MeasureString(title).Height);
 				Board.ParentControl.FontEngine.DrawString(sprite,
-					new System.Drawing.Point(X + xShift + 2, Y + yShift + 2 + titleHeight),
-					Microsoft.Xna.Framework.Color.Black, desc, Width);
+					new Point(X + xShift + 2, Y + yShift + 2 + titleHeight),
+					XNA.Color.Black, desc, Width);
 			}
 		}
 
@@ -128,9 +129,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				var result = new Dictionary<string, object>();
 				result[TTC_KEY] = refDict[ttc];
 				return result;
-			} else {
-				return null;
 			}
+
+			return null;
 		}
 
 		public override void DeserializeBindings(IDictionary<string, object> bindSer,

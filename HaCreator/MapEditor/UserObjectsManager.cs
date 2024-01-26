@@ -25,8 +25,8 @@ namespace HaCreator.MapEditor {
 		private WzImageProperty l1prop;
 		private List<ObjectInfo> newObjects = new List<ObjectInfo>();
 		private Dictionary<string, byte[]> newObjectsData = new Dictionary<string, byte[]>();
-		private string serializedFormCache = null;
-		private bool dirty = false;
+		private string serializedFormCache;
+		private bool dirty;
 
 		public UserObjectsManager(MultiBoard multiBoard) {
 			this.multiBoard = multiBoard;
