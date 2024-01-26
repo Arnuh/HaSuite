@@ -28,8 +28,7 @@ namespace HaRepacker.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomWZEncryptionInputBox));
             this.saveButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,6 +41,7 @@ namespace HaRepacker.GUI
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.button_resetAESUserKey = new System.Windows.Forms.Button();
             this.textBox_AESUserKey32 = new System.Windows.Forms.TextBox();
@@ -77,7 +77,6 @@ namespace HaRepacker.GUI
             this.textBox_AESUserKey1 = new System.Windows.Forms.TextBox();
             this.textBox_AESUserKey3 = new System.Windows.Forms.TextBox();
             this.textBox_AESUserKey2 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -184,6 +183,12 @@ namespace HaRepacker.GUI
             resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.label6.Name = "label6";
             // 
             // linkLabel1
             // 
@@ -397,12 +402,6 @@ namespace HaRepacker.GUI
             this.textBox_AESUserKey2.Name = "textBox_AESUserKey2";
             this.textBox_AESUserKey2.Tag = "1";
             // 
-            // label6
-            // 
-            resources.ApplyResources(this.label6, "label6");
-            this.label6.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.label6.Name = "label6";
-            // 
             // CustomWZEncryptionInputBox
             // 
             resources.ApplyResources(this, "$this");
@@ -418,7 +417,6 @@ namespace HaRepacker.GUI
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion
