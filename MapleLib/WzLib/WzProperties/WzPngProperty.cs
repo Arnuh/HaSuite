@@ -202,10 +202,10 @@ namespace MapleLib.WzLib.WzProperties {
 		public bool ListWzUsed {
 			get => listWzUsed;
 			set {
-				if (value != listWzUsed) {
-					listWzUsed = value;
-					CompressPng(GetImage(false));
-				}
+				if (value == listWzUsed) return;
+				listWzUsed = value;
+				// Probably safe to swap to ConvertCompressedBytes?
+				CompressPng(GetImage(false));
 			}
 		}
 
@@ -288,16 +288,29 @@ namespace MapleLib.WzLib.WzProperties {
 			return returnBytes;
 		}
 
+		/// <summary>
+		/// Checks if the image was compressed by List.wz and saves the result to ListWzUsed
+		/// Doesn't use cached value to determine the result
+		/// Will always check the compressed buffer for the zlib header
+		/// </summary>
+		/// <param name="compressedBuffer"></param>
+		/// <returns></returns>
+		public bool CheckListWzUsed(byte[] compressedBuffer = null) {
+			if (compressedBuffer == null) {
+				compressedBuffer = GetCompressedBytes(false);
+			}
+
+			// If the first 2 bytes aren't a zlib header, then it's probably compressed by List.wz
+			var header = (ushort) (compressedBuffer[0] | ((uint) compressedBuffer[1] << 8));
+			listWzUsed = header != 0x9C78 && header != 0xDA78 && header != 0x0178 && header != 0x5E78;
+			return listWzUsed;
+		}
+
 		internal byte[] Decompress(byte[] compressedBuffer, byte[] decompressedBuffer) {
 			using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
 				DeflateStream zlib;
 
-				var header = reader.ReadUInt16();
-				listWzUsed = header != 0x9C78 && header != 0xDA78 && header != 0x0178 && header != 0x5E78;
-				// If the first 2 bytes aren't a zlib header, then it's probably compressed by List.wz
-				if (listWzUsed) {
-					// Go back since we checked for header
-					reader.BaseStream.Position -= 2;
+				if (CheckListWzUsed(compressedBuffer)) {
 					var dataStream = new MemoryStream();
 					var endOfPng = compressedBuffer.Length;
 
@@ -314,6 +327,7 @@ namespace MapleLib.WzLib.WzProperties {
 					dataStream.Position = 2; // ZLib header
 					zlib = new DeflateStream(dataStream, CompressionMode.Decompress);
 				} else {
+					reader.ReadInt16(); // ZLib header
 					zlib = new DeflateStream(reader.BaseStream, CompressionMode.Decompress);
 				}
 
@@ -420,7 +434,7 @@ namespace MapleLib.WzLib.WzProperties {
 		public byte[] ConvertCompressedBytes(WzMutableKey WzKey) {
 			var compressedBuffer = GetCompressedBytes(false);
 			// Only convert if List.wz was used and the WzKey changed
-			if (!listWzUsed) return compressedBuffer;
+			if (!CheckListWzUsed(compressedBuffer)) return compressedBuffer;
 			if (ParentImage.reader.WzKey.Equals(WzKey)) return compressedBuffer;
 			// Duplicate part of the decompress code to avoid having to decompress, recompress
 			// when we just want to change the WzKey of the compressed bytes

@@ -211,7 +211,7 @@ namespace MapleLib.WzLib {
 
 					canvasProp.PngProperty = new WzPngProperty(reader, imgParent.ParseEverything) {Parent = canvasProp};
 					if (imgParent.ParseEverything) {
-						canvasProp.PngProperty.ParsePng(true);
+						canvasProp.PngProperty.CheckListWzUsed(canvasProp.PngProperty.GetCompressedBytes(true));
 					}
 
 					return canvasProp;
