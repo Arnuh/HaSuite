@@ -1,13 +1,14 @@
 ## HaSuite / Harepacker resurrected
-[![Github total downloads](https://img.shields.io/github/downloads/lastbattle/Harepacker-resurrected/total.svg)]() 
-[![Github All Releases](https://img.shields.io/github/release/lastbattle/Harepacker-resurrected.svg)](https://github.com/lastbattle/Harepacker-resurrected/releases)
-[![Github All Issues](https://img.shields.io/github/issues/lastbattle/Harepacker-resurrected.svg)](https://github.com/lastbattle/Harepacker-resurrected/issues)
+[![GitHub Downloads](https://img.shields.io/github/downloads/Arnuh/HaSuite/total.svg)]() 
+[![GitHub Release](https://img.shields.io/github/v/release/Arnuh/HaSuite)](https://github.com/Arnuh/HaSuite/releases)
+[![GitHub issues](https://img.shields.io/github/issues/Arnuh/HaSuite)](https://github.com/Arnuh/HaSuite/issues)
 
-A collection of tools for MapleStory, including a .wz file and level/field/map editor.
+A collection of tools for MapleStory, including a .wz file and map editor.
 
 > Original thread: [HaSuite - HaCreator 2.1/HaRepacker 4.2.3](https://github.com/hadeutscher/HaSuite) | [Ragezone](http://forum.ragezone.com/f702/release-hasuite-hacreator-2-1-a-1068988/)
 
-> Discussion thread: [Ragezone](https://forum.ragezone.com/f702/release-harepacker-resurrected-1149521/)
+> Forked from: [Harepacker Resurrected](https://github.com/lastbattle/Harepacker-resurrected) | [Ragezone](https://forum.ragezone.com/threads/release-harepacker-resurrected.1149521/)
+
 
 ----
 
@@ -38,7 +39,7 @@ A collection of tools for MapleStory, including a .wz file and level/field/map e
 
 ### Cloning
 ``` 
-git clone https://github.com/lastbattle/Harepacker-resurrected.git
+git clone https://github.com/Arnuh/HaSuite.git
 git submodule init
 git submodule update
 ``` 
@@ -48,10 +49,6 @@ git submodule update
 ## Development
 
 Please note that this is a community-driven project that I work on in my free time. Don't expect any issues to be fixed or new features to be added quickly.
-
-Want to support the development?
-
-**BTC**: [3AEEJKaTNuw8KoafKNevpMsP2tVmaip4Fx](https://blockstream.info/address/3AEEJKaTNuw8KoafKNevpMsP2tVmaip4Fx)
 
 Would you like to contribute to this project instead? If so, you can fork the project and create a pull request. It's all free!
 
@@ -76,6 +73,7 @@ Would you like to contribute to this project instead? If so, you can fork the pr
 
 MIT
 ```
+Copyright (c) 2023~?, Arnah https://github.com/Arnuh
 Copyright (c) 2018~2023, LastBattle https://github.com/lastbattle
 Copyright (c) 2010~2013, haha01haha http://forum.ragezone.com/f701/release-universal-harepacker-version-892005/
 
