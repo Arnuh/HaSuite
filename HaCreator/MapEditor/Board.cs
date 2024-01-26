@@ -7,9 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Threading;
 using HaCreator.Collections;
 using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Util;
@@ -17,6 +19,9 @@ using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapEditor {
 	public class Board {
@@ -150,8 +155,20 @@ namespace HaCreator.MapEditor {
 					} else {
 						var bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
 						var processor = System.Drawing.Graphics.FromImage(bmp);
-						foreach (BoardItem item in BoardItems.TileObjs) {
-							processor.DrawImage(item.Image,
+						foreach (var item in BoardItems.TileObjs) {
+							var flip = false;
+							if (item is IFlippable flippable) {
+								flip = flippable.Flip;
+							}
+
+							var image = item.Image;
+							if (flip) {
+								// Clone since I assume this modifies the original image
+								image = (Bitmap) image.Clone();
+								image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+							}
+
+							processor.DrawImage(image,
 								new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X,
 									item.Y + centerPoint.Y - item.Origin.Y));
 						}
