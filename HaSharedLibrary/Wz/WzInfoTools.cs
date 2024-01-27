@@ -83,17 +83,13 @@ namespace HaSharedLibrary.Wz {
 			id = RemoveLeadingZeros(id);
 
 			var stringWzDirs = (WzImage) fileManager.FindWzImageByName("string", "Npc.img");
-			if (stringWzDirs != null) {
-				WzObject npcObj = stringWzDirs[id];
-				var npcName = (WzStringProperty) npcObj["name"];
-				if (npcName == null) {
-					return "";
-				}
-
-				return npcName.Value;
+			if (stringWzDirs == null) {
+				return "";
 			}
 
-			return "";
+			WzObject npcObj = stringWzDirs[id];
+			var npcName = (WzStringProperty) npcObj?["name"];
+			return npcName == null ? "" : npcName.Value;
 		}
 
 		public static WzSubProperty GetMapStringProp(int id, WzFileManager fileManager) {
