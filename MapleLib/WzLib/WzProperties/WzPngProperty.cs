@@ -387,26 +387,21 @@ namespace MapleLib.WzLib.WzProperties {
 					return new byte[width * height * 4];
 				}
 				case 3: {
-					// New format 黑白缩略图
-					// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
-					// you'll be remembered forever <3 
 					return new byte[width * height * 4];
 				}
 				case 257: {
-					// http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
-					// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
 					return new byte[width * height * 2];
 				}
-				case 513: { // 0x200 nexon wizet logo
+				case 513: {
 					return new byte[width * height * 2];
 				}
-				case 517: { // 0x200 + 5
+				case 517: {
 					return new byte[width * height / 128];
 				}
-				case 1026: { // 0x400 + 2?
+				case 1026: {
 					return new byte[width * height * 4];
 				}
-				case 2050: { // 0x800 + 2?
+				case 2050: {
 					return new byte[width * height];
 				}
 				default:
@@ -488,15 +483,17 @@ namespace MapleLib.WzLib.WzProperties {
 						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
-					case 257: { // http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
+					case 257: {
+						// http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
 						// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
-
+						// 2570107 is a decent example. Used KMS 353
 						CopyBmpDataWithStride(rawBytes, bmp.Width * 2, bmpData);
 
 						bmp.UnlockBits(bmpData);
 						break;
 					}
-					case 513: { // nexon wizet logo
+					case 513: {
+						// UI.wz/Logo.img/Wizet or Nexon in pre-bb versions
 						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
 						bmp.UnlockBits(bmpData);
 						break;
@@ -729,8 +726,9 @@ namespace MapleLib.WzLib.WzProperties {
 			if (bmpData.Stride == stride) {
 				Marshal.Copy(source, 0, bmpData.Scan0, source.Length);
 			} else {
-				for (var y = 0; y < bmpData.Height; y++)
+				for (var y = 0; y < bmpData.Height; y++) {
 					Marshal.Copy(source, stride * y, bmpData.Scan0 + bmpData.Stride * y, stride);
+				}
 			}
 		}
 
@@ -839,6 +837,12 @@ namespace MapleLib.WzLib.WzProperties {
 				case 2:
 					WriteImage_PixelData(buf, bmp);
 					break;
+				case 257: {
+					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
+					CopyFromBmpDataWithStride(buf, bmp.Width * 2, bmpData);
+					bmp.UnlockBits(bmpData);
+					break;
+				}
 				case 513: {
 					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					Marshal.Copy(bmpData.Scan0, buf, 0, buf.Length);
@@ -886,6 +890,17 @@ namespace MapleLib.WzLib.WzProperties {
 						*(pCurPixel + 3) = curPixel.A;
 						pCurPixel += 4;
 					}
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void CopyFromBmpDataWithStride(byte[] dest, int stride, BitmapData bmpData) {
+			if (bmpData.Stride == stride) {
+				Marshal.Copy(bmpData.Scan0, dest, 0, dest.Length);
+			} else {
+				for (var y = 0; y < bmpData.Height; y++) {
+					Marshal.Copy(bmpData.Scan0 + bmpData.Stride * y, dest, stride * y, stride);
 				}
 			}
 		}
