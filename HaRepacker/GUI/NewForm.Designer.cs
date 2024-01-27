@@ -28,8 +28,7 @@ namespace HaRepacker.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewForm));
             this.nameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -162,7 +161,6 @@ namespace HaRepacker.GUI
             this.Name = "NewForm";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
