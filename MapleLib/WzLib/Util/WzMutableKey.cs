@@ -90,7 +90,8 @@ namespace MapleLib.WzLib.Util {
 		public bool Equals(WzMutableKey compare) {
 			if (!IV.SequenceEqual(compare.IV)) return false;
 			if (!AESUserKey.SequenceEqual(compare.AESUserKey)) return false;
-			return keys.SequenceEqual(compare.keys);
+			return true;
+			//return keys.SequenceEqual(compare.keys);
 		}
 	}
 }
