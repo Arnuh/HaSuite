@@ -341,7 +341,7 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		internal byte[] Compress(byte[] decompressedBuffer) {
-			return Compress(decompressedBuffer, ParentImage.reader.WzKey);
+			return Compress(decompressedBuffer, ParentImage?.reader?.WzKey);
 		}
 
 		internal byte[] Compress(byte[] decompressedBuffer, WzMutableKey WzKey) {
