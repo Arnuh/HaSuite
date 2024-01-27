@@ -72,7 +72,7 @@ namespace MapleLib.WzLib.Serialization {
 		protected string indent;
 		protected string lineBreak;
 		public static NumberFormatInfo formattingInfo;
-		protected bool bExportBase64Data;
+		protected bool exportBase64Data;
 
 		protected static char[] amp = "&amp;".ToCharArray();
 		protected static char[] lt = "&lt;".ToCharArray();
@@ -111,112 +111,96 @@ namespace MapleLib.WzLib.Serialization {
 		/// <param name="prop"></param>
 		/// <param name="exportFilePath"></param>
 		protected void WritePropertyToXML(TextWriter tw, string depth, WzImageProperty prop, string exportFilePath) {
-			if (prop is WzCanvasProperty) {
-				var property3 = (WzCanvasProperty) prop;
-				if (bExportBase64Data) {
-					var stream = new MemoryStream();
-					property3.PngProperty.GetImage(false).Save(stream, ImageFormat.Png);
-					var pngbytes = stream.ToArray();
-					stream.Close();
-					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name),
-						         "\" width=\"", property3.PngProperty.Width, "\" height=\"",
-						         property3.PngProperty.Height,
-						         "\" pixFormat=\"", property3.PngProperty.PixFormat, "\" magLevel=\"",
-						         property3.PngProperty.MagLevel, "\" basedata=\"", Convert.ToBase64String(pngbytes),
+			if (prop is WzCanvasProperty canvas) {
+				if (exportBase64Data) {
+					var pngbytes = canvas.PngProperty.ConvertCompressedBytes(null, true);
+					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(canvas.Name),
+						         "\" width=\"", canvas.PngProperty.Width, "\" height=\"",
+						         canvas.PngProperty.Height,
+						         "\" pixFormat=\"", canvas.PngProperty.PixFormat, "\" magLevel=\"",
+						         canvas.PngProperty.MagLevel, "\" bytedata=\"", Convert.ToBase64String(pngbytes),
 						         "\">") +
 					         lineBreak);
 				} else {
-					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(property3.Name),
-						"\" width=\"", property3.PngProperty.Width, "\" height=\"", property3.PngProperty.Height,
+					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(canvas.Name),
+						"\" width=\"", canvas.PngProperty.Width, "\" height=\"", canvas.PngProperty.Height,
 						"\">") + lineBreak);
 				}
 
 				var newDepth = depth + indent;
-				foreach (var property in property3.WzProperties)
+				foreach (var property in canvas.WzProperties)
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</canvas>" + lineBreak);
-			} else if (prop is WzIntProperty) {
-				var property4 = (WzIntProperty) prop;
-				tw.Write(string.Concat(depth, "<int name=\"", XmlUtil.SanitizeText(property4.Name), "\" value=\"",
-					property4.Value, "\"/>") + lineBreak);
-			} else if (prop is WzDoubleProperty) {
-				var property5 = (WzDoubleProperty) prop;
-				tw.Write(string.Concat(depth, "<double name=\"", XmlUtil.SanitizeText(property5.Name), "\" value=\"",
-					property5.Value, "\"/>") + lineBreak);
-			} else if (prop is WzNullProperty) {
-				var property6 = (WzNullProperty) prop;
-				tw.Write(depth + "<null name=\"" + XmlUtil.SanitizeText(property6.Name) + "\"/>" + lineBreak);
-			} else if (prop is WzBinaryProperty) {
-				var property7 = (WzBinaryProperty) prop;
-				if (bExportBase64Data) {
+			} else if (prop is WzIntProperty intProp) {
+				tw.Write(string.Concat(depth, "<int name=\"", XmlUtil.SanitizeText(intProp.Name), "\" value=\"",
+					intProp.Value, "\"/>") + lineBreak);
+			} else if (prop is WzDoubleProperty doubleProp) {
+				tw.Write(string.Concat(depth, "<double name=\"", XmlUtil.SanitizeText(doubleProp.Name), "\" value=\"",
+					doubleProp.Value, "\"/>") + lineBreak);
+			} else if (prop is WzNullProperty nullProp) {
+				tw.Write(depth + "<null name=\"" + XmlUtil.SanitizeText(nullProp.Name) + "\"/>" + lineBreak);
+			} else if (prop is WzBinaryProperty binaryProp) {
+				if (exportBase64Data) {
 					tw.Write(string.Concat(new object[] {
-						depth, "<sound name=\"", XmlUtil.SanitizeText(property7.Name), "\" length=\"",
-						property7.Length.ToString(), "\" basehead=\"", Convert.ToBase64String(property7.Header),
-						"\" basedata=\"", Convert.ToBase64String(property7.GetBytes(false)), "\"/>"
+						depth, "<sound name=\"", XmlUtil.SanitizeText(binaryProp.Name), "\" length=\"",
+						binaryProp.Length.ToString(), "\" basehead=\"", Convert.ToBase64String(binaryProp.Header),
+						"\" basedata=\"", Convert.ToBase64String(binaryProp.GetBytes(false)), "\"/>"
 					}) + lineBreak);
 				} else {
-					tw.Write(depth + "<sound name=\"" + XmlUtil.SanitizeText(property7.Name) + "\"/>" + lineBreak);
+					tw.Write(depth + "<sound name=\"" + XmlUtil.SanitizeText(binaryProp.Name) + "\"/>" + lineBreak);
 				}
-			} else if (prop is WzStringProperty) {
-				var property8 = (WzStringProperty) prop;
-				var str = XmlUtil.SanitizeText(property8.Value);
-				tw.Write(depth + "<string name=\"" + XmlUtil.SanitizeText(property8.Name) + "\" value=\"" + str +
+			} else if (prop is WzStringProperty stringProp) {
+				var str = XmlUtil.SanitizeText(stringProp.Value);
+				tw.Write(depth + "<string name=\"" + XmlUtil.SanitizeText(stringProp.Name) + "\" value=\"" + str +
 				         "\"/>" + lineBreak);
-			} else if (prop is WzSubProperty) {
-				var property9 = (WzSubProperty) prop;
-				tw.Write(depth + "<imgdir name=\"" + XmlUtil.SanitizeText(property9.Name) + "\">" + lineBreak);
+			} else if (prop is WzSubProperty subProp) {
+				tw.Write(depth + "<imgdir name=\"" + XmlUtil.SanitizeText(subProp.Name) + "\">" + lineBreak);
 				var newDepth = depth + indent;
-				foreach (var property in property9.WzProperties)
+				foreach (var property in subProp.WzProperties)
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</imgdir>" + lineBreak);
-			} else if (prop is WzShortProperty) {
-				var property10 = (WzShortProperty) prop;
-				tw.Write(string.Concat(depth, "<short name=\"", XmlUtil.SanitizeText(property10.Name), "\" value=\"",
-					property10.Value, "\"/>") + lineBreak);
-			} else if (prop is WzLongProperty) {
-				var long_prop = (WzLongProperty) prop;
-				tw.Write(string.Concat(depth, "<long name=\"", XmlUtil.SanitizeText(long_prop.Name), "\" value=\"",
-					long_prop.Value, "\"/>") + lineBreak);
-			} else if (prop is WzUOLProperty) {
-				var property11 = (WzUOLProperty) prop;
-				tw.Write(depth + "<uol name=\"" + property11.Name + "\" value=\"" +
-				         XmlUtil.SanitizeText(property11.Value) + "\"/>" + lineBreak);
-			} else if (prop is WzVectorProperty) {
-				var property12 = (WzVectorProperty) prop;
-				tw.Write(string.Concat(depth, "<vector name=\"", XmlUtil.SanitizeText(property12.Name), "\" x=\"",
-					property12.X.Value, "\" y=\"", property12.Y.Value, "\"/>") + lineBreak);
-			} else if (prop is WzFloatProperty) {
-				var property13 = (WzFloatProperty) prop;
-				var str2 = Convert.ToString(property13.Value, formattingInfo);
+			} else if (prop is WzShortProperty shortProp) {
+				tw.Write(string.Concat(depth, "<short name=\"", XmlUtil.SanitizeText(shortProp.Name), "\" value=\"",
+					shortProp.Value, "\"/>") + lineBreak);
+			} else if (prop is WzLongProperty longProp) {
+				tw.Write(string.Concat(depth, "<long name=\"", XmlUtil.SanitizeText(longProp.Name), "\" value=\"",
+					longProp.Value, "\"/>") + lineBreak);
+			} else if (prop is WzUOLProperty uolProp) {
+				tw.Write(depth + "<uol name=\"" + uolProp.Name + "\" value=\"" +
+				         XmlUtil.SanitizeText(uolProp.Value) + "\"/>" + lineBreak);
+			} else if (prop is WzVectorProperty vectorProp) {
+				tw.Write(string.Concat(depth, "<vector name=\"", XmlUtil.SanitizeText(vectorProp.Name), "\" x=\"",
+					vectorProp.X.Value, "\" y=\"", vectorProp.Y.Value, "\"/>") + lineBreak);
+			} else if (prop is WzFloatProperty floatProp) {
+				var str2 = Convert.ToString(floatProp.Value, formattingInfo);
 				if (!str2.Contains(".")) {
-					str2 = str2 + ".0";
+					str2 += ".0";
 				}
 
-				tw.Write(depth + "<float name=\"" + XmlUtil.SanitizeText(property13.Name) + "\" value=\"" + str2 +
+				tw.Write(depth + "<float name=\"" + XmlUtil.SanitizeText(floatProp.Name) + "\" value=\"" + str2 +
 				         "\"/>" + lineBreak);
-			} else if (prop is WzConvexProperty) {
-				tw.Write(depth + "<extended name=\"" + XmlUtil.SanitizeText(prop.Name) + "\">" + lineBreak);
+			} else if (prop is WzConvexProperty convexProp) {
+				tw.Write(depth + "<extended name=\"" + XmlUtil.SanitizeText(convexProp.Name) + "\">" + lineBreak);
 
-				var property14 = (WzConvexProperty) prop;
 				var newDepth = depth + indent;
-				foreach (var property in property14.WzProperties)
+				foreach (var property in convexProp.WzProperties)
 					WritePropertyToXML(tw, newDepth, property, exportFilePath);
 
 				tw.Write(depth + "</extended>" + lineBreak);
-			} else if (prop is WzLuaProperty propertyLua) {
-				var parentName = propertyLua.Parent.Name;
+			} else if (prop is WzLuaProperty luaProp) {
+				var parentName = luaProp.Parent.Name;
 
 				tw.Write(depth);
 				tw.Write(lineBreak);
-				if (bExportBase64Data) {
+				if (exportBase64Data) {
 				}
 
 				// Export standalone file here
 				using (TextWriter twLua =
 				       new StreamWriter(File.Create(exportFilePath.Replace(parentName + ".xml", parentName)))) {
-					twLua.Write(propertyLua.ToString());
+					twLua.Write(luaProp.ToString());
 				}
 			}
 		}
@@ -259,7 +243,7 @@ namespace MapleLib.WzLib.Serialization {
 					{FIELD_PIXEL_FORMAT_NAME, propertyCanvas.PngProperty.PixFormat},
 					{FIELD_MAG_LEVEL_NAME, propertyCanvas.PngProperty.MagLevel}
 				};
-				if (bExportBase64Data) {
+				if (exportBase64Data) {
 					byte[] pngbytes;
 					using (var stream = new MemoryStream()) {
 						propertyCanvas.PngProperty.GetImage(false)
@@ -333,7 +317,7 @@ namespace MapleLib.WzLib.Serialization {
 					{FIELD_TYPE_NAME, "binary"},
 					{FIELD_LENGTH_NAME, propertyBin.Length.ToString()}
 				};
-				if (bExportBase64Data) {
+				if (exportBase64Data) {
 					jsonBinary.Add("basehead", Convert.ToBase64String(propertyBin.Header));
 					jsonBinary.Add("basedata", Convert.ToBase64String(propertyBin.GetBytes(false)));
 				}
@@ -487,7 +471,7 @@ namespace MapleLib.WzLib.Serialization {
 					{FIELD_TYPE_NAME, "lua"},
 					{FIELD_FILENAME_NAME, parentName}
 				};
-				if (bExportBase64Data) jsonLua.Add(FIELD_BASEDATA_NAME, propertyLua.ToString());
+				if (exportBase64Data) jsonLua.Add(FIELD_BASEDATA_NAME, propertyLua.ToString());
 
 				var jPropertyName = XmlUtil.SanitizeText(propertyLua.Name);
 				if (!json.ContainsKey(
@@ -751,12 +735,12 @@ namespace MapleLib.WzLib.Serialization {
 		/// </summary>
 		/// <param name="indentation"></param>
 		/// <param name="lineBreakType"></param>
-		/// <param name="bExportBase64Data"></param>
+		/// <param name="exportBase64Data"></param>
 		/// <param name="bExportAsJson"></param>
-		public WzJsonBsonSerializer(int indentation, LineBreak lineBreakType, bool bExportBase64Data,
+		public WzJsonBsonSerializer(int indentation, LineBreak lineBreakType, bool exportBase64Data,
 			bool bExportAsJson)
 			: base(indentation, lineBreakType) {
-			this.bExportBase64Data = bExportBase64Data;
+			this.exportBase64Data = exportBase64Data;
 			this.bExportAsJson = bExportAsJson;
 		}
 
@@ -848,7 +832,7 @@ namespace MapleLib.WzLib.Serialization {
 	public class WzClassicXmlSerializer : WzSerializer, IWzImageSerializer {
 		public WzClassicXmlSerializer(int indentation, LineBreak lineBreakType, bool exportbase64)
 			: base(indentation, lineBreakType) {
-			bExportBase64Data = exportbase64;
+			exportBase64Data = exportbase64;
 		}
 
 		private void exportXmlInternal(WzImage img, string path) {
@@ -961,7 +945,7 @@ namespace MapleLib.WzLib.Serialization {
 			total += objects.OfType<WzImage>().Count();
 			total += objects.OfType<WzDirectory>().Sum(d => d.CountImages());
 
-			bExportBase64Data = true;
+			exportBase64Data = true;
 
 			using (TextWriter tw = new StreamWriter(exportFilePath)) {
 				tw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + lineBreak);
@@ -1060,8 +1044,9 @@ namespace MapleLib.WzLib.Serialization {
 		internal WzImage ParseXMLWzImg(XmlElement imgElement) {
 			var name = imgElement.GetAttribute("name");
 			var result = new WzImage(name);
-			foreach (XmlElement subelement in imgElement)
-				result.WzProperties.Add(ParsePropertyFromXMLElement(subelement));
+			foreach (XmlElement subelement in imgElement) {
+				result.AddProperty(ParsePropertyFromXMLElement(subelement));
+			}
 
 			result.Changed = true;
 			if (useMemorySaving) {
@@ -1071,8 +1056,7 @@ namespace MapleLib.WzLib.Serialization {
 					result.Dispose();
 				}
 
-				bool successfullyParsedImage;
-				result = imgDeserializer.WzImageFromIMGFile(path, iv, name, out successfullyParsedImage);
+				result = imgDeserializer.WzImageFromIMGFile(path, iv, name, out _);
 			}
 
 			return result;
@@ -1088,11 +1072,19 @@ namespace MapleLib.WzLib.Serialization {
 
 				case "canvas":
 					var canvas = new WzCanvasProperty(element.GetAttribute("name"));
-					if (!element.HasAttribute("basedata")) {
-						throw new NoBase64DataException("no base64 data in canvas element with name " + canvas.Name);
+					var bytedata = element.HasAttribute("bytedata");
+					if (!element.HasAttribute("basedata") && !bytedata) {
+						throw new NoBase64DataException($"no base64 data in canvas element with name {canvas.Name}");
+					}
+
+					if (!element.HasAttribute("width") || !element.HasAttribute("height")) {
+						throw new InvalidDataException($"No width or height in canvas element with name {canvas.Name}");
 					}
 
 					canvas.PngProperty = new WzPngProperty();
+					canvas.PngProperty.Width = Convert.ToInt32(element.GetAttribute("width"));
+					canvas.PngProperty.Height = Convert.ToInt32(element.GetAttribute("height"));
+					
 					if (element.HasAttribute("pixFormat")) {
 						canvas.PngProperty.PixFormat = Convert.ToInt32(element.GetAttribute("pixFormat"));
 					} else {
@@ -1103,9 +1095,14 @@ namespace MapleLib.WzLib.Serialization {
 						canvas.PngProperty.MagLevel = Convert.ToInt32(element.GetAttribute("magLevel"));
 					}
 
-					var pngstream =
-						new MemoryStream(Convert.FromBase64String(element.GetAttribute("basedata")));
-					canvas.PngProperty.SetImage((Bitmap) Image.FromStream(pngstream, true, true));
+					if (bytedata) {
+						canvas.PngProperty.SetValue(Convert.FromBase64String(element.GetAttribute("bytedata")));
+					} else {
+						// Keep for backwards compatibility
+						var stream = new MemoryStream(Convert.FromBase64String(element.GetAttribute("basedata")));
+						canvas.PngProperty.SetImage((Bitmap) Image.FromStream(stream, true, true));
+					}
+
 					foreach (XmlElement subelement in element)
 						canvas.AddProperty(ParsePropertyFromXMLElement(subelement));
 					return canvas;
