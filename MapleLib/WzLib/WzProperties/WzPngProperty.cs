@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using MapleLib.Helpers;
@@ -425,18 +426,15 @@ namespace MapleLib.WzLib.WzProperties {
 
 		/// <summary>
 		/// Attempts to convert CompressedBytes to provided WzKey if the bytes were also compressed by List.wz encryption
+		/// If the provided WzKey is null, it will decrypt it and return the raw bytes
 		/// </summary>
 		/// <param name="WzKey"></param>
 		/// <returns></returns>
-		public byte[] ConvertCompressedBytes(WzMutableKey WzKey) {
+		public byte[] ConvertCompressedBytes(WzMutableKey WzKey, bool removeListFormat = false) {
 			var compressedBuffer = GetCompressedBytes(false);
 			// Only convert if List.wz was used and the WzKey changed
 			if (!CheckListWzUsed(compressedBuffer)) return compressedBuffer;
-			if (ParentImage.reader.WzKey.Equals(WzKey)) return compressedBuffer;
-			// Duplicate part of the decompress code to avoid having to decompress, recompress
-			// when we just want to change the WzKey of the compressed bytes
-			// The following is an option tho.
-			// return Compress(GetRawImage(false), WzKey);
+			if (WzKey != null && ParentImage.reader.WzKey.Equals(WzKey)) return compressedBuffer;
 			using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
 				var dataStream = new MemoryStream();
 				var endOfPng = compressedBuffer.Length;
@@ -444,9 +442,13 @@ namespace MapleLib.WzLib.WzProperties {
 				while (reader.BaseStream.Position < endOfPng) {
 					var blockSize = reader.ReadInt32();
 					if (blockSize == 0) break;
-					dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
+					if (!removeListFormat) dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
 					for (var i = 0; i < blockSize; i++) {
-						dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i] ^ WzKey[i]));
+						if (WzKey == null || removeListFormat) {
+							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
+						} else {
+							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i] ^ WzKey[i]));
+						}
 					}
 				}
 
