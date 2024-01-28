@@ -145,6 +145,7 @@ namespace HaCreator.GUI {
 					return false;
 				}
 
+				ExtractMaps("map");
 				ExtractStringWzMaps();
 				//Program.WzManager.ExtractItems();
 
@@ -217,6 +218,7 @@ namespace HaCreator.GUI {
 					UpdateUI_CurrentLoadingWzFile(mapWzFileName);
 
 					Program.WzManager.LoadWzFile(mapWzFileName, _wzMapleVersion);
+					ExtractMaps(mapWzFileName);
 				}
 
 				for (var i_map = 0; i_map <= 9; i_map++) {
@@ -678,6 +680,22 @@ namespace HaCreator.GUI {
 				foreach (var backWzDir in backWzDirs)
 				foreach (var bgset in backWzDir.WzImages)
 					Program.InfoManager.BackgroundSets[WzInfoTools.RemoveExtension(bgset.Name)] = bgset;
+			}
+		}
+
+		public void ExtractMaps(string mapWzName) {
+			var mapWzImg = (WzDirectory) Program.WzManager.FindWzImageByName(mapWzName, "Map");
+			for (var i = 0; i <= 9; i++) {
+				var mapWzDirs = (WzDirectory) mapWzImg[$"Map{i}"];
+				if (mapWzDirs == null) {
+					continue;
+				}
+
+				foreach (var map in mapWzDirs.WzImages) {
+					var mapId = map.Name.Substring(0, map.Name.Length - 4);
+					if (Program.InfoManager.Maps.ContainsKey(mapId)) continue;
+					Program.InfoManager.Maps[mapId] = new Tuple<string, string>("", "");
+				}
 			}
 		}
 
