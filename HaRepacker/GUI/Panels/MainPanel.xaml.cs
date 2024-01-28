@@ -1083,14 +1083,29 @@ namespace HaRepacker.GUI.Panels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MenuItem_saveSound_Click(object sender, RoutedEventArgs e) {
-			if (!(DataTree.SelectedNode.Tag is WzBinaryProperty)) {
+			if (!(DataTree.SelectedNode.Tag is WzBinaryProperty) && !(DataTree.SelectedNode.Tag is WzUOLProperty)) {
 				return;
 			}
 
-			var mp3 = (WzBinaryProperty) DataTree.SelectedNode.Tag;
+			var fileName = string.Empty;
+			WzBinaryProperty mp3 = null;
+			switch (DataTree.SelectedNode.Tag) {
+				case WzBinaryProperty prop:
+					mp3 = prop;
+					fileName = prop.Name;
+					break;
+				case WzUOLProperty uolProp:
+					mp3 = (WzBinaryProperty) uolProp.LinkValue;
+					fileName = uolProp.Name; // We should be using the original name right?
+					break;
+			}
+
+			if (mp3 == null) {
+				return;
+			}
 
 			var dialog = new SaveFileDialog {
-				FileName = mp3.Name,
+				FileName = fileName,
 				Title = "Select where to save the .mp3 file.",
 				Filter = "Moving Pictures Experts Group Format 1 Audio Layer 3 (*.mp3)|*.mp3"
 			};
@@ -1112,21 +1127,17 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			Bitmap wzCanvasPropertyObjLocation = null;
+			Bitmap wzCanvasPropertyObjLocation;
 			var fileName = string.Empty;
 
-			if (DataTree.SelectedNode.Tag is WzCanvasProperty) {
-				var canvas = (WzCanvasProperty) DataTree.SelectedNode.Tag;
-
+			if (DataTree.SelectedNode.Tag is WzCanvasProperty canvas) {
 				wzCanvasPropertyObjLocation = canvas.GetLinkedWzCanvasBitmap();
 				fileName = canvas.Name;
 			} else {
 				var linkValue = ((WzUOLProperty) DataTree.SelectedNode.Tag).LinkValue;
-				if (linkValue is WzCanvasProperty) {
-					var canvas = (WzCanvasProperty) linkValue;
-
-					wzCanvasPropertyObjLocation = canvas.GetLinkedWzCanvasBitmap();
-					fileName = canvas.Name;
+				if (linkValue is WzCanvasProperty linkedCanvas) {
+					wzCanvasPropertyObjLocation = linkedCanvas.GetLinkedWzCanvasBitmap();
+					fileName = linkValue.Name;
 				} else {
 					return;
 				}
