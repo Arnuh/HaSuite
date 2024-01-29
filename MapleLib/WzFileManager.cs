@@ -446,20 +446,28 @@ namespace MapleLib {
 		/// </summary>
 		/// <param name="wzFile"></param>
 		public void UnloadWzFile(WzFile wzFile, string wzFilePath) {
-			var baseName = wzFilePath.ToLower().Replace(".wz", "");
-			if (_wzFiles.ContainsKey(baseName)) {
-				// write lock to begin adding to the dictionary
-				_readWriteLock.EnterWriteLock();
-				try {
-					_wzFiles.Remove(baseName);
-					_wzFilesUpdated.Remove(wzFile);
-					_wzDirs.Remove(baseName);
-				} finally {
-					_readWriteLock.ExitWriteLock();
-				}
-
+			// wzFilePath can be null when you make a new wz file and save it
+			// This should be the only scenario as of making this check
+			if (wzFilePath == null) {
 				wzFile.Dispose();
+				return;
 			}
+			var baseName = wzFilePath.ToLower().Replace(".wz", "");
+			if (!_wzFiles.ContainsKey(baseName)) {
+				return;
+			}
+
+			// write lock to begin adding to the dictionary
+			_readWriteLock.EnterWriteLock();
+			try {
+				_wzFiles.Remove(baseName);
+				_wzFilesUpdated.Remove(wzFile);
+				_wzDirs.Remove(baseName);
+			} finally {
+				_readWriteLock.ExitWriteLock();
+			}
+
+			wzFile.Dispose();
 		}
 
 		#endregion
