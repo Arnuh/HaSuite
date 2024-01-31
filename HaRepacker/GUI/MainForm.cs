@@ -751,7 +751,12 @@ namespace HaRepacker.GUI {
 			if (fileNames.All(s => s.ToLower().EndsWith(".xml"))) {
 				ImportXml(wzEncryptionType, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
-				ImportImg(wzEncryptionType, fileNames);
+				var input = WzMapleVersionInputBox.Show(Resources.InteractionWzMapleVersionTitle, out var wzImageImportVersion);
+				if (!input) {
+					return;
+				}
+
+				ImportImg(wzImageImportVersion, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".png"))) {
 				ImportImages(fileNames);
 			} else {
@@ -788,7 +793,12 @@ namespace HaRepacker.GUI {
 					} else if (filePathLowerCase.EndsWith(".xml")) {
 						ImportXml(wzEncryptionType, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".img")) {
-						ImportImg(wzEncryptionType, new[] {filePath});
+						var input = WzMapleVersionInputBox.Show(Resources.InteractionWzMapleVersionTitle, out var wzImageImportVersion);
+						if (!input) {
+							return;
+						}
+
+						ImportImg(wzImageImportVersion, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
