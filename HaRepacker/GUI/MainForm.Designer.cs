@@ -157,12 +157,14 @@ namespace HaRepacker.GUI
             this.copyToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.copyFile;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             resources.ApplyResources(this.copyToolStripMenuItem, "copyToolStripMenuItem");
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyToolStripMenuItem_Click);
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.pasteFile;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             resources.ApplyResources(this.pasteToolStripMenuItem, "pasteToolStripMenuItem");
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
