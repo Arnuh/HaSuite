@@ -323,7 +323,7 @@ namespace MapleLib.WzLib.WzProperties {
 						// Old MapleLib versions will incorrectly write extra bytes, just ignore them
 						if (blockSize == 0) break;
 						for (var i = 0; i < blockSize; i++) {
-							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
+							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.wzKey[i]));
 						}
 					}
 
@@ -342,7 +342,7 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		internal byte[] Compress(byte[] decompressedBuffer) {
-			return Compress(decompressedBuffer, ParentImage?.reader?.WzKey);
+			return Compress(decompressedBuffer, ParentImage?.wzKey);
 		}
 
 		internal byte[] Compress(byte[] decompressedBuffer, WzMutableKey WzKey) {
@@ -424,17 +424,49 @@ namespace MapleLib.WzLib.WzProperties {
 			return Decompress(rawImageBytes, decBuf);
 		}
 
-		/// <summary>
-		/// Attempts to convert CompressedBytes to provided WzKey if the bytes were also compressed by List.wz encryption
-		/// If the provided WzKey is null, it will decrypt it and return the raw bytes
-		/// </summary>
-		/// <param name="WzKey"></param>
-		/// <returns></returns>
-		public byte[] ConvertCompressedBytes(WzMutableKey WzKey, bool removeListFormat = false) {
+		public void ConvertCompressed(WzMutableKey DecWzKey, WzMutableKey EncWzKey, bool removeListFormat = false) {
+			var (buffer, listWz) = GetConvertedCompressed(DecWzKey, EncWzKey, removeListFormat);
+			listWzUsed = listWz;
+			compressedImageBytes = buffer;
+		}
+
+		public (byte[], bool) GetConvertedCompressed(WzMutableKey DecWzKey, WzMutableKey EncWzKey, bool removeListFormat = false) {
 			var compressedBuffer = GetCompressedBytes(false);
-			// Only convert if List.wz was used and the WzKey changed
-			if (!CheckListWzUsed(compressedBuffer)) return compressedBuffer;
-			if (WzKey != null && ParentImage.reader.WzKey.Equals(WzKey)) return compressedBuffer;
+			var orgListWzUsed = CheckListWzUsed(compressedBuffer);
+			var decrypt = orgListWzUsed && DecWzKey != null;
+			var encrypt = EncWzKey != null;
+
+			var nowListWzUsed = encrypt && !removeListFormat;
+
+			if (!orgListWzUsed) {
+				// If List.wz wasn't used, and we aren't encrypting, return
+				if (!encrypt) {
+					return (compressedBuffer, nowListWzUsed);
+				}
+				// Otherwise, we are encrypting, so modify it with the new encryption
+			}
+
+			var addListWz = nowListWzUsed && !orgListWzUsed;
+			if (addListWz) {
+				using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
+					var dataStream = new MemoryStream();
+					var endOfPng = compressedBuffer.Length;
+					var headerLength = 2;
+					dataStream.Write(BitConverter.GetBytes(headerLength), 0, 4);
+					for (var i = 0; i < headerLength; i++) {
+						dataStream.WriteByte((byte) (reader.ReadByte() ^ EncWzKey[i]));
+					}
+
+					var length = (int) (endOfPng - reader.BaseStream.Position);
+					dataStream.Write(BitConverter.GetBytes(length), 0, 4);
+					for (var i = 0; i < length; i++) {
+						dataStream.WriteByte((byte) (reader.ReadByte() ^ EncWzKey[i]));
+					}
+
+					return (dataStream.ToArray(), nowListWzUsed);
+				}
+			}
+
 			using (var reader = new BinaryReader(new MemoryStream(compressedBuffer))) {
 				var dataStream = new MemoryStream();
 				var endOfPng = compressedBuffer.Length;
@@ -442,17 +474,25 @@ namespace MapleLib.WzLib.WzProperties {
 				while (reader.BaseStream.Position < endOfPng) {
 					var blockSize = reader.ReadInt32();
 					if (blockSize == 0) break;
-					if (!removeListFormat) dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
+					if (!removeListFormat) {
+						dataStream.Write(BitConverter.GetBytes(blockSize), 0, 4);
+					}
+
 					for (var i = 0; i < blockSize; i++) {
-						if (WzKey == null || removeListFormat) {
-							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i]));
-						} else {
-							dataStream.WriteByte((byte) (reader.ReadByte() ^ ParentImage.reader.WzKey[i] ^ WzKey[i]));
+						var data = reader.ReadByte();
+						if (decrypt) {
+							data ^= DecWzKey[i];
 						}
+
+						if (nowListWzUsed) {
+							data ^= EncWzKey[i];
+						}
+
+						dataStream.WriteByte(data);
 					}
 				}
 
-				return dataStream.ToArray();
+				return (dataStream.ToArray(), nowListWzUsed);
 			}
 		}
 

@@ -43,8 +43,10 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public override WzImageProperty DeepClone() {
 			var clone = new WzConvexProperty(name);
-			foreach (var prop in properties)
-				clone.AddProperty(prop.DeepClone());
+			foreach (var prop in properties) {
+				clone.AddProperty(prop.DeepClone(), false);
+			}
+
 			return clone;
 		}
 
@@ -178,13 +180,23 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Adds a WzExtendedProperty to the list of properties
 		/// </summary>
 		/// <param name="prop">The property to add</param>
-		public void AddProperty(WzImageProperty prop) {
-			if (!(prop is WzExtended)) {
+		public void AddProperty(WzImageProperty prop, bool checkListWz = true) {
+			if (!(prop is WzExtended extended)) {
 				throw new Exception("Property is not IExtended");
 			}
 
-			prop.Parent = this;
-			properties.Add((WzExtended) prop);
+			extended.Parent = this;
+			properties.Add(extended);
+
+			if (!checkListWz) {
+				return;
+			}
+
+			var image = ParentImage;
+			if (image == null || !image.Parsed) return;
+			var wzFile = WzFileParent;
+			if (wzFile == null) return;
+			ListWzContainerImpl.MarkListWzProperty(image, wzFile);
 		}
 
 		public void AddProperties(List<WzImageProperty> properties) {

@@ -334,11 +334,12 @@ namespace MapleLib.WzLib {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="listWzPath">The path of the List.wz used for encrypted paths</param>
 		/// <param name="useIv">The IV to use while generating the data file. If null, it'll use the WzDirectory default</param>
 		/// <param name="bIsWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
 		/// <param name="prevOpenedStream">The previously opened file stream</param>
 		/// <returns></returns>
-		internal int GenerateDataFile(byte[] useIv, bool bIsWzUserKeyDefault, FileStream prevOpenedStream) {
+		internal int GenerateDataFile(string listWzPath, byte[] useIv, bool bIsWzUserKeyDefault, FileStream prevOpenedStream) {
 			var useCustomIv = useIv != null; // whole shit gonna be re-written if its a custom IV specified
 
 			size = 0;
@@ -357,8 +358,11 @@ namespace MapleLib.WzLib {
 				    img.bIsImageChanged) // or when an image is changed
 				{
 					using (var memStream = new MemoryStream()) {
-						using (var imgWriter =
-						       new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
+						using (var imgWriter = new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
+							if (!string.IsNullOrEmpty(listWzPath)) {
+								imgWriter.LoadListWz(listWzPath);
+							}
+
 							img.SaveImage(imgWriter, bIsWzUserKeyDefault, useCustomIv);
 
 							img.CalculateAndSetImageChecksum(memStream.ToArray()); // checksum
@@ -401,7 +405,7 @@ namespace MapleLib.WzLib {
 			foreach (var dir in subDirs) {
 				var nameLen = WzTool.GetWzObjectValueLength(dir.name, 3);
 				size += nameLen;
-				size += dir.GenerateDataFile(useIv, bIsWzUserKeyDefault, prevOpenedStream);
+				size += dir.GenerateDataFile(listWzPath, useIv, bIsWzUserKeyDefault, prevOpenedStream);
 				size += WzTool.GetCompressedIntLength(dir.size);
 				size += WzTool.GetCompressedIntLength(dir.Checksum);
 				size += 4;
@@ -518,9 +522,20 @@ namespace MapleLib.WzLib {
 		/// Adds a WzImage to the list of wz images
 		/// </summary>
 		/// <param name="img">The WzImage to add</param>
-		public void AddImage(WzImage img) {
+		public void AddImage(WzImage img, bool checkListWz = true) {
 			images.Add(img);
 			img.Parent = this;
+			if (wzFile == null) return;
+
+			if (img.wzKey == null) {
+				img.wzKey = WzKeyGenerator.GenerateWzKey(wzFile.WzIv);
+			}
+
+			if (!checkListWz) {
+				return;
+			}
+
+			ListWzContainerImpl.MarkListWzProperty(img, wzFile);
 		}
 
 		/// <summary>

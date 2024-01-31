@@ -87,11 +87,22 @@ namespace MapleLib.WzLib.Util {
 			keys = newKeys;
 		}
 
+		public byte[] CopyIv() {
+			var ret = new byte[IV.Length];
+			IV.CopyTo(ret, 0);
+			return ret;
+		}
+
+		public byte[] CopyUserKey() {
+			var ret = new byte[AESUserKey.Length];
+			AESUserKey.CopyTo(ret, 0);
+			return ret;
+		}
+
 		public bool Equals(WzMutableKey compare) {
 			if (!IV.SequenceEqual(compare.IV)) return false;
 			if (!AESUserKey.SequenceEqual(compare.AESUserKey)) return false;
 			return true;
-			//return keys.SequenceEqual(compare.keys);
 		}
 	}
 }

@@ -151,7 +151,7 @@ namespace HaCreator.GUI {
 
 			if (XMLSelect.Checked) {
 				try {
-					mapImage = (WzImage) new WzXmlDeserializer(false, null, null).ParseXML(XMLBox.Text)[0];
+					mapImage = (WzImage) new WzXmlDeserializer(false, null, null, string.Empty).ParseXML(XMLBox.Text)[0];
 				} catch {
 					MessageBox.Show("Error while loading XML. Aborted.");
 					ww.EndWait();

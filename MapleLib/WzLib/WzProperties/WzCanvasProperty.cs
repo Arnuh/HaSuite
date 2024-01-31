@@ -62,9 +62,12 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public override WzImageProperty DeepClone() {
 			var clone = new WzCanvasProperty(name);
-			foreach (var prop in properties) clone.AddProperty(prop.DeepClone());
+			foreach (var prop in properties) {
+				clone.AddProperty(prop.DeepClone(), false);
+			}
 
 			clone.imageProp = (WzPngProperty) imageProp.DeepClone();
+			clone.imageProp.Parent = this;
 			return clone;
 		}
 
@@ -153,8 +156,7 @@ namespace MapleLib.WzLib.WzProperties {
 			writer.WriteStringValue("Canvas", WzImage.WzImageHeaderByte_WithoutOffset,
 				WzImage.WzImageHeaderByte_WithOffset);
 			writer.Write((byte) 0);
-			if (properties.Count > 0) // subproperty in the canvas
-			{
+			if (properties.Count > 0) { // subproperty in the canvas
 				writer.Write((byte) 1);
 				WritePropertyList(writer, properties);
 			} else {
@@ -169,7 +171,7 @@ namespace MapleLib.WzLib.WzProperties {
 			writer.Write(0);
 
 			// Write image
-			var bytes = PngProperty.ConvertCompressedBytes(writer.WzKey);
+			var bytes = PngProperty.GetCompressedBytes(false);
 			writer.Write(bytes.Length + 1);
 			writer.Write((byte) 0); // header? see WzImageProperty.ParseExtendedProp "0x00"
 			writer.Write(bytes);
@@ -350,7 +352,12 @@ namespace MapleLib.WzLib.WzProperties {
 		/// </summary>
 		public WzPngProperty PngProperty {
 			get => imageProp;
-			set => imageProp = value;
+			set {
+				imageProp = value;
+				// Kind of weird to do this but I need the parent
+				// This is essentially an AddProperty call
+				imageProp.Parent = this;
+			}
 		}
 
 		/// <summary>
@@ -371,9 +378,18 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Adds a property to the property list of this property
 		/// </summary>
 		/// <param name="prop">The property to add</param>
-		public void AddProperty(WzImageProperty prop) {
+		public void AddProperty(WzImageProperty prop, bool checkListWz = true) {
 			prop.Parent = this;
 			properties.Add(prop);
+			if (!checkListWz) {
+				return;
+			}
+
+			var image = ParentImage;
+			if (image == null || !image.Parsed) return;
+			var wzFile = WzFileParent;
+			if (wzFile == null) return;
+			ListWzContainerImpl.MarkListWzProperty(image, wzFile);
 		}
 
 		public void AddProperties(List<WzImageProperty> props) {

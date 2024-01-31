@@ -173,7 +173,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Adds a property to the list
 		/// </summary>
 		/// <param name="prop">The property to add</param>
-		public void AddProperty(WzImageProperty prop) {
+		public void AddProperty(WzImageProperty prop, bool checkListWz = false) {
 			prop.Parent = this; // dont set new parent if we're dumping.. x_X
 			properties.Add(prop);
 		}

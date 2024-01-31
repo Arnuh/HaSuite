@@ -432,7 +432,7 @@ Click "Yes" to download the new version.</value>
     <value>Portal Type: {0}</value>
   </data>
     <data name="MainAdditionalInfo_PNG" xml:space="preserve">
-    <value>pixFormat: {0}, magLevel: {1}, badFormat: {2}</value>
+    <value>pixFormat: {0}, magLevel: {1}, badFormat: {2}, listWz: {3}</value>
   </data>
     <data name="MainAddLink" xml:space="preserve">
     <value>Add link</value>

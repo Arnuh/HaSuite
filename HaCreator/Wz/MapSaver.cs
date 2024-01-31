@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HaCreator.GUI;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Info.Default;
@@ -44,7 +45,7 @@ namespace HaCreator.Wz {
 					throw new Exception("Unknown map type");
 			}
 
-			image = new WzImage(name + ".img") {
+			image = new WzImage(name + ".img", Initialization.WzMapleVersion) {
 				Parsed = true
 			};
 		}
@@ -71,8 +72,7 @@ namespace HaCreator.Wz {
 				Program.WzManager.SetWzFileUpdated(parent.GetTopMostWzDirectory().Name /* "map" */, image);
 			} else {
 				var mapDir = Program.WzManager["ui"];
-				var mapImg = (WzImage) mapDir[image.Name];
-				if (mapImg != null) mapImg.Remove();
+				mapDir[image.Name]?.Remove();
 
 				mapDir.AddImage(image);
 				Program.WzManager.SetWzFileUpdated("ui", image);

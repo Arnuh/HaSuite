@@ -210,6 +210,7 @@
         <Compile Include="SquishPNGWrapper.cs"/>
         <Compile Include="WzDataReader.cs"/>
         <Compile Include="WzFileManager.cs"/>
+        <Compile Include="WzLib\ListWzContainer.cs"/>
         <Compile Include="WzLib\Nx\WzToNxSerializer.cs"/>
         <Compile Include="WzLib\Spine\WzSpineAnimationItem.cs"/>
         <Compile Include="WzLib\Spine\WzSpineAtlasLoader.cs"/>

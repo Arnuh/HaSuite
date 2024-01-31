@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MapleLib.MapleCryptoLib;
@@ -32,6 +33,8 @@ namespace MapleLib.WzLib.Util {
 		public Hashtable StringCache { get; set; }
 		public WzHeader Header { get; set; }
 		public bool LeaveOpen { get; internal set; }
+
+		private List<string> ListWzEntries = new List<string>();
 
 		#endregion
 
@@ -227,7 +230,27 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public override void Close() {
-			if (!LeaveOpen) base.Close();
+			if (LeaveOpen) return;
+			base.Close();
+			ListWzEntries = null;
+		}
+
+		public bool LoadListWz(string file) {
+			if (!File.Exists(file)) return false;
+			ListWzEntries.Clear();
+			ListWzEntries.AddRange(ListFileParser.ParseListFile(file, WzKey.CopyIv(), WzKey.CopyUserKey()));
+			return true;
+		}
+
+		public bool ListWzContains(string wzName, string wzEntry) {
+			wzEntry = wzEntry.Replace("\\", "/").ToLower();
+			if (string.IsNullOrEmpty(wzName)) return ListWzEntries.Contains(wzEntry);
+			wzName = WzFileManager.CleanWzName(wzName);
+			if (!wzEntry.StartsWith(wzName)) {
+				return ListWzEntries.Contains(wzName + "/" + wzEntry);
+			}
+
+			return ListWzEntries.Contains(wzEntry);
 		}
 
 		#endregion

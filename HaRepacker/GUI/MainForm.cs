@@ -1864,11 +1864,15 @@ namespace HaRepacker.GUI {
 		#region Import Helpers
 
 		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
+			// Currently doesn't support importing an img that is exported as xml
 			if (!IsChildHoldingSelectedNode()) {
 				return;
 			}
 
-			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version));
+			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+			var listWzPath = wzFile.ListWzPath;
+
+			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version), listWzPath);
 			yesToAll = false;
 			noToAll = false;
 			threadDone = false;

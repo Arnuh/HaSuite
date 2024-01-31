@@ -31,7 +31,7 @@ namespace MapleLib.WzLib {
 	/// <summary>
 	/// A class that contains all the information of a wz file
 	/// </summary>
-	public class WzFile : WzObject {
+	public class WzFile : WzObject, ListWzContainer {
 		#region Fields
 
 		internal string path;
@@ -54,6 +54,8 @@ namespace MapleLib.WzLib {
 		internal byte[] WzIv;
 		internal byte[] UserKey;
 
+		internal string listWzPath = string.Empty;
+
 		#endregion
 
 		/// <summary>
@@ -73,6 +75,8 @@ namespace MapleLib.WzLib {
 		/// The WzObjectType of the file
 		/// </summary>
 		public override WzObjectType ObjectType => WzObjectType.File;
+
+		public string ListWzPath => listWzPath;
 
 		/// <summary>
 		/// Returns WzDirectory[name]
@@ -135,6 +139,7 @@ namespace MapleLib.WzLib {
 			Header = null;
 			path = null;
 			name = null;
+			ListWzEntries = null;
 			wzDir.Dispose();
 		}
 
@@ -193,6 +198,11 @@ namespace MapleLib.WzLib {
 				WzIv = WzTool.GetIvByMapleVersion(version);
 				UserKey = WzTool.GetUserKeyByMapleVersion(version);
 			}
+
+			var directory = Path.GetDirectoryName(path);
+			if (directory != null) {
+				listWzPath = Path.Combine(directory, "List.wz");
+			}
 		}
 
 		/// <summary>
@@ -221,7 +231,12 @@ namespace MapleLib.WzLib {
 			}*/
 			if (WzIv != null) this.WzIv = WzIv;
 
-			return ParseMainWzDirectory();
+			var result = ParseMainWzDirectory();
+			if (result == WzFileParseStatus.Success) {
+				LoadListWz(listWzPath);
+			}
+
+			return result;
 		}
 
 
@@ -578,8 +593,16 @@ namespace MapleLib.WzLib {
 
 			try {
 				var tempFile = Path.GetFileNameWithoutExtension(path) + ".TEMP";
+				// WzFile has a path but saving has a different path
+				// Which to use....
+				var directory = Path.GetDirectoryName(path);
+				var listWzPath = string.Empty;
+				if (directory != null) {
+					listWzPath = Path.Combine(directory, "List.wz");
+				}
+
 				using (var fs = new FileStream(tempFile, FileMode.Append, FileAccess.Write)) {
-					wzDir.GenerateDataFile(isWzIvSimilar ? null : WzIv, isWzUserKeyDefault, fs);
+					wzDir.GenerateDataFile(listWzPath, isWzIvSimilar ? null : WzIv, isWzUserKeyDefault, fs);
 				}
 
 				WzTool.StringCache.Clear();
@@ -976,6 +999,16 @@ namespace MapleLib.WzLib {
 
 		public override void Remove() {
 			Dispose();
+		}
+
+		public List<string> ListWzEntries = new List<string>();
+
+		public bool LoadListWz(string file) {
+			return ListWzContainerImpl.LoadListWz(ListWzEntries, WzIv, UserKey, file);
+		}
+
+		public bool ListWzContains(string wzName, string wzEntry) {
+			return ListWzContainerImpl.ListWzContains(ListWzEntries, wzName, wzEntry);
 		}
 	}
 }

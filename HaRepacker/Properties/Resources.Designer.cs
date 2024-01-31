@@ -559,7 +559,7 @@ namespace HaRepacker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to pixFormat: {0}, magLevel: {1}, badFormat: {2}.
+        ///   Looks up a localized string similar to pixFormat: {0}, magLevel: {1}, badFormat: {2}, listWz: {3}.
         /// </summary>
         public static string MainAdditionalInfo_PNG {
             get {

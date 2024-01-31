@@ -113,7 +113,7 @@ namespace MapleLib.WzLib.Serialization {
 		protected void WritePropertyToXML(TextWriter tw, string depth, WzImageProperty prop, string exportFilePath) {
 			if (prop is WzCanvasProperty canvas) {
 				if (exportBase64Data) {
-					var pngbytes = canvas.PngProperty.ConvertCompressedBytes(null, true);
+					var (pngbytes, _) = canvas.PngProperty.GetConvertedCompressed(canvas.ParentImage.wzKey, null, true);
 					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(canvas.Name),
 						         "\" width=\"", canvas.PngProperty.Width, "\" height=\"",
 						         canvas.PngProperty.Height,
@@ -971,12 +971,14 @@ namespace MapleLib.WzLib.Serialization {
 
 		private readonly bool useMemorySaving;
 		private readonly byte[] iv, UserKey;
+		private readonly string listWzPath;
 		private readonly WzImgDeserializer imgDeserializer = new WzImgDeserializer(false);
 
-		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey) {
+		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey, string listWzPath) {
 			this.useMemorySaving = useMemorySaving;
 			this.iv = iv;
 			this.UserKey = UserKey;
+			this.listWzPath = listWzPath;
 		}
 
 		#region Public Functions
@@ -1045,21 +1047,25 @@ namespace MapleLib.WzLib.Serialization {
 
 		internal WzImage ParseXMLWzImg(XmlElement imgElement) {
 			var name = imgElement.GetAttribute("name");
-			var result = new WzImage(name);
+			var result = new WzImage(name, iv);
 			foreach (XmlElement subelement in imgElement) {
 				result.AddProperty(ParsePropertyFromXMLElement(subelement));
 			}
 
 			result.Changed = true;
-			if (useMemorySaving) {
-				var path = Path.GetTempFileName();
-				using (var wzWriter = new WzBinaryWriter(File.Create(path), iv, UserKey)) {
-					result.SaveImage(wzWriter);
-					result.Dispose();
+			if (!useMemorySaving) return result;
+
+			var path = Path.GetTempFileName();
+			using (var wzWriter = new WzBinaryWriter(File.Create(path), iv, UserKey)) {
+				if (!string.IsNullOrEmpty(listWzPath)) {
+					wzWriter.LoadListWz(listWzPath);
 				}
 
-				result = imgDeserializer.WzImageFromIMGFile(path, iv, UserKey, name, out _);
+				result.SaveImage(wzWriter);
+				result.Dispose();
 			}
+
+			result = imgDeserializer.WzImageFromIMGFile(path, iv, UserKey, name, out _);
 
 			return result;
 		}

@@ -32,20 +32,19 @@ namespace HaRepacker {
 			Tag = SourceObject ?? throw new NullReferenceException("Cannot create a null WzNode");
 			SourceObject.HRTag = this;
 
-			if (SourceObject is WzFile) {
-				SourceObject = ((WzFile) SourceObject).WzDirectory;
+			if (SourceObject is WzFile file) {
+				SourceObject = file.WzDirectory;
 			}
 
-			if (SourceObject is WzDirectory) {
-				foreach (var dir in ((WzDirectory) SourceObject).WzDirectories)
+			if (SourceObject is WzDirectory directory) {
+				foreach (var dir in directory.WzDirectories)
 					Nodes.Add(new WzNode(dir));
-				foreach (var img in ((WzDirectory) SourceObject).WzImages)
+				foreach (var img in directory.WzImages)
 					Nodes.Add(new WzNode(img));
 			} else if (SourceObject is WzImage image) {
-				if (image.Parsed) {
-					foreach (var prop in image.WzProperties)
-						Nodes.Add(new WzNode(prop));
-				}
+				if (!image.Parsed) return;
+				foreach (var prop in image.WzProperties)
+					Nodes.Add(new WzNode(prop));
 			} else if (SourceObject is IPropertyContainer container) {
 				foreach (var prop in container.WzProperties)
 					Nodes.Add(new WzNode(prop));
@@ -170,10 +169,9 @@ namespace HaRepacker {
 		/// Try parsing the WzImage if it have not been loaded
 		/// </summary>
 		private void TryParseImage(bool reparseImage = true) {
-			if (Tag is WzImage) {
-				((WzImage) Tag).ParseImage();
-				if (reparseImage) Reparse();
-			}
+			if (!(Tag is WzImage image)) return;
+			image.ParseImage();
+			if (reparseImage) Reparse();
 		}
 
 		/// <summary>
