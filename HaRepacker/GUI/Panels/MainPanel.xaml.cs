@@ -55,6 +55,7 @@ namespace HaRepacker.GUI.Panels {
 
 		private bool isSelectingWzMapFieldLimit;
 		private bool isLoading;
+		private bool isRenamingNode;
 
 		/// <summary>
 		/// Constructor
@@ -172,9 +173,13 @@ namespace HaRepacker.GUI.Panels {
 
 			switch (filteredKeys) {
 				case Keys.F2:
+					e.Handled = true;
+					e.SuppressKeyPress = true;
 					if (DataTree.SelectedNode.IsEditing) { // Not really needed apparently
-						DataTree.SelectedNode.EndEdit(false);
+						isRenamingNode = false;
+						DataTree.SelectedNode.EndEdit(true);
 					} else {
+						isRenamingNode = true;
 						DataTree.SelectedNode.BeginEdit();
 					}
 
@@ -2026,8 +2031,17 @@ namespace HaRepacker.GUI.Panels {
 			return false;
 		}
 
+		private void DataTree_OnBeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+			if (isRenamingNode) {
+				isRenamingNode = false;
+				return;
+			}
+			e.CancelEdit = true;
+		}
+		
 		private void DataTree_OnAfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
 			// Handle renaming the actual wz node after an F2 edit.
+			isRenamingNode = false;
 			if (string.IsNullOrEmpty(e.Label)) return;
 			var node = (WzNode) e.Node;
 			node.ChangeName(e.Label);
