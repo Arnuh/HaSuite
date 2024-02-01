@@ -14,28 +14,27 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
+using System.Text;
+
 namespace MapleLib.WzLib.Util {
 	public class XmlUtil {
 		private static readonly char[] specialCharacters = {'"', '\'', '&', '<', '>'};
 		private static readonly string[] replacementStrings = {"&quot;", "&apos;", "&amp;", "&lt;", "&gt;"};
 
 		public static string SanitizeText(string text) {
-			var fixedText = "";
-			bool charFixed;
-			for (var i = 0; i < text.Length; i++) {
-				charFixed = false;
+			var fixedText = new StringBuilder();
+			foreach (var ch in text) {
 				for (var k = 0; k < specialCharacters.Length; k++) {
-					if (text[i] == specialCharacters[k]) {
-						fixedText += replacementStrings[k];
-						charFixed = true;
-						break;
-					}
+					if (ch != specialCharacters[k]) continue;
+					fixedText.Append(replacementStrings[k]);
+					goto REPEAT;
 				}
 
-				if (!charFixed) fixedText += text[i];
+				fixedText.Append(ch);
+				REPEAT: ;
 			}
 
-			return fixedText;
+			return fixedText.ToString();
 		}
 
 		public static string OpenNamedTag(string tag, string name, bool finish) {
