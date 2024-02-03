@@ -9,7 +9,7 @@ using MapleLib.WzLib.WzStructure.Data;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes {
-	public class Chair : MapleDot, ISnappable, ISerializable {
+	public class Chair : MapleDot, ISerializable {
 		public Chair(Board board, int x, int y)
 			: base(board, x, y) {
 		}
@@ -19,29 +19,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public override void DoSnap() {
-			FootholdLine closestLine = null;
-			var closestDistance = double.MaxValue;
-			foreach (var fh in Board.BoardItems.FootholdLines) {
-				// Trying to snap to other selected items can mess up some of the mouse bindings
-				if (fh.FirstDot.Selected || fh.SecondDot.Selected) {
-					continue;
-				}
-
-				if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) &&
-				    BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
-					var targetY = fh.CalculateY(X) - 1;
-					var distance = Math.Abs(targetY - Y);
-					if (closestDistance > distance) {
-						closestDistance = distance;
-						closestLine = fh;
-					}
-				}
-			}
-
-			if (closestLine != null) {
-				SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X,
-					(int) closestLine.CalculateY(X) - 1));
-			}
+			SnapHelper.SnapToFootholdLine(this, 1);
 		}
 
 		public override XNA.Color Color => UserSettings.ChairColor;

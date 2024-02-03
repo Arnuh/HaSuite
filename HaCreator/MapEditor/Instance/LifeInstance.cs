@@ -4,13 +4,15 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using System;
 using System.Drawing;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Instance.Shapes;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
-	public abstract class LifeInstance : BoardItem, IFlippable, ISerializable {
+	public abstract class LifeInstance : BoardItem, IFlippable, ISerializable, ISnappable {
 		private int _rx0Shift;
 		private int _rx1Shift;
 		private int _yShift;
@@ -159,6 +161,10 @@ namespace HaCreator.MapEditor.Instance {
 			hide = json.hide;
 			info = json.info;
 			team = json.team;
+		}
+		
+		public void DoSnap() {
+			SnapHelper.SnapToFootholdLine(this, 0);
 		}
 	}
 }

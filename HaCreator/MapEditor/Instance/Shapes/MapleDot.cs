@@ -166,14 +166,6 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			}
 		}
 
-		public bool BetweenOrEquals(int value, int bounda, int boundb, int tolerance) {
-			if (bounda < boundb) {
-				return bounda - tolerance <= value && value <= boundb + tolerance;
-			}
-
-			return boundb - tolerance <= value && value <= bounda + tolerance;
-		}
-
 		public MapleDot(Board board, SerializationForm json)
 			: base(board, json) {
 		}

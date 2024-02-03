@@ -390,6 +390,7 @@
         <Compile Include="MapEditor\Scheduler.cs"/>
         <Compile Include="MapEditor\SelectionInfo.cs"/>
         <Compile Include="MapEditor\SerializationManager.cs"/>
+        <Compile Include="MapEditor\SnapHelper.cs" />
         <Compile Include="MapEditor\Text\CharTexture.cs"/>
         <Compile Include="MapEditor\TilesDesign\bsc.cs"/>
         <Compile Include="MapEditor\TilesDesign\edD.cs"/>

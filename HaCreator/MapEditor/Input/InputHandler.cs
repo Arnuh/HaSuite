@@ -144,8 +144,8 @@ namespace HaCreator.MapEditor.Input {
 						    state == MouseState.Footholds || state == MouseState.Chairs) {
 							var items = selectedBoard.Mouse.BoundItems.Keys.ToList();
 							foreach (var item in items) {
-								if (item is ISnappable) {
-									((ISnappable) item).DoSnap();
+								if (item is ISnappable snappable) {
+									snappable.DoSnap();
 								}
 							}
 						}

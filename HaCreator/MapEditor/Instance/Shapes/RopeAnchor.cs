@@ -59,8 +59,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 					continue;
 				}
 
-				if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) &&
-				    BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
+				if (!fh.IsWall && SnapHelper.BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) &&
+				    SnapHelper.BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
 					var targetY = fh.CalculateY(X) + 2;
 					var distance = Math.Abs(targetY - Y);
 					if (closestDistanceLine > distance) {
