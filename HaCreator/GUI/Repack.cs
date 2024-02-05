@@ -219,7 +219,7 @@ namespace HaCreator.GUI {
 						File.Move(tmpFile, orgFile);
 					}
 				} catch (Exception e) {
-					FinishError(e, fileName);
+					Invoke((Action) delegate { FinishError(e, fileName); });
 					return;
 				}
 			}
