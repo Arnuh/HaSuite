@@ -166,6 +166,36 @@ namespace MapleLib.WzLib.Util {
 			return recognizedChars / (double) totalChars;
 		}
 
+		/// <summary>
+		/// Finds a suitable wz file to auto-detect version from
+		/// and then attempts to detect the version
+		/// </summary>
+		/// <param name="wzPath"></param>
+		/// <param name="fileVersion"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public static WzMapleVersion DetectMapleVersionAt(string wzPath, out short fileVersion) {
+			string targetFile;
+			var modernDir = Path.Combine(wzPath, "Data", "String", "String_000.wz");
+			var midDir = Path.Combine(wzPath, "String.wz");
+			var oldDir = Path.Combine(wzPath, "Data.wz");
+			if (File.Exists(modernDir)) {
+				targetFile = modernDir;
+			} else if (File.Exists(midDir)) {
+				targetFile = midDir;
+			} else if (File.Exists(oldDir)) {
+				targetFile = oldDir;
+			} else {
+				throw new Exception("Found no suitable file to auto-detect version. Please select a version manually.");
+			}
+
+			try {
+				return DetectMapleVersion(Path.Combine(wzPath, targetFile), out fileVersion);
+			} catch (Exception ex) {
+				throw new Exception($"Error initializing {targetFile} ({ex.Message}).\r\nCheck that the directory is valid and the file is not in use.");
+			}
+		}
+
 		public static WzMapleVersion DetectMapleVersion(string wzFilePath, out short fileVersion) {
 			var mapleVersionSuccessRates = new Hashtable();
 			short? version = null;

@@ -80,15 +80,8 @@ namespace HaCreator.GUI {
 			}
 
 			WzMapleVersion fileVersion;
-			short version = -1;
 			if (versionBox.SelectedIndex == 3) {
-				var testFile = File.Exists(Path.Combine(wzPath, "Data.wz")) ? "Data.wz" : "Item.wz";
-				try {
-					fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out version);
-				} catch (Exception ex) {
-					Warning.Error("Error initializing " + testFile + " (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
-					return;
-				}
+				fileVersion = WzTool.DetectMapleVersionAt(wzPath, out _);
 			} else {
 				fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
 			}
@@ -365,13 +358,7 @@ namespace HaCreator.GUI {
 
 			var fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
 			if (versionBox.SelectedIndex == 3) {
-				var testFile = !File.Exists(Path.Combine(wzPath, "String.wz")) ? "Data.wz" : "String.wz";
-				try {
-					fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out _);
-				} catch (Exception ex) {
-					Warning.Error($"Error initializing ${testFile} (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
-					return;
-				}
+				fileVersion = WzTool.DetectMapleVersionAt(wzPath, out _);
 			}
 
 			if (!InitializeWzFiles(wzPath, fileVersion)) return;
