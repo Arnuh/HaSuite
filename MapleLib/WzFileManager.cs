@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -247,8 +248,8 @@ namespace MapleLib {
 						//Debug.WriteLine(partialWzFileName);
 						//Debug.WriteLine(wzDirectoryOfWzFile);
 
-						if (_wzFilesList.ContainsKey(wzDirectoryNameOfWzFile)) {
-							_wzFilesList[wzDirectoryNameOfWzFile].Add(fileName2);
+						if (_wzFilesList.TryGetValue(wzDirectoryNameOfWzFile, out var fullPaths)) {
+							fullPaths.Add(fileName2);
 						} else {
 							_wzFilesList.Add(wzDirectoryNameOfWzFile, new List<string> {fileName2});
 						}
@@ -259,24 +260,39 @@ namespace MapleLib {
 					}
 				}
 			} else {
-				var wzFileNames = Directory.EnumerateFileSystemEntries(baseDir, "*.wz", SearchOption.AllDirectories)
+				// Don't look into subdirectories as it can cause conflicts if you use that as a backup folder
+				// Some people might move wz files into a subdirectory for a cleaner root directory
+				// but that is a custom case so I think I'll ignore for now and check TopDirectoryOnly
+				var wzFileNames = Directory.EnumerateFileSystemEntries(baseDir, "*.wz", SearchOption.TopDirectoryOnly)
 					.Where(f => !File.GetAttributes(f).HasFlag(FileAttributes.Directory) // exclude directories
 					            && !EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(x =>
 						            x.ToLower() ==
 						            new DirectoryInfo(Path.GetDirectoryName(f)).Name)); // exclude folders
 				foreach (var wzFileName in wzFileNames) {
-					//string folderName = new DirectoryInfo(Path.GetDirectoryName(wzFileName)).Name;
 					var directory = Path.GetDirectoryName(wzFileName);
 
 					var fileName = Path.GetFileName(wzFileName);
 					var fileName2 = fileName.Replace(".wz", "");
+					if (fileName2.Contains("_BAK_")) {
+						// HaCreator made backup files
+						// Just ignore to avoid adding useless files
+						continue;
+					}
 
 					// Mob2, Mob001, Map001, Map002
 					// remove the numbers to get the base name 'map'
 					var wzBaseFileName = new string(fileName2.ToLower().Where(c => char.IsLetter(c)).ToArray());
 
-					if (_wzFilesList.ContainsKey(wzBaseFileName)) {
-						_wzFilesList[wzBaseFileName].Add(fileName2);
+					// This should fix the issue noted at the top if AllDirectories is every used again
+					// Checks if file is unchanged(besides lowercase) and if it already exists in the list
+					// Should only be possible if the user has something like a backup folder
+					if (wzBaseFileName.Equals(fileName2.ToLower()) && _wzFilesList.ContainsKey(wzBaseFileName)) {
+						Debug.WriteLine($"Wz file {wzFileName} already exists in the list. Ignoring.");
+						continue;
+					}
+
+					if (_wzFilesList.TryGetValue(wzBaseFileName, out var fullPaths)) {
+						fullPaths.Add(fileName2);
 					} else {
 						_wzFilesList.Add(wzBaseFileName, new List<string> {fileName2});
 					}

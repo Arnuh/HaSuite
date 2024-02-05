@@ -251,9 +251,10 @@ namespace MapleLib.WzLib {
 			wzVersionHeader = wz_withEncryptVersionHeader ? reader.ReadUInt16() : wzVersionHeader64bit_start;
 
 			Debug.WriteLine("----------------------------------------");
-			Debug.WriteLine(string.Format("Read Wz File {0}", Name));
-			Debug.WriteLine("wz_withEncryptVersionHeader: {0}", wz_withEncryptVersionHeader);
-			Debug.WriteLine("wzVersionHeader: {0}", wzVersionHeader);
+			Debug.WriteLine($"Read Wz File {path}");
+			Debug.WriteLine($"wz_withEncryptVersionHeader: {wz_withEncryptVersionHeader}");
+			Debug.WriteLine($"wzVersionHeader: {wzVersionHeader}");
+			Debug.WriteLine($"wzIv: {string.Join(",", WzIv.Select(x => x.ToString()).ToArray())}");
 			Debug.WriteLine("----------------------------------------");
 
 			if (mapleStoryPatchVersion == -1) {
