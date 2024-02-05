@@ -14,7 +14,7 @@ namespace MapleLib {
 		#region Constants
 
 		private static readonly string[] EXCLUDED_DIRECTORY_FROM_WZ_LIST =
-			{"bak", "backup", "original", "xml", "hshield", "blackcipher", "harepacker", "hacreator", "xml"};
+			{"bak", "backup", "original", "xml", "hshield", "blackcipher", "harepacker", "hacreator", "xml", "phecreator", "pherepacker"};
 
 		public static readonly string[] COMMON_MAPLESTORY_DIRECTORY = {
 			@"C:\Nexon\MapleStory",
@@ -266,8 +266,8 @@ namespace MapleLib {
 				var wzFileNames = Directory.EnumerateFileSystemEntries(baseDir, "*.wz", SearchOption.TopDirectoryOnly)
 					.Where(f => !File.GetAttributes(f).HasFlag(FileAttributes.Directory) // exclude directories
 					            && !EXCLUDED_DIRECTORY_FROM_WZ_LIST.Any(x =>
-						            x.ToLower() ==
-						            new DirectoryInfo(Path.GetDirectoryName(f)).Name)); // exclude folders
+						            x.Equals(
+							            new DirectoryInfo(Path.GetDirectoryName(f)).Name.ToLower()))); // exclude folders
 				foreach (var wzFileName in wzFileNames) {
 					var directory = Path.GetDirectoryName(wzFileName);
 
