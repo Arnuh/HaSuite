@@ -672,6 +672,7 @@ namespace HaCreator.GUI {
 
 		public void ExtractMaps(string mapWzName) {
 			var mapWzImg = (WzDirectory) Program.WzManager.FindWzImageByName(mapWzName, "Map");
+			if (mapWzImg == null) return;
 			for (var i = 0; i <= 9; i++) {
 				var mapWzDirs = (WzDirectory) mapWzImg[$"Map{i}"];
 				if (mapWzDirs == null) {
@@ -732,6 +733,9 @@ namespace HaCreator.GUI {
 
 			foreach (var key in editorParent.WzProperties) {
 				var portal = (WzCanvasProperty) key;
+				if (!Program.InfoManager.PortalIdByType.ContainsKey(portal.Name)) {
+					continue;
+				}
 				PortalInfo.Load(portal);
 			}
 
