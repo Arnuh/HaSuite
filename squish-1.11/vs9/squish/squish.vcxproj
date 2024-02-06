@@ -70,19 +70,20 @@
         <_ProjectFileVersion>16.0.30804.86</_ProjectFileVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-        <OutDir>..\..\..\Compiled\Debug\AnyCPU</OutDir>
-        <IntDir>Debug\</IntDir>
+        <OutDir>..\..\..\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
+        <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-        <OutDir>..\..\..\Compiled\Debug\AnyCPU</OutDir>
-        <IntDir>$(Platform)\$(Configuration)\</IntDir>
+        <OutDir>..\..\..\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
+        <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-        <OutDir>..\..\..\Compiled\Release\AnyCPU</OutDir>
-        <IntDir>Release\</IntDir>
+        <OutDir>..\..\..\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
+        <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <OutDir>..\..\..\Compiled\Release\AnyCPU</OutDir>
+        <OutDir>..\..\..\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
+        <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
     </PropertyGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>

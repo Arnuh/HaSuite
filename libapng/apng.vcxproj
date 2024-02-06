@@ -30,25 +30,25 @@
         <ConfigurationType>DynamicLibrary</ConfigurationType>
         <UseDebugLibraries>true</UseDebugLibraries>
         <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+        <PlatformToolset>v142</PlatformToolset>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
         <ConfigurationType>DynamicLibrary</ConfigurationType>
         <UseDebugLibraries>true</UseDebugLibraries>
         <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+        <PlatformToolset>v142</PlatformToolset>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
         <ConfigurationType>DynamicLibrary</ConfigurationType>
         <UseDebugLibraries>false</UseDebugLibraries>
         <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+        <PlatformToolset>v142</PlatformToolset>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
         <ConfigurationType>DynamicLibrary</ConfigurationType>
         <UseDebugLibraries>false</UseDebugLibraries>
         <CharacterSet>Unicode</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
+        <PlatformToolset>v142</PlatformToolset>
     </PropertyGroup>
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
     <ImportGroup Label="ExtensionSettings">
@@ -69,28 +69,28 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
         <LinkIncremental>true</LinkIncremental>
         <IncludePath>$(ProjectDir)libapng\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\AnyCPU\</OutDir>
+        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
         <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
         <TargetName>$(ProjectName)$(PlatformArchitecture)</TargetName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <LinkIncremental>true</LinkIncremental>
         <IncludePath>$(ProjectDir)libapng\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\AnyCPU\</OutDir>
+        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
         <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
         <TargetName>$(ProjectName)$(PlatformArchitecture)</TargetName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <LinkIncremental>false</LinkIncremental>
         <IncludePath>$(ProjectDir)libapng\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\AnyCPU\</OutDir>
+        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
         <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
         <TargetName>$(ProjectName)$(PlatformArchitecture)</TargetName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
         <LinkIncremental>false</LinkIncremental>
         <IncludePath>$(ProjectDir)libapng\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\AnyCPU\</OutDir>
+        <OutDir>$(SolutionDir)\Compiled\$(Configuration)\$(PlatformShortName)\</OutDir>
         <SourcePath>$(VC_SourcePath);</SourcePath>
         <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x86);</ExcludePath>
         <ExecutablePath>$(VC_ExecutablePath_x86);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
