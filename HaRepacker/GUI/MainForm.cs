@@ -2000,7 +2000,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.B8G8R8A8, out var pixelFormat)) {
+			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.Bgra8888, out var pixelFormat)) {
 				return;
 			}
 

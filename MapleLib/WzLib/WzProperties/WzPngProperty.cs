@@ -20,7 +20,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using MapleLib.Helpers;
@@ -147,11 +146,12 @@ namespace MapleLib.WzLib.WzProperties {
 			set => pixFormat = value;
 		}
 
-		public void ConvertPixFormat(int newFormat) {
-			if (pixFormat == newFormat) return;
+		public bool ConvertPixFormat(int newFormat) {
+			if (pixFormat == newFormat) return false;
 			var bmp = GetImage(false);
 			pixFormat = newFormat;
 			CompressPng(bmp);
+			return true;
 		}
 
 		public int MagLevel {
@@ -466,9 +466,9 @@ namespace MapleLib.WzLib.WzProperties {
 			try {
 				var bitmapFormat = GetBitmapPixelFormat();
 
-				var rect_ = new Rectangle(0, 0, width, height);
+				var rect = new Rectangle(0, 0, width, height);
 				var bmp = new Bitmap(width, height, bitmapFormat);
-				var bmpData = bmp.LockBits(rect_, ImageLockMode.WriteOnly, bitmapFormat);
+				var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 
 				switch (pixFormat) {
 					case 1: {
@@ -505,11 +505,15 @@ namespace MapleLib.WzLib.WzProperties {
 						break;
 					}
 					case 1026: {
+						// Familiar_000.wz\9960688.img\attack\info\hit\0
+						// Effect_004.wz\Direction17.img\effect\ark\noise\800\0\24
+						// Effect_017.wz\EliteMobEff.img\eliteMonster\0\0
 						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					case 2050: {
-						DecompressImageDXT5(rawBytes, Width, Height, bmp, bmpData);
+						// Skill_022.wz/40002.img/skill/400021006/effect
+						DecompressImageDXT5(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
 					default:
@@ -517,13 +521,9 @@ namespace MapleLib.WzLib.WzProperties {
 						break;
 				}
 
-				if (bmp != null) {
-					if (texture2d != null) {
-						var rect = new Microsoft.Xna.Framework.Rectangle(
-							Point.Zero,
-							new Point(width, height));
-						texture2d.SetData(0, 0, rect, rawBytes, 0, rawBytes.Length);
-					}
+				if (texture2d != null) {
+					var textureRect = new Microsoft.Xna.Framework.Rectangle(Point.Zero, new Point(width, height));
+					texture2d.SetData(0, 0, textureRect, rawBytes, 0, rawBytes.Length);
 				}
 
 				png = bmp;
@@ -533,22 +533,6 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		#region Decoders
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Color RGB565ToColor(ushort val) {
-			const int rgb565_mask_r = 0xf800;
-			const int rgb565_mask_g = 0x07e0;
-			const int rgb565_mask_b = 0x001f;
-
-			var r = (val & rgb565_mask_r) >> 11;
-			var g = (val & rgb565_mask_g) >> 5;
-			var b = val & rgb565_mask_b;
-			var c = Color.FromArgb(
-				(r << 3) | (r >> 2),
-				(g << 2) | (g >> 4),
-				(b << 3) | (b >> 2));
-			return c;
-		}
 
 		/// <summary>
 		/// For debugging: an example of this image may be found at "Effect.wz\\5skill.img\\character_delayed\\0"
@@ -590,52 +574,6 @@ namespace MapleLib.WzLib.WzProperties {
 			bmp.UnlockBits(bmpData);
 		}
 
-		/// <summary>
-		/// DXT3
-		/// </summary>
-		/// <param name="rawData"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="bmp"></param>
-		/// <param name="bmpData"></param>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void DecompressImageDXT3(byte[] rawData, int width, int height, Bitmap bmp, BitmapData bmpData) {
-			var decoded = new byte[width * height * 4];
-
-			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
-				SquishPNGWrapper.DecompressImage(decoded, width, height, rawData,
-					(int) SquishPNGWrapper.FlagsEnum.kDxt3);
-			} else // otherwise decode here directly, fallback.
-			{
-				var colorTable = new Color[4];
-				var colorIdxTable = new int[16];
-				var alphaTable = new byte[16];
-
-				for (var y = 0; y < height; y += 4)
-				for (var x = 0; x < width; x += 4) {
-					var off = x * 4 + y * width;
-					ExpandAlphaTableDXT3(alphaTable, rawData, off);
-					var u0 = BitConverter.ToUInt16(rawData, off + 8);
-					var u1 = BitConverter.ToUInt16(rawData, off + 10);
-					ExpandColorTable(colorTable, u0, u1);
-					ExpandColorIndexTable(colorIdxTable, rawData, off + 12);
-
-					for (var j = 0; j < 4; j++)
-					for (var i = 0; i < 4; i++) {
-						SetPixel(decoded,
-							x + i,
-							y + j,
-							width,
-							colorTable[colorIdxTable[j * 4 + i]],
-							alphaTable[j * 4 + i]);
-					}
-				}
-			}
-
-			Marshal.Copy(decoded, 0, bmpData.Scan0, decoded.Length);
-			bmp.UnlockBits(bmpData);
-		}
-
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void DecompressImage_PixelDataForm517(byte[] rawData, int width, int height, Bitmap bmp,
@@ -668,6 +606,52 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		/// <summary>
+		/// DXT3
+		/// </summary>
+		/// <param name="rawData"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="bmp"></param>
+		/// <param name="bmpData"></param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void DecompressImageDXT3(byte[] rawData, int width, int height, Bitmap bmp, BitmapData bmpData) {
+			var decoded = new byte[width * height * 4];
+
+			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
+				SquishPNGWrapper.DecompressImage(decoded, width, height, rawData,
+					(int) SquishPNGWrapper.FlagsEnum.kDxt3);
+				rgbaToBgra(decoded);
+			} else { // otherwise decode here directly, fallback.
+				var colorTable = new Color[4];
+				var colorIdxTable = new int[16];
+				var alphaTable = new byte[16];
+
+				for (var y = 0; y < height; y += 4)
+				for (var x = 0; x < width; x += 4) {
+					var off = x * 4 + y * width;
+					ExpandAlphaTableDXT3(alphaTable, rawData, off);
+					var u0 = BitConverter.ToUInt16(rawData, off + 8);
+					var u1 = BitConverter.ToUInt16(rawData, off + 10);
+					ExpandColorTable(colorTable, u0, u1);
+					ExpandColorIndexTable(colorIdxTable, rawData, off + 12);
+
+					for (var j = 0; j < 4; j++)
+					for (var i = 0; i < 4; i++) {
+						SetPixel(decoded,
+							x + i,
+							y + j,
+							width,
+							colorTable[colorIdxTable[j * 4 + i]],
+							alphaTable[j * 4 + i]);
+					}
+				}
+			}
+
+			Marshal.Copy(decoded, 0, bmpData.Scan0, decoded.Length);
+			bmp.UnlockBits(bmpData);
+		}
+
+		/// <summary>
 		/// DXT5
 		/// </summary>
 		/// <param name="rawData"></param>
@@ -678,12 +662,11 @@ namespace MapleLib.WzLib.WzProperties {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void DecompressImageDXT5(byte[] rawData, int width, int height, Bitmap bmp, BitmapData bmpData) {
 			var decoded = new byte[width * height * 4];
-
 			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
 				SquishPNGWrapper.DecompressImage(decoded, width, height, rawData,
 					(int) SquishPNGWrapper.FlagsEnum.kDxt5);
-			} else // otherwise decode here directly, fallback
-			{
+				rgbaToBgra(decoded);
+			} else { // otherwise decode here directly, fallback
 				var colorTable = new Color[4];
 				var colorIdxTable = new int[16];
 				var alphaTable = new byte[8];
@@ -723,6 +706,19 @@ namespace MapleLib.WzLib.WzProperties {
 			pixelData[offset + 3] = alpha;
 		}
 
+		private static unsafe void rgbaToBgra(byte[] data) {
+			fixed (byte* pData = data) {
+				for (var i = 0; i < data.Length; i += 4) {
+					var r = *(pData + i);
+					var g = *(pData + i + 1);
+					var b = *(pData + i + 2);
+					*(pData + i) = b;
+					*(pData + i + 1) = g;
+					*(pData + i + 2) = r;
+				}
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void CopyBmpDataWithStride(byte[] source, int stride, BitmapData bmpData) {
 			if (bmpData.Stride == stride) {
@@ -737,6 +733,22 @@ namespace MapleLib.WzLib.WzProperties {
 		#endregion
 
 		#region DXT1 Color
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Color RGB565ToColor(ushort val) {
+			const int rgb565_mask_r = 0xf800;
+			const int rgb565_mask_g = 0x07e0;
+			const int rgb565_mask_b = 0x001f;
+
+			var r = (val & rgb565_mask_r) >> 11;
+			var g = (val & rgb565_mask_g) >> 5;
+			var b = val & rgb565_mask_b;
+			var c = Color.FromArgb(
+				(r << 3) | (r >> 2),
+				(g << 2) | (g >> 4),
+				(b << 3) | (b >> 2));
+			return c;
+		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static void ExpandColorTable(Color[] color, ushort c0, ushort c1) {
@@ -851,9 +863,20 @@ namespace MapleLib.WzLib.WzProperties {
 					bmp.UnlockBits(bmpData);
 					break;
 				}
+				case 1026: {
+					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
+					CompressImageDXT3(buf, bmpData);
+					bmp.UnlockBits(bmpData);
+					break;
+				}
+				case 2050: {
+					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
+					CompressImageDXT5(buf, bmpData);
+					bmp.UnlockBits(bmpData);
+					break;
+				}
 				default:
-					ErrorLogger.Log(ErrorLevel.MissingFeature,
-						$"Unknown PNG format {pixFormat} {magLevel}");
+					ErrorLogger.Log(ErrorLevel.MissingFeature, $"Unknown PNG format {pixFormat} {magLevel}");
 					return;
 			}
 
@@ -907,6 +930,45 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void CompressImageDXT3(byte[] buf, BitmapData bmpData) {
+			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
+				var decoded = new byte[width * height * 4];
+				Marshal.Copy(bmpData.Scan0, decoded, 0, decoded.Length);
+				bgraToRgba(decoded);
+				SquishPNGWrapper.CompressImage(decoded, width, height, buf,
+					(int) SquishPNGWrapper.FlagsEnum.kDxt3);
+			} else {
+				throw new Exception("SquishPNGWrapper not loaded, cannot compress DXT3");
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void CompressImageDXT5(byte[] buf, BitmapData bmpData) {
+			if (SquishPNGWrapper.CheckAndLoadLibrary()) {
+				var decoded = new byte[width * height * 4];
+				Marshal.Copy(bmpData.Scan0, decoded, 0, decoded.Length);
+				bgraToRgba(decoded);
+				SquishPNGWrapper.CompressImage(decoded, width, height, buf,
+					(int) SquishPNGWrapper.FlagsEnum.kDxt5);
+			} else {
+				throw new Exception("SquishPNGWrapper not loaded, cannot compress DXT5");
+			}
+		}
+
+		private static unsafe void bgraToRgba(byte[] data) {
+			fixed (byte* pData = data) {
+				for (var i = 0; i < data.Length; i += 4) {
+					var b = *(pData + i);
+					var g = *(pData + i + 1);
+					var r = *(pData + i + 2);
+					*(pData + i) = r;
+					*(pData + i + 1) = g;
+					*(pData + i + 2) = b;
+				}
+			}
+		}
+
 		#endregion
 
 		#endregion
@@ -921,16 +983,16 @@ namespace MapleLib.WzLib.WzProperties {
 
 		public enum WzPixelFormat {
 			Unknown,
-			B4G4R4A4,
-			B8G8R8A8,
-
-			R5G6B5 = 513
-			//DXT3 = 1026,
-			//DXT5 = 2050,
+			Bgra4444,
+			Bgra8888,
+			Argb1555 = 257,
+			Rgb565 = 513,
+			DXT3 = 1026,
+			DXT5 = 2050
 		}
 
 		public bool IsIncorrectFormat2() {
-			if (pixFormat != (int) WzPixelFormat.B8G8R8A8) return false;
+			if (pixFormat != (int) WzPixelFormat.Bgra8888) return false;
 
 			GetImage(false); // Load png if missing.
 

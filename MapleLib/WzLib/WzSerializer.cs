@@ -1084,11 +1084,11 @@ namespace MapleLib.WzLib.Serialization {
 					canvas.PngProperty = new WzPngProperty();
 					canvas.PngProperty.Width = Convert.ToInt32(element.GetAttribute("width"));
 					canvas.PngProperty.Height = Convert.ToInt32(element.GetAttribute("height"));
-					
+
 					if (element.HasAttribute("pixFormat")) {
 						canvas.PngProperty.PixFormat = Convert.ToInt32(element.GetAttribute("pixFormat"));
 					} else {
-						canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.B8G8R8A8;
+						canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.Bgra8888;
 					}
 
 					if (element.HasAttribute("magLevel")) {

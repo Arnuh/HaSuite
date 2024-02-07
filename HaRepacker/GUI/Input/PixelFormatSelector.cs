@@ -19,14 +19,23 @@ namespace HaRepacker.GUI.Input {
 			DialogResult = DialogResult.Cancel;
 			switch ((WzPngProperty.WzPixelFormat) defaultPixFormat) {
 				case WzPngProperty.WzPixelFormat.Unknown:
-				case WzPngProperty.WzPixelFormat.B4G4R4A4:
+				case WzPngProperty.WzPixelFormat.Bgra4444:
 					formatSelector.SelectedIndex = 0;
 					break;
-				case WzPngProperty.WzPixelFormat.B8G8R8A8:
+				case WzPngProperty.WzPixelFormat.Bgra8888:
 					formatSelector.SelectedIndex = 1;
 					break;
-				case WzPngProperty.WzPixelFormat.R5G6B5:
-					formatSelector.SelectedIndex = 2;
+				case WzPngProperty.WzPixelFormat.Argb1555:
+					formatSelector.SelectedIndex = 3;
+					break;
+				case WzPngProperty.WzPixelFormat.Rgb565:
+					formatSelector.SelectedIndex = 3;
+					break;
+				case WzPngProperty.WzPixelFormat.DXT3:
+					formatSelector.SelectedIndex = 4;
+					break;
+				case WzPngProperty.WzPixelFormat.DXT5:
+					formatSelector.SelectedIndex = 5;
 					break;
 				default:
 					throw new ArgumentException("Invalid pixel format used.");
@@ -36,13 +45,22 @@ namespace HaRepacker.GUI.Input {
 		private void okButton_Click(object sender, EventArgs e) {
 			switch (formatSelector.SelectedIndex) {
 				case 0:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.B4G4R4A4;
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Bgra4444;
 					break;
 				case 1:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.B8G8R8A8;
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Bgra8888;
 					break;
 				case 2:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.R5G6B5;
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Argb1555;
+					break;
+				case 3:
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Rgb565;
+					break;
+				case 4:
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.DXT3;
+					break;
+				case 5:
+					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.DXT5;
 					break;
 				default:
 					throw new ArgumentException("Invalid pixel format selected.");

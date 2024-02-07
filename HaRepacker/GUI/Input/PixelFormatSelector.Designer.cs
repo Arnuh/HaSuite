@@ -54,7 +54,7 @@ namespace HaRepacker.GUI.Input {
 			// formatSelector
 			// 
 			this.formatSelector.FormattingEnabled = true;
-			this.formatSelector.Items.AddRange(new object[] {"B4G4R4A4", "B8G8R8A8", "R5G6B5"});
+			this.formatSelector.Items.AddRange(new object[] {"bgra4444", "bgra8888", "argb1555", "rgb565", "DXT3", "DXT5"});
 			this.formatSelector.Location = new System.Drawing.Point(12, 12);
 			this.formatSelector.Name = "formatSelector";
 			this.formatSelector.Size = new System.Drawing.Size(290, 21);
