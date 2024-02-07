@@ -1503,43 +1503,15 @@ namespace HaRepacker.GUI.Panels {
 			} else if (obj is WzCanvasProperty canvasProp) {
 				bAnimateMoreButton = true; // flag
 
-				menuItem_changeImage.Visibility = Visibility.Visible;
-				menuItem_saveImage.Visibility = Visibility.Visible;
-				menuItem_ChangePixelFormat.Visibility = Visibility.Visible;
-
-				// Image
-				if (canvasProp.HaveInlinkProperty() || canvasProp.HaveOutlinkProperty()) {
-					Image img = canvasProp.GetLinkedWzCanvasBitmap();
-					if (img != null) {
-						canvasPropBox.Image = ((Bitmap) img).ToWpfBitmap();
-					}
-				} else {
-					canvasPropBox.Image = canvasProp.GetLinkedWzCanvasBitmap().ToWpfBitmap();
-				}
-
-				toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
-					canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
-
-				SetImageRenderView(node, canvasProp);
+				UpdateImageView(node, canvasProp, true);
 			} else if (obj is WzUOLProperty uolProperty) {
 				bAnimateMoreButton = true; // flag
 
 				// Image
 				var linkValue = uolProperty.LinkValue;
 				if (linkValue is WzCanvasProperty canvasUOL) {
-					canvasPropBox.Visibility = Visibility.Visible;
-					canvasPropBox.Image =
-						canvasUOL.GetLinkedWzCanvasBitmap()
-							.ToWpfBitmap(); // in any event that the WzCanvasProperty is an '_inlink' or '_outlink'
-					menuItem_saveImage.Visibility = Visibility.Visible; // dont show change image, as its a UOL
-
-					toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasUOL.PngProperty.PixFormat,
-						canvasUOL.PngProperty.MagLevel, canvasUOL.PngProperty.IsIncorrectFormat2());
-
-					SetImageRenderView(node, canvasUOL);
-				} else if
-					(linkValue is WzBinaryProperty binProperty) // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
-				{
+					UpdateImageView(node, canvasUOL, false);
+				} else if (linkValue is WzBinaryProperty binProperty) { // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
 					mp3Player.Visibility = Visibility.Visible;
 					mp3Player.SoundProperty = binProperty;
 
@@ -1691,6 +1663,25 @@ namespace HaRepacker.GUI.Panels {
 						"Storyboard_TreeviewItemSelectedAnimation");
 				storyboard_moreAnimation.Begin();
 			}
+		}
+
+		private void UpdateImageView(WzNode node, WzCanvasProperty canvasProp, bool changeImage) {
+			if (changeImage) {
+				menuItem_changeImage.Visibility = Visibility.Visible;
+			}
+
+			menuItem_saveImage.Visibility = Visibility.Visible;
+			menuItem_ChangePixelFormat.Visibility = Visibility.Visible;
+
+			Image img = canvasProp.GetLinkedWzCanvasBitmap();
+			if (img != null) {
+				canvasPropBox.Image = ((Bitmap) img).ToWpfBitmap();
+			}
+
+			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
+				canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
+
+			SetImageRenderView(node, canvasProp);
 		}
 
 		/// <summary>
@@ -1973,12 +1964,13 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			if (!canvas.PngProperty.IsIncorrectFormat2()) {
+			if (!canvas.PngProperty.ConvertPixFormat(pixelFormat)) {
 				return;
 			}
 
-			canvas.PngProperty.ConvertPixFormat(pixelFormat);
 			canvas.ParentImage.Changed = true;
+			// Update the preview
+			UpdateImageView(canvasPropBox.ParentWzNode, canvasPropBox.ParentWzCanvasProperty, true);
 		}
 
 		public void FixAllIncorrectPixelFormats() {
@@ -2036,9 +2028,10 @@ namespace HaRepacker.GUI.Panels {
 				isRenamingNode = false;
 				return;
 			}
+
 			e.CancelEdit = true;
 		}
-		
+
 		private void DataTree_OnAfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
 			// Handle renaming the actual wz node after an F2 edit.
 			isRenamingNode = false;
