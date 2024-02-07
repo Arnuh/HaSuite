@@ -44,11 +44,6 @@ namespace HaRepacker.GUI {
 			bIsLoading = true;
 			try {
 				WzEncryptionTypeHelper.Setup(encryptionBox, Program.ConfigurationManager.ApplicationSettings.MapleVersion);
-				/*WzEncryptionTypeHelper.AddWzEncryptionTypesToComboBox(encryptionBox);
-
-				encryptionBox.SelectedIndex =
-					WzEncryptionTypeHelper.GetIndexByWzMapleVersion(Program.ConfigurationManager.ApplicationSettings.MapleVersion,
-						true);*/
 				versionBox.Value = 1;
 			} finally {
 				bIsLoading = false;
