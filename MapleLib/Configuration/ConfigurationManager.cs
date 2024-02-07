@@ -140,17 +140,20 @@ namespace MapleLib.Configuration {
 				var storedCustomEnc = ApplicationSettings.MapleVersion_CustomEncryptionBytes;
 				var bytes = HexEncoding.GetBytes(storedCustomEnc);
 
-				if (bytes.Length == 4) return bytes;
+				if (ValidateCustomWzIVEncryption(bytes)) return bytes;
 			}
-
 			return new byte[4] {0x0, 0x0, 0x0, 0x0}; // fallback with BMS
+		}
+
+		public bool ValidateCustomWzIVEncryption(byte[] iv) {
+			return iv.Length == 4;
 		}
 
 		public void SetCustomWzUserKeyFromConfig() {
 			// Set the UserKey in memory.
 			MapleCryptoConstants.UserKey_WzLib = new byte[128];
 			var bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
-			if (bytes.Length == 0) {
+			if (!ValidateCustomWzUserKey(bytes)) {
 				return;
 			}
 
@@ -161,6 +164,10 @@ namespace MapleLib.Configuration {
 				MapleCryptoConstants.UserKey_WzLib[i + 2] = 0;
 				MapleCryptoConstants.UserKey_WzLib[i + 3] = 0;
 			}
+		}
+		
+		public bool ValidateCustomWzUserKey(byte[] key) {
+			return key.Length != 0;
 		}
 	}
 }
