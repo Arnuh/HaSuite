@@ -35,7 +35,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			}
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-			typeBox.Items.AddRange((object[]) Tables.BackgroundTypeNames);
+			typeBox.Items.AddRange(Tables.BackgroundTypeNames);
 			typeBox.SelectedIndex = (int) item.type;
 			alphaBox.Value = item.a;
 			front.Checked = item.front;

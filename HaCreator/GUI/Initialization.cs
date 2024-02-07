@@ -14,7 +14,6 @@ using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.Properties;
 using HaCreator.Wz;
-using HaRepacker;
 using HaSharedLibrary.Wz;
 using MapleLib;
 using MapleLib.Helpers;
@@ -23,7 +22,6 @@ using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
-using Path = System.IO.Path;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI {
@@ -736,6 +734,7 @@ namespace HaCreator.GUI {
 				if (!Program.InfoManager.PortalIdByType.ContainsKey(portal.Name)) {
 					continue;
 				}
+
 				PortalInfo.Load(portal);
 			}
 

@@ -251,6 +251,7 @@ namespace HaSharedLibrary.Wz {
 				if (mapObject is WzDirectory dir) {
 					return dir;
 				}
+
 				return (WzDirectory) mapObject?.Parent;
 			}
 

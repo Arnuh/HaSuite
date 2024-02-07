@@ -152,7 +152,7 @@ namespace Footholds {
 			// with the mouse. Unfortunately I did not get it to work properly.
 			//  if (!isDown)
 			Text = "Map X: " + (int) (xOffset + e.X / scale) + " Y: " +
-			       ((int) (yOffset + e.Y / scale));
+			       (int) (yOffset + e.Y / scale);
 			/*  else
 			  {
 			      if (sSwitch)

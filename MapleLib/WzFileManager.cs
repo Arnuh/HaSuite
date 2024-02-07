@@ -468,6 +468,7 @@ namespace MapleLib {
 				wzFile.Dispose();
 				return;
 			}
+
 			var baseName = wzFilePath.ToLower().Replace(".wz", "");
 			if (!_wzFiles.ContainsKey(baseName)) {
 				return;

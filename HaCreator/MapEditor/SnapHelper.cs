@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor {
 	public class SnapHelper {
-
 		public static bool BetweenOrEquals(int value, int bounda, int boundb, int tolerance) {
 			if (bounda < boundb) {
 				return bounda - tolerance <= value && value <= boundb + tolerance;
@@ -12,7 +11,7 @@ namespace HaCreator.MapEditor {
 
 			return boundb - tolerance <= value && value <= bounda + tolerance;
 		}
-		
+
 		public static void SnapToFootholdLine(BoardItem boardItem, int xOffset) {
 			FootholdLine closestLine = null;
 			var closestDistance = double.MaxValue;

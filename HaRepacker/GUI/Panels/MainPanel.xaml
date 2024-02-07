@@ -326,8 +326,8 @@
                                       AfterSelect="DataTree_AfterSelect"
                                       KeyDown="DataTree_KeyDown"
                                       DoubleClick="DataTree_DoubleClick"
-                                      AfterLabelEdit="DataTree_OnAfterLabelEdit" 
-                                      BeforeLabelEdit="DataTree_OnBeforeLabelEdit"/>
+                                      AfterLabelEdit="DataTree_OnAfterLabelEdit"
+                                      BeforeLabelEdit="DataTree_OnBeforeLabelEdit" />
                 </WindowsFormsHost>
 
                 <!-- Find panel -->

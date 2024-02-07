@@ -36,12 +36,12 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Inherited Members
 
 		public override void SetValue(object value) {
-			if (value is Point) {
-				x.val = ((Point) value).X;
-				y.val = ((Point) value).Y;
-			} else {
-				x.val = ((Size) value).Width;
-				y.val = ((Size) value).Height;
+			if (value is Point point) {
+				x.val = point.X;
+				y.val = point.Y;
+			} else if (value is Size size) {
+				x.val = size.Width;
+				y.val = size.Height;
 			}
 		}
 
