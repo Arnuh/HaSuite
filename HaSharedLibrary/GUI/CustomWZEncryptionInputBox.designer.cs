@@ -1,5 +1,4 @@
-﻿using HaRepacker.GUI.Input;
-
+﻿
 namespace HaRepacker.GUI
 {
     partial class CustomWZEncryptionInputBox

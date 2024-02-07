@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="EncTypeAuto" xml:space="preserve">
+        <value>Auto-Detect</value>
+    </data>
+    <data name="EncTypeCustom" xml:space="preserve">
+        <value>Use custom encryption key</value>
+    </data>
+    <data name="EncTypeBruteforce" xml:space="preserve">
+        <value>Bruteforce AES key</value>
+    </data>
+    <data name="EncTypeGMS" xml:space="preserve">
+        <value>GMS (old)</value>
+    </data>
+    <data name="EncTypeMSEA" xml:space="preserve">
+        <value>MSEA / EMC / Taiwan(old)</value>
+    </data>
+    <data name="EncTypeNone" xml:space="preserve">
+        <value>BMS / GMS / MapleSEA / メイプルストーリー / 메이플스토리</value>
+    </data>
+</root>

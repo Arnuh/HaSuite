@@ -19,10 +19,10 @@ namespace MapleLib.WzLib {
 		GMS = 0,
 		EMS = 1,
 		BMS = 2,
-		CLASSIC = 3,
-		GENERATE = 4,
-		GETFROMZLZ = 5,
-		CUSTOM = 6, // input bytes, for private servers
+		AUTO = 3,
+		CUSTOM = 4, // input bytes, for private servers
+		BRUTEFORCE = 5,
+		GETFROMZLZ = 6,
 
 		UNKNOWN = 99
 	}

@@ -98,13 +98,24 @@ namespace MapleLib.WzLib.Util {
 					var config = new ConfigurationManager();
 					return config.GetCusomWzIVEncryption(); // fallback with BMS
 				}
-				case WzMapleVersion.GENERATE: // dont fill anything with GENERATE, it is not supposed to load anything
+				case WzMapleVersion.BRUTEFORCE: // dont fill anything with GENERATE, it is not supposed to load anything
 					return new byte[4];
-
+				case WzMapleVersion.AUTO:
+					throw new ArgumentException("Cannot get IV for AUTO.");
 				case WzMapleVersion.BMS:
-				case WzMapleVersion.CLASSIC:
 				default:
 					return new byte[4];
+			}
+		}
+
+		public static byte[] GetUserKeyByMapleVersion(WzMapleVersion ver) {
+			switch (ver) {
+				case WzMapleVersion.CUSTOM: {
+					var config = new ConfigurationManager();
+					return config.GetCustomWzUserKeyFromConfig();
+				}
+				default:
+					return MapleCryptoConstants.UserKey_WzLib;
 			}
 		}
 
@@ -147,7 +158,9 @@ namespace MapleLib.WzLib.Util {
 			}
 
 			var parseStatus = wzf.ParseWzFile();
-			if (parseStatus != WzFileParseStatus.Success) return 0.0d;
+			if (parseStatus != WzFileParseStatus.Success) {
+				return 0.0d;
+			}
 
 			if (version == null) version = wzf.Version;
 			var recognizedChars = 0;
@@ -176,15 +189,21 @@ namespace MapleLib.WzLib.Util {
 		/// <exception cref="Exception"></exception>
 		public static WzMapleVersion DetectMapleVersionAt(string wzPath, out short fileVersion) {
 			string targetFile;
-			var modernDir = Path.Combine(wzPath, "Data", "String", "String_000.wz");
-			var midDir = Path.Combine(wzPath, "String.wz");
-			var oldDir = Path.Combine(wzPath, "Data.wz");
-			if (File.Exists(modernDir)) {
-				targetFile = modernDir;
-			} else if (File.Exists(midDir)) {
-				targetFile = midDir;
-			} else if (File.Exists(oldDir)) {
-				targetFile = oldDir;
+			if (File.Exists(wzPath)) {
+				targetFile = wzPath;
+			} else if (Directory.Exists(wzPath)) {
+				var modernDir = Path.Combine(wzPath, "Data", "String", "String_000.wz");
+				var midDir = Path.Combine(wzPath, "String.wz");
+				var oldDir = Path.Combine(wzPath, "Data.wz");
+				if (File.Exists(modernDir)) {
+					targetFile = modernDir;
+				} else if (File.Exists(midDir)) {
+					targetFile = midDir;
+				} else if (File.Exists(oldDir)) {
+					targetFile = oldDir;
+				} else {
+					throw new Exception("Found no suitable file to auto-detect version. Please select a version manually.");
+				}
 			} else {
 				throw new Exception("Found no suitable file to auto-detect version. Please select a version manually.");
 			}
@@ -205,6 +224,8 @@ namespace MapleLib.WzLib.Util {
 				GetDecryptionSuccessRate(wzFilePath, WzMapleVersion.EMS, ref version));
 			mapleVersionSuccessRates.Add(WzMapleVersion.BMS,
 				GetDecryptionSuccessRate(wzFilePath, WzMapleVersion.BMS, ref version));
+			mapleVersionSuccessRates.Add(WzMapleVersion.CUSTOM,
+				GetDecryptionSuccessRate(wzFilePath, WzMapleVersion.CUSTOM, ref version));
 			fileVersion = (short) version;
 			var mostSuitableVersion = WzMapleVersion.GMS;
 			double maxSuccessRate = 0;

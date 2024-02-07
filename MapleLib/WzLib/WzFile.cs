@@ -52,6 +52,7 @@ namespace MapleLib.WzLib {
 				true; // KMS update after Q4 2021, ver 1.2.357 does not contain any wz enc header information
 
 		internal byte[] WzIv;
+		internal byte[] UserKey;
 
 		#endregion
 
@@ -158,7 +159,9 @@ namespace MapleLib.WzLib {
 			mapleStoryPatchVersion = gameVersion;
 			maplepLocalVersion = version;
 			WzIv = WzTool.GetIvByMapleVersion(version);
+			UserKey = WzTool.GetUserKeyByMapleVersion(version);
 			wzDir.WzIv = WzIv;
+			wzDir.UserKey = UserKey;
 		}
 
 		/// <summary>
@@ -184,9 +187,11 @@ namespace MapleLib.WzLib {
 			if (version == WzMapleVersion.GETFROMZLZ) {
 				using (var zlzStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(filePath), "ZLZ.dll"))) {
 					WzIv = WzKeyGenerator.GetIvFromZlz(zlzStream);
+					UserKey = MapleCryptoConstants.UserKey_WzLib;
 				}
 			} else {
 				WzIv = WzTool.GetIvByMapleVersion(version);
+				UserKey = WzTool.GetUserKeyByMapleVersion(version);
 			}
 		}
 
@@ -198,9 +203,10 @@ namespace MapleLib.WzLib {
 			name = Path.GetFileName(filePath);
 			path = filePath;
 			mapleStoryPatchVersion = -1;
-			maplepLocalVersion = WzMapleVersion.CUSTOM;
+			maplepLocalVersion = WzMapleVersion.BRUTEFORCE;
 
 			WzIv = wzIv;
+			UserKey = MapleCryptoConstants.UserKey_WzLib;
 		}
 
 		/// <summary>
@@ -232,7 +238,7 @@ namespace MapleLib.WzLib {
 			}
 
 			var reader =
-				new WzBinaryReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read), WzIv);
+				new WzBinaryReader(File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read), WzIv, UserKey);
 
 			Header = new WzHeader();
 			Header.Ident = reader.ReadString(4);
@@ -293,7 +299,7 @@ namespace MapleLib.WzLib {
 			versionHash = CheckAndGetVersionHash(wzVersionHeader, mapleStoryPatchVersion);
 			reader.Hash = versionHash;
 
-			var directory = new WzDirectory(reader, name, versionHash, WzIv, this);
+			var directory = new WzDirectory(reader, name, versionHash, WzIv, UserKey, this);
 			directory.ParseDirectory();
 			wzDir = directory;
 
@@ -354,7 +360,7 @@ namespace MapleLib.WzLib {
 				reader.BaseStream.Position; // save position to rollback to, if should parsing fail from here
 			WzDirectory testDirectory;
 			try {
-				testDirectory = new WzDirectory(reader, name, versionHash, WzIv, this);
+				testDirectory = new WzDirectory(reader, name, versionHash, WzIv, UserKey, this);
 				testDirectory.ParseDirectory(lazyParse);
 			} catch (Exception exp) {
 				Debug.WriteLine(exp.ToString());
@@ -375,8 +381,7 @@ namespace MapleLib.WzLib {
 					switch (checkByte) {
 						case 0x73:
 						case 0x1b: {
-							var directory = new WzDirectory(reader, name, versionHash, WzIv,
-								this);
+							var directory = new WzDirectory(reader, name, versionHash, WzIv, UserKey, this);
 
 							directory.ParseDirectory(lazyParse);
 							wzDir = directory;
@@ -547,15 +552,17 @@ namespace MapleLib.WzLib {
 			// WZ IV
 			if (savingToPreferredWzVer == WzMapleVersion.UNKNOWN) {
 				WzIv = WzTool.GetIvByMapleVersion(maplepLocalVersion); // get from local WzFile
+				UserKey = WzTool.GetUserKeyByMapleVersion(maplepLocalVersion);
 			} else {
 				WzIv = WzTool.GetIvByMapleVersion(savingToPreferredWzVer); // custom selected
+				UserKey = WzTool.GetUserKeyByMapleVersion(savingToPreferredWzVer);
 			}
 
-			var bIsWzIvSimilar = WzIv.SequenceEqual(wzDir.WzIv); // check if its saving to the same IV.
+			var isWzIvSimilar = WzIv.SequenceEqual(wzDir.WzIv); // check if its saving to the same IV.
+			var isWzUserKeyDefault = UserKey.SequenceEqual(wzDir.UserKey); // check if its saving to the same UserKey.
 			wzDir.WzIv = WzIv;
+			wzDir.UserKey = UserKey;
 
-			// MapleStory UserKey
-			var IsWzUserKeyDefault = MapleCryptoConstants.IsDefaultMapleStoryUserKey(); // check if its saving to the same UserKey.
 			// Save WZ as 64-bit wz format
 			var saveAs64BitWz = Is64BitWzFile;
 			if (override_saveAs64BitWZ != null) saveAs64BitWz = (bool) override_saveAs64BitWZ;
@@ -572,12 +579,12 @@ namespace MapleLib.WzLib {
 			try {
 				var tempFile = Path.GetFileNameWithoutExtension(path) + ".TEMP";
 				using (var fs = new FileStream(tempFile, FileMode.Append, FileAccess.Write)) {
-					wzDir.GenerateDataFile(bIsWzIvSimilar ? null : WzIv, IsWzUserKeyDefault, fs);
+					wzDir.GenerateDataFile(isWzIvSimilar ? null : WzIv, isWzUserKeyDefault, fs);
 				}
 
 				WzTool.StringCache.Clear();
 
-				using (var wzWriter = new WzBinaryWriter(File.Create(path), WzIv)) {
+				using (var wzWriter = new WzBinaryWriter(File.Create(path), WzIv, UserKey)) {
 					wzWriter.Hash = versionHash;
 
 					var totalLen = wzDir.GetImgOffsets(wzDir.GetOffsets(Header.FStart + (!saveAs64BitWz ? 2u : 0)));

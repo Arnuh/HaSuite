@@ -37,19 +37,19 @@ namespace MapleLib.WzLib.Util {
 
 		#region Constructors
 
-		public WzBinaryWriter(Stream output, byte[] WzIv)
-			: this(output, WzIv, false) {
+		public WzBinaryWriter(Stream output, byte[] WzIv, byte[] UserKey)
+			: this(output, WzIv, UserKey, false) {
 			Hash = 0;
 		}
 
-		public WzBinaryWriter(Stream output, byte[] WzIv, uint Hash)
-			: this(output, WzIv, false) {
+		public WzBinaryWriter(Stream output, byte[] WzIv, byte[] UserKey, uint Hash)
+			: this(output, WzIv, UserKey, false) {
 			this.Hash = Hash;
 		}
 
-		public WzBinaryWriter(Stream output, byte[] WzIv, bool leaveOpen)
+		public WzBinaryWriter(Stream output, byte[] WzIv, byte[] UserKey, bool leaveOpen)
 			: base(output) {
-			WzKey = WzKeyGenerator.GenerateWzKey(WzIv);
+			WzKey = WzKeyGenerator.GenerateWzKey(WzIv, UserKey);
 			StringCache = new Hashtable();
 			LeaveOpen = leaveOpen;
 		}

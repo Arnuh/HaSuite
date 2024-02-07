@@ -7,6 +7,7 @@
 using System;
 using System.Windows.Forms;
 using HaRepacker.Properties;
+using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 
 namespace HaRepacker.GUI.Interaction {
@@ -29,9 +30,7 @@ namespace HaRepacker.GUI.Interaction {
 			DialogResult = DialogResult.Cancel;
 			Text = title;
 
-			MainForm.AddWzEncryptionTypesToComboBox(comboBox_wzEncryptionType);
-			comboBox_wzEncryptionType.SelectedIndex =
-				(int) Program.ConfigurationManager.ApplicationSettings.MapleVersion;
+			WzEncryptionTypeHelper.Setup(comboBox_wzEncryptionType, Program.ConfigurationManager.ApplicationSettings.MapleVersion);
 
 			// Localization
 			label_wzEncrytionType.Text = Resources.InteractionWzMapleVersionInfo;

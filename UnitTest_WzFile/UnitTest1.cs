@@ -57,6 +57,7 @@ namespace UnitTest_WzFile {
 			try {
 				var wzMapleVer = WzMapleVersion.BMS;
 				var WzIv = WzTool.GetIvByMapleVersion(wzMapleVer);
+				var UserKey = WzTool.GetUserKeyByMapleVersion(wzMapleVer);
 
 				//////// Open first ////////
 				var wzImg = _fileManager.LoadDataWzHotfixFile(filePath, wzMapleVer);
@@ -68,7 +69,7 @@ namespace UnitTest_WzFile {
 				var targetFilePath = filePath;
 
 				using (var oldfs = File.Open(tmpFilePath, FileMode.OpenOrCreate)) {
-					using (var wzWriter = new WzBinaryWriter(oldfs, WzIv)) {
+					using (var wzWriter = new WzBinaryWriter(oldfs, WzIv, UserKey)) {
 						wzImg.SaveImage(wzWriter); // Write to temp folder
 						wzImg.Dispose(); // unload
 					}

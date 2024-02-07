@@ -26,11 +26,10 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Initialization));
             this.button_initialise = new System.Windows.Forms.Button();
-            this.versionBox = new System.Windows.Forms.ComboBox();
+            this.encryptionBox = new System.Windows.Forms.ComboBox();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -50,19 +49,15 @@
             this.button_initialise.Text = "Initialize";
             this.button_initialise.Click += new System.EventHandler(this.button_initialise_Click);
             // 
-            // versionBox
+            // encryptionBox
             // 
-            this.versionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.versionBox.FormattingEnabled = true;
-            this.versionBox.Items.AddRange(new object[] {
-            "GMS",
-            "EMS , MSEA , KMS",
-            "BMS , JMS",
-            "Auto-Detect"});
-            this.versionBox.Location = new System.Drawing.Point(74, 38);
-            this.versionBox.Name = "versionBox";
-            this.versionBox.Size = new System.Drawing.Size(237, 21);
-            this.versionBox.TabIndex = 3;
+            this.encryptionBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.encryptionBox.FormattingEnabled = true;
+            this.encryptionBox.Location = new System.Drawing.Point(74, 38);
+            this.encryptionBox.Name = "encryptionBox";
+            this.encryptionBox.Size = new System.Drawing.Size(237, 21);
+            this.encryptionBox.TabIndex = 3;
+            this.encryptionBox.SelectedIndexChanged += new System.EventHandler(this.encryptionBox_SelectedIndexChanged);
             // 
             // toolStripProgressBar1
             // 
@@ -134,12 +129,12 @@
             this.Controls.Add(this.pathBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.versionBox);
+            this.Controls.Add(this.encryptionBox);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.button_initialise);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "Initialization";
@@ -149,13 +144,12 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Initialization_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.Button button_initialise;
-        private System.Windows.Forms.ComboBox versionBox;
+        private System.Windows.Forms.ComboBox encryptionBox;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

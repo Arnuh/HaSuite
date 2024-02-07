@@ -7,11 +7,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
-using MapleLib.MapleCryptoLib;
+using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Util;
 
@@ -38,7 +37,7 @@ namespace HaRepacker.GUI {
 		public SaveForm(MainPanel panel, WzNode wzNode) {
 			InitializeComponent();
 
-			MainForm.AddWzEncryptionTypesToComboBox(encryptionBox);
+			WzEncryptionTypeHelper.AddWzEncryptionTypesToComboBox(encryptionBox);
 
 			this.wzNode = wzNode;
 			if (wzNode.Tag is WzImage) // Data.wz hotfix file
@@ -66,7 +65,7 @@ namespace HaRepacker.GUI {
 
 			try {
 				if (IsRegularWzFile) {
-					encryptionBox.SelectedIndex = MainForm.GetIndexByWzMapleVersion(wzf.MapleVersion);
+					encryptionBox.SelectedIndex = WzEncryptionTypeHelper.GetIndexByWzMapleVersion(wzf.MapleVersion);
 					versionBox.Value = wzf.Version;
 
 					checkBox_64BitFile.Checked = wzf.Is64BitWzFile;
@@ -74,8 +73,8 @@ namespace HaRepacker.GUI {
 						wzf.Is64BitWzFile
 							? false
 							: true; // disable checkbox if its checked as 64-bit, since the version will always be 777
-				} else { // Data.wz uses BMS encryption... no sepcific version indicated
-					encryptionBox.SelectedIndex = MainForm.GetIndexByWzMapleVersion(WzMapleVersion.BMS);
+				} else { // Data.wz uses BMS encryption... no specific version indicated
+					encryptionBox.SelectedIndex = WzEncryptionTypeHelper.GetIndexByWzMapleVersion(WzMapleVersion.BMS);
 				}
 			} finally {
 				bIsLoading = false;
@@ -110,12 +109,10 @@ namespace HaRepacker.GUI {
 			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
-			var wzMapleVersion = MainForm.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
+			var wzMapleVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
 			if (wzMapleVersion == WzMapleVersion.CUSTOM) {
-				var customWzInputBox = new CustomWZEncryptionInputBox();
+				var customWzInputBox = new CustomWZEncryptionInputBox(Program.ConfigurationManager);
 				customWzInputBox.ShowDialog();
-			} else {
-				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
 		}
 
@@ -142,10 +139,12 @@ namespace HaRepacker.GUI {
 
 				var bSaveAs64BitWzFile = checkBox_64BitFile.Checked; // no version number
 				var wzMapleVersionSelected =
-					MainForm.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox
+					WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox
 						.SelectedIndex); // new encryption selected
 				if (IsRegularWzFile) {
-					if (wzf.MapleVersion != wzMapleVersionSelected) PrepareAllImgs(wzf.WzDirectory);
+					if (wzf.MapleVersion != wzMapleVersionSelected) {
+						PrepareAllImgs(wzf.WzDirectory);
+					}
 
 					wzf.Version = (short) versionBox.Value;
 					wzf.MapleVersion = wzMapleVersionSelected;
@@ -166,9 +165,12 @@ namespace HaRepacker.GUI {
 
 					// Reload the new file
 					var loadedWzFile = Program.WzFileManager.LoadWzFile(dialog.FileName, wzMapleVersionSelected);
-					if (loadedWzFile != null) _mainPanel.MainForm.AddLoadedWzObjectToMainPanel(loadedWzFile);
+					if (loadedWzFile != null) {
+						_mainPanel.MainForm.AddLoadedWzObjectToMainPanel(loadedWzFile);
+					}
 				} else {
 					var WzIv = WzTool.GetIvByMapleVersion(wzMapleVersionSelected);
+					var UserKey = WzTool.GetUserKeyByMapleVersion(wzMapleVersionSelected);
 
 					// Save file
 					var tmpFilePath = dialog.FileName + ".tmp";
@@ -177,7 +179,7 @@ namespace HaRepacker.GUI {
 					var error_noAdminPriviledge = false;
 					try {
 						using (var oldfs = File.Open(tmpFilePath, FileMode.OpenOrCreate)) {
-							using (var wzWriter = new WzBinaryWriter(oldfs, WzIv)) {
+							using (var wzWriter = new WzBinaryWriter(oldfs, WzIv, UserKey)) {
 								wzImg.SaveImage(wzWriter); // Write to temp folder
 							}
 						}

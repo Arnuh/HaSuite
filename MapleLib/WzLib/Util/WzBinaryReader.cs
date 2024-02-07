@@ -33,9 +33,9 @@ namespace MapleLib.WzLib.Util {
 
 		#region Constructors
 
-		public WzBinaryReader(Stream input, byte[] WzIv)
+		public WzBinaryReader(Stream input, byte[] WzIv, byte[] UserKey)
 			: base(input) {
-			WzKey = WzKeyGenerator.GenerateWzKey(WzIv);
+			WzKey = WzKeyGenerator.GenerateWzKey(WzIv, UserKey);
 		}
 
 		#endregion

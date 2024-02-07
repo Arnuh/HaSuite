@@ -43,15 +43,6 @@ namespace MapleLib.MapleCryptoLib {
 		/// </summary>
 		public static byte[] UserKey_WzLib = MAPLESTORY_USERKEY_DEFAULT.ToArray();
 
-
-		/// <summary>
-		/// Determines if 'UserKey_WzLib' to be used by HaRepacker/ HaCreator is equivalent to the default Maplestory User Key.
-		/// </summary>
-		/// <returns></returns>
-		public static bool IsDefaultMapleStoryUserKey() {
-			return MAPLESTORY_USERKEY_DEFAULT.SequenceEqual(UserKey_WzLib);
-		}
-
 		#endregion
 
 

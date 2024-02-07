@@ -36,6 +36,7 @@ namespace MapleLib.WzLib {
 		internal uint hash;
 		internal int size, checksum, offsetSize;
 		internal byte[] WzIv;
+		internal byte[] UserKey;
 		internal WzObject parent;
 		internal WzFile wzFile;
 
@@ -180,6 +181,7 @@ namespace MapleLib.WzLib {
 			name = dirName;
 			hash = parentWzFileIvVerHashCloneSource.versionHash;
 			WzIv = parentWzFileIvVerHashCloneSource.WzIv;
+			UserKey = parentWzFileIvVerHashCloneSource.UserKey;
 			wzFile = parentWzFileIvVerHashCloneSource;
 		}
 
@@ -190,11 +192,12 @@ namespace MapleLib.WzLib {
 		/// <param name="blockStart">The start of the data block</param>
 		/// <param name="parentname">The name of the directory</param>
 		/// <param name="wzFile">The parent Wz File</param>
-		internal WzDirectory(WzBinaryReader reader, string dirName, uint verHash, byte[] WzIv, WzFile wzFile) {
+		internal WzDirectory(WzBinaryReader reader, string dirName, uint verHash, byte[] WzIv, byte[] UserKey, WzFile wzFile) {
 			this.reader = reader;
 			name = dirName;
 			hash = verHash;
 			this.WzIv = WzIv;
+			this.UserKey = UserKey;
 			this.wzFile = wzFile;
 		}
 
@@ -260,7 +263,7 @@ namespace MapleLib.WzLib {
 				offset = reader.ReadOffset(); // IWzArchive::Getposition(pArchive)
 
 				if (type == (byte) WzDirectoryType.WzDirectory_3) {
-					var subDir = new WzDirectory(reader, fname, hash, WzIv, wzFile) {
+					var subDir = new WzDirectory(reader, fname, hash, WzIv, UserKey, wzFile) {
 						BlockSize = fsize,
 						Checksum = checksum,
 						Offset = offset,
@@ -355,7 +358,7 @@ namespace MapleLib.WzLib {
 				{
 					using (var memStream = new MemoryStream()) {
 						using (var imgWriter =
-						       new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv)) {
+						       new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
 							img.SaveImage(imgWriter, bIsWzUserKeyDefault, useCustomIv);
 
 							img.CalculateAndSetImageChecksum(memStream.ToArray()); // checksum

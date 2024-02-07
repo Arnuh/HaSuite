@@ -26,7 +26,6 @@ namespace MapleLib.Configuration {
 		private const string SETTINGS_FILE_APPLICATION = "ApplicationSettings.txt";
 		public const string configPipeName = "PheRepacker";
 
-
 		private string folderPath;
 
 		private UserSettings _userSettings = new UserSettings(); // default configuration for UI designer :( 
@@ -43,6 +42,8 @@ namespace MapleLib.Configuration {
 			get => _appSettings;
 			private set { }
 		}
+
+		private bool isLoaded;
 
 		/// <summary>
 		/// Constructor
@@ -82,7 +83,7 @@ namespace MapleLib.Configuration {
 						JsonConvert.DeserializeObject<UserSettings>(
 							userFileContent); // deserialize to static content... 
 					_appSettings = JsonConvert.DeserializeObject<ApplicationSettings>(applicationFileContent);
-
+					isLoaded = true;
 					return true;
 				} catch (Exception) {
 					// delete all
@@ -135,13 +136,16 @@ namespace MapleLib.Configuration {
 		/// </summary>
 		/// <returns></returns>
 		public byte[] GetCusomWzIVEncryption() {
-			var loaded = Load();
-			if (loaded) {
-				var storedCustomEnc = ApplicationSettings.MapleVersion_CustomEncryptionBytes;
-				var bytes = HexEncoding.GetBytes(storedCustomEnc);
-
-				if (ValidateCustomWzIVEncryption(bytes)) return bytes;
+			if (!isLoaded) {
+				if (!Load()) {
+					return new byte[4] {0x0, 0x0, 0x0, 0x0}; // fallback with BMS
+				}
 			}
+
+			var storedCustomEnc = ApplicationSettings.MapleVersion_CustomEncryptionBytes;
+			var bytes = HexEncoding.GetBytes(storedCustomEnc);
+
+			if (ValidateCustomWzIVEncryption(bytes)) return bytes;
 			return new byte[4] {0x0, 0x0, 0x0, 0x0}; // fallback with BMS
 		}
 
@@ -149,23 +153,30 @@ namespace MapleLib.Configuration {
 			return iv.Length == 4;
 		}
 
-		public void SetCustomWzUserKeyFromConfig() {
-			// Set the UserKey in memory.
-			MapleCryptoConstants.UserKey_WzLib = new byte[128];
-			var bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
-			if (!ValidateCustomWzUserKey(bytes)) {
-				return;
+		public byte[] GetCustomWzUserKeyFromConfig() {
+			var UserKey_WzLib = new byte[128];
+			if (!isLoaded) {
+				if (!Load()) {
+					return UserKey_WzLib;
+				}
 			}
 
-			MapleCryptoConstants.UserKey_WzLib = new byte[MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.Length];
-			for (var i = 0; i < MapleCryptoConstants.UserKey_WzLib.Length; i += 4) {
-				MapleCryptoConstants.UserKey_WzLib[i] = bytes[i / 4];
-				MapleCryptoConstants.UserKey_WzLib[i + 1] = 0;
-				MapleCryptoConstants.UserKey_WzLib[i + 2] = 0;
-				MapleCryptoConstants.UserKey_WzLib[i + 3] = 0;
+			var bytes = HexEncoding.GetBytes(ApplicationSettings.MapleVersion_CustomAESUserKey);
+			if (!ValidateCustomWzUserKey(bytes)) {
+				return UserKey_WzLib;
 			}
+
+			UserKey_WzLib = new byte[MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.Length];
+			for (var i = 0; i < UserKey_WzLib.Length; i += 4) {
+				UserKey_WzLib[i] = bytes[i / 4];
+				UserKey_WzLib[i + 1] = 0;
+				UserKey_WzLib[i + 2] = 0;
+				UserKey_WzLib[i + 3] = 0;
+			}
+
+			return UserKey_WzLib;
 		}
-		
+
 		public bool ValidateCustomWzUserKey(byte[] key) {
 			return key.Length != 0;
 		}

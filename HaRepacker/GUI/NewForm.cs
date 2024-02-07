@@ -5,10 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Linq;
 using System.Windows.Forms;
 using HaRepacker.GUI.Panels;
-using MapleLib.MapleCryptoLib;
+using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
 
 namespace HaRepacker.GUI {
@@ -44,11 +43,12 @@ namespace HaRepacker.GUI {
 		private void NewForm_Load(object sender, EventArgs e) {
 			bIsLoading = true;
 			try {
-				MainForm.AddWzEncryptionTypesToComboBox(encryptionBox);
+				WzEncryptionTypeHelper.Setup(encryptionBox, Program.ConfigurationManager.ApplicationSettings.MapleVersion);
+				/*WzEncryptionTypeHelper.AddWzEncryptionTypesToComboBox(encryptionBox);
 
 				encryptionBox.SelectedIndex =
-					MainForm.GetIndexByWzMapleVersion(Program.ConfigurationManager.ApplicationSettings.MapleVersion,
-						true);
+					WzEncryptionTypeHelper.GetIndexByWzMapleVersion(Program.ConfigurationManager.ApplicationSettings.MapleVersion,
+						true);*/
 				versionBox.Value = 1;
 			} finally {
 				bIsLoading = false;
@@ -66,12 +66,10 @@ namespace HaRepacker.GUI {
 			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
-			var wzMapleVersion = MainForm.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
+			var wzMapleVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
 			if (wzMapleVersion == WzMapleVersion.CUSTOM) {
-				var customWzInputBox = new CustomWZEncryptionInputBox();
+				var customWzInputBox = new CustomWZEncryptionInputBox(Program.ConfigurationManager);
 				customWzInputBox.ShowDialog();
-			} else {
-				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
 		}
 

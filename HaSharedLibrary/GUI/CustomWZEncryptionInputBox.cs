@@ -8,17 +8,21 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using MapleLib.Configuration;
 using MapleLib.MapleCryptoLib;
 using MapleLib.PacketLib;
 
 namespace HaRepacker.GUI {
 	public partial class CustomWZEncryptionInputBox : Form {
+		private ConfigurationManager configManager;
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="panel"></param>
-		public CustomWZEncryptionInputBox() {
+		public CustomWZEncryptionInputBox(ConfigurationManager configManager) {
 			InitializeComponent();
+			this.configManager = configManager;
 		}
 
 
@@ -28,7 +32,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void SaveForm_Load(object sender, EventArgs e) {
-			var appSettings = Program.ConfigurationManager.ApplicationSettings;
+			var appSettings = configManager.ApplicationSettings;
 
 			// AES IV
 			var storedCustomEnc = appSettings.MapleVersion_CustomEncryptionBytes;
@@ -49,7 +53,7 @@ namespace HaRepacker.GUI {
 			if (!parsed) {
 				// do nothing.. default, could be corrupted anyway
 				appSettings.MapleVersion_CustomEncryptionBytes = "00 00 00 00";
-				Program.ConfigurationManager.Save();
+				configManager.Save();
 			} else {
 				var i = 0;
 				foreach (var byte_ in splitBytes) {
@@ -95,7 +99,7 @@ namespace HaRepacker.GUI {
 				if (!parsed2) {
 					// do nothing.. default, could be corrupted anyway
 					appSettings.MapleVersion_CustomAESUserKey = string.Empty;
-					Program.ConfigurationManager.Save();
+					configManager.Save();
 				} else {
 					var i = 0;
 					foreach (var byte_ in splitAESKeyBytes) {
@@ -222,6 +226,17 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
+			var customEncBytes = string.Format("{0} {1} {2} {3}",
+				strByte0,
+				strByte1,
+				strByte2,
+				strByte3);
+
+			if (!configManager.ValidateCustomWzIVEncryption(HexEncoding.GetBytes(customEncBytes))) {
+				MessageBox.Show("Wrong format for AES IV. Please check the input bytes.", "Error");
+				return;
+			}
+
 			// AES User Key
 			var strUserKey1 = textBox_AESUserKey1.Text;
 			var strUserKey2 = textBox_AESUserKey2.Text;
@@ -274,30 +289,27 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
+			var customAESUserKey = string.Format(
+				"{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23} {24} {25} {26} {27} {28} {29} {30} {31}",
+				strUserKey1, strUserKey2, strUserKey3, strUserKey4, strUserKey5, strUserKey6, strUserKey7,
+				strUserKey8, strUserKey9, strUserKey10,
+				strUserKey11, strUserKey12, strUserKey13, strUserKey14, strUserKey15, strUserKey16, strUserKey17,
+				strUserKey18, strUserKey19, strUserKey20,
+				strUserKey21, strUserKey22, strUserKey23, strUserKey24, strUserKey25, strUserKey26, strUserKey27,
+				strUserKey28, strUserKey29, strUserKey30,
+				strUserKey31, strUserKey32
+			);
+
+			if (!configManager.ValidateCustomWzUserKey(HexEncoding.GetBytes(customAESUserKey))) {
+				MessageBox.Show("Wrong format for AES User Key. Please check the input bytes.", "Error");
+				return;
+			}
+
 			// Save
-			Program.ConfigurationManager.ApplicationSettings.MapleVersion_CustomEncryptionBytes =
-				string.Format("{0} {1} {2} {3}",
-					strByte0,
-					strByte1,
-					strByte2,
-					strByte3);
+			configManager.ApplicationSettings.MapleVersion_CustomEncryptionBytes = customEncBytes;
 
-			Program.ConfigurationManager.ApplicationSettings.MapleVersion_CustomAESUserKey =
-				string.Format(
-					"{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23} {24} {25} {26} {27} {28} {29} {30} {31}",
-					strUserKey1, strUserKey2, strUserKey3, strUserKey4, strUserKey5, strUserKey6, strUserKey7,
-					strUserKey8, strUserKey9, strUserKey10,
-					strUserKey11, strUserKey12, strUserKey13, strUserKey14, strUserKey15, strUserKey16, strUserKey17,
-					strUserKey18, strUserKey19, strUserKey20,
-					strUserKey21, strUserKey22, strUserKey23, strUserKey24, strUserKey25, strUserKey26, strUserKey27,
-					strUserKey28, strUserKey29, strUserKey30,
-					strUserKey31, strUserKey32
-				);
-			Program.ConfigurationManager.Save();
-
-
-			// Set the UserKey in memory.
-			Program.ConfigurationManager.SetCustomWzUserKeyFromConfig();
+			configManager.ApplicationSettings.MapleVersion_CustomAESUserKey = customAESUserKey;
+			configManager.Save();
 
 			Close();
 		}

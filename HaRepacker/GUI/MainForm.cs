@@ -27,8 +27,8 @@ using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using HaSharedLibrary;
+using HaSharedLibrary.Wz;
 using MapleLib.Helpers;
-using MapleLib.MapleCryptoLib;
 using MapleLib.PacketLib;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Nx;
@@ -67,10 +67,7 @@ namespace HaRepacker.GUI {
 			SetThemeColor();
 
 			// encryptions
-			AddWzEncryptionTypesToComboBox(encryptionBox);
-			// Set encryption box
-			SetWzEncryptionBoxSelectionByWzMapleVersion(Program.ConfigurationManager.ApplicationSettings.MapleVersion);
-
+			WzEncryptionTypeHelper.Setup(encryptionBox, Program.ConfigurationManager.ApplicationSettings.MapleVersion, true, true);
 
 			WindowState = Program.ConfigurationManager.ApplicationSettings.WindowMaximized
 				? FormWindowState.Maximized
@@ -166,8 +163,12 @@ namespace HaRepacker.GUI {
 
 		private void LoadWzFileCallback(string path) {
 			try {
-				var loadedWzFile = Program.WzFileManager.LoadWzFile(path,
-					GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex));
+				var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
+				if (wzEncryptionType == WzMapleVersion.AUTO) {
+					wzEncryptionType = WzTool.DetectMapleVersionAt(path, out _);
+				}
+
+				var loadedWzFile = Program.WzFileManager.LoadWzFile(path, wzEncryptionType);
 				if (loadedWzFile == null) return;
 
 				var node = new WzNode(loadedWzFile);
@@ -354,122 +355,23 @@ namespace HaRepacker.GUI {
 		#region Wz Encryption selection combobox
 
 		/// <summary>
-		/// Adds the WZ encryption types to ToolstripComboBox.
-		/// Shared code between WzMapleVersionInputBox.cs
-		/// </summary>
-		/// <param name="encryptionBox"></param>
-		public static void AddWzEncryptionTypesToComboBox(object encryptionBox) {
-			string[] resources = {
-				Resources.EncTypeGMS,
-				Resources.EncTypeMSEA,
-				Resources.EncTypeNone,
-				Resources.EncTypeCustom,
-				Resources.EncTypeGenerate
-			};
-			var isToolStripComboBox = encryptionBox is ToolStripComboBox;
-
-			var i = 0;
-			foreach (var res in resources) {
-				if (isToolStripComboBox) {
-					((ToolStripComboBox) encryptionBox).Items.Add(res); // in mainform
-				} else {
-					if (i != 4) // dont show bruteforce option in SaveForm
-					{
-						((ComboBox) encryptionBox).Items.Add(res); // in saveForm
-					}
-				}
-
-				i++;
-			}
-		}
-
-		/// <summary>
 		/// On encryption box selection changed
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void EncryptionBox_SelectedIndexChanged(object sender, EventArgs e) {
-			if (!mainFormLoaded) // first run during app startup
-			{
+			if (!mainFormLoaded) { // first run during app startup
 				return;
 			}
 
 			var selectedIndex = encryptionBox.SelectedIndex;
-			var wzMapleVer = GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex);
+			var wzMapleVer = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex, true, true);
 			Program.ConfigurationManager.ApplicationSettings.MapleVersion = wzMapleVer;
 
 			if (wzMapleVer == WzMapleVersion.CUSTOM) {
-				var customWzInputBox = new CustomWZEncryptionInputBox();
+				var customWzInputBox = new CustomWZEncryptionInputBox(Program.ConfigurationManager);
 				customWzInputBox.ShowDialog();
-			} else {
-				MapleCryptoConstants.UserKey_WzLib = MapleCryptoConstants.MAPLESTORY_USERKEY_DEFAULT.ToArray();
 			}
-		}
-
-		/// <summary>
-		/// Gets the WzMapleVersion enum by encryptionBox selection index
-		/// </summary>
-		/// <param name="selectedIndex"></param>
-		/// <returns></returns>
-		public static WzMapleVersion GetWzMapleVersionByWzEncryptionBoxSelection(int selectedIndex) {
-			WzMapleVersion wzMapleVer;
-			switch (selectedIndex) {
-				case 0:
-					wzMapleVer = WzMapleVersion.GMS;
-					break;
-				case 1:
-					wzMapleVer = WzMapleVersion.EMS;
-					break;
-				case 2:
-					wzMapleVer = WzMapleVersion.BMS;
-					break;
-				case 3:
-					wzMapleVer = WzMapleVersion.CUSTOM;
-					break;
-				case 4:
-					wzMapleVer = WzMapleVersion.GENERATE;
-					break;
-				default: // hmm?
-					wzMapleVer = WzMapleVersion.BMS; // just default anyway to modern maplestory
-					break;
-			}
-
-			return wzMapleVer;
-		}
-
-		/// <summary>
-		/// Gets the Combobox selection index by WzMapleVersion
-		/// </summary>
-		/// <param name="versionSelected"></param>
-		/// <param name="fromNewForm">Called from NewForm.cs</param>
-		/// <returns></returns>
-		public static int GetIndexByWzMapleVersion(WzMapleVersion versionSelected, bool fromNewForm = false) {
-			var setIndex = 0;
-			switch (versionSelected) {
-				case WzMapleVersion.GMS:
-					setIndex = 0;
-					break;
-				case WzMapleVersion.EMS:
-					setIndex = 1;
-					break;
-				case WzMapleVersion.BMS:
-					setIndex = 2;
-					break;
-				case WzMapleVersion.CUSTOM:
-					setIndex = 3;
-					break;
-				case WzMapleVersion.GENERATE:
-					if (fromNewForm) // dont return GENERATE, as that option is unavailable when creating a new WZ via NewForm.
-					{
-						setIndex = 2; // BMS
-					} else {
-						setIndex = 4;
-					}
-
-					break;
-			}
-
-			return setIndex;
 		}
 
 		/// <summary>
@@ -478,8 +380,7 @@ namespace HaRepacker.GUI {
 		/// </summary>
 		/// <param name="versionSelected"></param>
 		private void SetWzEncryptionBoxSelectionByWzMapleVersion(WzMapleVersion versionSelected) {
-			encryptionBox.SelectedIndex = GetIndexByWzMapleVersion(versionSelected);
-			if (versionSelected == WzMapleVersion.CUSTOM) Program.ConfigurationManager.SetCustomWzUserKeyFromConfig();
+			encryptionBox.SelectedIndex = WzEncryptionTypeHelper.GetIndexByWzMapleVersion(versionSelected, true, true);
 		}
 
 		#endregion
@@ -843,14 +744,14 @@ namespace HaRepacker.GUI {
 		private async void OpenFileInternal(string[] fileNames) {
 			var currentDispatcher = Dispatcher.CurrentDispatcher;
 
-			var mapleVersionEncryptionSelected = GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
+			var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
 
 			var wzfilePathsToLoad = new List<string>();
 
 			if (fileNames.All(s => s.ToLower().EndsWith(".xml"))) {
-				ImportXml(mapleVersionEncryptionSelected, fileNames);
+				ImportXml(wzEncryptionType, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
-				ImportImg(mapleVersionEncryptionSelected, fileNames);
+				ImportImg(wzEncryptionType, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".png"))) {
 				ImportImages(fileNames);
 			} else {
@@ -877,7 +778,7 @@ namespace HaRepacker.GUI {
 					}
 
 					if (filePathLowerCase.EndsWith("data.wz") && WzTool.IsDataWzHotfixFile(filePath)) { // Other WZs
-						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, mapleVersionEncryptionSelected);
+						var img = Program.WzFileManager.LoadDataWzHotfixFile(filePath, wzEncryptionType);
 						if (img == null) {
 							MessageBox.Show(Resources.MainFileOpenFail, Resources.Error);
 							break;
@@ -885,17 +786,21 @@ namespace HaRepacker.GUI {
 
 						AddLoadedWzObjectToMainPanel(img);
 					} else if (filePathLowerCase.EndsWith(".xml")) {
-						ImportXml(mapleVersionEncryptionSelected, new[] {filePath});
+						ImportXml(wzEncryptionType, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".img")) {
-						ImportImg(mapleVersionEncryptionSelected, new[] {filePath});
+						ImportImg(wzEncryptionType, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
-						new ListEditor(filePath, mapleVersionEncryptionSelected).Show();
+						new ListEditor(filePath, wzEncryptionType).Show();
 					} else {
-						if (mapleVersionEncryptionSelected == WzMapleVersion.GENERATE) {
+						if (wzEncryptionType == WzMapleVersion.BRUTEFORCE) {
 							StartWzKeyBruteforcing(filePath, currentDispatcher); // find needles in a haystack
 							return;
+						}
+
+						if (wzEncryptionType == WzMapleVersion.AUTO) {
+							wzEncryptionType = WzTool.DetectMapleVersionAt(filePath, out _);
 						}
 
 						wzfilePathsToLoad.Add(filePath); // add to list, so we can load it concurrently
@@ -934,7 +839,7 @@ namespace HaRepacker.GUI {
 			await Task.Run(() => {
 				var loadedWzFiles = new List<WzFile>();
 				var loop = Parallel.ForEach(wzfilePathsToLoad, filePath => {
-					var f = Program.WzFileManager.LoadWzFile(filePath, mapleVersionEncryptionSelected);
+					var f = Program.WzFileManager.LoadWzFile(filePath, wzEncryptionType);
 					if (f == null) {
 						// error should be thrown 
 					} else {
@@ -988,7 +893,7 @@ namespace HaRepacker.GUI {
 			var currentDispatcher = Dispatcher.CurrentDispatcher;
 
 			var MapleVersionEncryptionSelected =
-				GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
+				WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
 
 			// Load WZ file
 			using (var fbd = new FolderBrowserDialog {
@@ -1711,7 +1616,7 @@ namespace HaRepacker.GUI {
 			string loadedWzVersion;
 			var dataCache =
 				new WzStringSearchFormDataCache(
-					GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex));
+					WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true));
 			if (dataCache.OpenBaseWZFile(out loadedWzVersion)) {
 				var form = new WzStringSearchForm(dataCache, loadedWzVersion);
 				form.Show();
@@ -1963,7 +1868,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version));
+			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version));
 			yesToAll = false;
 			noToAll = false;
 			threadDone = false;
@@ -1981,7 +1886,6 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var iv = WzTool.GetIvByMapleVersion(wzImageImportVersion);
 			var deserializer = new WzImgDeserializer(true);
 			yesToAll = false;
 			noToAll = false;
@@ -1990,7 +1894,7 @@ namespace HaRepacker.GUI {
 			runningThread = new Thread(WzDeserializeImportThread);
 			runningThread.Start(
 				new object[] {
-					deserializer, fileNames, selectedNode, iv
+					deserializer, fileNames, selectedNode, wzImageImportVersion
 				});
 			new Thread(ProgressBarThread).Start(deserializer);
 		}
@@ -2032,7 +1936,7 @@ namespace HaRepacker.GUI {
 			var deserializer = (ProgressingWzSerializer) arr[0];
 			var files = (string[]) arr[1];
 			var parent = (WzNode) arr[2];
-			var iv = (byte[]) arr[3];
+			var encryptionType = (WzMapleVersion) arr[3];
 
 			var parentObj = (WzObject) parent?.Tag;
 			if (parentObj is WzFile wzFile) {
@@ -2048,7 +1952,8 @@ namespace HaRepacker.GUI {
 						objs = xmlDeserializer.ParseXML(file);
 					} else if (deserializer is WzImgDeserializer imgDeserializer) {
 						objs = new List<WzObject> {
-							imgDeserializer.WzImageFromIMGFile(file, iv, Path.GetFileName(file), out var successfullyParsedImage)
+							imgDeserializer.WzImageFromIMGFile(file, WzTool.GetIvByMapleVersion(encryptionType),
+								WzTool.GetUserKeyByMapleVersion(encryptionType), Path.GetFileName(file), out var successfullyParsedImage)
 						};
 
 						if (!successfullyParsedImage) {
@@ -2100,7 +2005,7 @@ namespace HaRepacker.GUI {
 
 			var wzFilesToDump = (string[]) ((object[]) param)[0];
 			var baseDir = (string) ((object[]) param)[1];
-			var version = GetWzMapleVersionByWzEncryptionBoxSelection((int) ((object[]) param)[2]);
+			var version = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection((int) ((object[]) param)[2], true, true);
 			var serializer = (IWzFileSerializer) ((object[]) param)[3];
 
 			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);

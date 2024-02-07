@@ -28,17 +28,17 @@ namespace MapleLib.WzLib {
 		/// </summary>
 		/// <param name="filePath">Path to the wz file</param>
 		public static List<string> ParseListFile(string filePath, WzMapleVersion version) {
-			return ParseListFile(filePath, WzTool.GetIvByMapleVersion(version));
+			return ParseListFile(filePath, WzTool.GetIvByMapleVersion(version), WzTool.GetIvByMapleVersion(version));
 		}
 
 		/// <summary>
 		/// Parses a wz list file on the disk
 		/// </summary>
 		/// <param name="filePath">Path to the wz file</param>
-		private static List<string> ParseListFile(string filePath, byte[] WzIv) {
+		private static List<string> ParseListFile(string filePath, byte[] WzIv, byte[] UserKey) {
 			var listEntries = new List<string>();
 			var wzFileBytes = File.ReadAllBytes(filePath);
-			var wzParser = new WzBinaryReader(new MemoryStream(wzFileBytes), WzIv);
+			var wzParser = new WzBinaryReader(new MemoryStream(wzFileBytes), WzIv, UserKey);
 			while (wzParser.PeekChar() != -1) {
 				var len = wzParser.ReadInt32();
 				var strChrs = new char[len];
@@ -57,14 +57,14 @@ namespace MapleLib.WzLib {
 		}
 
 		public static void SaveToDisk(string path, WzMapleVersion version, List<string> listEntries) {
-			SaveToDisk(path, WzTool.GetIvByMapleVersion(version), listEntries);
+			SaveToDisk(path, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version), listEntries);
 		}
 
-		public static void SaveToDisk(string path, byte[] WzIv, List<string> listEntries) {
+		public static void SaveToDisk(string path, byte[] WzIv, byte[] UserKey, List<string> listEntries) {
 			var lastIndex = listEntries.Count - 1;
 			var lastEntry = listEntries[lastIndex];
 			listEntries[lastIndex] = lastEntry.Substring(0, lastEntry.Length - 1) + "/";
-			var wzWriter = new WzBinaryWriter(File.Create(path), WzIv);
+			var wzWriter = new WzBinaryWriter(File.Create(path), WzIv, UserKey);
 
 			foreach (var listEntry in listEntries) {
 				wzWriter.Write(listEntry.Length);

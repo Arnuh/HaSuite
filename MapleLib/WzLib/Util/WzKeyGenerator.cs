@@ -52,8 +52,12 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public static WzMutableKey GenerateWzKey(byte[] WzIv) {
+			return GenerateWzKey(WzIv, MapleCryptoConstants.UserKey_WzLib);
+		}
+
+		public static WzMutableKey GenerateWzKey(byte[] WzIv, byte[] UserKey) {
 			return new WzMutableKey(WzIv,
-				MapleCryptoConstants.GetTrimmedUserKey(ref MapleCryptoConstants.UserKey_WzLib));
+				MapleCryptoConstants.GetTrimmedUserKey(ref UserKey));
 		}
 
 		#endregion

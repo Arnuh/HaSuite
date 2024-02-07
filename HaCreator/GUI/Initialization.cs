@@ -14,6 +14,7 @@ using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.Properties;
 using HaCreator.Wz;
+using HaRepacker.GUI;
 using HaSharedLibrary.Wz;
 using MapleLib;
 using MapleLib.Helpers;
@@ -38,6 +39,8 @@ namespace HaCreator.GUI {
 			private set { }
 		}
 
+		private bool isLoading;
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -61,7 +64,7 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_initialise_Click(object sender, EventArgs e) {
-			ApplicationSettings.MapleVersionIndex = versionBox.SelectedIndex;
+			ApplicationSettings.MapleVersionIndex = encryptionBox.SelectedIndex;
 			ApplicationSettings.MapleFolderIndex = pathBox.SelectedIndex;
 			var wzPath = pathBox.Text;
 
@@ -77,11 +80,9 @@ namespace HaCreator.GUI {
 					: ApplicationSettings.MapleFoldersList + "," + wzPath;
 			}
 
-			WzMapleVersion fileVersion;
-			if (versionBox.SelectedIndex == 3) {
+			var fileVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true);
+			if (fileVersion == WzMapleVersion.AUTO) {
 				fileVersion = WzTool.DetectMapleVersionAt(wzPath, out _);
-			} else {
-				fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
 			}
 
 			if (InitializeWzFiles(wzPath, fileVersion)) {
@@ -289,39 +290,45 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Initialization_Load(object sender, EventArgs e) {
-			versionBox.SelectedIndex = 0;
+			isLoading = true;
 			try {
-				var paths =
-					ApplicationSettings.MapleFoldersList.Split(",".ToCharArray(),
-						StringSplitOptions.RemoveEmptyEntries);
-				foreach (var path in paths) {
-					if (!Directory.Exists(
-						    path)) // check if the old path actually exist before adding it to the combobox
-					{
-						continue;
-					}
+				// Temp until the config is outside of harepacker
+				HaRepacker.Program.PrepareApplication(false);
+				try {
+					var paths =
+						ApplicationSettings.MapleFoldersList.Split(",".ToCharArray(),
+							StringSplitOptions.RemoveEmptyEntries);
+					foreach (var path in paths) {
+						if (!Directory.Exists(
+							    path)) // check if the old path actually exist before adding it to the combobox
+						{
+							continue;
+						}
 
-					pathBox.Items.Add(path);
-				}
-
-				foreach (var path in WzFileManager.COMMON_MAPLESTORY_DIRECTORY) // default path list
-				{
-					if (Directory.Exists(path)) {
 						pathBox.Items.Add(path);
 					}
+
+					foreach (var path in WzFileManager.COMMON_MAPLESTORY_DIRECTORY) // default path list
+					{
+						if (Directory.Exists(path)) {
+							pathBox.Items.Add(path);
+						}
+					}
+
+					if (pathBox.Items.Count == 0) {
+						pathBox.Items.Add("Select Maple Folder");
+					}
+				} catch {
 				}
 
-				if (pathBox.Items.Count == 0) {
-					pathBox.Items.Add("Select Maple Folder");
+				WzEncryptionTypeHelper.Setup(encryptionBox, ApplicationSettings.MapleVersionIndex, true);
+				if (pathBox.Items.Count < ApplicationSettings.MapleFolderIndex + 1) {
+					pathBox.SelectedIndex = pathBox.Items.Count - 1;
+				} else {
+					pathBox.SelectedIndex = ApplicationSettings.MapleFolderIndex;
 				}
-			} catch {
-			}
-
-			versionBox.SelectedIndex = ApplicationSettings.MapleVersionIndex;
-			if (pathBox.Items.Count < ApplicationSettings.MapleFolderIndex + 1) {
-				pathBox.SelectedIndex = pathBox.Items.Count - 1;
-			} else {
-				pathBox.SelectedIndex = ApplicationSettings.MapleFolderIndex;
+			} finally {
+				isLoading = false;
 			}
 		}
 
@@ -354,8 +361,8 @@ namespace HaCreator.GUI {
 			// It is meant to use by the developer(s) to speed up the process of adjusting this program for different MapleStory versions
 			var wzPath = pathBox.Text;
 
-			var fileVersion = (WzMapleVersion) versionBox.SelectedIndex;
-			if (versionBox.SelectedIndex == 3) {
+			var fileVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true);
+			if (fileVersion == WzMapleVersion.AUTO) {
 				fileVersion = WzTool.DetectMapleVersionAt(wzPath, out _);
 			}
 
@@ -454,6 +461,19 @@ namespace HaCreator.GUI {
 			if (e.KeyCode == Keys.Enter) {
 				button_initialise_Click(null, null);
 			} else if (e.KeyCode == Keys.Escape) Close();
+		}
+
+		private void encryptionBox_SelectedIndexChanged(object sender, EventArgs e) {
+			if (isLoading) {
+				return;
+			}
+
+			var selectedIndex = encryptionBox.SelectedIndex;
+			var wzMapleVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(selectedIndex, true);
+			if (wzMapleVersion == WzMapleVersion.CUSTOM) {
+				var customWzInputBox = new CustomWZEncryptionInputBox(HaRepacker.Program.ConfigurationManager);
+				customWzInputBox.ShowDialog();
+			}
 		}
 
 
