@@ -1090,7 +1090,7 @@ namespace MapleLib.WzLib.Serialization {
 					if (element.HasAttribute("pixFormat")) {
 						canvas.PngProperty.PixFormat = Convert.ToInt32(element.GetAttribute("pixFormat"));
 					} else {
-						canvas.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.Bgra8888;
+						canvas.PngProperty.PixFormat = (int) WzPngProperty.CanvasPixFormat.Argb8888;
 					}
 
 					if (element.HasAttribute("magLevel")) {

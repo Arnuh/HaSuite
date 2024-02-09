@@ -1904,7 +1904,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.Bgra8888, out var pixelFormat)) {
+			if (!PixelFormatSelector.Show((int) WzPngProperty.CanvasPixFormat.Argb8888, out var pixelFormat)) {
 				return;
 			}
 

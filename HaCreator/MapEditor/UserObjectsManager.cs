@@ -69,7 +69,7 @@ namespace HaCreator.MapEditor {
 			var prop = new WzSubProperty();
 			var canvasProp = new WzCanvasProperty();
 			canvasProp.PngProperty = new WzPngProperty();
-			canvasProp.PngProperty.PixFormat = (int) WzPngProperty.WzPixelFormat.Bgra4444;
+			canvasProp.PngProperty.PixFormat = (int) WzPngProperty.CanvasPixFormat.Argb4444;
 			canvasProp.PngProperty.SetImage(bmp);
 			canvasProp["origin"] =
 				new WzVectorProperty("", new WzIntProperty("X", origin.X), new WzIntProperty("Y", origin.Y));

@@ -325,7 +325,7 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			if (!PixelFormatSelector.Show((int) WzPngProperty.WzPixelFormat.Bgra8888, out var pixelFormat)) {
+			if (!PixelFormatSelector.Show((int) WzPngProperty.CanvasPixFormat.Argb8888, out var pixelFormat)) {
 				return;
 			}
 
@@ -2015,7 +2015,7 @@ namespace HaRepacker.GUI.Panels {
 
 		private bool FixIncorrectPixelFormat(WzCanvasProperty selectedWzCanvas) {
 			if (selectedWzCanvas.PngProperty.IsIncorrectFormat2()) {
-				selectedWzCanvas.PngProperty.ConvertPixFormat((int) WzPngProperty.WzPixelFormat.Bgra4444);
+				selectedWzCanvas.PngProperty.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
 				selectedWzCanvas.ParentImage.Changed = true;
 				return true;
 			}

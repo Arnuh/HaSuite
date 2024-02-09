@@ -17,24 +17,24 @@ namespace HaRepacker.GUI.Input {
 			InitializeComponent();
 			StartPosition = FormStartPosition.CenterParent;
 			DialogResult = DialogResult.Cancel;
-			switch ((WzPngProperty.WzPixelFormat) defaultPixFormat) {
-				case WzPngProperty.WzPixelFormat.Unknown:
-				case WzPngProperty.WzPixelFormat.Bgra4444:
+			switch ((WzPngProperty.CanvasPixFormat) defaultPixFormat) {
+				case WzPngProperty.CanvasPixFormat.Unknown:
+				case WzPngProperty.CanvasPixFormat.Argb4444:
 					formatSelector.SelectedIndex = 0;
 					break;
-				case WzPngProperty.WzPixelFormat.Bgra8888:
+				case WzPngProperty.CanvasPixFormat.Argb8888:
 					formatSelector.SelectedIndex = 1;
 					break;
-				case WzPngProperty.WzPixelFormat.Argb1555:
+				case WzPngProperty.CanvasPixFormat.Argb1555:
 					formatSelector.SelectedIndex = 3;
 					break;
-				case WzPngProperty.WzPixelFormat.Rgb565:
+				case WzPngProperty.CanvasPixFormat.Rgb565:
 					formatSelector.SelectedIndex = 3;
 					break;
-				case WzPngProperty.WzPixelFormat.DXT3:
+				case WzPngProperty.CanvasPixFormat.DXT3:
 					formatSelector.SelectedIndex = 4;
 					break;
-				case WzPngProperty.WzPixelFormat.DXT5:
+				case WzPngProperty.CanvasPixFormat.DXT5:
 					formatSelector.SelectedIndex = 5;
 					break;
 				default:
@@ -45,22 +45,22 @@ namespace HaRepacker.GUI.Input {
 		private void okButton_Click(object sender, EventArgs e) {
 			switch (formatSelector.SelectedIndex) {
 				case 0:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Bgra4444;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.Argb4444;
 					break;
 				case 1:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Bgra8888;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.Argb8888;
 					break;
 				case 2:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Argb1555;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.Argb1555;
 					break;
 				case 3:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.Rgb565;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.Rgb565;
 					break;
 				case 4:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.DXT3;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.DXT3;
 					break;
 				case 5:
-					_pixFormatResult = (int) WzPngProperty.WzPixelFormat.DXT5;
+					_pixFormatResult = (int) WzPngProperty.CanvasPixFormat.DXT5;
 					break;
 				default:
 					throw new ArgumentException("Invalid pixel format selected.");

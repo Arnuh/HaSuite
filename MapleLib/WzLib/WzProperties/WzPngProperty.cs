@@ -471,21 +471,16 @@ namespace MapleLib.WzLib.WzProperties {
 				var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 
 				switch (pixFormat) {
-					case 1: {
+					case 0x1: {
 						DecompressImage_PixelDataBgra4444(rawBytes, width, height, bmp, bmpData);
 						break;
 					}
-					case 2: {
+					case 0x2: {
 						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
 						bmp.UnlockBits(bmpData);
 						break;
 					}
-					case 3: {
-						// thank you Elem8100, http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/ 
-						DecompressImageDXT3(rawBytes, width, height, bmp, bmpData);
-						break;
-					}
-					case 257: {
+					case 0x101: {
 						// http://forum.ragezone.com/f702/wz-png-format-decode-code-1114978/index2.html#post9053713
 						// "Npc.wz\\2570101.img\\info\\illustration2\\face\\0"
 						// 2570107 is a decent example. Used KMS 353
@@ -494,7 +489,7 @@ namespace MapleLib.WzLib.WzProperties {
 						bmp.UnlockBits(bmpData);
 						break;
 					}
-					case 513: {
+					case 0x201: {
 						// UI.wz/Logo.img/Wizet or Nexon in pre-bb versions
 						Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
 						bmp.UnlockBits(bmpData);
@@ -845,31 +840,31 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 
 			switch (pixFormat) {
-				case 1:
+				case 0x1:
 					CompressImage_PixelDataBgra4444(buf, bmp);
 					break;
-				case 2:
+				case 0x2:
 					WriteImage_PixelData(buf, bmp);
 					break;
-				case 257: {
+				case 0x101: {
 					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					CopyFromBmpDataWithStride(buf, bmp.Width * 2, bmpData);
 					bmp.UnlockBits(bmpData);
 					break;
 				}
-				case 513: {
+				case 0x201: {
 					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					Marshal.Copy(bmpData.Scan0, buf, 0, buf.Length);
 					bmp.UnlockBits(bmpData);
 					break;
 				}
-				case 1026: {
+				case 0x402: {
 					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					CompressImageDXT3(buf, bmpData);
 					bmp.UnlockBits(bmpData);
 					break;
 				}
-				case 2050: {
+				case 0x802: {
 					var bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bitmapFormat);
 					CompressImageDXT5(buf, bmpData);
 					bmp.UnlockBits(bmpData);
@@ -981,18 +976,18 @@ namespace MapleLib.WzLib.WzProperties {
 
 		#endregion
 
-		public enum WzPixelFormat {
-			Unknown,
-			Bgra4444,
-			Bgra8888,
-			Argb1555 = 257,
-			Rgb565 = 513,
-			DXT3 = 1026,
-			DXT5 = 2050
+		public enum CanvasPixFormat {
+			Unknown = 0x0,
+			Argb4444 = 0x1,
+			Argb8888 = 0x2,
+			Argb1555 = 0x101,
+			Rgb565 = 0x201,
+			DXT3 = 0x402,
+			DXT5 = 0x802
 		}
 
 		public bool IsIncorrectFormat2() {
-			if (pixFormat != (int) WzPixelFormat.Bgra8888) return false;
+			if (pixFormat != (int) CanvasPixFormat.Argb8888) return false;
 
 			GetImage(false); // Load png if missing.
 
