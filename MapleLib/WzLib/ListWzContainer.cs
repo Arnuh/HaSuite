@@ -60,7 +60,9 @@ namespace MapleLib.WzLib {
 			if (parent.WzProperties == null) return;
 			foreach (var prop in parent.WzProperties) {
 				if (prop is WzCanvasProperty canvas) {
-					canvas.PngProperty.ConvertCompressed(parent.ParentImage?.wzKey ?? wzKey, listWz ? parent.ParentImage?.wzKey ?? wzKey : null, !listWz);
+					var pngProp = canvas.PngProperty;
+					var key = parent.ParentImage?.wzKey ?? wzKey;
+					pngProp.ConvertCompressed(key, listWz ? key : null, !listWz);
 				}
 
 				MarkListWzProperty(prop, listWz);

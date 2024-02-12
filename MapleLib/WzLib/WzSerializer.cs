@@ -113,12 +113,12 @@ namespace MapleLib.WzLib.Serialization {
 		protected void WritePropertyToXML(TextWriter tw, string depth, WzImageProperty prop, string exportFilePath) {
 			if (prop is WzCanvasProperty canvas) {
 				if (exportBase64Data) {
-					var (pngbytes, _) = canvas.PngProperty.GetConvertedCompressed(canvas.ParentImage.wzKey, null, true);
+					var (bytes, _, _) = canvas.PngProperty.GetConvertedCompressed(canvas.ParentImage.wzKey, null, true);
 					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(canvas.Name),
 						         "\" width=\"", canvas.PngProperty.Width, "\" height=\"",
 						         canvas.PngProperty.Height,
 						         "\" pixFormat=\"", canvas.PngProperty.PixFormat, "\" magLevel=\"",
-						         canvas.PngProperty.MagLevel, "\" bytedata=\"", Convert.ToBase64String(pngbytes),
+						         canvas.PngProperty.MagLevel, "\" bytedata=\"", Convert.ToBase64String(bytes),
 						         "\">") +
 					         lineBreak);
 				} else {

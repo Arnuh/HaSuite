@@ -415,12 +415,16 @@ namespace MapleLib.WzLib.WzProperties {
 		}
 
 		public void ConvertCompressed(WzMutableKey DecWzKey, WzMutableKey EncWzKey, bool removeListFormat = false) {
-			var (buffer, listWz) = GetConvertedCompressed(DecWzKey, EncWzKey, removeListFormat);
+			var (buffer, listWz, modified) = GetConvertedCompressed(DecWzKey, EncWzKey, removeListFormat);
+			if (!modified) return;
 			listWzUsed = listWz;
 			compressedImageBytes = buffer;
+			var parentImg = ParentImage;
+			if (parentImg == null) return;
+			parentImg.Changed = true;
 		}
 
-		public (byte[], bool) GetConvertedCompressed(WzMutableKey DecWzKey, WzMutableKey EncWzKey, bool removeListFormat = false) {
+		public (byte[], bool, bool) GetConvertedCompressed(WzMutableKey DecWzKey, WzMutableKey EncWzKey, bool removeListFormat = false) {
 			var compressedBuffer = GetCompressedBytes(false);
 			var orgListWzUsed = CheckListWzUsed(compressedBuffer);
 			var decrypt = orgListWzUsed && DecWzKey != null;
@@ -431,7 +435,7 @@ namespace MapleLib.WzLib.WzProperties {
 			if (!orgListWzUsed) {
 				// If List.wz wasn't used, and we aren't encrypting, return
 				if (!encrypt) {
-					return (compressedBuffer, nowListWzUsed);
+					return (compressedBuffer, nowListWzUsed, false);
 				}
 				// Otherwise, we are encrypting, so modify it with the new encryption
 			}
@@ -453,7 +457,7 @@ namespace MapleLib.WzLib.WzProperties {
 						dataStream.WriteByte((byte) (reader.ReadByte() ^ EncWzKey[i]));
 					}
 
-					return (dataStream.ToArray(), nowListWzUsed);
+					return (dataStream.ToArray(), nowListWzUsed, true);
 				}
 			}
 
@@ -482,7 +486,7 @@ namespace MapleLib.WzLib.WzProperties {
 					}
 				}
 
-				return (dataStream.ToArray(), nowListWzUsed);
+				return (dataStream.ToArray(), nowListWzUsed, true);
 			}
 		}
 
