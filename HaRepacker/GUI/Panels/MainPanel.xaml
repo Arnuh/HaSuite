@@ -269,7 +269,7 @@
                             <ColumnDefinition Width="5" />
 
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition Width="400" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                     </Grid>

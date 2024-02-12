@@ -1678,8 +1678,16 @@ namespace HaRepacker.GUI.Panels {
 				canvasPropBox.SetImage(bmp);
 			}
 
-			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
-				canvasProp.PngProperty.MagLevel, canvasProp.PngProperty.IsIncorrectFormat2());
+			var pngProp = canvasProp.PngProperty;
+
+			var format = pngProp.PixFormat.ToString();
+			if (Enum.IsDefined(typeof(WzPngProperty.CanvasPixFormat), pngProp.PixFormat)) {
+				format = ((WzPngProperty.CanvasPixFormat) pngProp.PixFormat).ToString();
+			}
+
+			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG,
+				format,
+				pngProp.MagLevel, pngProp.IsIncorrectFormat2());
 
 			SetImageRenderView(node, canvasProp);
 		}
