@@ -34,8 +34,6 @@ namespace MapleLib.WzLib.Util {
 		public WzHeader Header { get; set; }
 		public bool LeaveOpen { get; internal set; }
 
-		private List<string> ListWzEntries = new List<string>();
-
 		#endregion
 
 		#region Constructors
@@ -232,25 +230,6 @@ namespace MapleLib.WzLib.Util {
 		public override void Close() {
 			if (LeaveOpen) return;
 			base.Close();
-			ListWzEntries = null;
-		}
-
-		public bool LoadListWz(string file) {
-			if (!File.Exists(file)) return false;
-			ListWzEntries.Clear();
-			ListWzEntries.AddRange(ListFileParser.ParseListFile(file, WzKey.CopyIv(), WzKey.CopyUserKey()));
-			return true;
-		}
-
-		public bool ListWzContains(string wzName, string wzEntry) {
-			wzEntry = wzEntry.Replace("\\", "/").ToLower();
-			if (string.IsNullOrEmpty(wzName)) return ListWzEntries.Contains(wzEntry);
-			wzName = WzFileManager.CleanWzName(wzName);
-			if (!wzEntry.StartsWith(wzName)) {
-				return ListWzEntries.Contains(wzName + "/" + wzEntry);
-			}
-
-			return ListWzEntries.Contains(wzEntry);
 		}
 
 		#endregion

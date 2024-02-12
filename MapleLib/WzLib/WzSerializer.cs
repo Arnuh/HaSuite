@@ -971,14 +971,12 @@ namespace MapleLib.WzLib.Serialization {
 
 		private readonly bool useMemorySaving;
 		private readonly byte[] iv, UserKey;
-		private readonly string listWzPath;
 		private readonly WzImgDeserializer imgDeserializer = new WzImgDeserializer(false);
 
-		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey, string listWzPath) {
+		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey) {
 			this.useMemorySaving = useMemorySaving;
 			this.iv = iv;
 			this.UserKey = UserKey;
-			this.listWzPath = listWzPath;
 		}
 
 		#region Public Functions
@@ -1057,10 +1055,6 @@ namespace MapleLib.WzLib.Serialization {
 
 			var path = Path.GetTempFileName();
 			using (var wzWriter = new WzBinaryWriter(File.Create(path), iv, UserKey)) {
-				if (!string.IsNullOrEmpty(listWzPath)) {
-					wzWriter.LoadListWz(listWzPath);
-				}
-
 				result.SaveImage(wzWriter);
 				result.Dispose();
 			}

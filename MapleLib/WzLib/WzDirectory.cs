@@ -331,7 +331,7 @@ namespace MapleLib.WzLib {
 		/// <param name="bIsWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
 		/// <param name="prevOpenedStream">The previously opened file stream</param>
 		/// <returns></returns>
-		internal int GenerateDataFile(string listWzPath, byte[] useIv, bool bIsWzUserKeyDefault, FileStream prevOpenedStream) {
+		internal int GenerateDataFile(byte[] useIv, bool bIsWzUserKeyDefault, FileStream prevOpenedStream) {
 			var useCustomIv = useIv != null; // whole shit gonna be re-written if its a custom IV specified
 
 			size = 0;
@@ -351,10 +351,6 @@ namespace MapleLib.WzLib {
 				{
 					using (var memStream = new MemoryStream()) {
 						using (var imgWriter = new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
-							if (!string.IsNullOrEmpty(listWzPath)) {
-								imgWriter.LoadListWz(listWzPath);
-							}
-
 							img.SaveImage(imgWriter, bIsWzUserKeyDefault, useCustomIv);
 
 							img.CalculateAndSetImageChecksum(memStream.ToArray()); // checksum
@@ -397,7 +393,7 @@ namespace MapleLib.WzLib {
 			foreach (var dir in subDirs) {
 				var nameLen = WzTool.GetWzObjectValueLength(dir.name, 3);
 				size += nameLen;
-				size += dir.GenerateDataFile(listWzPath, useIv, bIsWzUserKeyDefault, prevOpenedStream);
+				size += dir.GenerateDataFile(useIv, bIsWzUserKeyDefault, prevOpenedStream);
 				size += WzTool.GetCompressedIntLength(dir.size);
 				size += WzTool.GetCompressedIntLength(dir.Checksum);
 				size += 4;

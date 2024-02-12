@@ -585,16 +585,9 @@ namespace MapleLib.WzLib {
 
 			try {
 				var tempFile = Path.GetFileNameWithoutExtension(path) + ".TEMP";
-				// WzFile has a path but saving has a different path
-				// Which to use....
-				var directory = Path.GetDirectoryName(path);
-				var listWzPath = string.Empty;
-				if (directory != null) {
-					listWzPath = Path.Combine(directory, "List.wz");
-				}
 
 				using (var fs = new FileStream(tempFile, FileMode.Append, FileAccess.Write)) {
-					wzDir.GenerateDataFile(listWzPath, isWzIvSimilar ? null : WzIv, isWzUserKeyDefault, fs);
+					wzDir.GenerateDataFile(isWzIvSimilar ? null : WzIv, isWzUserKeyDefault, fs);
 				}
 
 				WzTool.StringCache.Clear();
