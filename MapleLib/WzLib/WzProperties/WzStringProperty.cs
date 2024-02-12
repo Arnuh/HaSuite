@@ -24,7 +24,7 @@ namespace MapleLib.WzLib.WzProperties {
 	public class WzStringProperty : WzImageProperty {
 		#region Fields
 
-		internal string name, val;
+		internal string val;
 
 		internal WzObject parent;
 		//internal WzImage imgParent;
@@ -51,23 +51,11 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-
-		/*/// <summary>
-		/// The image that this property is contained in
-		/// </summary>
-		public override WzImage ParentImage { get { return imgParent; } internal set { imgParent = value; } }*/
+		
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
 		public override WzPropertyType PropertyType => WzPropertyType.String;
-
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
 
 		public override void WriteValue(WzBinaryWriter writer) {
 			writer.Write((byte) 8);

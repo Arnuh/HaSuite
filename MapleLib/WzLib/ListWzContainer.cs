@@ -33,12 +33,18 @@ namespace MapleLib.WzLib {
 			return ListWzEntries.Contains(wzEntry);
 		}
 
+		public static void MarkListWzProperty(WzImage image) {
+			var wzFile = image.WzFileParent;
+			if (wzFile == null) return;
+			MarkListWzProperty(image, wzFile);
+		}
+
 		public static void MarkListWzProperty(WzImage image, WzFile wzFile, string overrideFullPath = null) {
 			MarkListWzProperty(image, wzFile.ListWzEntries, wzFile.Name, overrideFullPath);
 		}
 
-		public static void MarkListWzProperty(WzImage image, List<string> ListWzEntries, string wzName, string overrideFullPath = null) {
-			var listWz = ListWzContains(ListWzEntries, wzName, overrideFullPath ?? image.FullPath);
+		public static void MarkListWzProperty(WzImage image, List<string> listWzEntries, string wzName, string overrideFullPath = null) {
+			var listWz = ListWzContains(listWzEntries, wzName, overrideFullPath ?? image.FullPath);
 			foreach (var prop in image.WzProperties) {
 				MarkListWzProperty(prop, listWz);
 			}

@@ -42,7 +42,6 @@ namespace MapleLib.WzLib {
 		#region Fields
 
 		internal bool parsed;
-		internal string name;
 		internal int size;
 		private int checksum;
 		internal uint offset;
@@ -145,14 +144,6 @@ namespace MapleLib.WzLib {
 		public override WzObject Parent {
 			get => parent;
 			internal set => parent = value;
-		}
-
-		/// <summary>
-		/// The name of the image
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
 		}
 
 		public override WzFile WzFileParent => Parent?.WzFileParent;

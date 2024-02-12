@@ -31,7 +31,7 @@ namespace MapleLib.WzLib.WzProperties {
 	public class WzUOLProperty : WzExtended {
 		#region Fields
 
-		internal string name, val;
+		internal string val;
 
 		internal WzObject parent;
 
@@ -68,19 +68,6 @@ namespace MapleLib.WzLib.WzProperties {
 		public override WzObject Parent {
 			get => parent;
 			internal set => parent = value;
-		}
-
-		/*/// <summary>
-		/// The image that this property is contained in
-		/// </summary>
-		public override WzImage ParentImage { get { return imgParent; } internal set { imgParent = value; } }*/
-
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
 		}
 
 #if UOLRES

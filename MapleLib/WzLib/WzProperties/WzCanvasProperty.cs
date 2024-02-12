@@ -47,7 +47,6 @@ namespace MapleLib.WzLib.WzProperties {
 
 		internal List<WzImageProperty> properties = new List<WzImageProperty>();
 		internal WzPngProperty imageProp;
-		internal string name;
 
 		internal WzObject parent;
 		//internal WzImage imgParent;
@@ -90,14 +89,6 @@ namespace MapleLib.WzLib.WzProperties {
 		/// The properties contained in this property
 		/// </summary>
 		public override List<WzImageProperty> WzProperties => properties;
-
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
 
 		/// <summary>
 		/// Gets a wz property by it's name

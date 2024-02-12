@@ -37,7 +37,6 @@ namespace MapleLib.WzLib {
 		internal string path;
 		internal WzDirectory wzDir;
 		internal WzHeader header;
-		internal string name = "";
 
 		internal ushort wzVersionHeader;
 		internal const ushort wzVersionHeader64bit_start = 770; // 777 for KMS, GMS v230 uses 778.. wut
@@ -62,14 +61,6 @@ namespace MapleLib.WzLib {
 		/// The parsed IWzDir after having called ParseWzDirectory(), this can either be a WzDirectory or a WzListDirectory
 		/// </summary>
 		public WzDirectory WzDirectory => wzDir;
-
-		/// <summary>
-		/// Name of the WzFile
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
 
 		/// <summary>
 		/// The WzObjectType of the file
@@ -159,6 +150,7 @@ namespace MapleLib.WzLib {
 		/// <param name="gameVersion"></param>
 		/// <param name="version"></param>
 		public WzFile(short gameVersion, WzMapleVersion version) {
+			name = "";
 			wzDir = new WzDirectory();
 			Header = WzHeader.GetDefault();
 			mapleStoryPatchVersion = gameVersion;

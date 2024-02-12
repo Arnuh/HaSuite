@@ -83,18 +83,6 @@ namespace MapleLib.WzLib.WzProperties {
 			internal set => parent = value;
 		}
 
-		/*/// <summary>
-		/// The image that this property is contained in
-		/// </summary>
-		public override WzImage ParentImage { get { return imgParent; } internal set { imgParent = value; } }*/
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => "PNG";
-			set { }
-		}
-
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
@@ -236,6 +224,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Creates a blank WzPngProperty
 		/// </summary>
 		public WzPngProperty() {
+			name = "PNG";
 		}
 
 		/// <summary>
@@ -244,6 +233,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// <param name="reader"></param>
 		/// <param name="parseNow"></param>
 		internal WzPngProperty(WzBinaryReader reader, bool parseNow) {
+			name = "PNG";
 			// Read compressed bytes
 			wzReader = reader;
 			width = reader.ReadCompressedInt();

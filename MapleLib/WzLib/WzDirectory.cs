@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MapleLib.WzLib.Util;
@@ -32,7 +33,6 @@ namespace MapleLib.WzLib {
 		internal List<WzDirectory> subDirs = new List<WzDirectory>();
 		internal WzBinaryReader reader;
 		internal uint offset;
-		internal string name;
 		internal uint hash;
 		internal int size, checksum, offsetSize;
 		internal byte[] WzIv;
@@ -50,14 +50,6 @@ namespace MapleLib.WzLib {
 		public override WzObject Parent {
 			get => parent;
 			internal set => parent = value;
-		}
-
-		/// <summary>
-		/// The name of the directory
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
 		}
 
 		/// <summary>
