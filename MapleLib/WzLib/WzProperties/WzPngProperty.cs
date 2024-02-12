@@ -432,12 +432,24 @@ namespace MapleLib.WzLib.WzProperties {
 
 			var nowListWzUsed = encrypt && !removeListFormat;
 
+			// Probably some other cases that should be here
+			
 			if (!orgListWzUsed) {
 				// If List.wz wasn't used, and we aren't encrypting, return
 				if (!encrypt) {
-					return (compressedBuffer, nowListWzUsed, false);
+					return (compressedBuffer, orgListWzUsed, false);
 				}
 				// Otherwise, we are encrypting, so modify it with the new encryption
+			}
+
+			// If we're just going to decrypt & re-encrypt with the same key, return
+			if (decrypt && encrypt && DecWzKey.Equals(EncWzKey)) {
+				return (compressedBuffer, orgListWzUsed, false);
+			}
+
+			// If it's encrypted but we don't have a key to decrypt
+			if (orgListWzUsed && !decrypt) {
+				return (compressedBuffer, orgListWzUsed, false);
 			}
 
 			var addListWz = nowListWzUsed && !orgListWzUsed;
@@ -457,7 +469,7 @@ namespace MapleLib.WzLib.WzProperties {
 						dataStream.WriteByte((byte) (reader.ReadByte() ^ EncWzKey[i]));
 					}
 
-					return (dataStream.ToArray(), nowListWzUsed, true);
+					return (dataStream.ToArray(), true, true);
 				}
 			}
 
