@@ -216,7 +216,6 @@
         <Compile Include="Converter\CheckboxToBorderTransparencyConverter.cs"/>
         <Compile Include="GUI\ContextMenuManager.cs"/>
         <Compile Include="Converter\CheckboxToVisibilityConverter.cs"/>
-        <Compile Include="Converter\ImageSizeDoubleToIntegerConverter.cs"/>
         <Compile Include="Converter\ImageWidthOrHeightToScreenDPIConverter.cs"/>
         <Compile Include="Converter\IntegerULongCommasConverter.cs"/>
         <Compile Include="Converter\PointFOriginToStringConverter.cs"/>

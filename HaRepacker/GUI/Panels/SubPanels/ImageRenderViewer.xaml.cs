@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MapleLib.Converters;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using static MapleLib.Configuration.UserSettings;
@@ -79,14 +80,19 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		/// </summary>
 		public ImageSource Image {
 			get => _Image;
-			set {
+			private set {
 				_Image = value;
 				OnPropertyChanged("Image");
-
-				// Update image width and height too.
-				ImageWidth = _Image.Width;
-				ImageHeight = _Image.Height;
 			}
+		}
+
+		private int _ImageWidth, _ImageHeight;
+
+		public void SetImage(Bitmap bmp) {
+			Image = bmp.ToWpfBitmap();
+			_ImageWidth = bmp.Width;
+			_ImageHeight = bmp.Height;
+			CalculateDisplaySize();
 		}
 
 		private int _Delay;
@@ -107,14 +113,14 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		private PointF _CanvasVectorOrigin = new PointF(0, 0);
 
 		/// <summary>
-		/// Origin to center the crosshair
+		/// 
 		/// </summary>
 		public PointF CanvasVectorOrigin {
 			get => _CanvasVectorOrigin;
 			set {
 				_CanvasVectorOrigin = value;
 				OnPropertyChanged("CanvasVectorOrigin");
-
+				
 				textbox_originX.Text = _CanvasVectorOrigin.X.ToString();
 				textbox_originY.Text = _CanvasVectorOrigin.Y.ToString();
 			}
@@ -123,7 +129,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		private PointF? _CanvasVectorHead;
 
 		/// <summary>
-		/// Head vector (Hit positioning for mobs?)
+		/// Head vector 
 		/// </summary>
 		public PointF? CanvasVectorHead {
 			get => _CanvasVectorHead;
@@ -180,29 +186,29 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 		public PointF? CanvasVectorRbOffset =>
 			CanvasVectorRb is PointF rb ? (PointF?) new PointF(rb.X + CanvasVectorOrigin.X, rb.Y + CanvasVectorOrigin.Y) : null;
 
-		private double _ImageWidth;
+		private int _DisplayWidth;
 
 		/// <summary>
-		/// The width of the image currently displayed on the canvas
+		/// The width of the canvas
 		/// </summary>
-		public double ImageWidth {
-			get => _ImageWidth;
+		public int DisplayWidth {
+			get => _DisplayWidth;
 			set {
-				_ImageWidth = value;
-				OnPropertyChanged("ImageWidth");
+				_DisplayWidth = value;
+				OnPropertyChanged("DisplayWidth");
 			}
 		}
 
-		private double _ImageHeight;
+		private int _DisplayHeight;
 
 		/// <summary>
 		/// The Height of the image currently displayed on the canvas
 		/// </summary>
-		public double ImageHeight {
-			get => _ImageHeight;
+		public int DisplayHeight {
+			get => _DisplayHeight;
 			set {
-				_ImageHeight = value;
-				OnPropertyChanged("ImageHeight");
+				_DisplayHeight = value;
+				OnPropertyChanged("DisplayHeight");
 			}
 		}
 
@@ -412,10 +418,14 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			}
 
 			if (!int.TryParse(textbox_originX.Text, out var newX) || !int.TryParse(textbox_originY.Text, out var newY)) return;
+			var xDiff = newX - CanvasVectorOrigin.X;
+			var yDiff = newY - CanvasVectorOrigin.Y;
 			UpdatePoint(WzCanvasProperty.OriginPropertyName, newX, newY);
 
 			// Update local UI
 			CanvasVectorOrigin = new PointF(newX, newY);
+
+			UpdateOthers(xDiff, yDiff);
 
 			button_originEdit.IsEnabled = false;
 		}
@@ -478,8 +488,11 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			var point = new PointF(x, y);
 			switch (uiElement.Name) {
 				case "OriginCrosshair":
+					var xDiff = x - CanvasVectorOrigin.X;
+					var yDiff = y - CanvasVectorOrigin.Y;
 					CanvasVectorOrigin = point;
 					UpdatePoint(WzCanvasProperty.OriginPropertyName, x, y);
+					UpdateOthers(xDiff, yDiff);
 					button_originEdit.IsEnabled = false;
 					break;
 				case "HeadCrosshair":
@@ -516,6 +529,54 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 				vectorProp.X.Value = x;
 				vectorProp.Y.Value = y;
 			}
+
+			CalculateDisplaySize();
+		}
+
+		private void UpdateOthers(float xDiff, float yDiff) {
+			if (CanvasVectorHead != null) {
+				var x = (int) (CanvasVectorHead?.X - xDiff ?? 0);
+				var y = (int) (CanvasVectorHead?.Y - yDiff ?? 0);
+				CanvasVectorHead = new PointF(x, y);
+				UpdatePoint(WzCanvasProperty.HeadPropertyName, x, y);
+				button_headEdit.IsEnabled = false;
+			}
+
+			if (CanvasVectorLt != null) {
+				var x = (int) (CanvasVectorLt?.X - xDiff ?? 0);
+				var y = (int) (CanvasVectorLt?.Y - yDiff ?? 0);
+				CanvasVectorLt = new PointF(x, y);
+				UpdatePoint(WzCanvasProperty.LtPropertyName, x, y);
+				button_ltEdit.IsEnabled = false;
+			}
+
+			if (CanvasVectorRb != null) {
+				var x = (int) (CanvasVectorRb?.X - xDiff ?? 0);
+				var y = (int) (CanvasVectorRb?.Y - yDiff ?? 0);
+				CanvasVectorRb = new PointF(x, y);
+				UpdatePoint(WzCanvasProperty.RbPropertyName, x, y);
+				button_rbEdit.IsEnabled = false;
+			}
+
+			CalculateDisplaySize();
+		}
+
+		private void CalculateDisplaySize() {
+			// starts at 0? idk
+			// + 1 is needed in some cases for border
+			// otherwise border overlaps the image
+			DisplayWidth = Math.Max(_ImageWidth + 1, (int) CanvasVectorOrigin.X + 11);
+			DisplayHeight = Math.Max(_ImageHeight + 1, (int) CanvasVectorOrigin.Y + 9);
+
+			if (CanvasVectorHead != null) {
+				DisplayWidth = Math.Max(DisplayWidth, (int) (CanvasVectorHeadOffset?.X + 11 ?? 0));
+				DisplayHeight = Math.Max(DisplayHeight, (int) (CanvasVectorHeadOffset?.Y + 9 ?? 0));
+			}
+
+			if (CanvasVectorRb != null) {
+				DisplayWidth = Math.Max(DisplayWidth, (int) (CanvasVectorRbOffset?.X + 11 ?? 0));
+				DisplayHeight = Math.Max(DisplayHeight, (int) (CanvasVectorRbOffset?.Y + 9 ?? 0));
+			}
 		}
 
 		public void PreLoad() {
@@ -528,6 +589,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			button_headEdit.IsEnabled = CanvasVectorHead == null;
 			button_ltEdit.IsEnabled = CanvasVectorLt == null;
 			button_rbEdit.IsEnabled = CanvasVectorRb == null;
+			CalculateDisplaySize();
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace HaRepacker.Converter {
 	public class ImageWidthOrHeightToScreenDPIConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter,
 			CultureInfo culture) {
-			var widthOrHeight = (double) value;
+			var widthOrHeight = (int) value;
 			var realWidthOrHeightToDisplay = widthOrHeight * ScreenDPIUtil.GetScreenScaleFactor();
 
 			return realWidthOrHeightToDisplay;
@@ -26,7 +26,7 @@ namespace HaRepacker.Converter {
 
 		public object ConvertBack(object value, Type targetType, object parameter,
 			CultureInfo culture) {
-			var value_ = (double) value;
+			var value_ = (int) value;
 			var imageWidthOrHeight = value_ / ScreenDPIUtil.GetScreenScaleFactor();
 
 			return imageWidthOrHeight;

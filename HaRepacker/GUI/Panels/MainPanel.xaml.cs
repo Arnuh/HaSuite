@@ -978,7 +978,7 @@ namespace HaRepacker.GUI.Panels {
 				// Updates
 				selectedWzCanvas.ParentImage.Changed = true;
 
-				canvasPropBox.Image = bmp.ToWpfBitmap();
+				canvasPropBox.SetImage(bmp);
 
 				// Add undo actions
 				//UndoRedoMan.AddUndoBatch(actions);
@@ -1044,8 +1044,8 @@ namespace HaRepacker.GUI.Panels {
 			if (DataTree.SelectedNode.Tag is WzCanvasProperty) // only allow button click if its an image property
 			{
 				Image img = ((WzCanvasProperty) DataTree.SelectedNode.Tag).GetLinkedWzCanvasBitmap();
-				if (img != null) {
-					canvasPropBox.Image = ((Bitmap) img).ToWpfBitmap();
+				if (img is Bitmap bmp) {
+					canvasPropBox.SetImage(bmp);
 				}
 			}
 
@@ -1674,8 +1674,8 @@ namespace HaRepacker.GUI.Panels {
 			menuItem_ChangePixelFormat.Visibility = Visibility.Visible;
 
 			Image img = canvasProp.GetLinkedWzCanvasBitmap();
-			if (img != null) {
-				canvasPropBox.Image = ((Bitmap) img).ToWpfBitmap();
+			if (img is Bitmap bmp) {
+				canvasPropBox.SetImage(bmp);
 			}
 
 			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG, canvasProp.PngProperty.PixFormat,
