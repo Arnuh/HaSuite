@@ -1948,7 +1948,11 @@ namespace HaRepacker.GUI {
 			var deserializer = (ProgressingWzSerializer) arr[0];
 			var files = (string[]) arr[1];
 			var parent = (WzNode) arr[2];
-			var encryptionType = (WzMapleVersion) arr[3];
+			var encryptionType = WzMapleVersion.UNKNOWN;
+
+			if (arr[3] is WzMapleVersion type) {
+				encryptionType = type;
+			}
 
 			var parentObj = (WzObject) parent?.Tag;
 			if (parentObj is WzFile wzFile) {
