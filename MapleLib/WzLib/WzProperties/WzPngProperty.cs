@@ -1032,9 +1032,7 @@ namespace MapleLib.WzLib.WzProperties {
 			DXT5 = 0x802
 		}
 
-		public bool IsIncorrectFormat2() {
-			if (pixFormat != (int) CanvasPixFormat.Argb8888) return false;
-
+		public bool IsArgb4444Compatible() {
 			GetImage(false); // Load png if missing.
 
 			for (var y = 0; y < height; y++)

@@ -1700,9 +1700,14 @@ namespace HaRepacker.GUI.Panels {
 
 			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG,
 				format,
-				pngProp.MagLevel, pngProp.IsIncorrectFormat2(), pngProp.ListWzUsed);
+				pngProp.MagLevel, IsBadFormat(pngProp), pngProp.ListWzUsed);
 
 			SetImageRenderView(node, canvasProp);
+		}
+		
+		private string IsBadFormat(WzPngProperty pngProp) {
+			if (pngProp.PixFormat != (int) WzPngProperty.CanvasPixFormat.Argb8888) return "Unknown";
+			return pngProp.IsArgb4444Compatible().ToString();
 		}
 
 		/// <summary>
@@ -2035,8 +2040,9 @@ namespace HaRepacker.GUI.Panels {
 		}
 
 		private bool FixIncorrectPixelFormat(WzCanvasProperty selectedWzCanvas) {
-			if (selectedWzCanvas.PngProperty.IsIncorrectFormat2()) {
-				selectedWzCanvas.PngProperty.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
+			var pngProp = selectedWzCanvas.PngProperty;
+			if (pngProp.PixFormat == (int)WzPngProperty.CanvasPixFormat.Argb8888 && pngProp.IsArgb4444Compatible()) {
+				pngProp.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
 				selectedWzCanvas.ParentImage.Changed = true;
 				return true;
 			}
