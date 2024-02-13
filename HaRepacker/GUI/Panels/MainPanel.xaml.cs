@@ -1999,55 +1999,82 @@ namespace HaRepacker.GUI.Panels {
 			UpdateImageView(canvasPropBox.ParentWzNode, canvasPropBox.ParentWzCanvasProperty, true);
 		}
 
-		public void FixAllIncorrectPixelFormats() {
+		public (double, int) FixAllNodes(Func<object, bool> fixFunc, bool checkBelowImages = true) {
 			var start = DateTime.Now;
 			var nodes = 0;
-			foreach (WzNode node in DataTree.SelectedNodes)
-				nodes += FixFormatRecursive(node.Tag);
+			foreach (WzNode node in DataTree.SelectedNodes) {
+				nodes += FixRecursively(node.Tag, fixFunc, checkBelowImages);
+			}
 
 			var ms = (DateTime.Now - start).TotalMilliseconds;
-			MessageBox.Show($"Done.\r\nElapsed time: {ms} ms for {nodes} images.");
+			return (ms, nodes);
 		}
 
-		private int FixFormatRecursive(object node) {
+		private int FixRecursively(object node, Func<object, bool> fixFunc, bool checkBelowImages) {
 			if (node is WzImage img) {
 				if (!img.Parsed) {
 					img.ParseImage();
 				}
 			}
 
-			//node.Reparse();
 			var count = 0;
 
-			if (node is WzCanvasProperty property) {
-				if (FixIncorrectPixelFormat(property)) {
-					++count;
+			if (fixFunc(node)) {
+				++count;
+			}
+
+			if (!checkBelowImages && node is IPropertyContainer container) {
+				foreach (var child in container.WzProperties)
+					count += FixRecursively(child, fixFunc, checkBelowImages);
+			} else if (node is WzFile file) {
+				count += FixRecursively(file.WzDirectory, fixFunc, checkBelowImages);
+			} else if (node is WzDirectory dir) {
+				foreach (var child in dir.WzImages) {
+					count += FixRecursively(child, fixFunc, checkBelowImages);
 				}
 
-				foreach (var child in property.WzProperties)
-					count += FixFormatRecursive(child);
-			} else if (node is IPropertyContainer container) {
-				foreach (var child in container.WzProperties)
-					count += FixFormatRecursive(child);
-			} else if (node is WzFile file) {
-				count += FixFormatRecursive(file.WzDirectory);
-			} else if (node is WzDirectory dir) {
-				foreach (var child in dir.WzImages) count += FixFormatRecursive(child);
-				foreach (var child in dir.WzDirectories) count += FixFormatRecursive(child);
+				foreach (var child in dir.WzDirectories) {
+					count += FixRecursively(child, fixFunc, checkBelowImages);
+				}
 			}
 
 			return count;
 		}
+		
+		public void FixAllIncorrectPixelFormats() {
+			var (ms, nodes) = FixAllNodes(node => {
+				if (!(node is WzCanvasProperty canvas)) {
+					return false;
+				}
 
-		private bool FixIncorrectPixelFormat(WzCanvasProperty selectedWzCanvas) {
-			var pngProp = selectedWzCanvas.PngProperty;
-			if (pngProp.PixFormat == (int)WzPngProperty.CanvasPixFormat.Argb8888 && pngProp.IsArgb4444Compatible()) {
-				pngProp.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
-				selectedWzCanvas.ParentImage.Changed = true;
-				return true;
+				var pngProp = canvas.PngProperty;
+				if (pngProp.PixFormat == (int) WzPngProperty.CanvasPixFormat.Argb8888 && pngProp.IsArgb4444Compatible()) {
+					pngProp.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
+					canvas.ParentImage.Changed = true;
+					return true;
+				}
+
+				return false;
+			});
+			MessageBox.Show($"Done.\r\nFixed {nodes} images in {ms} ms");
+		}
+
+		public void CheckListWzEntries() {
+			foreach (WzNode node in DataTree.SelectedNodes) {
+				if (node.Tag is WzImage || node.Tag is WzDirectory || node.Tag is WzFile) continue;
+				MessageBox.Show("Please select a WzFile, WzDirectory or WzImage node to check for List.wz entries");
+				return;
 			}
 
-			return false;
+			var (ms, nodes) = FixAllNodes(node => {
+				if (!(node is WzImage img)) {
+					return false;
+				}
+
+				ListWzContainerImpl.MarkListWzProperty(img);
+				return true;
+			}, false);
+			MessageBox.Show($"Done.\r\nChecked {nodes} properties in {ms} ms");
 		}
 
 		private void DataTree_OnBeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
