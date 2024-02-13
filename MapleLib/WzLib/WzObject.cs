@@ -40,7 +40,7 @@ namespace MapleLib.WzLib {
 				name = value;
 				// Not greatest place to put List.wz checks but I'd rather
 				// not include it in Name setter
-				if (this is WzImageProperty property) {
+				if (this is WzImageProperty property && property.ParentImage != null) {
 					ListWzContainerImpl.MarkListWzProperty(property.ParentImage);
 				} else if (this is WzImage image) {
 					ListWzContainerImpl.MarkListWzProperty(image);

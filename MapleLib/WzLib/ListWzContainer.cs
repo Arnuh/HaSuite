@@ -39,7 +39,7 @@ namespace MapleLib.WzLib {
 		}
 
 		public static void MarkListWzProperty(WzImage image) {
-			var wzFile = image.WzFileParent;
+			var wzFile = image?.WzFileParent;
 			if (wzFile == null) return;
 			MarkListWzProperty(image, wzFile);
 		}
