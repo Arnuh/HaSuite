@@ -29,7 +29,12 @@ namespace MapleLib.WzLib {
 				return ListWzEntries.Contains(wzName + "/" + wzEntry);
 			}
 
-			//wzEntry = wzEntry.Replace($"{wzName}.wz", wzName);
+			// Fixes things like "mob_test/0100100.img" to "mob/0100100.img"
+			var index = wzEntry.IndexOf('/');
+
+			if (index - 1 != wzName.Length) {
+				wzEntry = wzName + wzEntry.Substring(index);
+			}
 			return ListWzEntries.Contains(wzEntry);
 		}
 
