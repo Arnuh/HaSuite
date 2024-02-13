@@ -28,7 +28,7 @@ namespace MapleLib.WzLib {
 		/// </summary>
 		/// <param name="filePath">Path to the wz file</param>
 		public static List<string> ParseListFile(string filePath, WzMapleVersion version) {
-			return ParseListFile(filePath, WzTool.GetIvByMapleVersion(version), WzTool.GetIvByMapleVersion(version));
+			return ParseListFile(filePath, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version));
 		}
 
 		/// <summary>
