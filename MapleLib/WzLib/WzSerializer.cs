@@ -113,12 +113,12 @@ namespace MapleLib.WzLib.Serialization {
 		protected void WritePropertyToXML(TextWriter tw, string depth, WzImageProperty prop, string exportFilePath) {
 			if (prop is WzCanvasProperty canvas) {
 				if (exportBase64Data) {
-					var pngbytes = canvas.PngProperty.ConvertCompressedBytes(null, true);
+					var (bytes, _, _) = canvas.PngProperty.GetConvertedCompressed(canvas.ParentImage.wzKey, null, true);
 					tw.Write(string.Concat(depth, "<canvas name=\"", XmlUtil.SanitizeText(canvas.Name),
 						         "\" width=\"", canvas.PngProperty.Width, "\" height=\"",
 						         canvas.PngProperty.Height,
 						         "\" pixFormat=\"", canvas.PngProperty.PixFormat, "\" magLevel=\"",
-						         canvas.PngProperty.MagLevel, "\" bytedata=\"", Convert.ToBase64String(pngbytes),
+						         canvas.PngProperty.MagLevel, "\" bytedata=\"", Convert.ToBase64String(bytes),
 						         "\">") +
 					         lineBreak);
 				} else {
@@ -1045,21 +1045,21 @@ namespace MapleLib.WzLib.Serialization {
 
 		internal WzImage ParseXMLWzImg(XmlElement imgElement) {
 			var name = imgElement.GetAttribute("name");
-			var result = new WzImage(name);
+			var result = new WzImage(name, iv);
 			foreach (XmlElement subelement in imgElement) {
 				result.AddProperty(ParsePropertyFromXMLElement(subelement));
 			}
 
 			result.Changed = true;
-			if (useMemorySaving) {
-				var path = Path.GetTempFileName();
-				using (var wzWriter = new WzBinaryWriter(File.Create(path), iv, UserKey)) {
-					result.SaveImage(wzWriter);
-					result.Dispose();
-				}
+			if (!useMemorySaving) return result;
 
-				result = imgDeserializer.WzImageFromIMGFile(path, iv, UserKey, name, out _);
+			var path = Path.GetTempFileName();
+			using (var wzWriter = new WzBinaryWriter(File.Create(path), iv, UserKey)) {
+				result.SaveImage(wzWriter);
+				result.Dispose();
 			}
+
+			result = imgDeserializer.WzImageFromIMGFile(path, iv, UserKey, name, out _);
 
 			return result;
 		}

@@ -23,8 +23,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzShortProperty : WzImageProperty {
 		#region Fields
-
-		internal string name;
+		
 		internal short val;
 
 		internal WzObject parent;
@@ -52,23 +51,11 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-
-		/*/// <summary>
-		/// The image that this property is contained in
-		/// </summary>
-		public override WzImage ParentImage { get { return imgParent; } internal set { imgParent = value; } }*/
+		
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
 		public override WzPropertyType PropertyType => WzPropertyType.Short;
-
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
 
 		public override void WriteValue(WzBinaryWriter writer) {
 			writer.Write((byte) 2);

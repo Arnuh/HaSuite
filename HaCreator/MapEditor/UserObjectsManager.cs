@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using HaCreator.Exceptions;
+using HaCreator.GUI;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using MapleLib.WzLib;
@@ -40,7 +41,7 @@ namespace HaCreator.MapEditor {
 
 			// Make sure that all our structures exist
 			if (!Program.InfoManager.ObjectSets.ContainsKey(oS)) {
-				Program.InfoManager.ObjectSets[oS] = new WzImage(oS);
+				Program.InfoManager.ObjectSets[oS] = new WzImage(oS, Initialization.WzMapleVersion);
 				Program.InfoManager.ObjectSets[oS].Changed = true;
 			}
 

@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MapleLib.WzLib.Util;
@@ -32,7 +33,6 @@ namespace MapleLib.WzLib {
 		internal List<WzDirectory> subDirs = new List<WzDirectory>();
 		internal WzBinaryReader reader;
 		internal uint offset;
-		internal string name;
 		internal uint hash;
 		internal int size, checksum, offsetSize;
 		internal byte[] WzIv;
@@ -50,14 +50,6 @@ namespace MapleLib.WzLib {
 		public override WzObject Parent {
 			get => parent;
 			internal set => parent = value;
-		}
-
-		/// <summary>
-		/// The name of the directory
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
 		}
 
 		/// <summary>
@@ -334,6 +326,7 @@ namespace MapleLib.WzLib {
 		/// <summary>
 		/// 
 		/// </summary>
+		/// <param name="listWzPath">The path of the List.wz used for encrypted paths</param>
 		/// <param name="useIv">The IV to use while generating the data file. If null, it'll use the WzDirectory default</param>
 		/// <param name="bIsWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
 		/// <param name="prevOpenedStream">The previously opened file stream</param>
@@ -357,8 +350,7 @@ namespace MapleLib.WzLib {
 				    img.bIsImageChanged) // or when an image is changed
 				{
 					using (var memStream = new MemoryStream()) {
-						using (var imgWriter =
-						       new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
+						using (var imgWriter = new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
 							img.SaveImage(imgWriter, bIsWzUserKeyDefault, useCustomIv);
 
 							img.CalculateAndSetImageChecksum(memStream.ToArray()); // checksum
@@ -518,9 +510,20 @@ namespace MapleLib.WzLib {
 		/// Adds a WzImage to the list of wz images
 		/// </summary>
 		/// <param name="img">The WzImage to add</param>
-		public void AddImage(WzImage img) {
+		public void AddImage(WzImage img, bool checkListWz = true) {
 			images.Add(img);
 			img.Parent = this;
+			if (wzFile == null) return;
+
+			if (img.wzKey == null) {
+				img.wzKey = WzKeyGenerator.GenerateWzKey(wzFile.WzIv);
+			}
+
+			if (!checkListWz) {
+				return;
+			}
+
+			ListWzContainerImpl.MarkListWzProperty(img, wzFile);
 		}
 
 		/// <summary>

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapSimulator.MapObjects.UIObject;
@@ -68,7 +69,7 @@ namespace HaCreator.MapSimulator {
 		/// <param name="spineAni">Spine animation path</param>
 		/// <returns></returns>
 		private static List<IDXObject> LoadFrames(TexturePool texturePool, WzImageProperty source, int x, int y,
-			GraphicsDevice device, ref List<WzObject> usedProps, string spineAni = null) {
+			GraphicsDevice device, ref List<WzObject> usedProps, string spineAni = Defaults.Background.SpineAni) {
 			var frames = new List<IDXObject>();
 
 			source = WzInfoTools.GetRealProperty(source);
@@ -77,8 +78,7 @@ namespace HaCreator.MapSimulator {
 				source = property1.WzProperties[0];
 			}
 
-			if (source is WzCanvasProperty property) //one-frame
-			{
+			if (source is WzCanvasProperty property) { //one-frame
 				var bLoadedSpine = LoadSpineMapObjectItem(source, source, device, spineAni);
 				if (!bLoadedSpine) {
 					var canvasBitmapPath = property.FullPath;
@@ -243,71 +243,64 @@ namespace HaCreator.MapSimulator {
 		/// <param name="device"></param>
 		/// <returns></returns>
 		private static bool LoadSpineMapObjectItem(WzImageProperty source, WzImageProperty prop, GraphicsDevice device,
-			string spineAniPath = null) {
+			string spineAniPath = Defaults.Background.SpineAni) {
 			WzImageProperty spineAtlas = null;
 
-			var bIsObjectLayer = source.Parent.Name == "spine";
-			if (bIsObjectLayer) // load spine if the source is already the directory we need
-			{
+			var isObjectLayer = source.Parent.Name == "spine";
+			if (isObjectLayer) { // load spine if the source is already the directory we need
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
 				if (spineAtlasPath != null) spineAtlas = source[spineAtlasPath + ".atlas"];
-			} else if (spineAniPath != null) {
+			} else if (!string.IsNullOrEmpty(spineAniPath)) {
 				var spineSource = (WzImageProperty) source.Parent?.Parent["spine"]?[source.Name];
 
 				var spineAtlasPath = ((WzStringProperty) spineSource["spine"])?.GetString();
 				if (spineAtlasPath != null) spineAtlas = spineSource[spineAtlasPath + ".atlas"];
-			} else // simply check if 'spine' WzStringProperty exist, fix for Adele town
-			{
+			} else { // simply check if 'spine' WzStringProperty exist, fix for Adele town
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
 				if (spineAtlasPath != null) {
 					spineAtlas = source[spineAtlasPath + ".atlas"];
-					bIsObjectLayer = true;
+					isObjectLayer = true;
 				}
 			}
 
-			if (spineAtlas != null) {
-				if (spineAtlas is WzStringProperty stringObj) {
-					if (!stringObj.IsSpineAtlasResources) {
-						return false;
-					}
-
-					var spineObject = new WzSpineObject(new WzSpineAnimationItem(stringObj));
-
-					spineObject.spineAnimationItem
-						.LoadResources(device); //  load spine resources (this must happen after window is loaded)
-					spineObject.skeleton = new Skeleton(spineObject.spineAnimationItem.SkeletonData);
-
-					//spineObject.skeleton.R =153;
-					//spineObject.skeleton.G = 255;
-					//spineObject.skeleton.B = 0;
-					//spineObject.skeleton.A = 1f;
-					// Skin
-					foreach (var skin in spineObject.spineAnimationItem.SkeletonData.Skins) {
-						spineObject.skeleton.SetSkin(skin); // just set the first skin
-						break;
-					}
-
-					// Define mixing between animations.
-					spineObject.stateData = new AnimationStateData(spineObject.skeleton.Data);
-					spineObject.state = new AnimationState(spineObject.stateData);
-					if (!bIsObjectLayer) {
-						spineObject.state.TimeScale = 0.1f;
-					}
-
-					if (spineAniPath != null) {
-						spineObject.state.SetAnimation(0, spineAniPath, true);
-					} else {
-						var i = 0;
-						foreach (var animation in spineObject.spineAnimationItem.SkeletonData.Animations)
-							spineObject.state.SetAnimation(i++, animation.Name, true);
-					}
-
-					prop.MSTagSpine = spineObject;
-					return true;
-				}
+			if (!(spineAtlas is WzStringProperty stringObj)) return false;
+			if (!stringObj.IsSpineAtlasResources) {
+				return false;
 			}
 
-			return false;
+			var spineObject = new WzSpineObject(new WzSpineAnimationItem(stringObj));
+
+			spineObject.spineAnimationItem
+				.LoadResources(device); //  load spine resources (this must happen after window is loaded)
+			spineObject.skeleton = new Skeleton(spineObject.spineAnimationItem.SkeletonData);
+
+			//spineObject.skeleton.R =153;
+			//spineObject.skeleton.G = 255;
+			//spineObject.skeleton.B = 0;
+			//spineObject.skeleton.A = 1f;
+			// Skin
+			foreach (var skin in spineObject.spineAnimationItem.SkeletonData.Skins) {
+				spineObject.skeleton.SetSkin(skin); // just set the first skin
+				break;
+			}
+
+			// Define mixing between animations.
+			spineObject.stateData = new AnimationStateData(spineObject.skeleton.Data);
+			spineObject.state = new AnimationState(spineObject.stateData);
+			if (!isObjectLayer) {
+				spineObject.state.TimeScale = 0.1f;
+			}
+
+			if (spineAniPath != null) {
+				spineObject.state.SetAnimation(0, spineAniPath, true);
+			} else {
+				var i = 0;
+				foreach (var animation in spineObject.spineAnimationItem.SkeletonData.Animations)
+					spineObject.state.SetAnimation(i++, animation.Name, true);
+			}
+
+			prop.MSTagSpine = spineObject;
+			return true;
 		}
 
 		#endregion

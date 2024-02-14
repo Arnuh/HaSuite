@@ -120,7 +120,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			set {
 				_CanvasVectorOrigin = value;
 				OnPropertyChanged("CanvasVectorOrigin");
-				
+
 				textbox_originX.Text = _CanvasVectorOrigin.X.ToString();
 				textbox_originY.Text = _CanvasVectorOrigin.Y.ToString();
 			}

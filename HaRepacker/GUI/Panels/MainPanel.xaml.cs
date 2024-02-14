@@ -15,10 +15,10 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using HaRepacker.GUI.Input;
 using HaSharedLibrary.GUI;
-using MapleLib.Converters;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
+using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using static MapleLib.Configuration.UserSettings;
@@ -1285,12 +1285,12 @@ namespace HaRepacker.GUI.Panels {
 				return null;
 			}
 
-			if (obj is WzImage) {
-				return ((WzImage) obj).DeepClone();
+			if (obj is WzImage image) {
+				return image.DeepClone();
 			}
 
-			if (obj is WzImageProperty) {
-				return ((WzImageProperty) obj).DeepClone();
+			if (obj is WzImageProperty property) {
+				return property.DeepClone();
 			}
 
 			ErrorLogger.Log(ErrorLevel.MissingFeature,
@@ -1319,10 +1319,19 @@ namespace HaRepacker.GUI.Panels {
 			clipboard.Clear();
 
 			foreach (WzNode node in DataTree.SelectedNodes) {
-				var clone = CloneWzObject((WzObject) node.Tag);
-				if (clone != null) {
-					clipboard.Add(clone);
-				}
+				var wzObj = (WzObject) node.Tag;
+				var clone = CloneWzObject(wzObj);
+				if (clone == null) continue;
+				if (clone is WzImage image) {
+					// Decrypt any List.wz entries so that we paste them as decrypted
+					// Otherwise we need to know the key to decrypt them on paste
+					ListWzContainerImpl.MarkListWzProperty(image, false);
+				} else if (clone is WzImageProperty prop) {
+					// No parent image so we need to grab it from source
+					ListWzContainerImpl.MarkListWzProperty(prop, false, ((WzImageProperty) wzObj).ParentImage.wzKey);
+				} // Can't copy directories atm so they don't need handling
+
+				clipboard.Add(clone);
 			}
 		}
 
@@ -1348,8 +1357,8 @@ namespace HaRepacker.GUI.Panels {
 					ParseOnDataTreeSelectedItem(parent); // only parse the main node.
 				}
 
-				if (parentObj is WzFile) {
-					parentObj = ((WzFile) parentObj).WzDirectory;
+				if (parentObj is WzFile file) {
+					parentObj = file.WzDirectory;
 				}
 
 				var bNoToAllComplete = false;
@@ -1361,10 +1370,15 @@ namespace HaRepacker.GUI.Panels {
 							continue;
 						}
 
+						if (clone is WzImage image) {
+							// Cloning also clones wz key
+							// But they could now be different, update it
+							image.wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(parentObj.WzFileParent.MapleVersion));
+						}
+
 						var node = new WzNode(clone, true);
 						var child = WzNode.GetChildNode(parent, node.Text);
-						if (child != null) // A Child already exist
-						{
+						if (child != null) { // A Child already exist
 							if (replaceBoxResult == ReplaceResult.NoneSelectedYet) {
 								ReplaceBox.Show(node.Text, out replaceBoxResult);
 							}
@@ -1393,8 +1407,7 @@ namespace HaRepacker.GUI.Panels {
 							if (bNoToAllComplete) {
 								break;
 							}
-						} else // not not in this 
-						{
+						} else { // not not in this 
 							parent.AddNode(node, false);
 						}
 					}
@@ -1687,9 +1700,14 @@ namespace HaRepacker.GUI.Panels {
 
 			toolStripStatusLabel_additionalInfo.Text = string.Format(Properties.Resources.MainAdditionalInfo_PNG,
 				format,
-				pngProp.MagLevel, pngProp.IsIncorrectFormat2());
+				pngProp.MagLevel, IsBadFormat(pngProp), pngProp.ListWzUsed);
 
 			SetImageRenderView(node, canvasProp);
+		}
+		
+		private string IsBadFormat(WzPngProperty pngProp) {
+			if (pngProp.PixFormat != (int) WzPngProperty.CanvasPixFormat.Argb8888) return "Unknown";
+			return pngProp.IsArgb4444Compatible().ToString();
 		}
 
 		/// <summary>
@@ -1981,54 +1999,82 @@ namespace HaRepacker.GUI.Panels {
 			UpdateImageView(canvasPropBox.ParentWzNode, canvasPropBox.ParentWzCanvasProperty, true);
 		}
 
-		public void FixAllIncorrectPixelFormats() {
+		public (double, int) FixAllNodes(Func<object, bool> fixFunc, bool checkBelowImages = true) {
 			var start = DateTime.Now;
 			var nodes = 0;
-			foreach (WzNode node in DataTree.SelectedNodes)
-				nodes += FixFormatRecursive(node.Tag);
+			foreach (WzNode node in DataTree.SelectedNodes) {
+				nodes += FixRecursively(node.Tag, fixFunc, checkBelowImages);
+			}
 
 			var ms = (DateTime.Now - start).TotalMilliseconds;
-			MessageBox.Show($"Done.\r\nElapsed time: {ms} ms for {nodes} images.");
+			return (ms, nodes);
 		}
 
-		private int FixFormatRecursive(object node) {
+		private int FixRecursively(object node, Func<object, bool> fixFunc, bool checkBelowImages) {
 			if (node is WzImage img) {
 				if (!img.Parsed) {
 					img.ParseImage();
 				}
 			}
 
-			//node.Reparse();
 			var count = 0;
 
-			if (node is WzCanvasProperty property) {
-				if (FixIncorrectPixelFormat(property)) {
-					++count;
+			if (fixFunc(node)) {
+				++count;
+			}
+
+			if (!checkBelowImages && node is IPropertyContainer container) {
+				foreach (var child in container.WzProperties)
+					count += FixRecursively(child, fixFunc, checkBelowImages);
+			} else if (node is WzFile file) {
+				count += FixRecursively(file.WzDirectory, fixFunc, checkBelowImages);
+			} else if (node is WzDirectory dir) {
+				foreach (var child in dir.WzImages) {
+					count += FixRecursively(child, fixFunc, checkBelowImages);
 				}
 
-				foreach (var child in property.WzProperties)
-					count += FixFormatRecursive(child);
-			} else if (node is IPropertyContainer container) {
-				foreach (var child in container.WzProperties)
-					count += FixFormatRecursive(child);
-			} else if (node is WzFile file) {
-				count += FixFormatRecursive(file.WzDirectory);
-			} else if (node is WzDirectory dir) {
-				foreach (var child in dir.WzImages) count += FixFormatRecursive(child);
-				foreach (var child in dir.WzDirectories) count += FixFormatRecursive(child);
+				foreach (var child in dir.WzDirectories) {
+					count += FixRecursively(child, fixFunc, checkBelowImages);
+				}
 			}
 
 			return count;
 		}
+		
+		public void FixAllIncorrectPixelFormats() {
+			var (ms, nodes) = FixAllNodes(node => {
+				if (!(node is WzCanvasProperty canvas)) {
+					return false;
+				}
 
-		private bool FixIncorrectPixelFormat(WzCanvasProperty selectedWzCanvas) {
-			if (selectedWzCanvas.PngProperty.IsIncorrectFormat2()) {
-				selectedWzCanvas.PngProperty.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
-				selectedWzCanvas.ParentImage.Changed = true;
-				return true;
+				var pngProp = canvas.PngProperty;
+				if (pngProp.PixFormat == (int) WzPngProperty.CanvasPixFormat.Argb8888 && pngProp.IsArgb4444Compatible()) {
+					pngProp.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
+					canvas.ParentImage.Changed = true;
+					return true;
+				}
+
+				return false;
+			});
+			MessageBox.Show($"Done.\r\nFixed {nodes} images in {ms} ms");
+		}
+
+		public void CheckListWzEntries() {
+			foreach (WzNode node in DataTree.SelectedNodes) {
+				if (node.Tag is WzImage || node.Tag is WzDirectory || node.Tag is WzFile) continue;
+				MessageBox.Show("Please select a WzFile, WzDirectory or WzImage node to check for List.wz entries");
+				return;
 			}
 
-			return false;
+			var (ms, nodes) = FixAllNodes(node => {
+				if (!(node is WzImage img)) {
+					return false;
+				}
+
+				ListWzContainerImpl.MarkListWzProperty(img);
+				return true;
+			}, false);
+			MessageBox.Show($"Done.\r\nChecked {nodes} properties in {ms} ms");
 		}
 
 		private void DataTree_OnBeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {

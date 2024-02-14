@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MapleLib.MapleCryptoLib;
@@ -227,7 +228,8 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public override void Close() {
-			if (!LeaveOpen) base.Close();
+			if (LeaveOpen) return;
+			base.Close();
 		}
 
 		#endregion

@@ -42,7 +42,6 @@ namespace MapleLib.WzLib {
 		#region Fields
 
 		internal bool parsed;
-		internal string name;
 		internal int size;
 		private int checksum;
 		internal uint offset;
@@ -54,6 +53,7 @@ namespace MapleLib.WzLib {
 		internal long tempFileEnd = 0;
 		internal bool bIsImageChanged;
 		private bool parseEverything;
+		public WzMutableKey wzKey { get; set; }
 
 		/// <summary>
 		/// Wz image embedding .lua file.
@@ -79,14 +79,26 @@ namespace MapleLib.WzLib {
 			this.name = name;
 		}
 
+		public WzImage(string name, WzMapleVersion mapleVersion) {
+			this.name = name;
+			wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(mapleVersion));
+		}
+
+		public WzImage(string name, byte[] iv) {
+			this.name = name;
+			wzKey = WzKeyGenerator.GenerateWzKey(iv);
+		}
+
 		public WzImage(string name, Stream dataStream, WzMapleVersion mapleVersion) {
 			this.name = name;
 			reader = new WzBinaryReader(dataStream, WzTool.GetIvByMapleVersion(mapleVersion), WzTool.GetIvByMapleVersion(mapleVersion));
+			wzKey = reader.WzKey;
 		}
 
 		internal WzImage(string name, WzBinaryReader reader) {
 			this.name = name;
 			this.reader = reader;
+			wzKey = reader.WzKey;
 			blockStart = (int) reader.BaseStream.Position;
 			checksum = 0;
 		}
@@ -101,6 +113,7 @@ namespace MapleLib.WzLib {
 		internal WzImage(string name, WzBinaryReader reader, int checksum) {
 			this.name = name;
 			this.reader = reader;
+			wzKey = reader.WzKey;
 			blockStart = (int) reader.BaseStream.Position;
 			this.checksum = checksum;
 		}
@@ -133,15 +146,7 @@ namespace MapleLib.WzLib {
 			internal set => parent = value;
 		}
 
-		/// <summary>
-		/// The name of the image
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
-
-		public override WzFile WzFileParent => Parent != null ? Parent.WzFileParent : null;
+		public override WzFile WzFileParent => Parent?.WzFileParent;
 
 		/// <summary>
 		/// Is the object parsed
@@ -221,11 +226,11 @@ namespace MapleLib.WzLib {
 
 		public WzImage DeepClone() {
 			if (reader != null && !parsed) ParseImage();
-			var clone = new WzImage(name) {
+			var clone = new WzImage(name, wzKey.CopyIv()) {
 				bIsImageChanged = true
 			};
 			foreach (var prop in properties)
-				clone.AddProperty(prop.DeepClone());
+				clone.AddProperty(prop.DeepClone(), false);
 			return clone;
 		}
 
@@ -296,13 +301,20 @@ namespace MapleLib.WzLib {
 		/// Adds a property to the WzImage
 		/// </summary>
 		/// <param name="prop">Property to add</param>
-		public void AddProperty(WzImageProperty prop) {
+		public void AddProperty(WzImageProperty prop, bool checkListWz = true) {
 			prop.Parent = this;
 			if (reader != null && !parsed) {
 				ParseImage();
 			}
 
 			properties.Add(prop);
+			if (!checkListWz || !parsed) {
+				return;
+			}
+
+			var wzFile = WzFileParent;
+			if (wzFile == null) return;
+			ListWzContainerImpl.MarkListWzProperty(this, wzFile);
 		}
 
 		/// <summary>

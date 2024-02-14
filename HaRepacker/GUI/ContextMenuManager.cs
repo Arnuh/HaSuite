@@ -56,6 +56,7 @@ namespace HaRepacker {
 		private ToolStripMenuItem Rename;
 		private ToolStripMenuItem FixLink;
 		private ToolStripMenuItem FixPixFormat;
+		private ToolStripMenuItem CheckListWzEntries;
 
 
 		public ContextMenuManager(MainPanel haRepackerMainPanel, UndoRedoManager undoMan) {
@@ -252,13 +253,15 @@ namespace HaRepacker {
 
 			FixPixFormat = new ToolStripMenuItem("Fix wrong pixel formats", null, delegate { haRepackerMainPanel.FixAllIncorrectPixelFormats(); });
 
+			CheckListWzEntries = new ToolStripMenuItem("Check List.wz entries", null, delegate { haRepackerMainPanel.CheckListWzEntries(); });
+
 			AddDirsSubMenu = new ToolStripMenuItem("Add", Resources.add,
 				AddDirectory, AddImage);
 			AddPropsSubMenu = new ToolStripMenuItem("Add", Resources.add,
 				AddCanvas, AddConvex, AddDouble, AddByteFloat, AddLong, AddInt, AddNull, AddUshort, AddSound, AddString, AddSub, AddUOL, AddVector);
 
 			AddEtcMenu = new ToolStripMenuItem("Etc", Resources.add,
-				FixLink, FixPixFormat);
+				FixLink, FixPixFormat, CheckListWzEntries);
 
 			AddSortMenu = new ToolStripMenuItem("Sort", Resources.sort, SortAllChildViewNode, SortPropertiesByName);
 
@@ -277,6 +280,7 @@ namespace HaRepacker {
 			var toolStripmenuItems = new List<ToolStripItem>();
 
 			var menu = new ContextMenuStrip();
+			
 			if (Tag is WzImage || Tag is IPropertyContainer) {
 				toolStripmenuItems.Add(AddPropsSubMenu);
 				toolStripmenuItems.Add(Rename);

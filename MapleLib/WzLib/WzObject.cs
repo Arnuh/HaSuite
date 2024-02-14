@@ -22,6 +22,7 @@ namespace MapleLib.WzLib {
 	/// An abstract class for wz objects
 	/// </summary>
 	public abstract class WzObject : IDisposable {
+		internal string name;
 		private object hcTag;
 		private object hcTag_spine;
 		private object msTag;
@@ -29,11 +30,23 @@ namespace MapleLib.WzLib {
 		private object tag3;
 
 		public abstract void Dispose();
-
+		
 		/// <summary>
 		/// The name of the object
 		/// </summary>
-		public abstract string Name { get; set; }
+		public string Name {
+			get => name;
+			set {
+				name = value;
+				// Not greatest place to put List.wz checks but I'd rather
+				// not include it in Name setter
+				if (this is WzImageProperty property && property.ParentImage != null) {
+					ListWzContainerImpl.MarkListWzProperty(property.ParentImage);
+				} else if (this is WzImage image) {
+					ListWzContainerImpl.MarkListWzProperty(image);
+				}
+			}
+		}
 
 		/// <summary>
 		/// The WzObjectType of the object

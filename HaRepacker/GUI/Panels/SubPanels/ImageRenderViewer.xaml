@@ -733,7 +733,7 @@
                                            Stroke="Black" Height="1" Width="1"
                                            VerticalAlignment="Bottom" HorizontalAlignment="Right" />
                             </Grid>
-                            
+
                             <!-- Crosshair for vector origin-->
                             <Grid
                                 Name="OriginCrosshair"

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace MapleLib.WzLib {
 	public interface IPropertyContainer {
-		void AddProperty(WzImageProperty prop);
+		void AddProperty(WzImageProperty prop, bool checkListWz = true);
 		void AddProperties(List<WzImageProperty> props);
 		void RemoveProperty(WzImageProperty prop);
 		void ClearProperties();

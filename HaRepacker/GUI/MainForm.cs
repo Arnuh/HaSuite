@@ -113,10 +113,15 @@ namespace HaRepacker.GUI {
 			}
 
 			if (wzPathToLoad != null && File.Exists(wzPathToLoad)) {
-				var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
-				SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
+				if (WzTool.IsListFile(wzPathToLoad)) {
+					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
+					new ListEditor(wzPathToLoad, encVersion).Show();
+				} else {
+					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
+					SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
 
-				LoadWzFileCallback(wzPathToLoad);
+					LoadWzFileCallback(wzPathToLoad);
+				}
 			}
 
 			var manager = new ContextMenuManager(MainPanel, MainPanel.UndoRedoMan);
@@ -751,7 +756,12 @@ namespace HaRepacker.GUI {
 			if (fileNames.All(s => s.ToLower().EndsWith(".xml"))) {
 				ImportXml(wzEncryptionType, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".img"))) {
-				ImportImg(wzEncryptionType, fileNames);
+				var input = WzMapleVersionInputBox.Show(Resources.InteractionWzMapleVersionTitle, out var wzImageImportVersion);
+				if (!input) {
+					return;
+				}
+
+				ImportImg(wzImageImportVersion, fileNames);
 			} else if (fileNames.All(s => s.ToLower().EndsWith(".png"))) {
 				ImportImages(fileNames);
 			} else {
@@ -788,10 +798,18 @@ namespace HaRepacker.GUI {
 					} else if (filePathLowerCase.EndsWith(".xml")) {
 						ImportXml(wzEncryptionType, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".img")) {
-						ImportImg(wzEncryptionType, new[] {filePath});
+						var input = WzMapleVersionInputBox.Show(Resources.InteractionWzMapleVersionTitle, out var wzImageImportVersion);
+						if (!input) {
+							return;
+						}
+
+						ImportImg(wzImageImportVersion, new[] {filePath});
 					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
+						if (wzEncryptionType == WzMapleVersion.AUTO) {
+							wzEncryptionType = WzTool.DetectMapleVersion(filePath, out _);
+						}
 						new ListEditor(filePath, wzEncryptionType).Show();
 					} else {
 						if (wzEncryptionType == WzMapleVersion.BRUTEFORCE) {
@@ -1864,6 +1882,8 @@ namespace HaRepacker.GUI {
 		#region Import Helpers
 
 		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
+			// Currently doesn't support importing an img that is exported as xml
+			// without a parent
 			if (!IsChildHoldingSelectedNode()) {
 				return;
 			}
@@ -1936,7 +1956,11 @@ namespace HaRepacker.GUI {
 			var deserializer = (ProgressingWzSerializer) arr[0];
 			var files = (string[]) arr[1];
 			var parent = (WzNode) arr[2];
-			var encryptionType = (WzMapleVersion) arr[3];
+			var encryptionType = WzMapleVersion.UNKNOWN;
+
+			if (arr[3] is WzMapleVersion type) {
+				encryptionType = type;
+			}
 
 			var parentObj = (WzObject) parent?.Tag;
 			if (parentObj is WzFile wzFile) {

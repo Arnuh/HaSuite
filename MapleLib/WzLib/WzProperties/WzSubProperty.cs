@@ -28,7 +28,6 @@ namespace MapleLib.WzLib.WzProperties {
 		#region Fields
 
 		internal List<WzImageProperty> properties = new List<WzImageProperty>();
-		internal string name;
 
 		internal WzObject parent;
 		//internal WzImage imgParent;
@@ -55,11 +54,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-
-		/*		/// <summary>
-		        /// The image that this property is contained in
-		        /// </summary>
-		        public override WzImage ParentImage { get { return imgParent; } internal set { imgParent = value; } }*/
+		
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>
@@ -69,14 +64,6 @@ namespace MapleLib.WzLib.WzProperties {
 		/// The wz properties contained in the property
 		/// </summary>
 		public override List<WzImageProperty> WzProperties => properties;
-
-		/// <summary>
-		/// The name of the property
-		/// </summary>
-		public override string Name {
-			get => name;
-			set => name = value;
-		}
 
 		/// <summary>
 		/// Gets a wz property by it's name
@@ -173,9 +160,18 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Adds a property to the list
 		/// </summary>
 		/// <param name="prop">The property to add</param>
-		public void AddProperty(WzImageProperty prop) {
+		public void AddProperty(WzImageProperty prop, bool checkListWz = true) {
 			prop.Parent = this; // dont set new parent if we're dumping.. x_X
 			properties.Add(prop);
+			if (!checkListWz) {
+				return;
+			}
+
+			var image = ParentImage;
+			if (image == null || !image.Parsed) return;
+			var wzFile = WzFileParent;
+			if (wzFile == null) return;
+			ListWzContainerImpl.MarkListWzProperty(image, wzFile);
 		}
 
 		public void AddProperties(List<WzImageProperty> props) {

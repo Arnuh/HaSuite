@@ -662,5 +662,21 @@ namespace MapleLib {
 		}
 
 		#endregion
+
+		private static readonly string[] WZ_NAMES = {
+			"base", "character", "data", "effect", "etc", "item", "list", "map", "mob", "morph", "npc", "quest", "reactor", "skill", "sound", "string",
+			"tamingMob", "ui"
+		};
+
+		public static string CleanWzName(string fileName) {
+			fileName = fileName.ToLower().Replace(".wz", "");
+			foreach (var wzName in WZ_NAMES) {
+				if (fileName.StartsWith(wzName)) {
+					return wzName;
+				}
+			}
+
+			return fileName;
+		}
 	}
 }
