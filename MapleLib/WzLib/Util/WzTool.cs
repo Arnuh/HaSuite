@@ -134,22 +134,28 @@ namespace MapleLib.WzLib.Util {
 			using (var wzf = new WzFile(wzPath, wzIvKey)) {
 				var parseStatus = wzf.ParseMainWzDirectory(true);
 				if (parseStatus != WzFileParseStatus.Success) {
-					wzf.Dispose();
 					return false;
 				}
 
 				if (wzf.WzDirectory.WzImages.Count > 0 && wzf.WzDirectory.WzImages[0].Name.EndsWith(".img")) {
-					wzf.Dispose();
 					return true;
 				}
-
-				wzf.Dispose();
 			}
 
 			return false;
 		}
 
 		private static double GetDecryptionSuccessRate(string wzPath, WzMapleVersion encVersion, ref short? version) {
+			var recognizedChars = 0;
+			var totalChars = 0;
+			if (IsListFile(wzPath)) {
+				foreach (var entry in ListFileParser.ParseListFile(wzPath, encVersion)) {
+					recognizedChars += GetRecognizedCharacters(entry);
+					totalChars += entry.Length;
+				}
+
+				return recognizedChars / (double) totalChars;
+			}
 			WzFile wzf;
 			if (version == null) {
 				wzf = new WzFile(wzPath, encVersion);
@@ -163,8 +169,6 @@ namespace MapleLib.WzLib.Util {
 			}
 
 			if (version == null) version = wzf.Version;
-			var recognizedChars = 0;
-			var totalChars = 0;
 			foreach (var wzdir in wzf.WzDirectory.WzDirectories) {
 				recognizedChars += GetRecognizedCharacters(wzdir.Name);
 				totalChars += wzdir.Name.Length;
@@ -226,7 +230,12 @@ namespace MapleLib.WzLib.Util {
 				GetDecryptionSuccessRate(wzFilePath, WzMapleVersion.BMS, ref version));
 			mapleVersionSuccessRates.Add(WzMapleVersion.CUSTOM,
 				GetDecryptionSuccessRate(wzFilePath, WzMapleVersion.CUSTOM, ref version));
-			fileVersion = (short) version;
+			if (version != null) {
+				fileVersion = (short) version;
+			} else {
+				fileVersion = 0;
+			}
+
 			var mostSuitableVersion = WzMapleVersion.GMS;
 			double maxSuccessRate = 0;
 

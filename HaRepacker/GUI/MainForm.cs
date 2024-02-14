@@ -113,10 +113,15 @@ namespace HaRepacker.GUI {
 			}
 
 			if (wzPathToLoad != null && File.Exists(wzPathToLoad)) {
-				var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
-				SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
+				if (WzTool.IsListFile(wzPathToLoad)) {
+					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
+					new ListEditor(wzPathToLoad, encVersion).Show();
+				} else {
+					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
+					SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
 
-				LoadWzFileCallback(wzPathToLoad);
+					LoadWzFileCallback(wzPathToLoad);
+				}
 			}
 
 			var manager = new ContextMenuManager(MainPanel, MainPanel.UndoRedoMan);
