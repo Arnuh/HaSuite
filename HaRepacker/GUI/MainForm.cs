@@ -807,6 +807,9 @@ namespace HaRepacker.GUI {
 					} else if (filePathLowerCase.EndsWith(".png")) {
 						ImportImages(new[] {filePath});
 					} else if (WzTool.IsListFile(filePath)) { // List.wz file (pre-bb maplestory enc)
+						if (wzEncryptionType == WzMapleVersion.AUTO) {
+							wzEncryptionType = WzTool.DetectMapleVersion(filePath, out _);
+						}
 						new ListEditor(filePath, wzEncryptionType).Show();
 					} else {
 						if (wzEncryptionType == WzMapleVersion.BRUTEFORCE) {
