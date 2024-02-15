@@ -126,42 +126,57 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public virtual void DoSnap() {
-			if (InputHandler.IsKeyPushedDown(Keys.ShiftKey) && connectedLines.Count != 0 &&
-			    connectedLines[0] is FootholdLine && board.SelectedItems.Count == 1 &&
-			    board.SelectedItems[0].Equals(this)) {
-				FootholdAnchor closestAnchor = null;
-				var closestAngle = double.MaxValue;
-				var xClosest = true;
-				foreach (FootholdLine line in connectedLines) {
-					var otherAnchor =
-						(FootholdAnchor) (line.FirstDot == this ? line.SecondDot : line.FirstDot);
-					var xAngle = Math.Abs(Math.Atan((Y - otherAnchor.Y) / (double) (X - otherAnchor.X)));
-					var yAngle = Math.Abs(Math.Atan((X - otherAnchor.X) / (double) (Y - otherAnchor.Y)));
-					double minAngle;
-					var xSmaller = false;
-					if (xAngle < yAngle) {
-						xSmaller = true;
-						minAngle = xAngle;
-					} else {
-						xSmaller = false;
-						minAngle = yAngle;
-					}
+			if (!InputHandler.IsKeyPushedDown(Keys.ShiftKey)) {
+				return;
+			}
 
-					if (minAngle < closestAngle) {
-						xClosest = xSmaller;
-						closestAnchor = otherAnchor;
-						closestAngle = minAngle;
-					}
+			if (connectedLines.Count == 0 || !(connectedLines[0] is FootholdLine)) {
+				return;
+			}
+
+			// this is mouse when we have the 2nd dot held on the mouse but not placed yet.
+			// Selected item check is after it has been placed.
+			if (!(this is Mouse) && (board.SelectedItems.Count != 1 || !board.SelectedItems[0].Equals(this))) {
+				return;
+			}
+
+			FootholdAnchor closestAnchor = null;
+			var closestAngle = double.MaxValue;
+			var xClosest = true;
+			foreach (var line in connectedLines) {
+				var otherAnchor = (FootholdAnchor) (line.FirstDot == this ? line.SecondDot : line.FirstDot);
+				var xAngle = Math.Abs(Math.Atan((Y - otherAnchor.Y) / (double) (X - otherAnchor.X)));
+				var yAngle = Math.Abs(Math.Atan((X - otherAnchor.X) / (double) (Y - otherAnchor.Y)));
+				double minAngle;
+				bool xSmaller;
+				if (xAngle < yAngle) {
+					xSmaller = true;
+					minAngle = xAngle;
+				} else {
+					xSmaller = false;
+					minAngle = yAngle;
 				}
 
-				if (closestAnchor != null) {
-					if (xClosest) {
-						SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X,
-							closestAnchor.Y));
-					} else {
-						SnapMoveAllMouseBoundItems(new XNA.Point(closestAnchor.X,
-							Parent.Y + Parent.BoundItems[this].Y));
-					}
+				if (minAngle < closestAngle) {
+					xClosest = xSmaller;
+					closestAnchor = otherAnchor;
+					closestAngle = minAngle;
+				}
+			}
+
+			if (closestAnchor == null) return;
+
+			if (this is Mouse) {
+				if (xClosest) {
+					SnapMove(X, closestAnchor.Y);
+				} else {
+					SnapMove(closestAnchor.X, Y);
+				}
+			} else {
+				if (xClosest) {
+					SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, closestAnchor.Y));
+				} else {
+					SnapMoveAllMouseBoundItems(new XNA.Point(closestAnchor.X, Parent.Y + Parent.BoundItems[this].Y));
 				}
 			}
 		}
