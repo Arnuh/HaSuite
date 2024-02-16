@@ -96,7 +96,7 @@ namespace HaSharedLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MSEA / EMC / Taiwan(old).
+        ///   Looks up a localized string similar to MSEA / EMS / Taiwan(old).
         /// </summary>
         internal static string EncTypeMSEA {
             get {
