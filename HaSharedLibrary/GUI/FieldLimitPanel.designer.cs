@@ -45,7 +45,6 @@
             this.listView_fieldLimitType.ShowItemToolTips = true;
             this.listView_fieldLimitType.UseCompatibleStateImageBehavior = false;
             this.listView_fieldLimitType.View = System.Windows.Forms.View.Details;
-            this.listView_fieldLimitType.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListView_fieldLimitType_ItemCheck);
             this.listView_fieldLimitType.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView_fieldLimitType_ItemChecked);
             // 
             // FieldLimitPanel

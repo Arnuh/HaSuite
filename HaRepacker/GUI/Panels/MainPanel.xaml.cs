@@ -1611,34 +1611,27 @@ namespace HaRepacker.GUI.Panels {
 				} else if (bIsWzLongProperty || bIsWzIntProperty || bIsWzShortProperty) {
 					textPropBox.Visibility = Visibility.Visible;
 					textPropBox.AcceptsReturn = false;
+
+					ulong value_ = 0;
+					if (obj is WzLongProperty longProp) {
+						value_ = (ulong) longProp.GetLong();
+					} else if (obj is WzIntProperty intProp) {
+						value_ = (ulong) intProp.GetLong();
+					} else if (obj is WzShortProperty shortProp) {
+						value_ = (ulong) shortProp.GetLong();
+					}
+
+					textPropBox.Text = value_.ToString();
+
 					textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
 
 					// field limit UI
-					if (obj.Name == FIELD_LIMIT_OBJ_NAME) // fieldLimit
-					{
+					if (obj.Name == FIELD_LIMIT_OBJ_NAME) {
 						isSelectingWzMapFieldLimit = true;
-
-						ulong value_ = 0;
-						if (bIsWzLongProperty) // use uLong for field limit
-						{
-							value_ = (ulong) ((WzLongProperty) obj).GetLong();
-						} else if (bIsWzIntProperty) {
-							value_ = (ulong) ((WzIntProperty) obj).GetLong();
-						} else if (bIsWzShortProperty) value_ = (ulong) ((WzShortProperty) obj).GetLong();
-
-						fieldLimitPanel1.UpdateFieldLimitCheckboxes(value_);
 
 						// Set visibility
 						fieldLimitPanelHost.Visibility = Visibility.Visible;
-					} else {
-						long value_ = 0; // long for others, in the case of negative value
-						if (bIsWzLongProperty) {
-							value_ = ((WzLongProperty) obj).GetLong();
-						} else if (bIsWzIntProperty) {
-							value_ = ((WzIntProperty) obj).GetLong();
-						} else if (bIsWzShortProperty) value_ = ((WzShortProperty) obj).GetLong();
-
-						textPropBox.Text = value_.ToString();
+						fieldLimitPanel1.UpdateFieldLimitCheckboxes(value_);
 					}
 				} else if (bIsWzDoubleProperty || bIsWzFloatProperty) {
 					textPropBox.Visibility = Visibility.Visible;
@@ -1704,7 +1697,7 @@ namespace HaRepacker.GUI.Panels {
 
 			SetImageRenderView(node, canvasProp);
 		}
-		
+
 		private string IsBadFormat(WzPngProperty pngProp) {
 			if (pngProp.PixFormat != (int) WzPngProperty.CanvasPixFormat.Argb8888) return "Unknown";
 			return pngProp.IsArgb4444Compatible().ToString();
@@ -2040,7 +2033,7 @@ namespace HaRepacker.GUI.Panels {
 
 			return count;
 		}
-		
+
 		public void FixAllIncorrectPixelFormats() {
 			var (ms, nodes) = FixAllNodes(node => {
 				if (!(node is WzCanvasProperty canvas)) {

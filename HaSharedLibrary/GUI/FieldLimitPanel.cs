@@ -9,8 +9,7 @@ using MapleLib.WzLib.WzStructure.Data;
 namespace HaSharedLibrary.GUI {
 	public partial class FieldLimitPanel : UserControl {
 		// UI
-		private TextBox setTextboxOnFieldLimitChange;
-		private ChangeableTextBox setTextboxOnFieldLimitChange_wpf;
+		private ChangeableTextBox textBox;
 
 		// misc
 		private bool initializingListViewForFieldLimit;
@@ -34,12 +33,8 @@ namespace HaSharedLibrary.GUI {
 			PopulateDefaultListView();
 		}
 
-		public void SetTextboxOnFieldLimitChange(TextBox setTextboxOnFieldLimitChange) {
-			this.setTextboxOnFieldLimitChange = setTextboxOnFieldLimitChange;
-		}
-
-		public void SetTextboxOnFieldLimitChange(ChangeableTextBox setTextboxOnFieldLimitChange_wpf) {
-			this.setTextboxOnFieldLimitChange_wpf = setTextboxOnFieldLimitChange_wpf;
+		public void SetTextboxOnFieldLimitChange(ChangeableTextBox textBox) {
+			this.textBox = textBox;
 		}
 
 		/// <summary>
@@ -51,12 +46,10 @@ namespace HaSharedLibrary.GUI {
 			_fieldLimit = propertyValue;
 
 			// Fill checkboxes
-			//int maxFieldLimitType = FieldLimitTypeExtension.GetMaxFieldLimitType();
 			foreach (ListViewItem item in listView_fieldLimitType.Items)
 				item.Checked = FieldLimitTypeExtension.Check((int) item.Tag, (long) propertyValue);
 
 			initializingListViewForFieldLimit = false;
-			ListView_fieldLimitType_ItemChecked(listView_fieldLimitType, null);
 		}
 
 		/// <summary>
@@ -74,39 +67,19 @@ namespace HaSharedLibrary.GUI {
 					Width = 550
 				});
 
-				var i_index = 0;
+				var index = 0;
 				foreach (FieldLimitType limitType in Enum.GetValues(typeof(FieldLimitType))) {
-					var item1 = new ListViewItem(
-						string.Format("{0} - {1}", i_index.ToString(), limitType.ToString().Replace("_", " ")));
-					item1.Tag = limitType; // starts from 0
-					listView_fieldLimitType.Items.Add(item1);
+					var item = new ListViewItem(
+						$"{index.ToString()} - {limitType.ToString().Replace("_", " ")}") {
+						Tag = limitType // starts from 0
+					};
+					listView_fieldLimitType.Items.Add(item);
 
-					i_index++;
-				}
-
-				for (var i = i_index;
-				     i < i_index + 30;
-				     i++) // add 30 dummy values, we really dont have the field properties of future MS versions :( 
-				{
-					var item1 = new ListViewItem(string.Format("{0} - UNKNOWN", i.ToString()));
-					item1.Tag = i;
-					listView_fieldLimitType.Items.Add(item1);
+					index++;
 				}
 			}
 
 			initializingListViewForFieldLimit = false;
-		}
-
-		/// <summary>
-		/// On WzFieldLimitType listview item checked
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void ListView_fieldLimitType_ItemCheck(object sender, ItemCheckEventArgs e) {
-			if (initializingListViewForFieldLimit) {
-			}
-
-			//System.Diagnostics.Debug.WriteLine("Set index at  " + e.Index + " to " + listView_fieldLimitType.Items[e.Index].Checked);
 		}
 
 		/// <summary>
@@ -119,27 +92,28 @@ namespace HaSharedLibrary.GUI {
 				return;
 			}
 
-			ulong fieldLimit = 0;
-			foreach (ListViewItem item in listView_fieldLimitType.Items) {
-				if (item.Checked) {
-					var numShift = (int) item.Tag;
+			var numShift = (int) e.Item.Tag;
+			var flag = (ulong) (1L << numShift);
 
-					//System.Diagnostics.Debug.WriteLine("Selected " + numShift + ", " + (long)(1L << numShift));
-					fieldLimit |= (ulong) (1L << numShift);
-				}
+			var curFlag = _fieldLimit;
+
+			if (textBox != null) {
+				curFlag = ulong.Parse(textBox.Text);
 			}
 
-			//System.Diagnostics.Debug.WriteLine("Result " + fieldLimit);
-			if (setTextboxOnFieldLimitChange != null) {
-				setTextboxOnFieldLimitChange.Text = fieldLimit.ToString();
+			if (e.Item.Checked) {
+				curFlag |= flag;
+			} else {
+				curFlag &= ~flag;
 			}
 
-			if (setTextboxOnFieldLimitChange_wpf != null) {
-				setTextboxOnFieldLimitChange_wpf.Text = fieldLimit.ToString();
+			_fieldLimit = curFlag;
+
+			if (textBox == null || string.Equals(textBox.Text, curFlag.ToString())) {
+				return;
 			}
 
-			// set value
-			_fieldLimit = fieldLimit;
+			textBox.Text = curFlag.ToString();
 		}
 
 		#endregion
