@@ -856,6 +856,15 @@ namespace HaRepacker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to unload this file?.
+        /// </summary>
+        public static string MainUnloadFile {
+            get {
+                return ResourceManager.GetString("MainUnloadFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///
         ///Click &quot;Yes&quot; to download the new version..

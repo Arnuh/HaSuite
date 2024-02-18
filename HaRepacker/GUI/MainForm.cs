@@ -306,12 +306,27 @@ namespace HaRepacker.GUI {
 			Program.WzFileManager.UnloadWzFile(file, file.FilePath);
 
 			// remove from treeview
-			if (node != null) {
-				if (currentDispatcher != null) {
-					await currentDispatcher.BeginInvoke((Action) (() => { node.DeleteWzNode(); }));
-				} else {
-					node.DeleteWzNode();
-				}
+			if (node == null) {
+				return;
+			}
+
+			if (currentDispatcher != null) {
+				await currentDispatcher.BeginInvoke((Action) (() => { node.DeleteWzNode(); }));
+			} else {
+				node.DeleteWzNode();
+			}
+		}
+
+		public async void UnloadNode(WzNode node, Dispatcher currentDispatcher = null) {
+			if (node.Tag is WzFile file) {
+				UnloadWzFile(file, currentDispatcher);
+				return;
+			}
+
+			if (currentDispatcher != null) {
+				await currentDispatcher.BeginInvoke((Action) (() => { node.DeleteWzNode(); }));
+			} else {
+				node.DeleteWzNode();
 			}
 		}
 
@@ -810,6 +825,7 @@ namespace HaRepacker.GUI {
 						if (wzEncryptionType == WzMapleVersion.AUTO) {
 							wzEncryptionType = WzTool.DetectMapleVersion(filePath, out _);
 						}
+
 						new ListEditor(filePath, wzEncryptionType).Show();
 					} else {
 						if (wzEncryptionType == WzMapleVersion.BRUTEFORCE) {
@@ -973,16 +989,26 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void unloadAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (Warning.Warn(Resources.MainUnloadAll)) {
-				var currentThread = Dispatcher.CurrentDispatcher;
-
-				var wzFiles = Program.WzFileManager.WzFileList;
-				/*foreach (WzFile wzFile in wzFiles)
-				{
-				    UnloadWzFile(wzFile);
-				};*/
-				Parallel.ForEach(wzFiles, wzFile => { UnloadWzFile(wzFile, currentThread); });
+			if (!Warning.Warn(Resources.MainUnloadAll)) {
+				return;
 			}
+
+			var currentThread = Dispatcher.CurrentDispatcher;
+
+			var nodeArr = new TreeNode[MainPanel.DataTree.Nodes.Count];
+			MainPanel.DataTree.Nodes.CopyTo(nodeArr, 0);
+			// Should parallel this like below?
+			foreach (WzNode node in nodeArr) {
+				if (node.Tag is WzFile) {
+					// Run the code below.
+					continue;
+				}
+
+				UnloadNode(node, currentThread);
+			}
+
+			var wzFiles = Program.WzFileManager.WzFileList;
+			Parallel.ForEach(wzFiles, wzFile => { UnloadWzFile(wzFile, currentThread); });
 		}
 
 		/// <summary>
@@ -991,16 +1017,15 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void reloadAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (Warning.Warn(Resources.MainReloadAll)) {
-				var currentThread = Dispatcher.CurrentDispatcher;
-
-				var wzFiles = Program.WzFileManager.WzFileList;
-				/*foreach (WzFile wzFile in wzFiles)
-				{
-				    ReloadLoadedWzFile(wzFile);
-				};*/
-				Parallel.ForEach(wzFiles, wzFile => { ReloadWzFile(wzFile, currentThread); });
+			if (!Warning.Warn(Resources.MainReloadAll)) {
+				return;
 			}
+
+			var currentThread = Dispatcher.CurrentDispatcher;
+
+			var wzFiles = Program.WzFileManager.WzFileList;
+
+			Parallel.ForEach(wzFiles, wzFile => { ReloadWzFile(wzFile, currentThread); });
 		}
 
 		/// <summary>

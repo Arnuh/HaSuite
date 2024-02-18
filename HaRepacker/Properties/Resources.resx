@@ -594,4 +594,7 @@ Click "Yes" to download the new version.</value>
     <data name="MainWzExportJson_IncludeBase64_Title" xml:space="preserve">
     <value>Data</value>
   </data>
+    <data name="MainUnloadFile" xml:space="preserve">
+        <value>Are you sure you want to unload this file?</value>
+    </data>
 </root>

@@ -597,10 +597,13 @@ namespace HaRepacker.GUI.Panels {
 			DataTree.SelectedNodes.CopyTo(nodeArr, 0);
 
 			foreach (WzNode node in nodeArr) {
-				if (!(node.Tag is WzFile) && node.Parent != null) {
+				// No parent is considered an unload
+				// Don't support redo
+				if (node.Parent != null) {
 					actions.Add(UndoRedoManager.ObjectRemoved((WzNode) node.Parent, node));
-					node.DeleteWzNode();
 				}
+
+				node.DeleteWzNode();
 			}
 
 			UndoRedoMan.AddUndoBatch(actions);

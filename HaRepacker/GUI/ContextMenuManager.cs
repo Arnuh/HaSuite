@@ -73,12 +73,14 @@ namespace HaRepacker {
 			Remove = new ToolStripMenuItem("Remove", Resources.delete, delegate { haRepackerMainPanel.PromptRemoveSelectedTreeNodes(); });
 
 			Unload = new ToolStripMenuItem("Unload", Resources.delete, delegate(object sender, EventArgs e) {
-				if (!Warning.Warn("Are you sure you want to unload this file?")) {
+				if (!Warning.Warn(Resources.MainUnloadFile)) {
 					return;
 				}
 
 				var nodesSelected = GetNodes(sender);
-				foreach (var node in nodesSelected) parentPanel.MainForm.UnloadWzFile(node.Tag as WzFile);
+				foreach (var node in nodesSelected) {
+					parentPanel.MainForm.UnloadNode(node);
+				}
 			});
 			Reload = new ToolStripMenuItem("Reload", Resources.arrow_refresh, delegate(object sender, EventArgs e) {
 				if (!Warning.Warn("Are you sure you want to reload this file?")) {
@@ -280,12 +282,14 @@ namespace HaRepacker {
 			var toolStripmenuItems = new List<ToolStripItem>();
 
 			var menu = new ContextMenuStrip();
-			
+
 			if (Tag is WzImage || Tag is IPropertyContainer) {
 				toolStripmenuItems.Add(AddPropsSubMenu);
 				toolStripmenuItems.Add(Rename);
 				// export, import
-				toolStripmenuItems.Add(Remove);
+				if (node.Parent != null) {
+					toolStripmenuItems.Add(Remove);
+				}
 			} else if (Tag is WzImageProperty) {
 				toolStripmenuItems.Add(Rename);
 				toolStripmenuItems.Add(Remove);
@@ -299,6 +303,10 @@ namespace HaRepacker {
 				toolStripmenuItems.Add(SaveFile);
 				toolStripmenuItems.Add(Unload);
 				toolStripmenuItems.Add(Reload);
+			}
+
+			if (Tag is WzImage && node.Parent == null) {
+				toolStripmenuItems.Add(Unload);
 			}
 
 			toolStripmenuItems.Add(ExpandAllChildNode);

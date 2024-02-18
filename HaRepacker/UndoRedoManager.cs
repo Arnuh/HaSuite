@@ -18,6 +18,9 @@ namespace HaRepacker {
 		}
 
 		public void AddUndoBatch(List<UndoRedoAction> actions) {
+			if (actions.Count == 0) {
+				return;
+			}
 			var batch = new UndoRedoBatch {Actions = actions};
 			UndoList.Add(batch);
 			RedoList.Clear();
