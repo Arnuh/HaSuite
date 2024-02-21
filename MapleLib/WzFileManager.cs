@@ -59,6 +59,12 @@ namespace MapleLib {
 			private set { }
 		}
 
+		private bool isKMSBWzFormat;
+
+		public bool IsKMSBWzFormat {
+			get => isKMSBWzFormat;
+			set => isKMSBWzFormat = value;
+		}
 
 		private readonly ReaderWriterLockSlim
 			_readWriteLock =

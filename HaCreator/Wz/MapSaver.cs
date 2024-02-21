@@ -85,6 +85,12 @@ namespace HaCreator.Wz {
 					? (Rectangle?) null
 					: new Rectangle(board.VRRectangle.X, board.VRRectangle.Y, board.VRRectangle.Width,
 						board.VRRectangle.Height));
+
+			if (Program.WzManager.IsKMSBWzFormat) {
+				// No String
+				return;
+			}
+
 			if (board.MapInfo.mapType == MapType.RegularMap) {
 				var strMapImg = (WzImage) Program.WzManager.FindWzImageByName("string", "Map.img");
 				if (strMapImg == null) {
@@ -437,7 +443,7 @@ namespace HaCreator.Wz {
 
 				bgProp["f"] = bgInst.Flip.SetOptionalBool(Defaults.Background.Flip);
 				bgProp["bS"] = InfoTool.SetString(bgInfo.bS);
-				bgProp["ani"] = InfoTool.SetBool(bgInfo.Type == BackgroundInfoType.Animation);
+				bgProp["ani"] = (bgInfo.Type == BackgroundInfoType.Animation).SetOptionalBool(Defaults.Background.Ani);
 				bgProp["no"] = InfoTool.SetInt(int.Parse(bgInfo.no));
 				bgParent[i.ToString()] = bgProp;
 			}

@@ -44,9 +44,7 @@ namespace HaCreator.GUI {
 			userEnterEnable.Tag = userEnter;
 			fieldTypeEnable.Tag = fieldType;
 			moveLimitEnable.Tag = moveLimit;
-			mapNameEnable.Tag = mapName;
 			mapDescEnable.Tag = mapDesc;
-			streetNameEnable.Tag = streetNameBox;
 			effectEnable.Tag = effectBox;
 			dropExpireEnable.Tag = dropExpire;
 			dropRateEnable.Tag = dropRate;
@@ -127,9 +125,7 @@ namespace HaCreator.GUI {
 			LoadOptionalInt(info.lvForceMove, lvForceMove, lvForceMoveUse, Defaults.Info.LvForceMove);
 			LoadOptionalString(info.onFirstUserEnter, firstUserEnter, firstUserEnable, Defaults.Info.OnFirstUserEnter);
 			LoadOptionalString(info.onUserEnter, userEnter, userEnterEnable, Defaults.Info.OnUserEnter);
-			LoadOptionalString(info.mapName, mapName, mapNameEnable, Defaults.Info.MapName);
 			LoadOptionalString(info.mapDesc, mapDesc, mapDescEnable, Defaults.Info.MapDesc);
-			LoadOptionalString(info.streetName, streetNameBox, streetNameEnable, Defaults.Info.StreetName);
 			LoadOptionalString(info.effect, effectBox, effectEnable, Defaults.Info.Effect);
 			LoadOptionalInt(info.moveLimit, moveLimit, moveLimitEnable, Defaults.Info.MoveLimit);
 			LoadOptionalInt(info.dropExpire, dropExpire, dropExpireEnable, Defaults.Info.DropExpire);
@@ -302,9 +298,7 @@ namespace HaCreator.GUI {
 				info.lvForceMove = GetOptionalInt(lvForceMove, lvForceMoveUse, Defaults.Info.LvForceMove);
 				info.onFirstUserEnter = GetOptionalString(firstUserEnter, firstUserEnable, Defaults.Info.OnFirstUserEnter);
 				info.onUserEnter = GetOptionalString(userEnter, userEnterEnable, Defaults.Info.OnUserEnter);
-				info.mapName = GetOptionalString(mapName, mapNameEnable, Defaults.Info.MapName);
 				info.mapDesc = GetOptionalString(mapDesc, mapDescEnable, Defaults.Info.MapDesc);
-				info.streetName = GetOptionalString(streetNameBox, streetNameEnable, Defaults.Info.StreetName);
 				info.effect = GetOptionalString(effectBox, effectEnable, Defaults.Info.Effect);
 				info.moveLimit = GetOptionalInt(moveLimit, moveLimitEnable, Defaults.Info.MoveLimit);
 				info.dropExpire = GetOptionalInt(dropExpire, dropExpireEnable, Defaults.Info.DropExpire);

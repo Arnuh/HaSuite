@@ -71,7 +71,7 @@ namespace HaCreator.MapEditor.Info.Default {
 
 		public static class Background {
 			public const bool Flip = false;
-
+			public const bool Ani = false;
 			public const bool Front = false;
 
 			public const string SpineAni = "";

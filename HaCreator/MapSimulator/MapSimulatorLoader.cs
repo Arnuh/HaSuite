@@ -516,8 +516,7 @@ namespace HaCreator.MapSimulator {
 			}
 
 			var minimapFrameProperty = (WzSubProperty) uiWindow2Image?["MiniMap"];
-			if (minimapFrameProperty == null) // UIWindow2 not available pre-BB.
-			{
+			if (minimapFrameProperty == null) { // UIWindow2 not available pre-BB.{
 				minimapFrameProperty = (WzSubProperty) uiWindow1Image["MiniMap"];
 			}
 
@@ -526,11 +525,14 @@ namespace HaCreator.MapSimulator {
 			var maxMapMirrorProperty = (WzSubProperty) minimapFrameProperty["MaxMapMirror"]; // for Zero maps
 			var miniMapMirrorProperty = (WzSubProperty) minimapFrameProperty["MinMapMirror"]; // for Zero maps
 
+			var oldMinimapFrame = false;
 
 			WzSubProperty useFrame;
-			if (mapBoard.MapInfo.zeroSideOnly || MapConstants.IsZerosTemple(mapBoard.MapInfo.id)) // zero's temple
-			{
+			if (mapBoard.MapInfo.zeroSideOnly || MapConstants.IsZerosTemple(mapBoard.MapInfo.id)) { // zero's temple
 				useFrame = maxMapMirrorProperty;
+			} else if (maxMapProperty == null) {
+				useFrame = minimapFrameProperty;
+				oldMinimapFrame = true;
 			} else {
 				useFrame = maxMapProperty;
 			}
@@ -585,6 +587,7 @@ namespace HaCreator.MapSimulator {
 					// Frames and background
 					UIFrameHelper.DrawUIFrame(graphics, color_bgFill, ne, nw, se, sw, e, w, n, s, null, effective_width,
 						effective_height);
+					// Old minimap draws a slight gray background manually?
 
 					// Map name + street name
 					graphics.DrawString(
@@ -592,7 +595,7 @@ namespace HaCreator.MapSimulator {
 						font, new SolidBrush(color_foreGround), 50, 20);
 
 					// Map mark
-					if (Program.InfoManager.MapMarks.ContainsKey(mapBoard.MapInfo.mapMark)) {
+					if (!oldMinimapFrame && Program.InfoManager.MapMarks.ContainsKey(mapBoard.MapInfo.mapMark)) {
 						var mapMark = Program.InfoManager.MapMarks[mapBoard.MapInfo.mapMark];
 						graphics.DrawImage(mapMark.ToImage(), MAPMARK_IMAGE_ALIGN_LEFT, 17);
 					}
@@ -601,7 +604,7 @@ namespace HaCreator.MapSimulator {
 					graphics.DrawImage(miniMapImage,
 						miniMapAlignXFromLeft, // map is on the center
 						n.Height);
-
+					
 					graphics.Flush();
 				}
 
@@ -674,6 +677,10 @@ namespace HaCreator.MapSimulator {
 					var BtMax = (WzSubProperty) uiBasicImage["BtMax"]; // maximise button
 					var BtMap = (WzSubProperty) minimapFrameProperty["BtMap"]; // world button
 
+					if (BtMin == null || BtMax == null || BtMap == null) {
+						return minimapItem;
+					}
+					
 					var objUIBtMap = new UIObject(BtMap, BtMouseClickSoundProperty, BtMouseOverSoundProperty,
 						false,
 						new Point(MAP_IMAGE_PADDING, MAP_IMAGE_PADDING), device);
@@ -795,8 +802,13 @@ namespace HaCreator.MapSimulator {
 		/// <returns></returns>
 		public static MouseCursorItem CreateMouseCursorFromProperty(TexturePool texturePool, WzImageProperty source,
 			int x, int y, GraphicsDevice device, ref List<WzObject> usedProps, bool flip) {
-			var cursorCanvas = (WzSubProperty) source?["0"];
-			var cursorPressedCanvas = (WzSubProperty) source?["1"]; // click
+			var cursorCanvas = source?["0"];
+			var cursorPressedCanvas = source?["1"]; // click
+
+			if (source?["arrow"] != null) { // Old Cursor
+				cursorCanvas = source["arrow"];
+				cursorPressedCanvas = source["arrow"];
+			}
 
 			var frames = LoadFrames(texturePool, cursorCanvas, x, y, device, ref usedProps);
 

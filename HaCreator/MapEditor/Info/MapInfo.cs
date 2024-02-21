@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HaCreator;
 using HaCreator.MapEditor.Info.Default;
 using MapleLib.Helpers;
 using MapleLib.WzLib.WzProperties;
@@ -106,8 +107,6 @@ namespace MapleLib.WzLib.WzStructure {
 
 		//Unknown optional
 		public string mapDesc = "";
-		public string mapName = "";
-		public string streetName = "";
 
 		//Special
 		public List<WzImageProperty> additionalProps = new List<WzImageProperty>();
@@ -166,8 +165,8 @@ namespace MapleLib.WzLib.WzStructure {
 					case "mapDesc":
 						mapDesc = InfoTool.GetString(prop);
 						break;
-					case "mapName":
-						mapName = InfoTool.GetString(prop);
+					case "mapName": // Either on old wz, or leftover
+					case "streetName":
 						break;
 					case "mapMark":
 						mapMark = InfoTool.GetString(prop);
@@ -311,9 +310,6 @@ namespace MapleLib.WzLib.WzStructure {
 						break;
 					case "fixedMobCapacity":
 						fixedMobCapacity = InfoTool.GetInt(prop);
-						break;
-					case "streetName":
-						streetName = InfoTool.GetString(prop);
 						break;
 					case "noRegenMap":
 						noRegenMap = prop.GetBool();
@@ -608,8 +604,6 @@ namespace MapleLib.WzLib.WzStructure {
 			info["VRLimit"] = VRLimit.SetOptionalBool(Defaults.Info.VRLimit);
 
 			info["mapDesc"] = InfoTool.SetOptionalString(mapDesc, Defaults.Info.MapDesc);
-			info["mapName"] = InfoTool.SetOptionalString(mapName, Defaults.Info.MapName);
-			info["streetName"] = InfoTool.SetOptionalString(streetName, Defaults.Info.StreetName);
 			info["timeLimit"] = timeLimit.SetOptionalInt(Defaults.Info.TimeLimit);
 			info["lvLimit"] = lvLimit.SetOptionalInt(Defaults.Info.LvLimit);
 			info["onFirstUserEnter"] = InfoTool.SetOptionalString(onFirstUserEnter, Defaults.Info.OnFirstUserEnter);
@@ -682,6 +676,11 @@ namespace MapleLib.WzLib.WzStructure {
 
 			// Add back all unsupported properties
 			info.AddProperties(unsupportedInfoProperties);
+
+			if (Program.WzManager.IsKMSBWzFormat) {
+				info["mapName"] = InfoTool.SetOptionalString(strMapName, Defaults.Info.MapName);
+				info["streetName"] = InfoTool.SetOptionalString(strStreetName, Defaults.Info.StreetName);
+			}
 
 			//
 			dest["info"] = info;

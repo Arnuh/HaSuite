@@ -208,6 +208,10 @@ namespace HaCreator.GUI {
 			var mapImage = WzInfoTools.FindMapImage(mapId.ToString(), Program.WzManager);
 
 			strMapProp = WzInfoTools.GetMapStringProp(mapId, Program.WzManager);
+			if (strMapProp == null && Program.WzManager.IsKMSBWzFormat) {
+				strMapProp = (WzSubProperty) mapImage["info"];
+			}
+			
 			mapName = WzInfoTools.GetMapName(strMapProp);
 			streetName = WzInfoTools.GetMapStreetName(strMapProp);
 			categoryName = WzInfoTools.GetMapCategoryName(strMapProp);

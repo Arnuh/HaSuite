@@ -600,7 +600,7 @@ namespace HaCreator.Wz {
 				var type = (BackgroundType) InfoTool.GetInt(bgProp["type"]);
 				var flip = bgProp["f"].GetOptionalBool(Defaults.Background.Flip);
 				var bS = InfoTool.GetString(bgProp["bS"]);
-				var ani = bgProp["ani"].GetBool();
+				var ani = bgProp["ani"].GetOptionalBool(Defaults.Background.Ani);
 				var no = InfoTool.GetInt(bgProp["no"]).ToString();
 				var front = bgProp["front"].GetOptionalBool(Defaults.Background.Front);
 				var screenMode = bgProp["screenMode"].GetOptionalInt((int) RenderResolution.Res_All);

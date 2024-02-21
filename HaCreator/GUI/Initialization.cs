@@ -127,7 +127,7 @@ namespace HaCreator.GUI {
 			// for old maplestory with only Data.wz
 			if (Program.WzManager.IsPreBBDataWzFormat) //currently always false
 			{
-				UpdateUI_CurrentLoadingWzFile("Data.wz");
+				UpdateUI_CurrentLoadingWzFile("Data");
 
 				try {
 					Program.WzManager.LoadLegacyDataWzFile("Data", _wzMapleVersion);
@@ -136,10 +136,9 @@ namespace HaCreator.GUI {
 					                ").\r\nCheck that the directory is valid and the file is not in use.");
 					return false;
 				}
-
+				
 				ExtractMaps("map");
 				ExtractStringWzMaps();
-				//Program.WzManager.ExtractItems();
 
 				ExtractMobFile();
 				ExtractNpcFile();
@@ -150,8 +149,7 @@ namespace HaCreator.GUI {
 				ExtractTileSets();
 				ExtractObjSets();
 				ExtractBackgroundSets();
-			} else // for versions beyond v30x
-			{
+			} else { // for versions beyond v30x
 				// String.wz
 				var stringWzFiles = Program.WzManager.GetWzFileNameListFromBase("string");
 				foreach (var stringWzFileName in stringWzFiles) {
@@ -483,12 +481,6 @@ namespace HaCreator.GUI {
 		/// 
 		/// </summary>
 		public void ExtractMobFile() {
-			// Mob.wz
-			var mobWzDirs = Program.WzManager.GetWzDirectoriesFromBase("mob");
-
-			foreach (var mobWzDir in mobWzDirs) {
-			}
-
 			// String.wz
 			var stringWzDirs = Program.WzManager.GetWzDirectoriesFromBase("string");
 			foreach (var stringWzDir in stringWzDirs) {
@@ -509,18 +501,32 @@ namespace HaCreator.GUI {
 					Program.InfoManager.Mobs.Add(id, name);
 				}
 			}
+
+			if (!Program.WzManager.IsKMSBWzFormat) {
+				return;
+			}
+
+			var mobWzDirs = Program.WzManager.GetWzDirectoriesFromBase("mob");
+
+			foreach (var mobWzDir in mobWzDirs) {
+				foreach (var mobImg in mobWzDir.WzImages) {
+					if (!mobImg.Parsed) {
+						mobImg.ParseImage();
+					}
+
+					var info = mobImg["info"];
+					var nameProp = (WzStringProperty) info["name"];
+					var name = nameProp == null ? "" : nameProp.Value;
+					var id = WzInfoTools.AddLeadingZeros(mobImg.Name.Replace(".img", ""), 7);
+					Program.InfoManager.Mobs.Add(id, name);
+				}
+			}
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		public void ExtractNpcFile() {
-			// Npc.wz
-			var npcWzDirs = Program.WzManager.GetWzDirectoriesFromBase("npc");
-
-			foreach (var npcWzDir in npcWzDirs) {
-			}
-
 			// String.wz
 			var stringWzDirs = Program.WzManager.GetWzDirectoriesFromBase("string");
 			foreach (var stringWzDir in stringWzDirs) {
@@ -538,6 +544,26 @@ namespace HaCreator.GUI {
 					var name = nameProp == null ? "" : nameProp.Value;
 					var id = WzInfoTools.AddLeadingZeros(npc.Name, 7);
 					if (Program.InfoManager.NPCs.ContainsKey(id)) continue;
+					Program.InfoManager.NPCs.Add(id, name);
+				}
+			}
+
+			if (!Program.WzManager.IsKMSBWzFormat) {
+				return;
+			}
+
+			var npcWzDirs = Program.WzManager.GetWzDirectoriesFromBase("npc");
+
+			foreach (var npcWzDir in npcWzDirs) {
+				foreach (var npcImg in npcWzDir.WzImages) {
+					if (!npcImg.Parsed) {
+						npcImg.ParseImage();
+					}
+
+					var info = npcImg["info"];
+					var nameProp = (WzStringProperty) info["name"];
+					var name = nameProp == null ? "" : nameProp.Value;
+					var id = WzInfoTools.AddLeadingZeros(npcImg.Name.Replace(".img", ""), 7);
 					Program.InfoManager.NPCs.Add(id, name);
 				}
 			}
@@ -691,6 +717,28 @@ namespace HaCreator.GUI {
 		public void ExtractMaps(string mapWzName) {
 			var mapWzImg = (WzDirectory) Program.WzManager.FindWzImageByName(mapWzName, "Map");
 			if (mapWzImg == null) return;
+
+			// KMSB Format
+			foreach (var map in mapWzImg.WzImages) {
+				var mapId = map.Name.Substring(0, map.Name.Length - 4);
+				var info = map["info"];
+				if (info == null) { // Not a map
+					continue;
+				}
+
+				Program.WzManager.IsKMSBWzFormat = true;
+				var streetName = (WzStringProperty) info["streetName"];
+				var mapName = (WzStringProperty) info["mapName"];
+				if (Program.InfoManager.Maps.ContainsKey(mapId)) continue;
+				if (mapName == null) {
+					Program.InfoManager.Maps[mapId] = new Tuple<string, string>("", "");
+				} else {
+					Program.InfoManager.Maps[mapId] =
+						new Tuple<string, string>(streetName?.Value ?? string.Empty,
+							mapName.Value);
+				}
+			}
+			
 			for (var i = 0; i <= 9; i++) {
 				var mapWzDirs = (WzDirectory) mapWzImg[$"Map{i}"];
 				if (mapWzDirs == null) {
@@ -711,6 +759,10 @@ namespace HaCreator.GUI {
 		public void ExtractStringWzMaps() {
 			var stringWzImg = (WzImage) Program.WzManager.FindWzImageByName("string", "Map.img");
 
+			if (stringWzImg == null) {
+				return;
+			}
+			
 			if (!stringWzImg.Parsed) {
 				stringWzImg.ParseImage();
 			}
