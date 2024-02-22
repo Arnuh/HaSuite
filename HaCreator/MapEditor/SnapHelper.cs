@@ -12,7 +12,7 @@ namespace HaCreator.MapEditor {
 			return boundb - tolerance <= value && value <= bounda + tolerance;
 		}
 
-		public static void SnapToFootholdLine(BoardItem boardItem, int xOffset) {
+		public static void SnapToFootholdLine(BoardItem boardItem, int yOffset) {
 			FootholdLine closestLine = null;
 			var closestDistance = double.MaxValue;
 			foreach (var fh in boardItem.Board.BoardItems.FootholdLines) {
@@ -26,7 +26,7 @@ namespace HaCreator.MapEditor {
 					continue;
 				}
 
-				var targetY = fh.CalculateY(boardItem.X) - xOffset;
+				var targetY = fh.CalculateY(boardItem.X) - yOffset;
 				var distance = Math.Abs(targetY - boardItem.Y);
 				if (!(closestDistance > distance)) continue;
 				closestDistance = distance;
@@ -35,7 +35,7 @@ namespace HaCreator.MapEditor {
 
 			if (closestLine != null) {
 				boardItem.SnapMoveAllMouseBoundItems(new Point(boardItem.Parent.X + boardItem.Parent.BoundItems[boardItem].X,
-					(int) closestLine.CalculateY(boardItem.X) - xOffset));
+					(int) closestLine.CalculateY(boardItem.X) - yOffset));
 			}
 		}
 	}
