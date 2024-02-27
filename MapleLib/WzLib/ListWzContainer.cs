@@ -35,6 +35,7 @@ namespace MapleLib.WzLib {
 			if (index - 1 != wzName.Length) {
 				wzEntry = wzName + wzEntry.Substring(index);
 			}
+
 			return ListWzEntries.Contains(wzEntry);
 		}
 

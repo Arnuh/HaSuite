@@ -25,7 +25,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzFloatProperty : WzImageProperty {
 		#region Fields
-		
+
 		internal float val;
 
 		internal WzObject parent;
@@ -53,7 +53,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

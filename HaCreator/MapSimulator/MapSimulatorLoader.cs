@@ -604,7 +604,7 @@ namespace HaCreator.MapSimulator {
 					graphics.DrawImage(miniMapImage,
 						miniMapAlignXFromLeft, // map is on the center
 						n.Height);
-					
+
 					graphics.Flush();
 				}
 
@@ -680,7 +680,7 @@ namespace HaCreator.MapSimulator {
 					if (BtMin == null || BtMax == null || BtMap == null) {
 						return minimapItem;
 					}
-					
+
 					var objUIBtMap = new UIObject(BtMap, BtMouseClickSoundProperty, BtMouseOverSoundProperty,
 						false,
 						new Point(MAP_IMAGE_PADDING, MAP_IMAGE_PADDING), device);

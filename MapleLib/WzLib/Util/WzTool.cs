@@ -156,6 +156,7 @@ namespace MapleLib.WzLib.Util {
 
 				return recognizedChars / (double) totalChars;
 			}
+
 			WzFile wzf;
 			if (version == null) {
 				wzf = new WzFile(wzPath, encVersion);

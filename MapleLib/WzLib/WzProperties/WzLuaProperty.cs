@@ -17,7 +17,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzLuaProperty : WzImageProperty {
 		#region Fields
-		
+
 		internal byte[] encryptedBytes;
 		internal WzObject parent;
 
@@ -52,7 +52,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

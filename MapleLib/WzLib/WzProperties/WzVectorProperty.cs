@@ -24,7 +24,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzVectorProperty : WzExtended {
 		#region Fields
-		
+
 		internal WzIntProperty x, y;
 
 		internal WzObject parent;

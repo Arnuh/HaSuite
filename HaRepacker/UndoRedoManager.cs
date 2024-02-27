@@ -21,6 +21,7 @@ namespace HaRepacker {
 			if (actions.Count == 0) {
 				return;
 			}
+
 			var batch = new UndoRedoBatch {Actions = actions};
 			UndoList.Add(batch);
 			RedoList.Clear();

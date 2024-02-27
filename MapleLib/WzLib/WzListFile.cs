@@ -53,6 +53,7 @@ namespace MapleLib.WzLib {
 					listEntries.Add(decryptedStr);
 				}
 			}
+
 			return listEntries;
 		}
 

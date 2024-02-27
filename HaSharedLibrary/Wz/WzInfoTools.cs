@@ -259,7 +259,9 @@ namespace HaSharedLibrary.Wz {
 				}
 
 				return (WzDirectory) mapObject?.Parent;
-			} else if (fileManager.IsKMSBWzFormat) {
+			}
+
+			if (fileManager.IsKMSBWzFormat) {
 				return (WzDirectory) mapObject;
 			}
 

@@ -433,7 +433,7 @@ namespace MapleLib.WzLib.WzProperties {
 			var nowListWzUsed = encrypt && !removeListFormat;
 
 			// Probably some other cases that should be here
-			
+
 			if (!orgListWzUsed) {
 				// If List.wz wasn't used, and we aren't encrypting, return
 				if (!encrypt) {

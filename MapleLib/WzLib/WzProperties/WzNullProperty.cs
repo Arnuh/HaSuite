@@ -48,7 +48,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

@@ -136,7 +136,7 @@ namespace HaCreator.GUI {
 					                ").\r\nCheck that the directory is valid and the file is not in use.");
 					return false;
 				}
-				
+
 				ExtractMaps("map");
 				ExtractStringWzMaps();
 
@@ -738,7 +738,7 @@ namespace HaCreator.GUI {
 							mapName.Value);
 				}
 			}
-			
+
 			for (var i = 0; i <= 9; i++) {
 				var mapWzDirs = (WzDirectory) mapWzImg[$"Map{i}"];
 				if (mapWzDirs == null) {
@@ -762,7 +762,7 @@ namespace HaCreator.GUI {
 			if (stringWzImg == null) {
 				return;
 			}
-			
+
 			if (!stringWzImg.Parsed) {
 				stringWzImg.ParseImage();
 			}

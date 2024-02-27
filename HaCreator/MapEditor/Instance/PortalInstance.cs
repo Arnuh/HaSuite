@@ -204,6 +204,7 @@ namespace HaCreator.MapEditor.Instance {
 			if (pt == PortalType.CollisionScript) {
 				yOffset = 35;
 			}
+
 			SnapHelper.SnapToFootholdLine(this, yOffset);
 		}
 	}

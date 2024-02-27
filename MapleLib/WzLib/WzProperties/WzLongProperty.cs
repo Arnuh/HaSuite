@@ -21,7 +21,7 @@ using MapleLib.WzLib.Util;
 namespace MapleLib.WzLib.WzProperties {
 	public class WzLongProperty : WzImageProperty {
 		#region Fields
-		
+
 		internal long val;
 
 		internal WzObject parent;
@@ -49,7 +49,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

@@ -24,7 +24,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzDoubleProperty : WzImageProperty {
 		#region Fields
-		
+
 		internal double val;
 
 		internal WzObject parent;
@@ -52,7 +52,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

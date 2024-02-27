@@ -21,11 +21,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
 			ufBox.Checked = item.ParentRope.uf;
-			if (item.ParentRope.ladder) {
-				ladderBox.Checked = true;
-			} else {
-				ladderBox.Checked = false;
-			}
+			ladderBox.Checked = item.ParentRope.ladder;
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
 		}

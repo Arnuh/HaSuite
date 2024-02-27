@@ -34,7 +34,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzBinaryProperty : WzExtended {
 		#region Fields
-		
+
 		internal byte[] mp3bytes;
 		internal WzObject parent;
 		internal int len_ms;

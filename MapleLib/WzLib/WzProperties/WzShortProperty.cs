@@ -23,7 +23,7 @@ namespace MapleLib.WzLib.WzProperties {
 	/// </summary>
 	public class WzShortProperty : WzImageProperty {
 		#region Fields
-		
+
 		internal short val;
 
 		internal WzObject parent;
@@ -51,7 +51,7 @@ namespace MapleLib.WzLib.WzProperties {
 			get => parent;
 			internal set => parent = value;
 		}
-		
+
 		/// <summary>
 		/// The WzPropertyType of the property
 		/// </summary>

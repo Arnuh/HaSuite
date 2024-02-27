@@ -30,7 +30,7 @@ namespace MapleLib.WzLib {
 		private object tag3;
 
 		public abstract void Dispose();
-		
+
 		/// <summary>
 		/// The name of the object
 		/// </summary>
