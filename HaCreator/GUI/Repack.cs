@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Serialization;
 
@@ -89,11 +90,13 @@ namespace HaCreator.GUI {
 				button_repack.Enabled = true;
 			}
 
+			ErrorLogger.AttemptSave("errors.txt", Application.ProductVersion);
 			Close();
 		}
 
 		private void FinishError(Exception e, string fileName) {
 			ShowErrorMessageThreadSafe(e, fileName);
+			ErrorLogger.AttemptSave("errors.txt", Application.ProductVersion);
 			Program.Restarting = true;
 			Close();
 		}
@@ -104,6 +107,7 @@ namespace HaCreator.GUI {
 				button_repack.Enabled = true;
 				Debug.WriteLine(e.Message);
 				Debug.WriteLine(e.StackTrace);
+				ErrorLogger.Log(ErrorLevel.Save, $"{e.Message}\r\n{e.StackTrace}");
 				ShowErrorMessage(
 					"There has been an error while saving, it is likely because you do not have permissions to the destination folder or the files are in use.\r\n\r\nPress OK to see the error details.");
 				ShowErrorMessage($"{Application.ProductVersion}\r\n{e.Message}\r\n{e.StackTrace}");

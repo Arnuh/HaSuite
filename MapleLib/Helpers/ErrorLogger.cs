@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace MapleLib.Helpers {
 	public static class ErrorLogger {
@@ -57,7 +58,8 @@ namespace MapleLib.Helpers {
 		/// Logs all pending errors in the queue to file, and clears the queue
 		/// </summary>
 		/// <param name="filename"></param>
-		public static void SaveToFile(string filename) {
+		/// <param name="version"></param>
+		public static void SaveToFile(string filename, string version = "unknown") {
 			if (!ErrorsPresent()) {
 				return;
 			}
@@ -66,7 +68,7 @@ namespace MapleLib.Helpers {
 			       new StreamWriter(File.Open(filename, FileMode.Append, FileAccess.Write, FileShare.Read))) {
 				sw.Write("----- Start of the error log. [");
 				sw.Write(DateTime.Today.ToString());
-				sw.Write("] -----");
+				sw.Write($"] {version}-----");
 				sw.WriteLine();
 
 				List<Error> errorList_;
@@ -87,6 +89,12 @@ namespace MapleLib.Helpers {
 				sw.WriteLine();
 			}
 		}
+
+		public static void AttemptSave(string fileName, string version) {
+			if (!ErrorsPresent()) return;
+			SaveToFile(fileName, version);
+			ClearErrors();
+		}
 	}
 
 	public class Error {
@@ -103,6 +111,7 @@ namespace MapleLib.Helpers {
 		MissingFeature,
 		IncorrectStructure,
 		Critical,
-		Crash
+		Crash,
+		Save
 	}
 }
