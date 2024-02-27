@@ -106,7 +106,7 @@ namespace HaCreator.GUI {
 				Debug.WriteLine(e.StackTrace);
 				ShowErrorMessage(
 					"There has been an error while saving, it is likely because you do not have permissions to the destination folder or the files are in use.\r\n\r\nPress OK to see the error details.");
-				ShowErrorMessage(e.Message + "\r\n" + e.StackTrace);
+				ShowErrorMessage($"{Application.ProductVersion}\r\n{e.Message}\r\n{e.StackTrace}");
 			});
 		}
 
@@ -165,6 +165,7 @@ namespace HaCreator.GUI {
 				}
 			}
 
+			Delegate error = null;
 			// Save WZ Files
 			foreach (var wzf in toRepack) {
 				// Check if this wz file is selected and can be saved
@@ -219,9 +220,16 @@ namespace HaCreator.GUI {
 						File.Move(tmpFile, orgFile);
 					}
 				} catch (Exception e) {
-					Invoke((Action) delegate { FinishError(e, fileName); });
-					return;
+					// Call the error later so we can at least save the tmp file
+					// and prevent straight up data loss due to a small mistake
+					// like forgetting the game is open
+					error = (Action) delegate { FinishError(e, fileName); };
 				}
+			}
+
+			if (error != null) {
+				Invoke(error);
+				return;
 			}
 
 			Invoke((Action) delegate {
