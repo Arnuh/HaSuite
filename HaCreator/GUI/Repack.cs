@@ -164,7 +164,7 @@ namespace HaCreator.GUI {
 
 					xmlSer.SerializeImage(img, xmlPath);
 				} catch (Exception e) {
-					ShowErrorMessageThreadSafe(e, "XMLs");
+					ShowErrorMessageThreadSafe(e, img.Name);
 					return;
 				}
 			}
