@@ -21,22 +21,26 @@ namespace HaCreator.MapEditor {
 					continue;
 				}
 
+				var y = boardItem.Y + yOffset;
+
 				if (fh.IsWall || !BetweenOrEquals(boardItem.X, fh.FirstDot.X, fh.SecondDot.X, (int) UserSettings.SnapDistance) ||
-				    !BetweenOrEquals(boardItem.Y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
+				    !BetweenOrEquals(y, fh.FirstDot.Y, fh.SecondDot.Y, (int) UserSettings.SnapDistance)) {
 					continue;
 				}
 
-				var targetY = fh.CalculateY(boardItem.X) - yOffset;
-				var distance = Math.Abs(targetY - boardItem.Y);
+				var targetY = fh.CalculateY(boardItem.X);
+				var distance = Math.Abs(targetY - y);
 				if (!(closestDistance > distance)) continue;
 				closestDistance = distance;
 				closestLine = fh;
 			}
 
-			if (closestLine != null) {
-				boardItem.SnapMoveAllMouseBoundItems(new Point(boardItem.Parent.X + boardItem.Parent.BoundItems[boardItem].X,
-					(int) closestLine.CalculateY(boardItem.X) - yOffset));
+			if (closestLine == null) {
+				return;
 			}
+
+			boardItem.SnapMoveAllMouseBoundItems(new Point(boardItem.Parent.X + boardItem.Parent.BoundItems[boardItem].X,
+				(int) closestLine.CalculateY(boardItem.X) - yOffset));
 		}
 	}
 }

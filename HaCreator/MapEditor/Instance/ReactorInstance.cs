@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
-	public class ReactorInstance : BoardItem, IFlippable, ISerializable {
+	public class ReactorInstance : BoardItem, IFlippable, ISerializable, ISnappable {
 		private readonly ReactorInfo reactorInfo;
 
 		public ReactorInfo ReactorInfo => reactorInfo;
@@ -86,6 +86,10 @@ namespace HaCreator.MapEditor.Instance {
 		public string Name {
 			get => name;
 			set => name = value;
+		}
+
+		public void DoSnap() {
+			SnapHelper.SnapToFootholdLine(this, Origin.Y);
 		}
 
 		public new class SerializationForm : BoardItem.SerializationForm {

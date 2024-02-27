@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance {
-	public class PortalInstance : BoardItem, ISerializable {
+	public class PortalInstance : BoardItem, ISerializable, ISnappable {
 		private PortalInfo baseInfo;
 		private string _pn;
 		private int _pt;
@@ -189,6 +189,22 @@ namespace HaCreator.MapEditor.Instance {
 			_hRange = json.hrange;
 			_vRange = json.vrange;
 			baseInfo = PortalInfo.GetPortalInfoByType(pt);
+		}
+
+		public void DoSnap() {
+			if (pt == PortalType.StartPoint) {
+				// Don't snap start points cause its not required
+				// Just place them anywhere :)
+				return;
+			}
+
+			// Portals seem to have a decent variance of 0-3 offset?
+			// Maybe nexon didn't snap portals
+			var yOffset = 1;
+			if (pt == PortalType.CollisionScript) {
+				yOffset = 35;
+			}
+			SnapHelper.SnapToFootholdLine(this, yOffset);
 		}
 	}
 }
