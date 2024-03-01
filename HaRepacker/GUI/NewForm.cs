@@ -108,15 +108,16 @@ namespace HaRepacker.GUI {
 		private void okButton_Click(object sender, EventArgs e) {
 			var name = nameBox.Text;
 
+			var wzMapleVersion = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex);
 			if (regBox.Checked) {
-				var file = new WzFile((short) versionBox.Value, (WzMapleVersion) encryptionBox.SelectedIndex);
+				var file = new WzFile((short) versionBox.Value, wzMapleVersion);
 				file.Header.Copyright = copyrightBox.Text;
 				file.Header.RecalculateFileStart();
 				file.Name = name + ".wz";
 				file.WzDirectory.Name = name + ".wz";
 				panel.DataTree.Nodes.Add(new WzNode(file));
 			} else if (listBox.Checked) {
-				new ListEditor(null, (WzMapleVersion) encryptionBox.SelectedIndex).Show();
+				new ListEditor(null, wzMapleVersion).Show();
 			} else if (radioButton_hotfix.Checked) {
 				var img = new WzImage(name + ".wz");
 				img.MarkWzImageAsParsed();

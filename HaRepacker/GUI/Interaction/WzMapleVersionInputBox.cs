@@ -12,14 +12,15 @@ using MapleLib.WzLib;
 
 namespace HaRepacker.GUI.Interaction {
 	public partial class WzMapleVersionInputBox : Form {
-		public static bool Show(string title, out WzMapleVersion MapleVersionEncryptionSelected) {
+		public static bool Show(string title, out WzMapleVersion encryptionSelected) {
 			var form = new WzMapleVersionInputBox(title);
 			var result = form.ShowDialog() == DialogResult.OK;
 
 			if (result) {
-				MapleVersionEncryptionSelected = (WzMapleVersion) form.comboBox_wzEncryptionType.SelectedIndex;
+				encryptionSelected =
+					WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(form.comboBox_wzEncryptionType.SelectedIndex);
 			} else {
-				MapleVersionEncryptionSelected = WzMapleVersion.BMS; // default
+				encryptionSelected = WzMapleVersion.BMS; // default
 			}
 
 			return result;
