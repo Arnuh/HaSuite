@@ -253,23 +253,22 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			string name;
-			if (!NameInputBox.Show(Properties.Resources.MainAddDir, 0, out name)) {
+			if (!NameInputBox.Show(Properties.Resources.MainAddDir, 0, out var name)) {
 				return;
 			}
 
-			var added = false;
-
 			var obj = (WzObject) target.Tag;
-			while (obj is WzFile || (obj = obj.Parent) is WzFile) {
-				var topMostWzFileParent = (WzFile) obj;
-
-				((WzNode) target).AddObject(new WzDirectory(name, topMostWzFileParent), UndoRedoMan);
-				added = true;
-				break;
+			// Context menu allows this so we'll allow it here
+			// since I'm not sure what restrictions a WzDirectory might have.
+			if (obj is WzFile || obj is WzDirectory) {
+				var topMostWzFileParent = obj.WzFileParent;
+				if (topMostWzFileParent != null) {
+					((WzNode) target).AddObject(new WzDirectory(name, topMostWzFileParent), UndoRedoMan);
+					return;
+				}
 			}
 
-			if (!added) MessageBox.Show(Properties.Resources.MainTreeAddDirError);
+			MessageBox.Show(Properties.Resources.MainTreeAddDirError);
 		}
 
 		/// <summary>
