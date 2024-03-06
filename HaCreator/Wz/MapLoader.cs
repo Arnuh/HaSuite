@@ -945,7 +945,7 @@ namespace HaCreator.Wz {
 			}
 
 			lock (multiBoard) {
-				CreateMap(streetName, mapName, mapId,
+				CreateMap(streetName, mapName, mapId, false,
 					WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)),
 					CreateStandardMapMenu(rightClickHandler), size, center, Tabs, multiBoard);
 
@@ -1003,13 +1003,11 @@ namespace HaCreator.Wz {
 		/// <param name="layers"></param>
 		/// <param name="Tabs"></param>
 		/// <param name="multiBoard"></param>
-		public static void CreateMap(string streetName, string mapName, int mapId, string tooltip,
+		public static void CreateMap(string streetName, string mapName, int mapId, bool isNewMap, string tooltip,
 			ContextMenu menu, XNA.Point size, XNA.Point center, TabControl Tabs,
 			MultiBoard multiBoard) {
 			lock (multiBoard) {
-				var bIsNewMapDesign = mapId == -1;
-
-				var newBoard = multiBoard.CreateBoard(size, center, menu, bIsNewMapDesign);
+				var newBoard = multiBoard.CreateBoard(size, center, menu, isNewMap);
 				GenerateDefaultZms(newBoard);
 
 				var newTabPage = new TabItem {
@@ -1048,7 +1046,7 @@ namespace HaCreator.Wz {
 
 		public static void CreateMapFromHam(MultiBoard multiBoard, TabControl Tabs, string data,
 			RoutedEventHandler[] rightClickHandler) {
-			CreateMap("", "", -1, "", CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), Tabs,
+			CreateMap("", "", -1, true, "", CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), Tabs,
 				multiBoard);
 			multiBoard.SelectedBoard.Loading = true; // Prevent TS Change callbacks while were loading
 			lock (multiBoard) {

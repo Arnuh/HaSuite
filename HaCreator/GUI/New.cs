@@ -51,7 +51,7 @@ namespace HaCreator.GUI {
 			var w = int.Parse(newWidth.Text);
 			var h = int.Parse(newHeight.Text);
 
-			MapLoader.CreateMap("", "<Untitled>", -1, "", MapLoader.CreateStandardMapMenu(rightClickHandler),
+			MapLoader.CreateMap("", "<Untitled>", -1, true, "", MapLoader.CreateStandardMapMenu(rightClickHandler),
 				new XNA.Point(w, h), new XNA.Point(w / 2, h / 2), Tabs, multiBoard);
 			DialogResult = DialogResult.OK;
 			Close();
