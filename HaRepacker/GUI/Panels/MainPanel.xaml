@@ -389,7 +389,7 @@
                 <sharedLib:ChangeableTextBox x:Name="nameBox" Grid.Row="0"
                                              AcceptsReturn="False" Margin="20,0,20,0"
                                              ButtonClicked="nameBox_ButtonClicked" />
-                <sharedLib:ChangeableTextBox x:Name="textPropBox" Grid.Row="1" Height="40"
+                <sharedLib:ChangeableTextBox x:Name="textPropBox" Grid.Row="1" MinHeight="40" MaxHeight="100"
                                              TextWrap="Wrap" Margin="20,0,20,0" />
 
 
