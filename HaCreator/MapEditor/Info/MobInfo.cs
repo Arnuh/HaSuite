@@ -17,6 +17,7 @@ namespace HaCreator.MapEditor.Info {
 		private readonly string name;
 
 		private WzImage _LinkedWzImage;
+		private string link;
 
 		/// <summary>
 		/// Constructor
@@ -114,25 +115,30 @@ namespace HaCreator.MapEditor.Info {
 		/// </summary>
 		public WzImage LinkedWzImage {
 			get {
-				if (_LinkedWzImage == null) {
-					var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
+				if (_LinkedWzImage != null) {
+					return _LinkedWzImage;
+				}
 
-					var mobImage = (WzImage) Program.WzManager.FindWzImageByName("mob", imgName); // default;
+				var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
 
-					var link = (WzStringProperty) mobImage?["info"]?["link"];
-					if (link != null) {
-						var linkImgName = WzInfoTools.AddLeadingZeros(link.Value, 7) + ".img";
-						var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("mob", linkImgName);
+				var mobImage = (WzImage) Program.WzManager.FindWzImageByName("mob", imgName); // default;
 
-						_LinkedWzImage = linkedImage ?? mobImage; // fallback to mobImage if linkedimage isnt available
-					} else {
-						_LinkedWzImage = mobImage;
-					}
+				var linkProp = (WzStringProperty) mobImage?["info"]?["link"];
+				if (linkProp != null) {
+					link = linkProp.Value;
+					var linkImgName = WzInfoTools.AddLeadingZeros(linkProp.Value, 7) + ".img";
+					var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("mob", linkImgName);
+
+					_LinkedWzImage = linkedImage ?? mobImage; // fallback to mobImage if linkedimage isnt available
+				} else {
+					_LinkedWzImage = mobImage;
 				}
 
 				return _LinkedWzImage;
 			}
 			set => _LinkedWzImage = value;
 		}
+
+		public string Link => link;
 	}
 }

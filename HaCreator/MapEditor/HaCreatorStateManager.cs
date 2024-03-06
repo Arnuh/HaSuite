@@ -923,42 +923,50 @@ namespace HaCreator.MapEditor {
 			const string firstLineSpacer = " ";
 
 			var sb = new StringBuilder();
-			if (item is TileInstance) {
+			if (item is TileInstance && item.BaseInfo is TileInfo ti) {
 				sb.Append("[Tile]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append(((TileInfo) item.BaseInfo).tS).Append(@"\")
-					.Append(((TileInfo) item.BaseInfo).u).Append(@"\").Append(((TileInfo) item.BaseInfo).no);
-			} else if (item is ObjectInstance) {
+				sb.Append(firstLineSpacer).Append(ti.tS).Append(@"\")
+					.Append(ti.u).Append(@"\").Append(ti.no);
+			} else if (item is ObjectInstance && item.BaseInfo is ObjectInfo oi) {
 				sb.Append("[Object]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append(((ObjectInfo) item.BaseInfo).oS).Append(@"\")
-					.Append(((ObjectInfo) item.BaseInfo).l0).Append(@"\")
-					.Append(((ObjectInfo) item.BaseInfo).l1).Append(@"\").Append(((ObjectInfo) item.BaseInfo).l2);
-			} else if (item is BackgroundInstance) {
+				sb.Append(firstLineSpacer).Append(oi.oS).Append(@"\")
+					.Append(oi.l0).Append(@"\")
+					.Append(oi.l1).Append(@"\").Append(oi.l2);
+			} else if (item is BackgroundInstance && item.BaseInfo is BackgroundInfo bi) {
 				sb.Append("[Background]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append(((BackgroundInfo) item.BaseInfo).bS).Append(@"\")
-					.Append(((BackgroundInfo) item.BaseInfo).Type.ToString()).Append(@"\")
-					.Append(((BackgroundInfo) item.BaseInfo).no);
+				sb.Append(firstLineSpacer).Append(bi.bS).Append(@"\")
+					.Append(bi.Type.ToString()).Append(@"\")
+					.Append(bi.no);
 			} else if (item is PortalInstance instance) {
 				sb.Append("[Portal]").Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Name: ").Append(instance.pn)
 					.Append(Environment.NewLine);
 				sb.Append(firstLineSpacer).Append("Type: ").Append(Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[instance.pt]]);
-			} else if (item is MobInstance) {
+			} else if (item is MobInstance && item.BaseInfo is MobInfo mi) {
 				sb.Append("[Mob]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("Name: ").Append(((MobInfo) item.BaseInfo).Name)
+				sb.Append(firstLineSpacer).Append("Name: ").Append(mi.Name)
 					.Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("ID: ").Append(((MobInfo) item.BaseInfo).ID);
-			} else if (item is NpcInstance) {
+				sb.Append(firstLineSpacer).Append("ID: ").Append(mi.ID);
+				if (mi.Link != null) {
+					sb.Append(" (").Append(mi.Link).Append(")");
+				}
+			} else if (item is NpcInstance && item.BaseInfo is NpcInfo ni) {
 				sb.Append("[Npc]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("Name: ").Append(((NpcInfo) item.BaseInfo).Name)
+				sb.Append(firstLineSpacer).Append("Name: ").Append(ni.Name)
 					.Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("ID: ").Append(((NpcInfo) item.BaseInfo).ID);
-			} else if (item is ReactorInstance) {
+				sb.Append(firstLineSpacer).Append("ID: ").Append(ni.ID);
+				if (ni.Link != null) {
+					sb.Append(" (").Append(ni.Link).Append(")");
+				}
+			} else if (item is ReactorInstance && item.BaseInfo is ReactorInfo ri) {
 				sb.Append("[Reactor]").Append(Environment.NewLine);
-				sb.Append(firstLineSpacer).Append("ID: ").Append(((ReactorInfo) item.BaseInfo).ID);
+				sb.Append(firstLineSpacer).Append("ID: ").Append(ri.ID);
+				if (ri.Link != null) {
+					sb.Append(" (").Append(ri.Link).Append(")");
+				}
 			} else if (item is FootholdAnchor) {
 				sb.Append("[Foothold]");
-			} else if (item is RopeAnchor) {
-				var rope = (RopeAnchor) item;
+			} else if (item is RopeAnchor rope) {
 				sb.Append(rope.ParentRope.ladder ? "[Ladder]" : "[Rope]");
 			} else if (item is Chair) {
 				sb.Append("[Chair]");

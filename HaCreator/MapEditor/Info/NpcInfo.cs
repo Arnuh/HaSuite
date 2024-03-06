@@ -18,6 +18,7 @@ namespace HaCreator.MapEditor.Info {
 		private readonly string name;
 
 		private WzImage _LinkedWzImage;
+		private string link;
 
 		/// <summary>
 		/// Constructor
@@ -112,19 +113,22 @@ namespace HaCreator.MapEditor.Info {
 		/// </summary>
 		public WzImage LinkedWzImage {
 			get {
-				if (_LinkedWzImage == null) {
-					var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
-					var npcImage = (WzImage) Program.WzManager.FindWzImageByName("npc", imgName);
+				if (_LinkedWzImage != null) {
+					return _LinkedWzImage;
+				}
 
-					var link = (WzStringProperty) npcImage?["info"]?["link"];
-					if (link != null) {
-						var linkImgName = WzInfoTools.AddLeadingZeros(link.Value, 7) + ".img";
-						var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("npc", linkImgName);
+				var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
+				var npcImage = (WzImage) Program.WzManager.FindWzImageByName("npc", imgName);
 
-						_LinkedWzImage = linkedImage ?? npcImage; // fallback to npcImage if null
-					} else {
-						_LinkedWzImage = npcImage;
-					}
+				var linkProp = (WzStringProperty) npcImage?["info"]?["link"];
+				if (linkProp != null) {
+					link = linkProp.Value;
+					var linkImgName = WzInfoTools.AddLeadingZeros(linkProp.Value, 7) + ".img";
+					var linkedImage = (WzImage) Program.WzManager.FindWzImageByName("npc", linkImgName);
+
+					_LinkedWzImage = linkedImage ?? npcImage; // fallback to npcImage if null
+				} else {
+					_LinkedWzImage = npcImage;
 				}
 
 				return _LinkedWzImage;
@@ -132,5 +136,8 @@ namespace HaCreator.MapEditor.Info {
 
 			set => _LinkedWzImage = value;
 		}
+		
+		public string Link => link;
+		
 	}
 }

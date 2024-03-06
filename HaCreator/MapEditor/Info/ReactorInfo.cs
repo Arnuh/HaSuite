@@ -15,6 +15,7 @@ namespace HaCreator.MapEditor.Info {
 		private readonly string id;
 
 		private WzImage _LinkedWzImage;
+		private string link;
 
 		public ReactorInfo(Bitmap image, Point origin, string id, WzObject parentObject)
 			: base(image, origin, parentObject) {
@@ -33,8 +34,7 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public override void ParseImage() {
-			if (LinkedWzImage != null) // load from here too
-			{
+			if (LinkedWzImage != null) { // load from here too
 				ExtractPNGFromImage(_LinkedWzImage);
 			} else {
 				ExtractPNGFromImage((WzImage) ParentObject);
@@ -72,24 +72,29 @@ namespace HaCreator.MapEditor.Info {
 		/// </summary>
 		public WzImage LinkedWzImage {
 			get {
-				if (_LinkedWzImage == null) {
-					var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
-					var reactorObject = Program.WzManager.FindWzImageByName("reactor", imgName);
+				if (_LinkedWzImage != null) {
+					return _LinkedWzImage;
+				}
 
-					var link = (WzStringProperty) reactorObject?["info"]?["link"];
-					if (link != null) {
-						var linkImgName = WzInfoTools.AddLeadingZeros(link.Value, 7) + ".img";
-						var findLinkedImg = (WzImage) Program.WzManager.FindWzImageByName("reactor", linkImgName);
+				var imgName = WzInfoTools.AddLeadingZeros(id, 7) + ".img";
+				var reactorObject = Program.WzManager.FindWzImageByName("reactor", imgName);
 
-						_LinkedWzImage = findLinkedImg ?? (WzImage) reactorObject; // fallback if link is null
-					} else {
-						_LinkedWzImage = (WzImage) reactorObject;
-					}
+				var linkProp = (WzStringProperty) reactorObject?["info"]?["link"];
+				if (linkProp != null) {
+					link = linkProp.Value;
+					var linkImgName = WzInfoTools.AddLeadingZeros(linkProp.Value, 7) + ".img";
+					var findLinkedImg = (WzImage) Program.WzManager.FindWzImageByName("reactor", linkImgName);
+
+					_LinkedWzImage = findLinkedImg ?? (WzImage) reactorObject; // fallback if link is null
+				} else {
+					_LinkedWzImage = (WzImage) reactorObject;
 				}
 
 				return _LinkedWzImage;
 			}
 			set => _LinkedWzImage = value;
 		}
+		
+		public string Link => link;
 	}
 }
