@@ -23,6 +23,8 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// </summary>
 		private TextBox textBox;
 
+		private bool showSpecialMaps;
+
 		/// <summary>
 		/// Load map selector
 		/// </summary>
@@ -37,13 +39,15 @@ namespace HaCreator.GUI.InstanceEditor {
 			searchBox.TextChanged += mapBrowser.searchBox_TextChanged;
 		}
 
-		public LoadMapSelector(TextBox textBox) {
+		public LoadMapSelector(TextBox textBox, bool showSpecialMaps = false) {
 			InitializeComponent();
 
 			DialogResult = DialogResult.Cancel;
 
 			this.textBox = textBox;
 			searchBox.TextChanged += mapBrowser.searchBox_TextChanged;
+
+			this.showSpecialMaps = showSpecialMaps;
 		}
 
 		/// <summary>
@@ -52,7 +56,7 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Load_Load(object sender, EventArgs e) {
-			mapBrowser.InitializeMaps(false); // load list of maps without Cash Shop, Login, etc
+			mapBrowser.InitializeMaps(showSpecialMaps);
 		}
 
 		/// <summary>
@@ -61,13 +65,14 @@ namespace HaCreator.GUI.InstanceEditor {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void loadButton_Click(object sender, EventArgs e) {
-			var mapid = mapBrowser.SelectedItem.Substring(0, 9);
-			var mapcat = "Map" + mapid.Substring(0, 1);
+			var selectedEntry = mapBrowser.SelectedItem;
+			// MapLogin and CashShopPreview wont contain an -, hacky check so I hope we don't break it later
+			var mapId = selectedEntry.Contains("-") ? selectedEntry.Substring(0, 9) : selectedEntry;
 
 			if (numericUpDown != null) {
-				numericUpDown.Value = long.Parse(mapid);
+				numericUpDown.Value = long.Parse(mapId);
 			} else {
-				textBox.Text = mapid;
+				textBox.Text = mapId;
 			}
 
 			DialogResult = DialogResult.OK;
@@ -80,7 +85,9 @@ namespace HaCreator.GUI.InstanceEditor {
 		private void Load_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Escape) {
 				Close();
-			} else if (e.KeyCode == Keys.Enter) loadButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) {
+				loadButton_Click(null, null);
+			}
 		}
 	}
 }

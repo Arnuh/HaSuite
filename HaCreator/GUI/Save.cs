@@ -153,7 +153,7 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void button_select_Click(object sender, EventArgs e) {
-			var selector = new LoadMapSelector(idBox_mapId);
+			var selector = new LoadMapSelector(idBox_mapId, true);
 			selector.ShowDialog();
 		}
 	}
