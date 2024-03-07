@@ -987,21 +987,23 @@ namespace HaRepacker.GUI.Panels {
 			}
 		}
 
-
 		private void FixLinkForOldMS(WzCanvasProperty selectedWzCanvas, WzNode parentCanvasNode) {
 			var linkedTarget = selectedWzCanvas.GetLinkedWzImageProperty();
-			if (selectedWzCanvas
-			    .HaveInlinkProperty()) // if its an inlink property, remove that before updating base image.
-			{
+			// Check if the linked wz prop is changed
+			// if it is, that means inlink/outlink exists & the resulting link
+			// exists and is found.
+			if (selectedWzCanvas == linkedTarget) {
+				return;
+			}
+
+			if (selectedWzCanvas.HaveInlinkProperty()) { // if its an inlink property, remove that before updating base image.
 				selectedWzCanvas.RemoveProperty(selectedWzCanvas[WzCanvasProperty.InlinkPropertyName]);
 				var childInlinkNode = WzNode.GetChildNode(parentCanvasNode, WzCanvasProperty.InlinkPropertyName);
 
 				childInlinkNode.DeleteWzNode(); // Delete '_inlink' node
 			}
 
-			if (selectedWzCanvas
-			    .HaveOutlinkProperty()) // if its an outlink property, remove that before updating base image.
-			{
+			if (selectedWzCanvas.HaveOutlinkProperty()) { // if its an outlink property, remove that before updating base image.
 				selectedWzCanvas.RemoveProperty(selectedWzCanvas[WzCanvasProperty.OutlinkPropertyName]);
 				var childOutlinkNode = WzNode.GetChildNode(parentCanvasNode, WzCanvasProperty.OutlinkPropertyName);
 
@@ -1012,6 +1014,7 @@ namespace HaRepacker.GUI.Panels {
 
 			// Updates
 			selectedWzCanvas.ParentImage.Changed = true;
+			return;
 		}
 
 		private void CheckImageNodeRecursively(WzNode node) {
@@ -1020,16 +1023,17 @@ namespace HaRepacker.GUI.Panels {
 
 				node.Reparse();
 			}
-
+			
 			if (node.Tag is WzCanvasProperty property) {
-				FixLinkForOldMS(property, node);
+				 FixLinkForOldMS(property, node);
 			} else {
-				foreach (WzNode child in node.Nodes)
+				foreach (WzNode child in node.Nodes) {
 					CheckImageNodeRecursively(child);
+				}
 			}
 
 			var hash = WzNode.GetChildNode(node, "_hash");
-			if (hash != null) hash.DeleteWzNode();
+			hash?.DeleteWzNode();
 		}
 
 
@@ -1040,12 +1044,13 @@ namespace HaRepacker.GUI.Panels {
 			// handle multiple nodes...
 			var nodeCount = DataTree.SelectedNodes.Count;
 			var t0 = DateTime.Now;
-			foreach (WzNode node in DataTree.SelectedNodes) CheckImageNodeRecursively(node);
+			foreach (WzNode node in DataTree.SelectedNodes) {
+				CheckImageNodeRecursively(node);
+			}
 
 			// Check for updates to the changed canvas image that the user is currently selecting
-			if (DataTree.SelectedNode.Tag is WzCanvasProperty) // only allow button click if its an image property
-			{
-				Image img = ((WzCanvasProperty) DataTree.SelectedNode.Tag).GetLinkedWzCanvasBitmap();
+			if (DataTree.SelectedNode.Tag is WzCanvasProperty canvasProp) { // only allow button click if its an image property
+				Image img = canvasProp.GetLinkedWzCanvasBitmap();
 				if (img is Bitmap bmp) {
 					canvasPropBox.SetImage(bmp);
 				}
