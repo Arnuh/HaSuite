@@ -1562,8 +1562,8 @@ namespace HaRepacker.GUI.Panels {
 				if (bIsWzStringProperty) {
 					var stringObj = (WzStringProperty) obj;
 
-					if (stringObj.IsSpineAtlasResources) // spine related resource
-					{
+					if (stringObj.IsSpineAtlasResources) { // spine related resource
+					
 						bAnimateMoreButton = true;
 						menuItem_exportFile.Visibility = Visibility.Visible;
 
@@ -1587,8 +1587,7 @@ namespace HaRepacker.GUI.Panels {
 						});
 						thread.Start();
 						thread.Join();
-					} else if (stringObj.Name.EndsWith(".json")) // Map001.wz/Back/BM3_3.img/spine/skeleton.json
-					{
+					} else if (stringObj.Name.EndsWith(".json")) { // Map001.wz/Back/BM3_3.img/spine/skeleton.json
 						bAnimateMoreButton = true;
 						menuItem_exportFile.Visibility = Visibility.Visible;
 
@@ -1601,8 +1600,8 @@ namespace HaRepacker.GUI.Panels {
 						textPropBox.Text = obj.ToString();
 						textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
 
-						if (stringObj.Name == PORTAL_NAME_OBJ_NAME) // Portal type name display - "pn" = portal name 
-						{
+						if (stringObj.Name == PORTAL_NAME_OBJ_NAME) { // Portal type name display - "pn" = portal name 
+						
 							if (Tables.PortalTypeNames.ContainsKey(obj.GetString())) {
 								toolStripStatusLabel_additionalInfo.Text =
 									string.Format(Properties.Resources.MainAdditionalInfo_PortalType,
@@ -1619,35 +1618,24 @@ namespace HaRepacker.GUI.Panels {
 					textPropBox.Visibility = Visibility.Visible;
 					textPropBox.AcceptsReturn = false;
 
-					ulong value_ = 0;
-					if (obj is WzLongProperty longProp) {
-						value_ = (ulong) longProp.GetLong();
-					} else if (obj is WzIntProperty intProp) {
-						value_ = (ulong) intProp.GetLong();
-					} else if (obj is WzShortProperty shortProp) {
-						value_ = (ulong) shortProp.GetLong();
-					}
-
-					textPropBox.Text = value_.ToString();
+					textPropBox.Text = obj.WzValue.ToString();
 
 					textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
 
 					// field limit UI
-					if (obj.Name == FIELD_LIMIT_OBJ_NAME) {
+					if (obj.Name == FIELD_LIMIT_OBJ_NAME && ulong.TryParse(obj.WzValue.ToString(), out var value)) {
 						isSelectingWzMapFieldLimit = true;
 
 						// Set visibility
 						fieldLimitPanelHost.Visibility = Visibility.Visible;
-						fieldLimitPanel1.UpdateFieldLimitCheckboxes(value_);
+						fieldLimitPanel1.UpdateFieldLimitCheckboxes(value);
 					}
 				} else if (bIsWzDoubleProperty || bIsWzFloatProperty) {
 					textPropBox.Visibility = Visibility.Visible;
 					textPropBox.AcceptsReturn = false;
 					textPropBox.ApplyButtonEnabled = false; // reset to disabled mode when changed
 
-					if (bIsWzFloatProperty) {
-						textPropBox.Text = ((WzFloatProperty) obj).GetFloat().ToString();
-					} else if (bIsWzDoubleProperty) textPropBox.Text = ((WzDoubleProperty) obj).GetDouble().ToString();
+					textPropBox.Text = obj.WzValue.ToString();
 				} else {
 					textPropBox.AcceptsReturn = false;
 				}
