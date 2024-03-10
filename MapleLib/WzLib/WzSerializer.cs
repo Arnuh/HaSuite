@@ -571,30 +571,32 @@ namespace MapleLib.WzLib.Serialization {
 
 	public class WzImgDeserializer : ProgressingWzSerializer {
 		private readonly bool freeResources;
+		private readonly byte[] iv, UserKey;
 
-		public WzImgDeserializer(bool freeResources) {
+		public WzImgDeserializer(bool freeResources, byte[] iv, byte[] UserKey) {
 			this.freeResources = freeResources;
+			this.iv = iv;
+			this.UserKey = UserKey;
 		}
 
-		public WzImage WzImageFromIMGBytes(byte[] bytes, WzMapleVersion version, string name, bool freeResources) {
-			var iv = WzTool.GetIvByMapleVersion(version);
-			var userkey = WzTool.GetUserKeyByMapleVersion(version);
+		public WzImage WzImageFromIMGBytes(byte[] bytes, string name, bool freeResources) {
 			var stream = new MemoryStream(bytes);
-			var wzReader = new WzBinaryReader(stream, iv, userkey);
+			var wzReader = new WzBinaryReader(stream, iv, UserKey);
 			var img = new WzImage(name, wzReader) {
 				BlockSize = bytes.Length
 			};
 			img.CalculateAndSetImageChecksum(bytes);
 
 			img.Offset = 0;
-			if (freeResources) {
-				img.ParseEverything = true;
-				img.ParseImage(true);
-
-				img.Changed = true;
-				wzReader.Close();
+			if (!freeResources) {
+				return img;
 			}
 
+			img.ParseEverything = true;
+			img.ParseImage(true);
+
+			img.Changed = true;
+			wzReader.Close();
 			return img;
 		}
 
@@ -606,7 +608,7 @@ namespace MapleLib.WzLib.Serialization {
 		/// <param name="name"></param>
 		/// <param name="successfullyParsedImage"></param>
 		/// <returns></returns>
-		public WzImage WzImageFromIMGFile(string inPath, byte[] iv, byte[] UserKey, string name, out bool successfullyParsedImage) {
+		public WzImage WzImageFromIMGFile(string inPath, string name, out bool successfullyParsedImage) {
 			var stream = File.OpenRead(inPath);
 			var wzReader = new WzBinaryReader(stream, iv, UserKey);
 
@@ -851,7 +853,9 @@ namespace MapleLib.WzLib.Serialization {
 			using (TextWriter tw = new StreamWriter(File.Create(path))) {
 				tw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + lineBreak);
 				tw.Write("<imgdir name=\"" + XmlUtil.SanitizeText(img.Name) + "\">" + lineBreak);
-				foreach (var property in img.WzProperties) WritePropertyToXML(tw, indent, property, path);
+				foreach (var property in img.WzProperties) {
+					WritePropertyToXML(tw, indent, property, path);
+				}
 
 				tw.Write("</imgdir>" + lineBreak);
 			}
@@ -971,12 +975,13 @@ namespace MapleLib.WzLib.Serialization {
 
 		private readonly bool useMemorySaving;
 		private readonly byte[] iv, UserKey;
-		private readonly WzImgDeserializer imgDeserializer = new WzImgDeserializer(false);
+		private readonly WzImgDeserializer imgDeserializer;
 
 		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey) {
 			this.useMemorySaving = useMemorySaving;
 			this.iv = iv;
 			this.UserKey = UserKey;
+			imgDeserializer = new WzImgDeserializer(false, iv, this.UserKey);
 		}
 
 		#region Public Functions
@@ -1059,7 +1064,7 @@ namespace MapleLib.WzLib.Serialization {
 				result.Dispose();
 			}
 
-			result = imgDeserializer.WzImageFromIMGFile(path, iv, UserKey, name, out _);
+			result = imgDeserializer.WzImageFromIMGFile(path, name, out _);
 
 			return result;
 		}

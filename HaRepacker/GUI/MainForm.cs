@@ -1931,7 +1931,8 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var deserializer = new WzImgDeserializer(true);
+			var deserializer = new WzImgDeserializer(true, WzTool.GetIvByMapleVersion(wzImageImportVersion),
+				WzTool.GetUserKeyByMapleVersion(wzImageImportVersion));
 			yesToAll = false;
 			noToAll = false;
 			threadDone = false;
@@ -2001,8 +2002,7 @@ namespace HaRepacker.GUI {
 						objs = xmlDeserializer.ParseXML(file);
 					} else if (deserializer is WzImgDeserializer imgDeserializer) {
 						objs = new List<WzObject> {
-							imgDeserializer.WzImageFromIMGFile(file, WzTool.GetIvByMapleVersion(encryptionType),
-								WzTool.GetUserKeyByMapleVersion(encryptionType), Path.GetFileName(file), out var successfullyParsedImage)
+							imgDeserializer.WzImageFromIMGFile(file, Path.GetFileName(file), out var successfullyParsedImage)
 						};
 
 						if (!successfullyParsedImage) {
