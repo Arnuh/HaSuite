@@ -1050,7 +1050,7 @@ namespace MapleLib.WzLib.Serialization {
 
 		internal WzImage ParseXMLWzImg(XmlElement imgElement) {
 			var name = imgElement.GetAttribute("name");
-			var result = new WzImage(name, iv);
+			var result = new WzImage(name, iv, UserKey);
 			foreach (XmlElement subelement in imgElement) {
 				result.AddProperty(ParsePropertyFromXMLElement(subelement));
 			}

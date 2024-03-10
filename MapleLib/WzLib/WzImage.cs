@@ -81,17 +81,17 @@ namespace MapleLib.WzLib {
 
 		public WzImage(string name, WzMapleVersion mapleVersion) {
 			this.name = name;
-			wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(mapleVersion));
+			wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(mapleVersion), WzTool.GetUserKeyByMapleVersion(mapleVersion));
 		}
 
-		public WzImage(string name, byte[] iv) {
+		public WzImage(string name, byte[] iv, byte[] UserKey) {
 			this.name = name;
-			wzKey = WzKeyGenerator.GenerateWzKey(iv);
+			wzKey = WzKeyGenerator.GenerateWzKey(iv, UserKey);
 		}
 
 		public WzImage(string name, Stream dataStream, WzMapleVersion mapleVersion) {
 			this.name = name;
-			reader = new WzBinaryReader(dataStream, WzTool.GetIvByMapleVersion(mapleVersion), WzTool.GetIvByMapleVersion(mapleVersion));
+			reader = new WzBinaryReader(dataStream, WzTool.GetIvByMapleVersion(mapleVersion), WzTool.GetUserKeyByMapleVersion(mapleVersion));
 			wzKey = reader.WzKey;
 		}
 
@@ -226,7 +226,7 @@ namespace MapleLib.WzLib {
 
 		public WzImage DeepClone() {
 			if (reader != null && !parsed) ParseImage();
-			var clone = new WzImage(name, wzKey.CopyIv()) {
+			var clone = new WzImage(name, wzKey.CopyIv(), wzKey.CopyUserKey()) {
 				bIsImageChanged = true
 			};
 			foreach (var prop in properties)
