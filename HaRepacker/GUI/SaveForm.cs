@@ -40,8 +40,8 @@ namespace HaRepacker.GUI {
 			WzEncryptionTypeHelper.AddWzEncryptionTypesToComboBox(encryptionBox);
 
 			this.wzNode = wzNode;
-			if (wzNode.Tag is WzImage) // Data.wz hotfix file
-			{
+			if (wzNode.Tag is WzImage) { // Data.wz hotfix file
+			
 				wzImg = (WzImage) wzNode.Tag;
 				IsRegularWzFile = false;
 
@@ -127,11 +127,14 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
+			var filterIndex = IsRegularWzFile ? 1 : 2;
+
 			using (var dialog = new SaveFileDialog {
 				       Title = Resources.SelectOutWz,
 				       FileName = wzNode.Text,
-				       Filter = string.Format("{0}|*.wz",
-					       Resources.WzFilter)
+				       Filter = string.Format("{0}|*.wz|{1}|*.img",
+					       Resources.WzFilter, Resources.WzImgFilter),
+				       FilterIndex = filterIndex
 			       }) {
 				if (dialog.ShowDialog() != DialogResult.OK) {
 					return;
