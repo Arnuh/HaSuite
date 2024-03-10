@@ -7,6 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.Properties;
 using HaSharedLibrary.Wz;
@@ -155,7 +156,8 @@ namespace HaCreator.MapEditor.Info {
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
 			const int DEFAULT_RX = -5;
 			const int DEFAULT_RY = -5;
-			return CreateInstance(board, x, y, z, DEFAULT_RX, DEFAULT_RY, 0, 0, 0, 255, false, flip, 0, null, false);
+			return CreateInstance(board, x, y, z, DEFAULT_RX, DEFAULT_RY, 0, 0, 0, 255, Defaults.Background.Front, flip, 0, Defaults.Background.SpineAni,
+				Defaults.Background.SpineRandomStart);
 		}
 
 		/// <summary>
