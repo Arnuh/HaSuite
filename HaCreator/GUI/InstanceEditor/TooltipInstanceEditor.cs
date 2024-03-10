@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
@@ -27,7 +28,7 @@ namespace HaCreator.GUI.InstanceEditor {
 				titleBox.Text = item.Title;
 			}
 
-			if (item.Desc != null) {
+			if (!item.Desc.Equals(Defaults.ToolTip.Desc)) {
 				useDescBox.Checked = true;
 				descBox.Text = item.Desc;
 			}

@@ -385,13 +385,11 @@ namespace HaCreator.Wz {
 						UpdateString(titleProp, ttInst.Title, strTooltipImg);
 					}
 
-					if (ttInst.Desc != null) {
-						var descProp = (WzStringProperty) strTooltipProp["Desc"];
-						if (descProp == null) {
-							descProp = new WzStringProperty();
-							Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
-						}
-
+					var descProp = (WzStringProperty) strTooltipProp["Desc"];
+					if (descProp == null && !ttInst.Desc.Equals(Defaults.ToolTip.Desc)) {
+						strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc, Defaults.ToolTip.Desc);
+						Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
+					} else if (descProp != null) {
 						UpdateString(descProp, ttInst.Desc, strTooltipImg);
 					}
 				} else {
