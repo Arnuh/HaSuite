@@ -374,16 +374,14 @@ namespace HaCreator.Wz {
 				if (retainTooltipStrings) {
 					// This prop must exist if we are retaining, otherwise the map would not load
 					var strTooltipProp = (WzSubProperty) strTooltipParent[tooltipPropStr];
-
-					if (ttInst.Title != null) {
-						var titleProp = (WzStringProperty) strTooltipProp["Title"];
-						if (titleProp == null) {
-							titleProp = new WzStringProperty();
-							Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
-						}
-
-						UpdateString(titleProp, ttInst.Title, strTooltipImg);
+					
+					var titleProp = (WzStringProperty) strTooltipProp["Title"];
+					if (titleProp == null) {
+						strTooltipProp["Title"] = titleProp = new WzStringProperty("Title", ttInst.Title);
+						Program.WzManager.SetWzFileUpdated("string", strTooltipImg);
 					}
+
+					UpdateString(titleProp, ttInst.Title, strTooltipImg);
 
 					var descProp = (WzStringProperty) strTooltipProp["Desc"];
 					if (descProp == null && !ttInst.Desc.Equals(Defaults.ToolTip.Desc)) {

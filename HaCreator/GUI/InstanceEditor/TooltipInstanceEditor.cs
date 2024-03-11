@@ -22,11 +22,8 @@ namespace HaCreator.GUI.InstanceEditor {
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-
-			if (item.Title != null) {
-				useTitleBox.Checked = true;
-				titleBox.Text = item.Title;
-			}
+			
+			titleBox.Text = item.Title;
 
 			if (!item.Desc.Equals(Defaults.ToolTip.Desc)) {
 				useDescBox.Checked = true;
@@ -51,15 +48,11 @@ namespace HaCreator.GUI.InstanceEditor {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
 				}
 
-				item.Title = useTitleBox.Checked ? titleBox.Text : null;
-				item.Desc = useDescBox.Checked ? descBox.Text : null;
+				item.Title = titleBox.Text;
+				item.Desc = useDescBox.Checked ? descBox.Text : Defaults.ToolTip.Desc;
 			}
 
 			Close();
-		}
-
-		private void useTitleBox_CheckedChanged(object sender, EventArgs e) {
-			titleBox.Enabled = useTitleBox.Checked;
 		}
 
 		private void useDescBox_CheckedChanged(object sender, EventArgs e) {
