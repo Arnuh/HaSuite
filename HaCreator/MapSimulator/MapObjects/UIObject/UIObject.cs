@@ -123,8 +123,8 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 		/// <param name="flip"></param>
 		/// <param name="relativePositionXY">The relative position of the button to be overlaid on top of the main BaseDXDrawableItem</param>
 		/// <param name="graphicsDevice"></param>
-		public UIObject(WzSubProperty uiButtonProperty, WzBinaryProperty BtMouseClickProperty,
-			WzBinaryProperty BtMouseOverProperty,
+		public UIObject(WzSubProperty uiButtonProperty, WzSoundProperty BtMouseClickProperty,
+			WzSoundProperty BtMouseOverProperty,
 			bool flip,
 			Point relativePositionXY,
 			GraphicsDevice graphicsDevice) {
@@ -150,12 +150,12 @@ namespace HaCreator.MapSimulator.MapObjects.UIObject {
 		#region Init
 
 		/// <summary>
-		/// Create SoundEffect from WzBinaryProperty
+		/// Create SoundEffect from WzSoundProperty
 		/// TODO: combined cache
 		/// </summary>
 		/// <param name="BtMouseProperty"></param>
 		/// <returns></returns>
-		private SoundEffect CreateSoundEffectWithWzProperty(WzBinaryProperty BtMouseProperty) {
+		private SoundEffect CreateSoundEffectWithWzProperty(WzSoundProperty BtMouseProperty) {
 			/*using (MemoryStream ms = new MemoryStream(BtMouseProperty.GetBytes(true)))  // dont dispose until its no longer needed
 			{
 			    WaveFormat wavFmt = BtMouseProperty.WavFormat;

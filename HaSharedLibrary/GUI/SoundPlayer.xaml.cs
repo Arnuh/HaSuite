@@ -10,7 +10,7 @@ namespace HaSharedLibrary.GUI {
 	/// </summary>
 	public partial class SoundPlayer : UserControl {
 		private WzMp3Streamer currAudio;
-		private WzBinaryProperty soundProp;
+		private WzSoundProperty soundProp;
 
 		private readonly DispatcherTimer timer;
 
@@ -149,7 +149,7 @@ namespace HaSharedLibrary.GUI {
 			}
 		}
 
-		public WzBinaryProperty SoundProperty {
+		public WzSoundProperty SoundProperty {
 			get => soundProp;
 			set {
 				soundProp = value;

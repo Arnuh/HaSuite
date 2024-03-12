@@ -603,13 +603,13 @@ namespace HaCreator.GUI {
 
 					try {
 						foreach (var bgmImage in soundImage.WzProperties) {
-							WzBinaryProperty binProperty = null;
-							if (bgmImage is WzBinaryProperty bgm) {
+							WzSoundProperty binProperty = null;
+							if (bgmImage is WzSoundProperty bgm) {
 								binProperty = bgm;
 							} else if (bgmImage is WzUOLProperty uolBGM) // is UOL property
 							{
 								var linkVal = ((WzUOLProperty) bgmImage).LinkValue;
-								if (linkVal is WzBinaryProperty linkCanvas) binProperty = linkCanvas;
+								if (linkVal is WzSoundProperty linkCanvas) binProperty = linkCanvas;
 							}
 
 							if (binProperty != null) {

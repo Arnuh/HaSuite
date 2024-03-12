@@ -91,7 +91,7 @@ namespace MapleLib.WzLib.Spine {
 				foreach (var property in childProperties) {
 					var linkedProperty = property.GetLinkedWzImageProperty();
 
-					if (linkedProperty is WzBinaryProperty soundProp) {
+					if (linkedProperty is WzSoundProperty soundProp) {
 						using (var ms = new MemoryStream(soundProp.GetBytes(false))) {
 							var skeletonBinary = new SkeletonBinary(atlas);
 							data = skeletonBinary.ReadSkeletonData(ms);

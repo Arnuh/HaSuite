@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace MapleLib.Helpers {
@@ -82,6 +84,37 @@ namespace MapleLib.Helpers {
 
 			var newByte = byte.Parse(hex, NumberStyles.HexNumber);
 			return newByte;
+		}
+
+		public static byte[] StructToBytes<T>(T obj) {
+			var result = new byte[Marshal.SizeOf(obj)];
+			var handle = GCHandle.Alloc(result, GCHandleType.Pinned);
+			try {
+				Marshal.StructureToPtr(obj, handle.AddrOfPinnedObject(), false);
+				return result;
+			} finally {
+				handle.Free();
+			}
+		}
+
+		public static T BytesToStruct<T>(byte[] data) where T : new() {
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			try {
+				return Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
+			} finally {
+				handle.Free();
+			}
+		}
+
+		public static T BytesToStructConstructorless<T>(byte[] data) {
+			var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+			try {
+				var obj = (T) FormatterServices.GetUninitializedObject(typeof(T));
+				Marshal.PtrToStructure(handle.AddrOfPinnedObject(), obj);
+				return obj;
+			} finally {
+				handle.Free();
+			}
 		}
 	}
 }

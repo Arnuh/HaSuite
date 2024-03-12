@@ -13,33 +13,31 @@ namespace HaSharedLibrary {
 	public class WzMp3Streamer {
 		private readonly Stream byteStream;
 
-		private Mp3FileReader mpegStream;
-		private WaveFileReader waveFileStream;
+		private WaveStream waveStream;
 
-		private readonly bool bIsMP3File = true;
+		private readonly bool isMP3File = true;
 
 		private readonly WaveOut wavePlayer;
-		private readonly WzBinaryProperty sound;
+		private readonly WzSoundProperty sound;
 		private bool repeat;
 
 		private bool playbackSuccessfully = true;
 
-		public WzMp3Streamer(WzBinaryProperty sound, bool repeat) {
-			this.repeat = repeat;
+		public WzMp3Streamer(WzSoundProperty sound, bool repeat) {
 			this.sound = sound;
+			this.repeat = repeat;
 			byteStream = new MemoryStream(sound.GetBytes(false));
 
-			bIsMP3File = !sound.Name.EndsWith("wav"); // mp3 file does not end with any extension
+			isMP3File = !sound.Name.EndsWith("wav"); // mp3 file does not end with any extension
 
 			wavePlayer = new WaveOut(WaveCallbackInfo.FunctionCallback());
 			try {
-				if (bIsMP3File) {
-					mpegStream = new Mp3FileReader(byteStream);
-					wavePlayer.Init(mpegStream);
+				if (isMP3File) {
+					waveStream = new Mp3FileReader(byteStream);
 				} else {
-					waveFileStream = new WaveFileReader(byteStream);
-					wavePlayer.Init(waveFileStream);
+					waveStream = new WaveFileReader(byteStream);
 				}
+				wavePlayer.Init(waveStream);
 			} catch (Exception) {
 				playbackSuccessfully = false;
 				//InvalidDataException
@@ -51,16 +49,13 @@ namespace HaSharedLibrary {
 		}
 
 		private void wavePlayer_PlaybackStopped(object sender, StoppedEventArgs e) {
-			if (repeat && !disposed) {
-				if (mpegStream != null) {
-					mpegStream.Seek(0, SeekOrigin.Begin);
-				} else {
-					waveFileStream.Seek(0, SeekOrigin.Begin);
-				}
-
-				wavePlayer.Pause();
-				wavePlayer.Play();
+			if (!repeat || disposed) {
+				return;
 			}
+			waveStream.Seek(0, SeekOrigin.Begin);
+
+			wavePlayer.Pause();
+			wavePlayer.Play();
 		}
 
 		private bool disposed;
@@ -74,14 +69,9 @@ namespace HaSharedLibrary {
 
 			disposed = true;
 			wavePlayer.Dispose();
-			if (mpegStream != null) {
-				mpegStream.Dispose();
-				mpegStream = null;
-			}
-
-			if (waveFileStream != null) {
-				waveFileStream.Dispose();
-				waveFileStream = null;
+			if (waveStream != null) {
+				waveStream.Dispose();
+				waveStream = null;
 			}
 
 			byteStream.Dispose();
@@ -124,23 +114,13 @@ namespace HaSharedLibrary {
 
 		public int Position {
 			get {
-				if (mpegStream != null) {
-					return (int) (mpegStream.Position / mpegStream.WaveFormat.AverageBytesPerSecond);
-				}
-
-				if (waveFileStream != null) {
-					return (int) (waveFileStream.Position / waveFileStream.WaveFormat.AverageBytesPerSecond);
+				if (waveStream != null) {
+					return (int) (waveStream.Position / waveStream.WaveFormat.AverageBytesPerSecond);
 				}
 
 				return 0;
 			}
-			set {
-				if (mpegStream != null) {
-					mpegStream.Seek(value * mpegStream.WaveFormat.AverageBytesPerSecond, SeekOrigin.Begin);
-				} else if (waveFileStream != null) {
-					waveFileStream.Seek(value * waveFileStream.WaveFormat.AverageBytesPerSecond, SeekOrigin.Begin);
-				}
-			}
+			set => waveStream?.Seek(value * waveStream.WaveFormat.AverageBytesPerSecond, SeekOrigin.Begin);
 		}
 	}
 }

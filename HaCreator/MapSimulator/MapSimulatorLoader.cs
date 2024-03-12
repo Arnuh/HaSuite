@@ -634,8 +634,8 @@ namespace HaCreator.MapSimulator {
 				// >>> If aligning from the left to the right. Items at the left must be at the top of the code
 				// >>> If aligning from the right to the left. Items at the right must be at the top of the code with its (x position - parent width).
 				// TODO: probably a wrapper class in the future, such as HorizontalAlignment and VerticalAlignment, or Grid/ StackPanel 
-				var BtMouseClickSoundProperty = (WzBinaryProperty) soundUIImage["BtMouseClick"];
-				var BtMouseOverSoundProperty = (WzBinaryProperty) soundUIImage["BtMouseOver"];
+				var BtMouseClickSoundProperty = (WzSoundProperty) soundUIImage["BtMouseClick"];
+				var BtMouseOverSoundProperty = (WzSoundProperty) soundUIImage["BtMouseOver"];
 
 				if (bBigBang) {
 					var BtNpc = (WzSubProperty) minimapFrameProperty["BtNpc"]; // npc button

@@ -140,13 +140,21 @@ namespace MapleLib.WzLib.Serialization {
 					doubleProp.Value, "\"/>") + lineBreak);
 			} else if (prop is WzNullProperty nullProp) {
 				tw.Write(depth + "<null name=\"" + XmlUtil.SanitizeText(nullProp.Name) + "\"/>" + lineBreak);
-			} else if (prop is WzBinaryProperty binaryProp) {
+			} else if (prop is WzSoundProperty binaryProp) {
 				if (exportBase64Data) {
-					tw.Write(string.Concat(new object[] {
-						depth, "<sound name=\"", XmlUtil.SanitizeText(binaryProp.Name), "\" length=\"",
-						binaryProp.Length.ToString(), "\" basehead=\"", Convert.ToBase64String(binaryProp.Header),
-						"\" basedata=\"", Convert.ToBase64String(binaryProp.GetBytes(false)), "\"/>"
-					}) + lineBreak);
+					var format = binaryProp.GetWaveFormatBytes();
+					if (format == null) {
+						tw.Write(string.Concat(depth, "<sound name=\"", XmlUtil.SanitizeText(binaryProp.Name), "\" samplelength=\"",
+							         binaryProp.Length.ToString(), "\" baseheader=\"", Convert.ToBase64String(binaryProp.Header), "\" basedata=\"",
+							         Convert.ToBase64String(binaryProp.GetBytes(false)), "\"/>") +
+						         lineBreak);
+					} else {
+						tw.Write(string.Concat(depth, "<sound name=\"", XmlUtil.SanitizeText(binaryProp.Name), "\" samplelength=\"",
+							         binaryProp.Length.ToString(),
+							         "\" baseformat=\"", Convert.ToBase64String(binaryProp.GetWaveFormatBytes()), "\" baseheader=\"",
+							         Convert.ToBase64String(binaryProp.Header), "\" basedata=\"", Convert.ToBase64String(binaryProp.GetBytes(false)), "\"/>") +
+						         lineBreak);
+					}
 				} else {
 					tw.Write(depth + "<sound name=\"" + XmlUtil.SanitizeText(binaryProp.Name) + "\"/>" + lineBreak);
 				}
@@ -310,15 +318,21 @@ namespace MapleLib.WzLib.Serialization {
 					json.Add(new JProperty(XmlUtil.SanitizeText(propertyNull.Name),
 						jsonNull)); // add this json to the main json object parent
 				}
-			} else if (prop is WzBinaryProperty propertyBin) {
+			} else if (prop is WzSoundProperty propertyBin) {
 				var jsonBinary = new JObject {
 					//{ FIELD_DEPTH_NAME, depth },
 					{FIELD_NAME_NAME, XmlUtil.SanitizeText(propertyBin.Name)},
-					{FIELD_TYPE_NAME, "binary"},
-					{FIELD_LENGTH_NAME, propertyBin.Length.ToString()}
+					{FIELD_TYPE_NAME, "sound"},
+					{FIELD_LENGTH_NAME, propertyBin.Length.ToString()},
+					{"mask", propertyBin.mask}
 				};
 				if (exportBase64Data) {
-					jsonBinary.Add("basehead", Convert.ToBase64String(propertyBin.Header));
+					var format = propertyBin.GetWaveFormatBytes();
+					if (format != null) {
+						jsonBinary.Add("baseformat", Convert.ToBase64String(format));
+					}
+
+					jsonBinary.Add("baseheader", Convert.ToBase64String(propertyBin.Header));
 					jsonBinary.Add("basedata", Convert.ToBase64String(propertyBin.GetBytes(false)));
 				}
 
@@ -700,7 +714,7 @@ namespace MapleLib.WzLib.Serialization {
 
 				bmp.Save(path, ImageFormat.Png);
 				//curr++;
-			} else if (currObj is WzBinaryProperty binProperty) {
+			} else if (currObj is WzSoundProperty binProperty) {
 				var path = outPath + EscapeInvalidFilePathNames(currObj.Name) + ".mp3";
 
 				binProperty.SaveToFile(path);
@@ -1129,15 +1143,20 @@ namespace MapleLib.WzLib.Serialization {
 					return nullProp;
 
 				case "sound":
-					if (!element.HasAttribute("basedata") || !element.HasAttribute("basehead") ||
-					    !element.HasAttribute("length")) {
-						throw new NoBase64DataException("no base64 data in sound element with name " +
-						                                element.GetAttribute("name"));
+					if (!element.HasAttribute("basedata") || !element.HasAttribute("baseheader") ||
+					    !element.HasAttribute("samplelength")) {
+						throw new NoBase64DataException("no base64 data in sound element with name " + element.GetAttribute("name"));
 					}
 
-					var sound = new WzBinaryProperty(element.GetAttribute("name"),
-						int.Parse(element.GetAttribute("length")),
-						Convert.FromBase64String(element.GetAttribute("basehead")),
+					byte[] format = null;
+					if (element.HasAttribute("baseformat")) {
+						format = Convert.FromBase64String(element.GetAttribute("baseformat"));
+					}
+
+					var sound = new WzSoundProperty(element.GetAttribute("name"),
+						int.Parse(element.GetAttribute("samplelength")),
+						format,
+						Convert.FromBase64String(element.GetAttribute("baseheader")),
 						Convert.FromBase64String(element.GetAttribute("basedata")));
 					return sound;
 

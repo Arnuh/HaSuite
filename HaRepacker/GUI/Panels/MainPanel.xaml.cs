@@ -460,7 +460,7 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			((WzNode) target).AddObject(new WzBinaryProperty(name, path), UndoRedoMan);
+			((WzNode) target).AddObject(new WzSoundProperty(name, path), UndoRedoMan);
 		}
 
 		/// <summary>
@@ -1066,23 +1066,23 @@ namespace HaRepacker.GUI.Panels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MenuItem_changeSound_Click(object sender, RoutedEventArgs e) {
-			if (DataTree.SelectedNode.Tag is WzBinaryProperty) {
+			if (DataTree.SelectedNode.Tag is WzSoundProperty) {
 				var dialog = new OpenFileDialog {
 					Title = "Select the sound",
 					Filter = "Moving Pictures Experts Group Format 1 Audio Layer 3(*.mp3)|*.mp3"
 				};
 				if (dialog.ShowDialog() != DialogResult.OK) return;
-				WzBinaryProperty prop;
+				WzSoundProperty prop;
 				try {
-					prop = new WzBinaryProperty(((WzBinaryProperty) DataTree.SelectedNode.Tag).Name, dialog.FileName);
+					prop = new WzSoundProperty(((WzSoundProperty) DataTree.SelectedNode.Tag).Name, dialog.FileName);
 				} catch {
 					Warning.Error(Properties.Resources.MainImageLoadError);
 					return;
 				}
 
-				var parent = (IPropertyContainer) ((WzBinaryProperty) DataTree.SelectedNode.Tag).Parent;
-				((WzBinaryProperty) DataTree.SelectedNode.Tag).ParentImage.Changed = true;
-				((WzBinaryProperty) DataTree.SelectedNode.Tag).Remove();
+				var parent = (IPropertyContainer) ((WzSoundProperty) DataTree.SelectedNode.Tag).Parent;
+				((WzSoundProperty) DataTree.SelectedNode.Tag).ParentImage.Changed = true;
+				((WzSoundProperty) DataTree.SelectedNode.Tag).Remove();
 				DataTree.SelectedNode.Tag = prop;
 				parent.AddProperty(prop);
 				mp3Player.SoundProperty = prop;
@@ -1095,19 +1095,19 @@ namespace HaRepacker.GUI.Panels {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MenuItem_saveSound_Click(object sender, RoutedEventArgs e) {
-			if (!(DataTree.SelectedNode.Tag is WzBinaryProperty) && !(DataTree.SelectedNode.Tag is WzUOLProperty)) {
+			if (!(DataTree.SelectedNode.Tag is WzSoundProperty) && !(DataTree.SelectedNode.Tag is WzUOLProperty)) {
 				return;
 			}
 
 			var fileName = string.Empty;
-			WzBinaryProperty mp3 = null;
+			WzSoundProperty mp3 = null;
 			switch (DataTree.SelectedNode.Tag) {
-				case WzBinaryProperty prop:
+				case WzSoundProperty prop:
 					mp3 = prop;
 					fileName = prop.Name;
 					break;
 				case WzUOLProperty uolProp:
-					mp3 = (WzBinaryProperty) uolProp.LinkValue;
+					mp3 = (WzSoundProperty) uolProp.LinkValue;
 					fileName = uolProp.Name; // We should be using the original name right?
 					break;
 			}
@@ -1498,7 +1498,7 @@ namespace HaRepacker.GUI.Panels {
 
 			// vars
 			var bIsWzLuaProperty = obj is WzLuaProperty;
-			var bIsWzSoundProperty = obj is WzBinaryProperty;
+			var bIsWzSoundProperty = obj is WzSoundProperty;
 			var bIsWzStringProperty = obj is WzStringProperty;
 			var bIsWzIntProperty = obj is WzIntProperty;
 			var bIsWzLongProperty = obj is WzLongProperty;
@@ -1531,7 +1531,7 @@ namespace HaRepacker.GUI.Panels {
 				var linkValue = uolProperty.LinkValue;
 				if (linkValue is WzCanvasProperty canvasUOL) {
 					UpdateImageView(node, canvasUOL, false);
-				} else if (linkValue is WzBinaryProperty binProperty) { // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
+				} else if (linkValue is WzSoundProperty binProperty) { // Sound, used rarely in wz. i.e Sound.wz/Rune/1/Destroy
 					mp3Player.Visibility = Visibility.Visible;
 					mp3Player.SoundProperty = binProperty;
 
@@ -1547,7 +1547,7 @@ namespace HaRepacker.GUI.Panels {
 				bAnimateMoreButton = true; // flag
 
 				mp3Player.Visibility = Visibility.Visible;
-				mp3Player.SoundProperty = (WzBinaryProperty) obj;
+				mp3Player.SoundProperty = (WzSoundProperty) obj;
 
 				menuItem_changeSound.Visibility = Visibility.Visible;
 				menuItem_saveSound.Visibility = Visibility.Visible;
