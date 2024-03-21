@@ -639,13 +639,21 @@ namespace HaCreator.MapEditor.Input {
 			XNA.Point virtualPosition) {
 			lock (parentBoard) {
 				OnUserInteraction();
-				if (ClickOnMinimap(selectedBoard, realPosition)) return;
-				if (target != null) {
+				if (ClickOnMinimap(selectedBoard, realPosition)) {
+					return;
+				}
+
+				if (selectedBoard.Mouse.State == MouseState.Selection) {
+					if (target == null) {
+						return;
+					}
 					ClearSelectedItems(selectedBoard);
 					target.Selected = true;
 					parentBoard.EditInstanceClicked(target);
 				} else if (selectedBoard.Mouse.State == MouseState.Footholds) {
 					selectedBoard.Mouse.CreateFhAnchor();
+				} else {
+					parentBoard.InvokeReturnToSelectionState();
 				}
 			}
 		}
