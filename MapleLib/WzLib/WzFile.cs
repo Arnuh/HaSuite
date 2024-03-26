@@ -159,6 +159,8 @@ namespace MapleLib.WzLib {
 			UserKey = WzTool.GetUserKeyByMapleVersion(version);
 			wzDir.WzIv = WzIv;
 			wzDir.UserKey = UserKey;
+			wzDir.wzFile = this;
+			wzDir.parent = this;
 		}
 
 		/// <summary>

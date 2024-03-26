@@ -597,4 +597,7 @@ Click "Yes" to download the new version.</value>
     <data name="MainUnloadFile" xml:space="preserve">
         <value>Are you sure you want to unload this file?</value>
     </data>
+    <data name="SelectFolder" xml:space="preserve">
+        <value>Select the folder</value>
+    </data>
 </root>

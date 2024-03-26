@@ -88,6 +88,7 @@ namespace HaRepacker.GUI
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xMLToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.iMGToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.folderInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -438,7 +439,7 @@ namespace HaRepacker.GUI
             // 
             // importToolStripMenuItem
             // 
-            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.xMLToolStripMenuItem2, this.iMGToolStripMenuItem2});
+            this.importToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.xMLToolStripMenuItem2, this.iMGToolStripMenuItem2, this.folderInputMenuItem});
             this.importToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.page_add;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             resources.ApplyResources(this.importToolStripMenuItem, "importToolStripMenuItem");
@@ -454,6 +455,12 @@ namespace HaRepacker.GUI
             this.iMGToolStripMenuItem2.Name = "iMGToolStripMenuItem2";
             resources.ApplyResources(this.iMGToolStripMenuItem2, "iMGToolStripMenuItem2");
             this.iMGToolStripMenuItem2.Click += new System.EventHandler(this.iMGToolStripMenuItem2_Click);
+            // 
+            // folderInputMenuItem
+            // 
+            this.folderInputMenuItem.Name = "folderInputMenuItem";
+            resources.ApplyResources(this.folderInputMenuItem, "folderInputMenuItem");
+            this.folderInputMenuItem.Click += new System.EventHandler(this.folderInputMenuItem_Click);
             // 
             // toolStripSeparator9
             // 
@@ -575,6 +582,8 @@ namespace HaRepacker.GUI
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.ToolStripMenuItem folderInputMenuItem;
 
         #endregion
         private System.Windows.Forms.MenuStrip mainMenu;

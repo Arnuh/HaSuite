@@ -7,15 +7,9 @@
 using System;
 using System.Windows.Forms;
 using HaRepacker.Properties;
+using MapleLib.Helpers;
 
 namespace HaRepacker.GUI.Input {
-	public enum ReplaceResult {
-		Yes,
-		No,
-		YesToAll,
-		NoToAll,
-		NoneSelectedYet
-	}
 
 	public partial class ReplaceBox : Form {
 		public ReplaceResult result = ReplaceResult.No;

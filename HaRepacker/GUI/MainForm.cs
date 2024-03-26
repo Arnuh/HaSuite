@@ -35,6 +35,7 @@ using MapleLib.WzLib.Nx;
 using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using static MapleLib.Configuration.UserSettings;
 using Application = System.Windows.Forms.Application;
 using DataFormats = System.Windows.Forms.DataFormats;
@@ -1624,6 +1625,54 @@ namespace HaRepacker.GUI {
 			}
 
 			ImportImg(wzImageImportVersion, dialog.FileNames);
+		}
+
+		private void folderInputMenuItem_Click(object sender, EventArgs e) {
+			if (!IsChildHoldingSelectedNode()) {
+				return;
+			}
+
+			var selectedNode = (WzNode) MainPanel.DataTree.SelectedNode;
+			var selected = (WzObject) selectedNode.Tag;
+			var wzFile = selected.WzFileParent;
+			if (!(wzFile is WzFile)) {
+				return;
+			}
+
+			var dialog = new CommonOpenFileDialog {
+				Title = Resources.SelectFolder,
+				Multiselect = true,
+				IsFolderPicker = true,
+				InitialDirectory = Program.ConfigurationManager.UserSettings.PreviousLoadFolder
+			};
+			if (dialog.ShowDialog() != CommonFileDialogResult.Ok) {
+				return;
+			}
+
+			foreach (var filePath in dialog.FileNames)
+				UpdatePreviousLoadDirectory(filePath);
+
+			var xmlDeserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion),
+				WzTool.GetUserKeyByMapleVersion(wzFile.MapleVersion));
+			var imgDeserializer = new WzImgDeserializer(false, WzTool.GetIvByMapleVersion(wzFile.MapleVersion),
+				WzTool.GetUserKeyByMapleVersion(wzFile.MapleVersion));
+			threadDone = false;
+
+			var handler = new DuplicateHandler {
+				OnDuplicateEntry = name => {
+					ReplaceBox.Show(name, out result);
+					return result;
+				}
+			};
+
+			foreach (var filePath in dialog.FileNames) {
+				ImportTools.importFolder(handler, xmlDeserializer, imgDeserializer, selected, filePath);
+			}
+
+			// Adds all the children to the node
+			MainPanel.DataTree.BeginUpdate();
+			selectedNode.Reparse();
+			MainPanel.DataTree.EndUpdate();
 		}
 
 		private void searchToolStripMenuItem_Click(object sender, EventArgs e) {
