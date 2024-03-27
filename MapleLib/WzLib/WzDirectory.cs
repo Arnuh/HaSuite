@@ -325,14 +325,11 @@ namespace MapleLib.WzLib {
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="listWzPath">The path of the List.wz used for encrypted paths</param>
-		/// <param name="useIv">The IV to use while generating the data file. If null, it'll use the WzDirectory default</param>
-		/// <param name="bIsWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
+		/// <param name="isWzIvSimilar">If the WzIv is changed then images need to be updated</param>
+		/// <param name="isWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
 		/// <param name="prevOpenedStream">The previously opened file stream</param>
 		/// <returns></returns>
-		internal int GenerateDataFile(byte[] useIv, bool bIsWzUserKeyDefault, FileStream prevOpenedStream) {
-			var useCustomIv = useIv != null; // whole shit gonna be re-written if its a custom IV specified
-
+		internal int GenerateDataFile(bool isWzIvSimilar, bool isWzUserKeyDefault, FileStream prevOpenedStream) {
 			size = 0;
 			var entryCount = subDirs.Count + images.Count;
 			if (entryCount == 0) {
@@ -344,13 +341,13 @@ namespace MapleLib.WzLib {
 			offsetSize = WzTool.GetCompressedIntLength(entryCount);
 
 			foreach (var img in images) {
-				if (useCustomIv || // everything needs to be re-written when a custom IV is used.
-				    !bIsWzUserKeyDefault || //  everything needs to be re-written when a custom UserKey is used too
+				if (!isWzIvSimilar || // everything needs to be re-written when a custom IV is used.
+				    !isWzUserKeyDefault || //  everything needs to be re-written when a custom UserKey is used too
 				    img.bIsImageChanged) // or when an image is changed
 				{
 					using (var memStream = new MemoryStream()) {
-						using (var imgWriter = new WzBinaryWriter(memStream, useCustomIv ? useIv : WzIv, UserKey)) {
-							img.SaveImage(imgWriter, bIsWzUserKeyDefault, useCustomIv);
+						using (var imgWriter = new WzBinaryWriter(memStream, WzIv, UserKey)) {
+							img.SaveImage(imgWriter, isWzIvSimilar, isWzUserKeyDefault, !isWzIvSimilar);
 
 							img.CalculateAndSetImageChecksum(memStream.ToArray()); // checksum
 
@@ -379,9 +376,7 @@ namespace MapleLib.WzLib {
 				offsetSize += 4;
 
 				// otherwise Item.wz (300MB) probably uses > 4GB
-				if (useCustomIv ||
-				    !bIsWzUserKeyDefault) // when using custom IV, or changing IVs, all images have to be re-read and re-written..
-				{
+				if (!isWzIvSimilar || !isWzUserKeyDefault) {// when using custom IV, or changing IVs, all images have to be re-read and re-written..
 					GC.Collect(); // GC slows down writing of maps in HaCreator
 					GC.WaitForPendingFinalizers();
 				}
@@ -392,7 +387,7 @@ namespace MapleLib.WzLib {
 			foreach (var dir in subDirs) {
 				var nameLen = WzTool.GetWzObjectValueLength(dir.name, 3);
 				size += nameLen;
-				size += dir.GenerateDataFile(useIv, bIsWzUserKeyDefault, prevOpenedStream);
+				size += dir.GenerateDataFile(isWzIvSimilar, isWzUserKeyDefault, prevOpenedStream);
 				size += WzTool.GetCompressedIntLength(dir.size);
 				size += WzTool.GetCompressedIntLength(dir.Checksum);
 				size += 4;

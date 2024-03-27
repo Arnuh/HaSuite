@@ -74,5 +74,27 @@ namespace MapleLib.WzLib {
 				MarkListWzProperty(prop, listWz);
 			}
 		}
+		
+		public static void ConvertKey(WzImage image) {
+			foreach (var prop in image.WzProperties) {
+				ConvertKey(prop);
+			}
+		}
+		
+		public static void ConvertKey(WzImageProperty parent, WzMutableKey decWzKey = null, WzMutableKey encWzKey = null) {
+			if (parent.WzProperties == null) return;
+			foreach (var prop in parent.WzProperties) {
+				if (prop is WzCanvasProperty canvas) {
+					var pngProp = canvas.PngProperty;
+					var key = parent.ParentImage?.wzKey ?? decWzKey;
+					var listWz = canvas.PngProperty.CheckListWzUsed();
+					if (listWz) {
+						pngProp.ConvertCompressed(key, listWz ? encWzKey : null, false);
+					}
+				}
+
+				ConvertKey(prop, decWzKey, encWzKey);
+			}
+		}
 	}
 }
