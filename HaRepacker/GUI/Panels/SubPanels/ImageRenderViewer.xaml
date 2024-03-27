@@ -633,36 +633,6 @@
                     <Storyboard>
                         <ColorAnimationUsingKeyFrames
                             Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock1">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock2">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock3">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock4">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
-                            Storyboard.TargetName="textBlock5">
-                            <EasingColorKeyFrame KeyTime="0" Value="White" />
-                        </ColorAnimationUsingKeyFrames>
-                        <ColorAnimationUsingKeyFrames
-                            Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)"
                             Storyboard.TargetName="checkbox_crosshair">
                             <EasingColorKeyFrame KeyTime="0" Value="White" />
                         </ColorAnimationUsingKeyFrames>
