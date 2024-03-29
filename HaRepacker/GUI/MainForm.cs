@@ -13,6 +13,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -90,7 +91,9 @@ namespace HaRepacker.GUI {
 
 			if (usingPipes) {
 				try {
-					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In);
+					var security = new PipeSecurity();
+					security.SetAccessRule(new PipeAccessRule("Everyone", PipeAccessRights.FullControl, AccessControlType.Allow));
+					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, security);
 					Program.pipeThread = new Thread(PipeServer) {
 						IsBackground = true
 					};
@@ -98,8 +101,7 @@ namespace HaRepacker.GUI {
 				} catch (IOException) {
 					if (wzPathToLoad != null) {
 						try {
-							using (var clientPipe =
-							       new NamedPipeClientStream(".", Program.pipeName, PipeDirection.Out)) {
+							using (var clientPipe = new NamedPipeClientStream(".", Program.pipeName, PipeDirection.Out)) {
 								clientPipe.Connect(1000);
 								using (var sw = new StreamWriter(clientPipe)) {
 									sw.WriteLine(wzPathToLoad);
