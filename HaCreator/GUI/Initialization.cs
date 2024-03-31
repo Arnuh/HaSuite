@@ -390,7 +390,7 @@ namespace HaCreator.GUI {
 				MapLoader.VerifyMapPropsKnown(mapImage, true);
 				var info = new MapInfo(mapImage, null, null, null);
 				try {
-					mapBoard.CreateMapLayers();
+					mapBoard.InitMapLayers();
 
 					MapLoader.LoadLayers(mapImage, mapBoard);
 					MapLoader.LoadLife(mapImage, mapBoard);

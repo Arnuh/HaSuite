@@ -15,6 +15,7 @@ using HaCreator.Properties;
 using HaCreator.Wz;
 using MapleLib;
 using MapleLib.WzLib;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator {
 	internal static class Program {
@@ -75,6 +76,9 @@ namespace HaCreator {
 			SettingsManager =
 				new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings));
 			SettingsManager.LoadSettings();
+			if (ApplicationSettings.lastDefaultLayer >= MapConstants.MaxMapLayers) {
+				ApplicationSettings.lastDefaultLayer = 0;
+			}
 
 			MultiBoard.RecalculateSettings();
 			Application.EnableVisualStyles();

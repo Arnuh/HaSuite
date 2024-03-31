@@ -155,7 +155,7 @@ namespace HaCreator.Wz {
 		}
 
 		public void SaveLayers() {
-			for (var layer = 0; layer <= MapConstants.MaxMapLayers; layer++) {
+			for (var layer = 0; layer < MapConstants.MaxMapLayers; layer++) {
 				var layerProp = new WzSubProperty();
 				var infoProp = new WzSubProperty();
 

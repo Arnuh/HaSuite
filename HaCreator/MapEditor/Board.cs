@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Controls;
@@ -33,7 +32,7 @@ namespace HaCreator.MapEditor {
 		//private Point maxMapSize;
 		private Point centerPoint;
 		private readonly BoardItemsManager boardItems;
-		private readonly List<Layer> mapLayers = new List<Layer>();
+		private readonly Layer[] mapLayers = new Layer[MapConstants.MaxMapLayers];
 		private readonly List<BoardItem> selected = new List<BoardItem>();
 		private MultiBoard parent;
 		private readonly Mouse mouse;
@@ -265,7 +264,7 @@ namespace HaCreator.MapEditor {
 				parent.Boards.Remove(this);
 				boardItems.Clear();
 				selected.Clear();
-				mapLayers.Clear();
+				Array.Clear(mapLayers, 0, mapLayers.Length);
 			}
 
 			// This must be called when MultiBoard is unlocked, to prevent BackupManager deadlocking
@@ -389,20 +388,16 @@ namespace HaCreator.MapEditor {
 		/// <summary>
 		/// Map layers
 		/// </summary>
-		public void CreateMapLayers() {
-			for (var i = 0; i <= MapConstants.MaxMapLayers; i++) AddMapLayer(new Layer(this));
-		}
-
-		public void AddMapLayer(Layer layer) {
-			lock (parent) {
-				mapLayers.Add(layer);
+		public void InitMapLayers() {
+			for (var i = 0; i < mapLayers.Length; i++) {
+				mapLayers[i] = new Layer(this, i);
 			}
 		}
 
 		/// <summary>
 		/// Gets the map layers
 		/// </summary>
-		public ReadOnlyCollection<Layer> Layers => mapLayers.AsReadOnly();
+		public Layer[] Layers => mapLayers;
 
 		public int SelectedLayerIndex {
 			get => selectedLayerIndex;

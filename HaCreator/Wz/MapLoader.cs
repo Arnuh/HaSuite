@@ -214,7 +214,7 @@ namespace HaCreator.Wz {
 		}
 
 		public static void LoadLayers(WzImage mapImage, Board mapBoard) {
-			for (var layer = 0; layer <= MapConstants.MaxMapLayers; layer++) {
+			for (var layer = 0; layer < MapConstants.MaxMapLayers; layer++) {
 				var layerProp = (WzSubProperty) mapImage[layer.ToString()];
 				if (layerProp == null) {
 					continue;
@@ -492,14 +492,13 @@ namespace HaCreator.Wz {
 				l.zMList.ToList().ForEach(y => allExistingZMs.Add(y));
 			}
 
-			for (var i = 0; i < mapBoard.Layers.Count; i++)
-			for (var zm_cand = 0; mapBoard.Layers[i].zMList.Count == 0; zm_cand++)
-				// Choose a zM that is free
-			{
-				if (!allExistingZMs.Contains(zm_cand)) {
-					mapBoard.Layers[i].zMList.Add(zm_cand);
-					allExistingZMs.Add(zm_cand);
-					break;
+			for (var i = 0; i < mapBoard.Layers.Length; i++) {
+				for (var zm_cand = 0; mapBoard.Layers[i].zMList.Count == 0; zm_cand++) { // Choose a zM that is free
+					if (!allExistingZMs.Contains(zm_cand)) {
+						mapBoard.Layers[i].zMList.Add(zm_cand);
+						allExistingZMs.Add(zm_cand);
+						break;
+					}
 				}
 			}
 		}

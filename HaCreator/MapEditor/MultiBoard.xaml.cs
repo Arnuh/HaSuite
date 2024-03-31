@@ -246,7 +246,7 @@ namespace HaCreator.MapEditor {
 				var newBoard = new Board(mapSize, centerPoint, this, bIsNewMapDesign, menu, ApplicationSettings.theoreticalVisibleTypes,
 					ApplicationSettings.theoreticalEditedTypes);
 				boards.Add(newBoard);
-				newBoard.CreateMapLayers();
+				newBoard.InitMapLayers();
 				return newBoard;
 			}
 		}

@@ -20,14 +20,9 @@ namespace HaCreator.MapEditor {
 		private readonly Board board;
 		private string _tS;
 
-		public Layer(Board board) {
+		public Layer(Board board, int index) {
 			this.board = board;
-			if (board.Layers.Count > MapConstants.MaxMapLayers) {
-				throw new NotSupportedException(
-					"Cannot add more than 10 layers (why would you need that much anyway?)");
-			}
-
-			num = board.Layers.Count;
+			num = index;
 		}
 
 		public List<LayeredItem> Items {
@@ -63,10 +58,6 @@ namespace HaCreator.MapEditor {
 			}
 
 			tS = newTS;
-		}
-
-		public static Layer GetLayerByNum(Board board, int num) {
-			return board.Layers[num];
 		}
 
 		public void RecheckTileSet() {

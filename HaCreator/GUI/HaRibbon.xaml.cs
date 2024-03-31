@@ -56,7 +56,7 @@ namespace HaCreator.GUI {
 		private int actualLayerIndex;
 		private int actualPlatform;
 		private int changingIndexCnt;
-		private ReadOnlyCollection<Layer> layers;
+		private Layer[] layers;
 		private bool hasMinimap;
 
 		private void Ribbon_Loaded(object sender, RoutedEventArgs e) {
@@ -456,12 +456,14 @@ namespace HaCreator.GUI {
 			endInternalEditing();
 		}
 
-		public void SetLayers(ReadOnlyCollection<Layer> layers) {
+		public void SetLayers(Layer[] layers) {
 			beginInternalEditing();
 
 			this.layers = layers;
 			layerBox.ClearItems();
-			for (var i = 0; i < layers.Count; i++) layerBox.Items.Add(new HaListItem(layers[i].ToString(), i));
+			for (var i = 0; i < layers.Length; i++) {
+				layerBox.Items.Add(new HaListItem(layers[i].ToString(), i));
+			}
 
 			endInternalEditing();
 		}

@@ -232,7 +232,9 @@ namespace HaCreator.MapSimulator {
 
 			// Create map layers
 			mapObjects = new List<BaseDXDrawableItem>[MapConstants.MaxMapLayers];
-			for (var i = 0; i < MapConstants.MaxMapLayers; i++) mapObjects[i] = new List<BaseDXDrawableItem>();
+			for (var i = 0; i < MapConstants.MaxMapLayers; i++) {
+				mapObjects[i] = new List<BaseDXDrawableItem>();
+			}
 
 			//GraphicsDevice.Viewport = new Viewport(RenderWidth / 2 - 800 / 2, RenderHeight / 2 - 600 / 2, 800, 600);
 
