@@ -266,8 +266,6 @@ namespace MapleLib.WzLib.WzProperties {
 			soundBytes = new byte[data.Length];
 			Array.Copy(data, soundBytes, data.Length);
 			length = soundBytes.Length;
-
-			ParseWaveFormat();
 		}
 
 		/// <summary>
