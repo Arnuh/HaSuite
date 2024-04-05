@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
+using HaCreator.Wz.Data;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib.WzStructure.Data;
 
@@ -30,6 +31,7 @@ namespace HaCreator.GUI {
 			} else {
 				switch (board.MapInfo.mapType) {
 					case MapType.CashShopPreview:
+					case MapType.ITCPreview:
 					case MapType.MapLogin:
 						idBox_mapId.Text = board.MapInfo.strMapName;
 						break;
@@ -51,6 +53,10 @@ namespace HaCreator.GUI {
 
 			if (idBox_mapId.Text == "CashShopPreview") {
 				return MapType.CashShopPreview;
+			}
+
+			if (idBox_mapId.Text == "ITCPreview") {
+				return MapType.ITCPreview;
 			}
 
 			return MapType.RegularMap;

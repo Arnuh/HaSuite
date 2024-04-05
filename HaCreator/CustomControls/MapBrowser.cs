@@ -78,6 +78,7 @@ namespace HaCreator.CustomControls {
 
 			if (special) {
 				maps.Insert(0, "CashShopPreview");
+				maps.Insert(1, "ITCPreview");
 
 				foreach (var mapLogin in mapLogins)
 					maps.Insert(0, mapLogin.Replace(".img", ""));
@@ -165,6 +166,7 @@ namespace HaCreator.CustomControls {
 			    selectedName == "MapLogin4" ||
 			    selectedName == "MapLogin5" ||
 			    selectedName == "CashShopPreview" ||
+			    selectedName == "ITCPreview" ||
 			    selectedName == null) {
 				panel_linkWarning.Visible = false;
 				panel_mapExistWarning.Visible = false;

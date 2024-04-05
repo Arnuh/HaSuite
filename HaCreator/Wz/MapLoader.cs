@@ -22,6 +22,7 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.Properties;
+using HaCreator.Wz.Data;
 using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
@@ -168,6 +169,8 @@ namespace HaCreator.Wz {
 					return MapType.MapLogin;
 				case "CashShopPreview.img":
 					return MapType.CashShopPreview;
+				case "ITCPreview.img":
+					return MapType.ITCPreview;
 				default:
 					return MapType.RegularMap;
 			}

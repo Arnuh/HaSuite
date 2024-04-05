@@ -12,6 +12,7 @@ using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info.Default;
 using HaCreator.Wz;
+using HaCreator.Wz.Data;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
@@ -87,6 +88,9 @@ namespace HaCreator.GUI {
 			switch (info.mapType) {
 				case MapType.CashShopPreview:
 					IDLabel.Text = "CashShopPreview";
+					break;
+				case MapType.ITCPreview:
+					IDLabel.Text = "ITCPreview";
 					break;
 				case MapType.MapLogin:
 					IDLabel.Text = "MapLogin";
@@ -272,7 +276,7 @@ namespace HaCreator.GUI {
 
 		protected override void okButton_Click(object sender, EventArgs e) {
 			lock (multiBoard) {
-				if (info.mapType != MapType.CashShopPreview) {
+				if (info.mapType != MapType.CashShopPreview && info.mapType != MapType.ITCPreview) {
 					info.bgm = (string) bgmBox.SelectedItem;
 					info.mapMark = (string) markBox.SelectedItem;
 				}

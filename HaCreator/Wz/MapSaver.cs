@@ -15,6 +15,7 @@ using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.Wz.Data;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib;
@@ -39,6 +40,7 @@ namespace HaCreator.Wz {
 					break;
 				case MapType.MapLogin:
 				case MapType.CashShopPreview:
+				case MapType.ITCPreview:
 					name = board.MapInfo.strMapName;
 					break;
 				default:

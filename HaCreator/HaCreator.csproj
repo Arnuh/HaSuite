@@ -552,11 +552,12 @@
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Collections\AnchorEnumerator.cs"/>
-        <Compile Include="Wz\PortalGameImageInfo.cs"/>
-        <Compile Include="Collections\FootholdEnumerator.cs"/>
-        <Compile Include="Wz\MapLoader.cs"/>
-        <Compile Include="Wz\MapSaver.cs"/>
-        <Compile Include="Wz\WzInformationManager.cs"/>
+        <Compile Include="Wz\Data\MapType.cs" />
+        <Compile Include="Wz\PortalGameImageInfo.cs" />
+        <Compile Include="Collections\FootholdEnumerator.cs" />
+        <Compile Include="Wz\MapLoader.cs" />
+        <Compile Include="Wz\MapSaver.cs" />
+        <Compile Include="Wz\WzInformationManager.cs" />
         <EmbeddedResource Include="CustomControls\AlphaColorPicker.resx">
             <DependentUpon>AlphaColorPicker.cs</DependentUpon>
         </EmbeddedResource>
@@ -686,8 +687,8 @@
         <EmbeddedResource Include="GUI\WaitWindow.resx">
             <DependentUpon>WaitWindow.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="Properties\Resources.ja.resx"/>
-        <EmbeddedResource Include="Properties\Resources.ko.resx"/>
+        <EmbeddedResource Include="Properties\Resources.ja.resx" />
+        <EmbeddedResource Include="Properties\Resources.ko.resx" />
         <EmbeddedResource Include="Properties\Resources.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -696,8 +697,8 @@
         <EmbeddedResource Include="GUI\TileSetBrowser.resx">
             <DependentUpon>TileSetBrowser.cs</DependentUpon>
         </EmbeddedResource>
-        <Compile Include="MapEditor\TilesDesign\Snapping.cs"/>
-        <Compile Include="MapEditor\UndoRedo\UndoRedoManager.cs"/>
+        <Compile Include="MapEditor\TilesDesign\Snapping.cs" />
+        <Compile Include="MapEditor\UndoRedo\UndoRedoManager.cs" />
         <Compile Include="Properties\Resources.Designer.cs">
             <AutoGen>True</AutoGen>
             <DesignTime>True</DesignTime>
@@ -715,7 +716,7 @@
         <Compile Include="GUI\TileSetBrowser.Designer.cs">
             <DependentUpon>TileSetBrowser.cs</DependentUpon>
         </Compile>
-        <Compile Include="WzSettings.cs"/>
+        <Compile Include="WzSettings.cs" />
         <EmbeddedResource Include="CustomControls\BetterCheckedListBox.resx">
             <DependentUpon>BetterCheckedListBox.cs</DependentUpon>
         </EmbeddedResource>
@@ -725,8 +726,8 @@
         <EmbeddedResource Include="CustomControls\ThumbnailFlowLayoutPanel.resx">
             <DependentUpon>ThumbnailFlowLayoutPanel.cs</DependentUpon>
         </EmbeddedResource>
-        <EmbeddedResource Include="Properties\Resources.zh-CHS.resx"/>
-        <EmbeddedResource Include="Properties\Resources.zh-CHT.resx"/>
+        <EmbeddedResource Include="Properties\Resources.zh-CHS.resx" />
+        <EmbeddedResource Include="Properties\Resources.zh-CHT.resx" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\HaRepacker\HaRepacker.csproj">
@@ -747,29 +748,29 @@
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>
-        <None Include="app.config"/>
-        <None Include="app.manifest"/>
-        <None Include="GUI\HaCreator.res"/>
-        <None Include="Resources\mapEditMenu.png"/>
-        <Resource Include="Images\About.png"/>
-        <Resource Include="Images\diagram_parallax.png"/>
-        <Resource Include="Images\Exit.png"/>
-        <Resource Include="Images\Folder.png"/>
-        <Resource Include="Images\help_icon.png"/>
-        <Resource Include="Images\magnet_32.png"/>
-        <Resource Include="Images\Play.png"/>
-        <Resource Include="Images\redo1.png"/>
-        <Resource Include="Images\RegenMinimap.png"/>
-        <Resource Include="Images\Save.png"/>
-        <Resource Include="Images\Settings.png"/>
-        <Resource Include="Images\Settings_big.png"/>
-        <Resource Include="Images\Undo.png"/>
-        <Resource Include="Images\Untitled1.png"/>
-        <Resource Include="Images\wz.ico"/>
-        <Resource Include="Images\Minimap.png"/>
-        <Resource Include="Images\ColorSwatchCircle.png"/>
-        <Resource Include="Images\ColorSwatchSquare1.png"/>
-        <Resource Include="Images\ColorSwatchSquare2.png"/>
+        <None Include="app.config" />
+        <None Include="app.manifest" />
+        <None Include="GUI\HaCreator.res" />
+        <None Include="Resources\mapEditMenu.png" />
+        <Resource Include="Images\About.png" />
+        <Resource Include="Images\diagram_parallax.png" />
+        <Resource Include="Images\Exit.png" />
+        <Resource Include="Images\Folder.png" />
+        <Resource Include="Images\help_icon.png" />
+        <Resource Include="Images\magnet_32.png" />
+        <Resource Include="Images\Play.png" />
+        <Resource Include="Images\redo1.png" />
+        <Resource Include="Images\RegenMinimap.png" />
+        <Resource Include="Images\Save.png" />
+        <Resource Include="Images\Settings.png" />
+        <Resource Include="Images\Settings_big.png" />
+        <Resource Include="Images\Undo.png" />
+        <Resource Include="Images\Untitled1.png" />
+        <Resource Include="Images\wz.ico" />
+        <Resource Include="Images\Minimap.png" />
+        <Resource Include="Images\ColorSwatchCircle.png" />
+        <Resource Include="Images\ColorSwatchSquare1.png" />
+        <Resource Include="Images\ColorSwatchSquare2.png" />
     </ItemGroup>
     <ItemGroup>
         <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -816,23 +817,23 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\HaLogo32.png"/>
+        <Resource Include="Images\HaLogo32.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\Foothold.png"/>
+        <Resource Include="Images\Foothold.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\arrow_down.png"/>
-        <Resource Include="Images\arrow_up.png"/>
+        <Resource Include="Images\arrow_down.png" />
+        <Resource Include="Images\arrow_up.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\UserObjs.png"/>
+        <Resource Include="Images\UserObjs.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\export-icon.png"/>
+        <Resource Include="Images\export-icon.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Images\new_icon.png"/>
+        <Resource Include="Images\new_icon.png" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="DockPanelSuite">
@@ -882,19 +883,19 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="HaLogo.ico"/>
-        <Content Include="HaLogo\%24this.Icon.ico"/>
-        <Content Include="HaLogo\HaLogo.ico"/>
-        <Content Include="HaLogo\HaLogo.svg"/>
-        <Content Include="HaLogo\HaLogo128.png"/>
-        <Content Include="HaLogo\HaLogo16.png"/>
-        <Content Include="HaLogo\HaLogo256.png"/>
-        <Content Include="HaLogo\HaLogo32.png"/>
-        <Content Include="HaLogo\HaLogo48.png"/>
-        <Content Include="HaLogo\HaLogo512.png"/>
-        <Content Include="HaLogo\HaLogo64.png"/>
-        <Resource Include="Images\box_edit-big.png"/>
-        <None Include="Resources\placeholder.bmp"/>
+        <Content Include="HaLogo.ico" />
+        <Content Include="HaLogo\%24this.Icon.ico" />
+        <Content Include="HaLogo\HaLogo.ico" />
+        <Content Include="HaLogo\HaLogo.svg" />
+        <Content Include="HaLogo\HaLogo128.png" />
+        <Content Include="HaLogo\HaLogo16.png" />
+        <Content Include="HaLogo\HaLogo256.png" />
+        <Content Include="HaLogo\HaLogo32.png" />
+        <Content Include="HaLogo\HaLogo48.png" />
+        <Content Include="HaLogo\HaLogo512.png" />
+        <Content Include="HaLogo\HaLogo64.png" />
+        <Resource Include="Images\box_edit-big.png" />
+        <None Include="Resources\placeholder.bmp" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

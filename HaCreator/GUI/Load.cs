@@ -185,6 +185,16 @@ namespace HaCreator.GUI {
 					}
 
 					mapName = streetName = categoryName = "CashShopPreview";
+				} else if (selectedName == "ITCPreview") {
+					var uiWzDirs = Program.WzManager.GetWzDirectoriesFromBase("ui");
+					foreach (var uiWzDir in uiWzDirs) {
+						mapImage = (WzImage) uiWzDir?["ITCPreview.img"];
+						if (mapImage != null) {
+							break;
+						}
+					}
+
+					mapName = streetName = categoryName = "ITCPreview";
 				} else {
 					var mapid_str = mapBrowser.SelectedItem.Substring(0, 9);
 					int.TryParse(mapid_str, out mapid);

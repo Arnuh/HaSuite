@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using HaCreator;
 using HaCreator.MapEditor.Info.Default;
+using HaCreator.Wz.Data;
 using MapleLib.Helpers;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
