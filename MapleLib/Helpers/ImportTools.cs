@@ -25,14 +25,18 @@ namespace MapleLib.Helpers {
 					}
 
 					if (parent is WzDirectory dir) {
-						if (dir[img.Name] != null && !handler.Handle(img.Name)) {
-							return;
+						while (dir[img.Name] != null) {
+							if (!handler.Handle(dir, img)) {
+								return;
+							}
 						}
 
 						dir.AddImage(img, false);
 					} else if (parent is WzFile file) {
-						if (file.WzDirectory[img.Name] != null && !handler.Handle(img.Name)) {
-							return;
+						while (file.WzDirectory[img.Name] != null) {
+							if (!handler.Handle(file.WzDirectory, img)) {
+								return;
+							}
 						}
 
 						file.WzDirectory.AddImage(img, false);
@@ -43,20 +47,26 @@ namespace MapleLib.Helpers {
 					var objects = xmlDeserializer.ParseXML(filePath);
 					foreach (var obj in objects) {
 						if (parent is WzDirectory dir) {
-							if (dir[obj.Name] != null && !handler.Handle(obj.Name)) {
-								return;
+							while (dir[obj.Name] != null) {
+								if (!handler.Handle(dir, obj)) {
+									return;
+								}
 							}
 
 							dir.AddImage((WzImage) obj, false);
 						} else if (parent is WzFile file) {
-							if (file.WzDirectory[obj.Name] != null && !handler.Handle(obj.Name)) {
-								return;
+							while (file.WzDirectory[obj.Name] != null) {
+								if (!handler.Handle(file.WzDirectory, obj)) {
+									return;
+								}
 							}
 
 							file.WzDirectory.AddImage((WzImage) obj, false);
 						} else if (parent is IPropertyContainer subProp) {
-							if (subProp[obj.Name] != null && !handler.Handle(obj.Name)) {
-								return;
+							while (subProp[obj.Name] != null) {
+								if (!handler.Handle(parent, obj)) {
+									return;
+								}
 							}
 
 							subProp.AddProperty((WzImageProperty) obj, false);
@@ -71,14 +81,18 @@ namespace MapleLib.Helpers {
 					var dir = new WzDirectory(fileName);
 
 					if (parent is WzDirectory parentDir) {
-						if (parentDir[dir.Name] != null && !handler.Handle(dir.Name)) {
-							return;
+						while (parentDir[dir.Name] != null) {
+							if (!handler.Handle(parentDir, dir)) {
+								return;
+							}
 						}
 
 						parentDir.AddDirectory(dir);
 					} else if (parent is WzFile file) {
-						if (file.WzDirectory[dir.Name] != null && !handler.Handle(dir.Name)) {
-							return;
+						while (file.WzDirectory[dir.Name] != null) {
+							if (!handler.Handle(file.WzDirectory, dir)) {
+								return;
+							}
 						}
 
 						file.WzDirectory.AddDirectory(dir);
@@ -88,11 +102,13 @@ namespace MapleLib.Helpers {
 
 					newParent = dir;
 				} else if (parent is IPropertyContainer propCon) {
-					if (propCon[fileName] != null && !handler.Handle(fileName)) {
-						return;
-					}
-
 					var sub = new WzSubProperty(fileName);
+					while (propCon[fileName] != null) {
+						if (!handler.Handle(parent, sub)) {
+							return;
+						}
+					}
+					
 					propCon.AddProperty(sub, false);
 					newParent = sub;
 				} else {

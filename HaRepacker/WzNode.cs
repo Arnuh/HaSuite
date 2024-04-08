@@ -211,6 +211,14 @@ namespace HaRepacker {
 			ParseChilds((WzObject) Tag);
 		}
 
+		public void OnWzObjectAdded(WzObject obj, UndoRedoManager undoRedoMan) {
+			var node = new WzNode(obj, true);
+			node.ParseChilds(obj);
+			Nodes.Add(node);
+			undoRedoMan?.AddUndoBatch(new List<UndoRedoAction>
+				{UndoRedoManager.ObjectAdded(this, node)});
+		}
+
 		public string GetTypeName() {
 			return Tag.GetType().Name;
 		}

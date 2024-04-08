@@ -26,14 +26,14 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReplaceBox));
             this.label1 = new System.Windows.Forms.Label();
             this.btnYes = new System.Windows.Forms.Button();
             this.btnNo = new System.Windows.Forms.Button();
             this.btnYestoall = new System.Windows.Forms.Button();
             this.btnNotoall = new System.Windows.Forms.Button();
+            this.renameBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -69,10 +69,18 @@
             this.btnNotoall.UseVisualStyleBackColor = true;
             this.btnNotoall.Click += new System.EventHandler(this.btnNotoall_Click);
             // 
+            // renameBtn
+            // 
+            resources.ApplyResources(this.renameBtn, "renameBtn");
+            this.renameBtn.Name = "renameBtn";
+            this.renameBtn.UseVisualStyleBackColor = true;
+            this.renameBtn.Click += new System.EventHandler(this.renameBtn_Click);
+            // 
             // ReplaceBox
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.renameBtn);
             this.Controls.Add(this.btnNotoall);
             this.Controls.Add(this.btnYestoall);
             this.Controls.Add(this.btnNo);
@@ -81,8 +89,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ReplaceBox";
             this.ResumeLayout(false);
-
         }
+
+        private System.Windows.Forms.Button renameBtn;
 
         #endregion
 

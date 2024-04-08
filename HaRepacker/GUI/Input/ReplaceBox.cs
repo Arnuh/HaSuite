@@ -52,5 +52,11 @@ namespace HaRepacker.GUI.Input {
 
 			Close();
 		}
+
+		private void renameBtn_Click(object sender, EventArgs e) {
+			result = ReplaceResult.Rename;
+
+			Close();
+		}
 	}
 }

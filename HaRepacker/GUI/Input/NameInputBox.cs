@@ -10,11 +10,19 @@ using HaRepacker.Properties;
 
 namespace HaRepacker.GUI.Input {
 	public partial class NameInputBox : Form {
+
 		public static bool Show(string title, int maxInputLength, out string name) {
+			return Show(title, null, maxInputLength, out name);
+		}
+
+		public static bool Show(string title, string defText, int maxInputLength, out string name) {
 			var form = new NameInputBox(title);
-			if (maxInputLength != 0) // 0 = not set a max length
-			{
+			if (maxInputLength != 0) { // 0 = not set a max length
 				form.nameBox.MaxLength = maxInputLength;
+			}
+
+			if (!string.IsNullOrEmpty(defText)) {
+				form.nameBox.Text = defText;
 			}
 
 			var result = form.ShowDialog() == DialogResult.OK;
@@ -54,7 +62,7 @@ namespace HaRepacker.GUI.Input {
 		}
 
 		private void okButton_Click(object sender, EventArgs e) {
-			if (nameBox.Text != "" && nameBox.Text != null) {
+			if (!string.IsNullOrEmpty(nameBox.Text)) {
 				nameResult = nameBox.Text;
 				DialogResult = DialogResult.OK;
 				Close();

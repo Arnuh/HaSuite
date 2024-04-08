@@ -4,6 +4,7 @@
 		No,
 		YesToAll,
 		NoToAll,
+		Rename,
 		NoneSelectedYet
 	}
 }

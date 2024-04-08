@@ -1308,14 +1308,13 @@ namespace HaRepacker.GUI.Panels {
 		/// <summary>
 		/// Flag to determine if a copy task is currently active.
 		/// </summary>
-		private bool
-			bPasteTaskActive;
+		private bool pasteTaskActive;
 
 		/// <summary>
 		/// Copies from the selected Wz object
 		/// </summary>
 		public void DoCopy() {
-			if (!Warning.Warn(Properties.Resources.MainConfirmCopy) || bPasteTaskActive) {
+			if (!Warning.Warn(Properties.Resources.MainConfirmCopy) || pasteTaskActive) {
 				return;
 			}
 
@@ -1342,8 +1341,6 @@ namespace HaRepacker.GUI.Panels {
 			}
 		}
 
-		private ReplaceResult replaceBoxResult = ReplaceResult.NoneSelectedYet;
-
 		/// <summary>
 		/// Paste to the selected WzObject
 		/// </summary>
@@ -1352,15 +1349,13 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			bPasteTaskActive = true;
+			pasteTaskActive = true;
+			DataTree.BeginUpdate();
 			try {
-				// Reset replace option
-				replaceBoxResult = ReplaceResult.NoneSelectedYet;
-
 				var parent = (WzNode) DataTree.SelectedNode;
 				var parentObj = (WzObject) parent.Tag;
 
-				if (parent != null && parent.Tag is WzImage && parent.Nodes.Count == 0) {
+				if (parent.Tag is WzImage && parent.Nodes.Count == 0) {
 					ParseOnDataTreeSelectedItem(parent); // only parse the main node.
 				}
 
@@ -1368,59 +1363,30 @@ namespace HaRepacker.GUI.Panels {
 					parentObj = file.WzDirectory;
 				}
 
-				var bNoToAllComplete = false;
+				var handler = MainForm.CreateDefaultDuplicateHandler();
+				
 				foreach (var obj in clipboard) {
-					if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) ||
-					    (obj is WzImageProperty && parentObj is IPropertyContainer)) {
-						var clone = CloneWzObject(obj);
-						if (clone == null) {
-							continue;
-						}
-
-						if (clone is WzImage image) {
-							// Cloning also clones wz key
-							// But they could now be different, update it
-							image.wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(parentObj.WzFileParent.MapleVersion));
-						}
-
-						var node = new WzNode(clone, true);
-						var child = WzNode.GetChildNode(parent, node.Text);
-						if (child != null) { // A Child already exist
-							if (replaceBoxResult == ReplaceResult.NoneSelectedYet) {
-								ReplaceBox.Show(node.Text, out replaceBoxResult);
-							}
-
-							switch (replaceBoxResult) {
-								case ReplaceResult.No: // Skip just this
-									replaceBoxResult = ReplaceResult.NoneSelectedYet; // reset after use
-									break;
-
-								case ReplaceResult.Yes: // Replace just this
-									child.DeleteWzNode();
-									parent.AddNode(node, false);
-									replaceBoxResult = ReplaceResult.NoneSelectedYet; // reset after use
-									break;
-
-								case ReplaceResult.NoToAll:
-									bNoToAllComplete = true;
-									break;
-
-								case ReplaceResult.YesToAll:
-									child.DeleteWzNode();
-									parent.AddNode(node, false);
-									break;
-							}
-
-							if (bNoToAllComplete) {
-								break;
-							}
-						} else { // not not in this 
-							parent.AddNode(node, false);
-						}
+					if (((!(obj is WzDirectory) && !(obj is WzImage)) || !(parentObj is WzDirectory)) &&
+					    (!(obj is WzImageProperty) || !(parentObj is IPropertyContainer))) {
+						continue;
 					}
+
+					var clone = CloneWzObject(obj);
+					if (clone == null) {
+						continue;
+					}
+
+					if (clone is WzImage image) {
+						// Cloning also clones wz key
+						// But they could now be different, update it
+						image.wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(parentObj.WzFileParent.MapleVersion));
+					}
+
+					_mainForm.AddObjectWithNode(handler, parent, clone);
 				}
 			} finally {
-				bPasteTaskActive = false;
+				pasteTaskActive = false;
+				DataTree.EndUpdate();
 			}
 		}
 

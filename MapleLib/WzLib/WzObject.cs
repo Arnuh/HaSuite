@@ -16,6 +16,7 @@
 
 using System;
 using System.Drawing;
+using MapleLib.Helpers;
 
 namespace MapleLib.WzLib {
 	/// <summary>
@@ -67,20 +68,20 @@ namespace MapleLib.WzLib {
 			get {
 				var wzObject = this;
 
-				if (wzObject is WzFile) {
-					return ((WzFile) this)[name];
+				if (wzObject is WzFile file) {
+					return file[name];
 				}
 
-				if (wzObject is WzDirectory) {
-					return ((WzDirectory) this)[name];
+				if (wzObject is WzDirectory dir) {
+					return dir[name];
 				}
 
-				if (wzObject is WzImage) {
-					return ((WzImage) this)[name];
+				if (wzObject is WzImage img) {
+					return img[name];
 				}
 
-				if (wzObject is WzImageProperty) {
-					return ((WzImageProperty) this)[name];
+				if (wzObject is WzImageProperty imgProp) {
+					return imgProp[name];
 				}
 
 				throw new NotImplementedException();
@@ -164,6 +165,61 @@ namespace MapleLib.WzLib {
 		public virtual object WzValue => null;
 
 		public abstract void Remove();
+
+		/// <summary>
+		/// Attempts to add the provided WzObject to the current object
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public bool Add(DuplicateHandler handler, WzObject obj) {
+			var current = this;
+			if (current is WzFile file) {
+				current = file.WzDirectory;
+			}
+			
+			while (current[obj.Name] != null) {
+				if (!handler.Handle(this, obj)) {
+					return false;
+				}
+			}
+
+			if (current is WzDirectory directory) {
+				if (obj is WzDirectory wzDirectory) {
+					directory.AddDirectory(wzDirectory);
+				} else if (obj is WzImage wzImgProperty) {
+					directory.AddImage(wzImgProperty);
+				} else {
+					return false;
+				}
+			} else if (current is WzImage img) {
+				if (!img.Parsed) {
+					img.ParseImage();
+				}
+
+				if (obj is WzImageProperty imgProperty) {
+					img.AddProperty(imgProperty);
+					img.Changed = true;
+				} else {
+					return false;
+				}
+			} else if (current is IPropertyContainer container) {
+				if (obj is WzImageProperty property) {
+					container.AddProperty(property);
+					if (current is WzImageProperty imgProperty) {
+						var parent = imgProperty.ParentImage;
+						if (parent != null) {
+							parent.Changed = true;
+						}
+					}
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+
+			return true;
+		}
 
 		//Credits to BluePoop for the idea of using cast overriding
 		//2015 - That is the worst idea ever, removed and replaced with Get* methods

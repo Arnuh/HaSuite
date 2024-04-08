@@ -261,7 +261,6 @@ namespace HaRepacker.GUI {
 					if (Program.ConfigurationManager.UserSettings.Sort) SortNodesRecursively(node);
 
 					MainPanel.DataTree.EndUpdate();
-					//MainPanel.DataTree.Update();
 				}));
 			} else {
 				MainPanel.DataTree.BeginUpdate();
@@ -270,10 +269,35 @@ namespace HaRepacker.GUI {
 				if (Program.ConfigurationManager.UserSettings.Sort) SortNodesRecursively(node);
 
 				MainPanel.DataTree.EndUpdate();
-				//MainPanel.DataTree.Update();
 			}
 
 			Debug.WriteLine("Done adding wz object {0}, total size: {1}", wzObj.Name, MainPanel.DataTree.Nodes.Count);
+		}
+		
+		public void AddObjectNoParent(WzObject obj) {
+			var node = new WzNode(obj, true);
+			MainPanel.DataTree.Nodes.Add(node);
+		}
+
+		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, WzObject obj) {
+			var parent = (WzObject) node.Tag;
+			if (parent.Add(dupeHandler, obj)) {
+				node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
+			}
+		}
+
+		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, IEnumerable<WzObject> objects) {
+			MainPanel.DataTree.BeginUpdate();
+			try {
+				var parent = (WzObject) node.Tag;
+				foreach (var obj in objects) {
+					if (parent.Add(dupeHandler, obj)) {
+						node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
+					}
+				}
+			} finally {
+				MainPanel.DataTree.EndUpdate();
+			}
 		}
 
 		/// <summary>
@@ -1240,6 +1264,10 @@ namespace HaRepacker.GUI {
 			});
 		}
 
+		private void ClearProgressBar() {
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
+			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+		}
 
 		private void ProgressBarThread(object param) {
 			var serializer = (ProgressingWzSerializer) param;
@@ -1660,12 +1688,7 @@ namespace HaRepacker.GUI {
 				WzTool.GetUserKeyByMapleVersion(wzFile.MapleVersion));
 			threadDone = false;
 
-			var handler = new DuplicateHandler {
-				OnDuplicateEntry = name => {
-					ReplaceBox.Show(name, out result);
-					return result;
-				}
-			};
+			var handler = CreateDefaultDuplicateHandler();
 
 			foreach (var filePath in dialog.FileNames) {
 				ImportTools.importFolder(handler, xmlDeserializer, imgDeserializer, selected, filePath);
@@ -1874,56 +1897,6 @@ namespace HaRepacker.GUI {
 
 		#endregion
 
-
-		private delegate void InsertWzNode(WzNode node, WzNode parent);
-
-		private void InsertWzNodeCallback(WzNode node, WzNode parent) {
-			var child = WzNode.GetChildNode(parent, node.Text);
-			if (child != null) {
-				if (ShowReplaceDialog(node.Text)) {
-					child.DeleteWzNode();
-				} else {
-					return;
-				}
-			}
-
-			parent.AddNode(node, true);
-		}
-
-		private void InsertWzNodeThreadSafe(WzNode node, WzNode parent) {
-			MainPanel.Dispatcher.Invoke(() => { InsertWzNodeCallback(node, parent); });
-		}
-
-		private bool yesToAll;
-		private bool noToAll;
-		private ReplaceResult result;
-
-		private bool ShowReplaceDialog(string name) {
-			if (yesToAll) {
-				return true;
-			}
-
-			if (noToAll) {
-				return false;
-			}
-
-			ReplaceBox.Show(name, out result);
-			switch (result) {
-				case ReplaceResult.NoToAll:
-					noToAll = true;
-					return false;
-				case ReplaceResult.No:
-					return false;
-				case ReplaceResult.YesToAll:
-					yesToAll = true;
-					return true;
-				case ReplaceResult.Yes:
-					return true;
-			}
-
-			throw new Exception("cant get here anyway");
-		}
-
 		private void nXForamtToolStripMenuItem_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog {
 				Title = Resources.SelectWz,
@@ -1957,7 +1930,20 @@ namespace HaRepacker.GUI {
 
 		#region Import Helpers
 
-		private void ImportXml(WzMapleVersion version, IEnumerable fileNames) {
+		public DuplicateHandler CreateDefaultDuplicateHandler() {
+			return new DuplicateHandler {
+				OnDuplicateEntry = obj => {
+					ReplaceBox.Show(obj.Name, out var result);
+					return result;
+				},
+				OnRenameEntry = obj => {
+					NameInputBox.Show("Name", obj.Name, 0, out var name);
+					obj.Name = name;
+				}
+			};
+		}
+
+		private void ImportXml(WzMapleVersion version, string[] fileNames) {
 			// Currently doesn't support importing an img that is exported as xml
 			// without a parent
 			if (!IsChildHoldingSelectedNode()) {
@@ -1965,35 +1951,17 @@ namespace HaRepacker.GUI {
 			}
 
 			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version));
-			yesToAll = false;
-			noToAll = false;
-			threadDone = false;
-
-			runningThread = new Thread(WzDeserializeImportThread);
-			runningThread.Start(new object[] {
-				deserializer, fileNames, MainPanel.DataTree.SelectedNode, null
-			});
-			new Thread(ProgressBarThread).Start(deserializer);
+			WzDeserializeImportThread(deserializer, fileNames, (WzNode) MainPanel.DataTree.SelectedNode);
 		}
 
-		private void ImportImg(WzMapleVersion wzImageImportVersion, IEnumerable fileNames) {
+		private void ImportImg(WzMapleVersion wzImageImportVersion, string[] fileNames) {
 			var selectedNode = MainPanel.DataTree.SelectedNode;
 			if (selectedNode != null && !IsChildHoldingSelectedNode()) {
 				return;
 			}
 
-			var deserializer = new WzImgDeserializer(true, WzTool.GetIvByMapleVersion(wzImageImportVersion),
-				WzTool.GetUserKeyByMapleVersion(wzImageImportVersion));
-			yesToAll = false;
-			noToAll = false;
-			threadDone = false;
-
-			runningThread = new Thread(WzDeserializeImportThread);
-			runningThread.Start(
-				new object[] {
-					deserializer, fileNames, selectedNode, wzImageImportVersion
-				});
-			new Thread(ProgressBarThread).Start(deserializer);
+			var deserializer = new WzImgDeserializer(true, WzTool.GetIvByMapleVersion(wzImageImportVersion), WzTool.GetUserKeyByMapleVersion(wzImageImportVersion));
+			WzDeserializeImportThread(deserializer, fileNames, (WzNode) selectedNode);
 		}
 
 		private void ImportImages(string[] files) {
@@ -2005,95 +1973,97 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var parent = (WzNode) MainPanel.DataTree.SelectedNode;
+			var selectedNode = (WzNode) MainPanel.DataTree.SelectedNode;
 
-			foreach (var file in files) {
-				var name = Path.GetFileNameWithoutExtension(file);
-				var img = (Bitmap) Image.FromFile(file);
-				var canvas = new WzCanvasProperty(name);
-				var pngProperty = new WzPngProperty();
-				pngProperty.PixFormat = pixelFormat;
-				pngProperty.SetImage(img);
-				canvas.PngProperty = pngProperty;
-				var node = new WzNode(canvas, true);
-				InsertWzNodeThreadSafe(node, parent);
-				node.AddObject(new WzVectorProperty(WzCanvasProperty.OriginPropertyName, new WzIntProperty("X", 0),
-					new WzIntProperty("Y", 0)), MainPanel.UndoRedoMan);
-			}
-		}
+			UpdateProgressBar(MainPanel.mainProgressBar, files.Length, true, true);
+			Task.WhenAll(files.Select(file => Task.Run(() => {
+				var res = (file, (Bitmap) Image.FromFile(file));
+				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+				return res;
+			})).ToArray()).ContinueWith(task => {
+				MainPanel.Dispatcher.Invoke(() => {
+					var handler = CreateDefaultDuplicateHandler();
+					var objs = new List<WzObject>();
+					foreach (var (file, img) in task.Result) {
+						var name = Path.GetFileNameWithoutExtension(file);
+						var canvas = new WzCanvasProperty(name);
+						var pngProperty = new WzPngProperty();
+						pngProperty.PixFormat = pixelFormat;
+						pngProperty.SetImage(img);
+						canvas.PngProperty = pngProperty;
+						canvas.Add(handler, new WzVectorProperty(WzCanvasProperty.OriginPropertyName, new WzIntProperty("X", 0), new WzIntProperty("Y", 0)));
+						objs.Add(canvas);
+					}
+
+					AddObjectWithNode(handler, selectedNode, objs);
+				});
+			});
+		}	
 
 		#endregion
 
 		#region Import Threads
 
-		private void WzDeserializeImportThread(object param) {
+		private void WzDeserializeImportThread(ProgressingWzSerializer deserializer, string[] files, WzNode parent) {
 			ChangeApplicationState(false);
-
-			var arr = (object[]) param;
-			var deserializer = (ProgressingWzSerializer) arr[0];
-			var files = (string[]) arr[1];
-			var parent = (WzNode) arr[2];
-			var encryptionType = WzMapleVersion.UNKNOWN;
-
-			if (arr[3] is WzMapleVersion type) {
-				encryptionType = type;
-			}
 
 			var parentObj = (WzObject) parent?.Tag;
 			if (parentObj is WzFile wzFile) {
 				parentObj = wzFile.WzDirectory;
 			}
 
-			UpdateProgressBar(MainPanel.mainProgressBar, files.Length, true, true);
-
-			foreach (var file in files) {
-				List<WzObject> objs;
+			UpdateProgressBar(MainPanel.mainProgressBar, files.Length * 2, true, true);
+			Task.WhenAll(files.Select(file => Task.Run(() => {
 				try {
 					if (deserializer is WzXmlDeserializer xmlDeserializer) {
-						objs = xmlDeserializer.ParseXML(file);
+						return xmlDeserializer.ParseXML(file);
 					} else if (deserializer is WzImgDeserializer imgDeserializer) {
-						objs = new List<WzObject> {
+						var objs = new List<WzObject> {
 							imgDeserializer.WzImageFromIMGFile(file, Path.GetFileName(file), out var successfullyParsedImage)
 						};
 
-						if (!successfullyParsedImage) {
-							MessageBox.Show(
-								string.Format(Resources.MainErrorImportingWzImageFile, file),
-								Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-							continue;
+						if (successfullyParsedImage) {
+							return objs;
 						}
+
+						MessageBox.Show(
+							string.Format(Resources.MainErrorImportingWzImageFile, file),
+							Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						return new List<WzObject>();
 					} else {
-						return;
+						return new List<WzObject>();
 					}
-				} catch (ThreadAbortException) {
-					return;
 				} catch (Exception e) {
 					Warning.Error(string.Format(Resources.MainInvalidFileError, file, e.Message));
+					return new List<WzObject>();
+				} finally {
 					UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-					continue;
 				}
+			})).ToArray()).ContinueWith(task => {
+				MainPanel.Dispatcher.Invoke(() => {
+					var handler = CreateDefaultDuplicateHandler();
+					foreach (var objs in task.Result) {
+						foreach (var obj in objs) {
+							if (parent == null) {
+								AddObjectNoParent(obj);
+								continue;
+							}
 
-				foreach (var obj in objs) {
-					if (parent == null) {
-						AddLoadedWzObjectToMainPanel(obj, MainPanel.Dispatcher);
-						continue;
+							if (((!(obj is WzDirectory) && !(obj is WzImage)) || !(parentObj is WzDirectory)) &&
+							    (!(obj is WzImageProperty) || !(parentObj is IPropertyContainer))) {
+								continue;
+							}
+
+							AddObjectWithNode(handler, parent, obj);
+							UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
+						}
 					}
 
-					if (((!(obj is WzDirectory) && !(obj is WzImage)) || !(parentObj is WzDirectory)) &&
-					    (!(obj is WzImageProperty) || !(parentObj is IPropertyContainer))) {
-						continue;
-					}
-
-					var node = new WzNode(obj, true);
-					InsertWzNodeThreadSafe(node, parent);
-				}
-
-				UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
-			}
-
-			ErrorLogger.SaveToFile("WzImport_Errors.txt");
-
-			threadDone = true;
+					ErrorLogger.SaveToFile("WzImport_Errors.txt");
+					ClearProgressBar();
+					ChangeApplicationState(true);
+				});
+			});
 		}
 
 		#endregion
@@ -2130,9 +2100,7 @@ namespace HaRepacker.GUI {
 
 			ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+			ClearProgressBar();
 
 			threadDone = true;
 		}
@@ -2169,9 +2137,7 @@ namespace HaRepacker.GUI {
 
 			ErrorLogger.SaveToFile("WzExtract_Errors.txt");
 
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+			ClearProgressBar();
 
 			threadDone = true;
 		}
@@ -2208,9 +2174,7 @@ namespace HaRepacker.GUI {
 			Debug.WriteLine($"WZ files Extracted. Execution Time: {watch.ElapsedMilliseconds} ms");
 #endif
 
-			// Reset progress bar to 0
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
-			UpdateProgressBar(MainPanel.mainProgressBar, 0, true, true);
+			ClearProgressBar();
 
 			threadDone = true;
 		}
