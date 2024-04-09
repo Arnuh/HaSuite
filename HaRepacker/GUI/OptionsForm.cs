@@ -7,13 +7,17 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using MapleLib.WzLib.Serialization;
 
 namespace HaRepacker.GUI {
 	public partial class OptionsForm : Form {
-		public OptionsForm() {
+		private MainPanel mainPanel;
+
+		public OptionsForm(MainPanel mainPanel) {
 			InitializeComponent();
+			this.mainPanel = mainPanel;
 
 			sortBox.Checked = Program.ConfigurationManager.UserSettings.Sort;
 			loadRelated.Checked = Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles;
@@ -61,6 +65,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
+			var oldSort = Program.ConfigurationManager.UserSettings.Sort;
 			Program.ConfigurationManager.UserSettings.Sort = sortBox.Checked;
 			Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles = loadRelated.Checked;
 			Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
@@ -79,6 +84,9 @@ namespace HaRepacker.GUI {
 			Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey = openAI_apiKey_textBox.Text;
 
 			Program.ConfigurationManager.Save();
+			if (oldSort != Program.ConfigurationManager.UserSettings.Sort) {
+				mainPanel.UpdateSorter();
+			}
 			Close();
 		}
 

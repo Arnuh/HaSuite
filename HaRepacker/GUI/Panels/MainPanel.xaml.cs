@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using HaRepacker.Comparer;
 using HaRepacker.GUI.Input;
 using HaSharedLibrary.GUI;
 using MapleLib.Helpers;
@@ -110,6 +111,7 @@ namespace HaRepacker.GUI.Panels {
 			textEditor.SaveButtonClicked += TextEditor_SaveButtonClicked;
 			Loaded += MainPanelXAML_Loaded;
 
+			UpdateSorter();
 
 			isLoading = false;
 		}
@@ -126,6 +128,18 @@ namespace HaRepacker.GUI.Panels {
 		#endregion
 
 		#region Data Tree
+
+		public void UpdateSorter() {
+			if (Program.ConfigurationManager.UserSettings.Sort) {
+				DataTree.TreeViewNodeSorter = new TreeViewNodeSorter();
+			} else {
+				DataTree.TreeViewNodeSorter = null;
+				// If you toggle off sorting but previously had a sorter
+				// It would still have Sorted as true and thus sort the nodes
+				// despite the sorter being null
+				DataTree.Sorted = false;
+			}
+		}
 
 		private void DataTree_DoubleClick(object sender, EventArgs e) {
 			if (DataTree.SelectedNode != null && DataTree.SelectedNode.Tag is WzImage &&

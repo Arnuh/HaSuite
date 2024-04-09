@@ -138,7 +138,7 @@ namespace HaRepacker.GUI {
 		}
 
 		#region Load, unload WZ files + Panels & TreeView management
-
+		
 		/// <summary>
 		/// MainForm -- Drag the file from Windows Explorer
 		/// </summary>
@@ -167,8 +167,6 @@ namespace HaRepacker.GUI {
 			InsertWzFileToPanel(f);
 		}
 
-		private delegate void LoadWzFileDelegate(string path);
-
 		private void LoadWzFileCallback(string path) {
 			try {
 				var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
@@ -182,9 +180,7 @@ namespace HaRepacker.GUI {
 				var node = new WzNode(loadedWzFile);
 
 				MainPanel.DataTree.BeginUpdate();
-
 				MainPanel.DataTree.Nodes.Add(node);
-				SortNodesRecursively(node);
 				MainPanel.DataTree.EndUpdate();
 			} catch (Exception ex) {
 				Warning.Error(string.Format(Resources.MainCouldntOpenWZ, path));
@@ -195,25 +191,36 @@ namespace HaRepacker.GUI {
 		/// Sort all nodes that is a parent of 
 		/// </summary>
 		/// <param name="parent"></param>
-		/// <param name="sortFromTheParentNode">Sorts only items in the parent node</param>
-		public void SortNodesRecursively(WzNode parent, bool sortFromTheParentNode = false) {
-			if (Program.ConfigurationManager.UserSettings.Sort || sortFromTheParentNode) {
-				parent.TreeView.TreeViewNodeSorter = new TreeViewNodeSorter(sortFromTheParentNode ? parent : null);
+		public void SortNodesRecursively(WzNode parent) {
+			if (parent.TreeView.Sorted) {
+				// No reason to sort if sorting is already enabled
+				return;
+			}
 
-				parent.TreeView.BeginUpdate();
-				parent.TreeView.Sort();
-				parent.TreeView.EndUpdate();
+			var sorter = new TreeViewNodeSorter();
+			parent.TreeView.BeginUpdate();
+			SortNodesRecursively(sorter, parent.Nodes);
+			parent.TreeView.EndUpdate();
+		}
+
+		private void SortNodesRecursively(IComparer sorter, TreeNodeCollection nodes) {
+			var array = new TreeNode[nodes.Count];
+			nodes.CopyTo(array, 0);
+			Array.Sort(array, sorter);
+			nodes.Clear();
+			nodes.AddRange(array);
+			foreach (TreeNode node in nodes) {
+				SortNodesRecursively(sorter, node.Nodes);
 			}
 		}
 
 		public void SortNodeProperties(WzNode node) {
-			if (node.Tag is WzSubProperty) {
+			if (node.Tag is WzSubProperty subProperties) {
 				var nodeParent = (WzNode) node.Parent;
 
 				nodeParent.TreeView.BeginUpdate();
 
 				// sort the order in the WzSubProperty
-				var subProperties = node.Tag as WzSubProperty;
 				subProperties.SortProperties();
 
 				// Refresh the TreeView view to be in synchronized with the new WzSubProperty's order
@@ -236,8 +243,6 @@ namespace HaRepacker.GUI {
 			MainPanel.DataTree.BeginUpdate();
 			MainPanel.DataTree.Nodes.Add(node);
 			MainPanel.DataTree.EndUpdate();
-
-			SortNodesRecursively(node);
 		}
 
 		/// <summary>
@@ -256,18 +261,12 @@ namespace HaRepacker.GUI {
 			if (currentDispatcher != null) {
 				await currentDispatcher.BeginInvoke((Action) (() => {
 					MainPanel.DataTree.BeginUpdate();
-
 					MainPanel.DataTree.Nodes.Add(node);
-					if (Program.ConfigurationManager.UserSettings.Sort) SortNodesRecursively(node);
-
 					MainPanel.DataTree.EndUpdate();
 				}));
 			} else {
 				MainPanel.DataTree.BeginUpdate();
-
 				MainPanel.DataTree.Nodes.Add(node);
-				if (Program.ConfigurationManager.UserSettings.Sort) SortNodesRecursively(node);
-
 				MainPanel.DataTree.EndUpdate();
 			}
 
@@ -1125,7 +1124,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-			new OptionsForm().ShowDialog();
+			new OptionsForm(MainPanel).ShowDialog();
 		}
 
 		/// <summary>

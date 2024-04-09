@@ -102,11 +102,11 @@ namespace HaRepacker {
 			// wz properties
 			SortAllChildViewNode = new ToolStripMenuItem("Sort child nodes view", null,
 				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
+					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
 				});
 			SortAllChildViewNode2 = new ToolStripMenuItem("Sort child nodes view", null,
 				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node, true);
+					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
 				});
 			SortPropertiesByName = new ToolStripMenuItem("Sort properties by name", null, delegate(object sender, EventArgs e) {
 				foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodeProperties(node);

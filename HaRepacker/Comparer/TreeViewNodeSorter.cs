@@ -5,14 +5,12 @@ using System.Windows.Forms;
 
 namespace HaRepacker.Comparer {
 	public class TreeViewNodeSorter : IComparer {
-		private readonly TreeNode startNode;
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="startNode">The starting node to sort from. If this is null, everything will be sorted.</param>
-		public TreeViewNodeSorter(TreeNode startNode) {
-			this.startNode = startNode;
+		public TreeViewNodeSorter() {
+			
 		}
 
 
@@ -20,12 +18,6 @@ namespace HaRepacker.Comparer {
 		public int Compare(object s1_, object s2_) {
 			var t1 = s1_ as TreeNode;
 			var t2 = s2_ as TreeNode;
-
-			if (startNode != null) {
-				if (t1.Parent != startNode) {
-					return -1;
-				}
-			}
 
 			var s1Text = t1.Text;
 			var s2Text = t2.Text;
