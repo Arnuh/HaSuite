@@ -27,8 +27,7 @@ namespace HaCreator.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.numericUpDown_walkForce = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -70,48 +69,36 @@ namespace HaCreator.GUI
             this.button_resetPreBB = new System.Windows.Forms.Button();
             this.button_save = new System.Windows.Forms.Button();
             this.label_error = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkForce)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkDrag)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_slipForce)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_slipSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatDrag1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatDrag2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatCoefficient)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimForce)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flyForce)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flySpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_gravityAcc)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_fallSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_jumpSpeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_maxFriction)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_minFriction)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimSpeedDec)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flyJumpDec)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkForce)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkDrag)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_slipForce)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_slipSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatDrag1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatDrag2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatCoefficient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimForce)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flyForce)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flySpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_gravityAcc)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_fallSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_jumpSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_maxFriction)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_minFriction)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimSpeedDec)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flyJumpDec)).BeginInit();
             this.SuspendLayout();
             // 
             // numericUpDown_walkForce
             // 
             this.numericUpDown_walkForce.Location = new System.Drawing.Point(118, 7);
-            this.numericUpDown_walkForce.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_walkForce.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_walkForce.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_walkForce.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_walkForce.Name = "numericUpDown_walkForce";
             this.numericUpDown_walkForce.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_walkForce.TabIndex = 0;
-            this.numericUpDown_walkForce.Value = new decimal(new int[] {
-            140000,
-            0,
-            0,
-            0});
+            this.numericUpDown_walkForce.Value = new decimal(new int[] {140000, 0, 0, 0});
             // 
             // label1
             // 
@@ -134,24 +121,12 @@ namespace HaCreator.GUI
             // numericUpDown_walkSpeed
             // 
             this.numericUpDown_walkSpeed.Location = new System.Drawing.Point(118, 35);
-            this.numericUpDown_walkSpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_walkSpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_walkSpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_walkSpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_walkSpeed.Name = "numericUpDown_walkSpeed";
             this.numericUpDown_walkSpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_walkSpeed.TabIndex = 2;
-            this.numericUpDown_walkSpeed.Value = new decimal(new int[] {
-            125,
-            0,
-            0,
-            0});
+            this.numericUpDown_walkSpeed.Value = new decimal(new int[] {125, 0, 0, 0});
             // 
             // label3
             // 
@@ -165,24 +140,12 @@ namespace HaCreator.GUI
             // numericUpDown_walkDrag
             // 
             this.numericUpDown_walkDrag.Location = new System.Drawing.Point(118, 63);
-            this.numericUpDown_walkDrag.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_walkDrag.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_walkDrag.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_walkDrag.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_walkDrag.Name = "numericUpDown_walkDrag";
             this.numericUpDown_walkDrag.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_walkDrag.TabIndex = 4;
-            this.numericUpDown_walkDrag.Value = new decimal(new int[] {
-            80000,
-            0,
-            0,
-            0});
+            this.numericUpDown_walkDrag.Value = new decimal(new int[] {80000, 0, 0, 0});
             // 
             // label4
             // 
@@ -196,24 +159,12 @@ namespace HaCreator.GUI
             // numericUpDown_slipForce
             // 
             this.numericUpDown_slipForce.Location = new System.Drawing.Point(118, 91);
-            this.numericUpDown_slipForce.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_slipForce.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_slipForce.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_slipForce.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_slipForce.Name = "numericUpDown_slipForce";
             this.numericUpDown_slipForce.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_slipForce.TabIndex = 6;
-            this.numericUpDown_slipForce.Value = new decimal(new int[] {
-            60000,
-            0,
-            0,
-            0});
+            this.numericUpDown_slipForce.Value = new decimal(new int[] {60000, 0, 0, 0});
             // 
             // label5
             // 
@@ -227,24 +178,12 @@ namespace HaCreator.GUI
             // numericUpDown_slipSpeed
             // 
             this.numericUpDown_slipSpeed.Location = new System.Drawing.Point(118, 119);
-            this.numericUpDown_slipSpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_slipSpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_slipSpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_slipSpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_slipSpeed.Name = "numericUpDown_slipSpeed";
             this.numericUpDown_slipSpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_slipSpeed.TabIndex = 8;
-            this.numericUpDown_slipSpeed.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
+            this.numericUpDown_slipSpeed.Value = new decimal(new int[] {120, 0, 0, 0});
             // 
             // label6
             // 
@@ -258,24 +197,12 @@ namespace HaCreator.GUI
             // numericUpDown_floatDrag1
             // 
             this.numericUpDown_floatDrag1.Location = new System.Drawing.Point(118, 147);
-            this.numericUpDown_floatDrag1.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_floatDrag1.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_floatDrag1.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_floatDrag1.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_floatDrag1.Name = "numericUpDown_floatDrag1";
             this.numericUpDown_floatDrag1.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_floatDrag1.TabIndex = 10;
-            this.numericUpDown_floatDrag1.Value = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+            this.numericUpDown_floatDrag1.Value = new decimal(new int[] {100000, 0, 0, 0});
             // 
             // label7
             // 
@@ -289,24 +216,12 @@ namespace HaCreator.GUI
             // numericUpDown_floatDrag2
             // 
             this.numericUpDown_floatDrag2.Location = new System.Drawing.Point(118, 175);
-            this.numericUpDown_floatDrag2.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_floatDrag2.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_floatDrag2.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_floatDrag2.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_floatDrag2.Name = "numericUpDown_floatDrag2";
             this.numericUpDown_floatDrag2.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_floatDrag2.TabIndex = 12;
-            this.numericUpDown_floatDrag2.Value = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
+            this.numericUpDown_floatDrag2.Value = new decimal(new int[] {10000, 0, 0, 0});
             // 
             // label8
             // 
@@ -321,24 +236,12 @@ namespace HaCreator.GUI
             // 
             this.numericUpDown_floatCoefficient.DecimalPlaces = 4;
             this.numericUpDown_floatCoefficient.Location = new System.Drawing.Point(118, 203);
-            this.numericUpDown_floatCoefficient.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_floatCoefficient.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_floatCoefficient.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_floatCoefficient.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_floatCoefficient.Name = "numericUpDown_floatCoefficient";
             this.numericUpDown_floatCoefficient.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_floatCoefficient.TabIndex = 14;
-            this.numericUpDown_floatCoefficient.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
+            this.numericUpDown_floatCoefficient.Value = new decimal(new int[] {1, 0, 0, 131072});
             // 
             // label9
             // 
@@ -352,24 +255,12 @@ namespace HaCreator.GUI
             // numericUpDown_swimForce
             // 
             this.numericUpDown_swimForce.Location = new System.Drawing.Point(118, 231);
-            this.numericUpDown_swimForce.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_swimForce.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_swimForce.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_swimForce.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_swimForce.Name = "numericUpDown_swimForce";
             this.numericUpDown_swimForce.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_swimForce.TabIndex = 16;
-            this.numericUpDown_swimForce.Value = new decimal(new int[] {
-            120000,
-            0,
-            0,
-            0});
+            this.numericUpDown_swimForce.Value = new decimal(new int[] {120000, 0, 0, 0});
             // 
             // label10
             // 
@@ -383,24 +274,12 @@ namespace HaCreator.GUI
             // numericUpDown_swimSpeed
             // 
             this.numericUpDown_swimSpeed.Location = new System.Drawing.Point(118, 259);
-            this.numericUpDown_swimSpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_swimSpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_swimSpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_swimSpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_swimSpeed.Name = "numericUpDown_swimSpeed";
             this.numericUpDown_swimSpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_swimSpeed.TabIndex = 18;
-            this.numericUpDown_swimSpeed.Value = new decimal(new int[] {
-            140,
-            0,
-            0,
-            0});
+            this.numericUpDown_swimSpeed.Value = new decimal(new int[] {140, 0, 0, 0});
             // 
             // label11
             // 
@@ -414,24 +293,12 @@ namespace HaCreator.GUI
             // numericUpDown_flyForce
             // 
             this.numericUpDown_flyForce.Location = new System.Drawing.Point(118, 287);
-            this.numericUpDown_flyForce.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_flyForce.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_flyForce.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_flyForce.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_flyForce.Name = "numericUpDown_flyForce";
             this.numericUpDown_flyForce.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_flyForce.TabIndex = 20;
-            this.numericUpDown_flyForce.Value = new decimal(new int[] {
-            120000,
-            0,
-            0,
-            0});
+            this.numericUpDown_flyForce.Value = new decimal(new int[] {120000, 0, 0, 0});
             // 
             // label12
             // 
@@ -445,24 +312,12 @@ namespace HaCreator.GUI
             // numericUpDown_flySpeed
             // 
             this.numericUpDown_flySpeed.Location = new System.Drawing.Point(118, 315);
-            this.numericUpDown_flySpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_flySpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_flySpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_flySpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_flySpeed.Name = "numericUpDown_flySpeed";
             this.numericUpDown_flySpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_flySpeed.TabIndex = 22;
-            this.numericUpDown_flySpeed.Value = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
+            this.numericUpDown_flySpeed.Value = new decimal(new int[] {200, 0, 0, 0});
             // 
             // label13
             // 
@@ -476,24 +331,12 @@ namespace HaCreator.GUI
             // numericUpDown_gravityAcc
             // 
             this.numericUpDown_gravityAcc.Location = new System.Drawing.Point(118, 343);
-            this.numericUpDown_gravityAcc.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_gravityAcc.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_gravityAcc.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_gravityAcc.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_gravityAcc.Name = "numericUpDown_gravityAcc";
             this.numericUpDown_gravityAcc.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_gravityAcc.TabIndex = 24;
-            this.numericUpDown_gravityAcc.Value = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
+            this.numericUpDown_gravityAcc.Value = new decimal(new int[] {2000, 0, 0, 0});
             // 
             // label14
             // 
@@ -507,24 +350,12 @@ namespace HaCreator.GUI
             // numericUpDown_fallSpeed
             // 
             this.numericUpDown_fallSpeed.Location = new System.Drawing.Point(118, 371);
-            this.numericUpDown_fallSpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_fallSpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_fallSpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_fallSpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_fallSpeed.Name = "numericUpDown_fallSpeed";
             this.numericUpDown_fallSpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_fallSpeed.TabIndex = 26;
-            this.numericUpDown_fallSpeed.Value = new decimal(new int[] {
-            670,
-            0,
-            0,
-            0});
+            this.numericUpDown_fallSpeed.Value = new decimal(new int[] {670, 0, 0, 0});
             // 
             // label15
             // 
@@ -538,24 +369,12 @@ namespace HaCreator.GUI
             // numericUpDown_jumpSpeed
             // 
             this.numericUpDown_jumpSpeed.Location = new System.Drawing.Point(118, 399);
-            this.numericUpDown_jumpSpeed.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_jumpSpeed.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_jumpSpeed.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_jumpSpeed.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_jumpSpeed.Name = "numericUpDown_jumpSpeed";
             this.numericUpDown_jumpSpeed.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_jumpSpeed.TabIndex = 28;
-            this.numericUpDown_jumpSpeed.Value = new decimal(new int[] {
-            555,
-            0,
-            0,
-            0});
+            this.numericUpDown_jumpSpeed.Value = new decimal(new int[] {555, 0, 0, 0});
             // 
             // label16
             // 
@@ -569,24 +388,12 @@ namespace HaCreator.GUI
             // numericUpDown_maxFriction
             // 
             this.numericUpDown_maxFriction.Location = new System.Drawing.Point(118, 427);
-            this.numericUpDown_maxFriction.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_maxFriction.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_maxFriction.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_maxFriction.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_maxFriction.Name = "numericUpDown_maxFriction";
             this.numericUpDown_maxFriction.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_maxFriction.TabIndex = 30;
-            this.numericUpDown_maxFriction.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
+            this.numericUpDown_maxFriction.Value = new decimal(new int[] {2, 0, 0, 0});
             // 
             // label17
             // 
@@ -601,24 +408,12 @@ namespace HaCreator.GUI
             // 
             this.numericUpDown_minFriction.DecimalPlaces = 4;
             this.numericUpDown_minFriction.Location = new System.Drawing.Point(118, 455);
-            this.numericUpDown_minFriction.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_minFriction.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_minFriction.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_minFriction.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_minFriction.Name = "numericUpDown_minFriction";
             this.numericUpDown_minFriction.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_minFriction.TabIndex = 32;
-            this.numericUpDown_minFriction.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
+            this.numericUpDown_minFriction.Value = new decimal(new int[] {5, 0, 0, 131072});
             // 
             // label18
             // 
@@ -633,24 +428,12 @@ namespace HaCreator.GUI
             // 
             this.numericUpDown_swimSpeedDec.DecimalPlaces = 2;
             this.numericUpDown_swimSpeedDec.Location = new System.Drawing.Point(118, 483);
-            this.numericUpDown_swimSpeedDec.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_swimSpeedDec.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_swimSpeedDec.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_swimSpeedDec.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_swimSpeedDec.Name = "numericUpDown_swimSpeedDec";
             this.numericUpDown_swimSpeedDec.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_swimSpeedDec.TabIndex = 34;
-            this.numericUpDown_swimSpeedDec.Value = new decimal(new int[] {
-            9,
-            0,
-            0,
-            65536});
+            this.numericUpDown_swimSpeedDec.Value = new decimal(new int[] {9, 0, 0, 65536});
             // 
             // label19
             // 
@@ -665,24 +448,12 @@ namespace HaCreator.GUI
             // 
             this.numericUpDown_flyJumpDec.DecimalPlaces = 4;
             this.numericUpDown_flyJumpDec.Location = new System.Drawing.Point(118, 511);
-            this.numericUpDown_flyJumpDec.Maximum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            0});
-            this.numericUpDown_flyJumpDec.Minimum = new decimal(new int[] {
-            999999,
-            0,
-            0,
-            -2147483648});
+            this.numericUpDown_flyJumpDec.Maximum = new decimal(new int[] {999999, 0, 0, 0});
+            this.numericUpDown_flyJumpDec.Minimum = new decimal(new int[] {999999, 0, 0, -2147483648});
             this.numericUpDown_flyJumpDec.Name = "numericUpDown_flyJumpDec";
             this.numericUpDown_flyJumpDec.Size = new System.Drawing.Size(129, 22);
             this.numericUpDown_flyJumpDec.TabIndex = 36;
-            this.numericUpDown_flyJumpDec.Value = new decimal(new int[] {
-            35,
-            0,
-            0,
-            131072});
+            this.numericUpDown_flyJumpDec.Value = new decimal(new int[] {35, 0, 0, 131072});
             // 
             // button_resetPreBB
             // 
@@ -710,7 +481,7 @@ namespace HaCreator.GUI
             this.label_error.Location = new System.Drawing.Point(12, 618);
             this.label_error.MaximumSize = new System.Drawing.Size(300, 0);
             this.label_error.Name = "label_error";
-            this.label_error.Size = new System.Drawing.Size(235, 27);
+            this.label_error.Size = new System.Drawing.Size(235, 0);
             this.label_error.TabIndex = 40;
             // 
             // MapPhysicsEditor
@@ -762,30 +533,30 @@ namespace HaCreator.GUI
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MapPhysicsEditor";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Map Physics";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UIWindow_KeyDown);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkForce)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_walkDrag)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_slipForce)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_slipSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatDrag1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatDrag2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_floatCoefficient)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimForce)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flyForce)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flySpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_gravityAcc)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_fallSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_jumpSpeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_maxFriction)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_minFriction)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_swimSpeedDec)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_flyJumpDec)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkForce)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_walkDrag)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_slipForce)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_slipSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatDrag1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatDrag2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_floatCoefficient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimForce)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flyForce)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flySpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_gravityAcc)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_fallSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_jumpSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_maxFriction)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_minFriction)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_swimSpeedDec)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.numericUpDown_flyJumpDec)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
