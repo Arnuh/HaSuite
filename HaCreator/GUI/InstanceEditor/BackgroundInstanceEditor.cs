@@ -33,6 +33,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			} else {
 				zInput.Value = item.Z;
 			}
+			flipCheck.Checked = item.Flip;
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
 			typeBox.Items.AddRange(Tables.BackgroundTypeNames);
@@ -129,6 +130,8 @@ namespace HaCreator.GUI.InstanceEditor {
 						new Point((int) xInput.Value, (int) yInput.Value)));
 					item.MoveBase((int) xInput.Value, (int) yInput.Value);
 				}
+
+				item.Flip = flipCheck.Checked;
 
 				if (zInput.Enabled && item.Z != zInput.Value) {
 					actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int) zInput.Value));
