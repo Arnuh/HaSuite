@@ -98,7 +98,7 @@ namespace HaCreator {
 		public static bool InfoMode = false;
 		public static int lastDefaultLayer = 0;
 		public static bool lastAllLayers = true;
-		public static string LastHamPath = "";
+		public static string LastImgPath = "";
 		public static string LastXmlPath = "";
 
 

@@ -9,12 +9,14 @@
 #define SPACETIME
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using HaCreator.Wz;
 using HaSharedLibrary.Wz;
+using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.WzProperties;
@@ -57,12 +59,14 @@ namespace HaCreator.GUI {
 		private void Load_Load(object sender, EventArgs e) {
 			switch (ApplicationSettings.lastRadioIndex) {
 				case 0:
-					HAMSelect.Checked = true;
-					HAMBox.Text = ApplicationSettings.LastHamPath;
+					IMGSelect.Checked = true;
+					IMGBox.Text = ApplicationSettings.LastImgPath;
+					loadButton.Enabled = IMGBox.Text != "";
 					break;
 				case 1:
 					XMLSelect.Checked = true;
 					XMLBox.Text = ApplicationSettings.LastXmlPath;
+					loadButton.Enabled = XMLBox.Text != "";
 					break;
 				case 2:
 					WZSelect.Checked = true;
@@ -81,23 +85,23 @@ namespace HaCreator.GUI {
 		}
 
 		private void SelectionChanged(object sender, EventArgs e) {
-			if (HAMSelect.Checked) {
+			if (IMGSelect.Checked) {
 				ApplicationSettings.lastRadioIndex = 0;
-				HAMBox.Enabled = true;
+				IMGBox.Enabled = true;
 				XMLBox.Enabled = false;
 				searchBox.Enabled = false;
 				mapBrowser.IsEnabled = false;
 				loadButton.Enabled = true;
 			} else if (XMLSelect.Checked) {
 				ApplicationSettings.lastRadioIndex = 1;
-				HAMBox.Enabled = false;
+				IMGBox.Enabled = false;
 				XMLBox.Enabled = true;
 				searchBox.Enabled = false;
 				mapBrowser.IsEnabled = false;
 				loadButton.Enabled = XMLBox.Text != "";
 			} else if (WZSelect.Checked) {
 				ApplicationSettings.lastRadioIndex = 2;
-				HAMBox.Enabled = false;
+				IMGBox.Enabled = false;
 				XMLBox.Enabled = false;
 				searchBox.Enabled = true;
 				mapBrowser.IsEnabled = true;
@@ -115,13 +119,13 @@ namespace HaCreator.GUI {
 			loadButton.Enabled = true;
 		}
 
-		private void BrowseHAM_Click(object sender, EventArgs e) {
+		private void BrowseIMG_Click(object sender, EventArgs e) {
 			var dialog = new OpenFileDialog();
 			dialog.Title = "Select Map to load...";
-			dialog.Filter = "HaCreator Map File (*.ham)|*.ham";
+			dialog.Filter = "WZ Image Files (*.img)|*.img";
 			if (dialog.ShowDialog() != DialogResult.OK) return;
 
-			HAMBox.Text = dialog.FileName;
+			IMGBox.Text = dialog.FileName;
 			loadButton.Enabled = true;
 		}
 
@@ -131,7 +135,6 @@ namespace HaCreator.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void LoadButton_Click(object sender, EventArgs e) {
-			//Hide();
 			var ww = new WaitWindow("Loading...");
 			ww.Show();
 			Application.DoEvents();
@@ -141,18 +144,28 @@ namespace HaCreator.GUI {
 			string mapName = null, streetName = "", categoryName = "";
 			WzSubProperty strMapProp = null;
 
-			if (HAMSelect.Checked) {
-				MapLoader.CreateMapFromHam(multiBoard, Tabs, File.ReadAllText(HAMBox.Text), rightClickHandler);
-				DialogResult = DialogResult.OK;
-				ww.EndWait();
-				Close();
-				return;
-			}
-
-			if (XMLSelect.Checked) {
+			if (IMGSelect.Checked) {
+				var version = Initialization.WzMapleVersion;
+				var deserializer = new WzImgDeserializer(false, version);
+				var fileName = Path.GetFileName(IMGBox.Text);
+				mapImage = deserializer.WzImageFromIMGFile(IMGBox.Text, fileName, out var successfullyParsedImage);
+				if (!successfullyParsedImage) {
+					MessageBox.Show("Error while loading IMG. Aborted.");
+					ww.EndWait();
+					Show();
+					return;
+				}
+				var mapid_str = mapImage.Name.Replace(".img", "").Replace(".xml", "");
+				int.TryParse(mapid_str, out mapid);
+			} else if (XMLSelect.Checked) {
 				try {
-					mapImage = (WzImage) new WzXmlDeserializer(false, null, null).ParseXML(XMLBox.Text)[0];
-				} catch {
+					var version = Initialization.WzMapleVersion;
+					mapImage = (WzImage) new WzXmlDeserializer(false, version).ParseXML(XMLBox.Text)[0];
+					var mapid_str = mapImage.Name.Replace(".img", "").Replace(".xml", "");
+					int.TryParse(mapid_str, out mapid);
+				} catch (Exception ex) {
+					Debug.WriteLine($"{ex.Message}\r\n{ex.StackTrace}");
+					ErrorLogger.Log(ErrorLevel.Save, $"{ex.Message}\r\n{ex.StackTrace}");
 					MessageBox.Show("Error while loading XML. Aborted.");
 					ww.EndWait();
 					Show();
@@ -229,8 +242,6 @@ namespace HaCreator.GUI {
 		}
 
 		private void MapBrowser_SelectionChanged() {
-			var bLoadAvailable = mapBrowser.LoadAvailable;
-
 			loadButton.Enabled = mapBrowser.LoadAvailable;
 		}
 
@@ -240,8 +251,8 @@ namespace HaCreator.GUI {
 			} else if (e.KeyCode == Keys.Enter) LoadButton_Click(null, null);
 		}
 
-		private void HAMBox_TextChanged(object sender, EventArgs e) {
-			ApplicationSettings.LastHamPath = HAMBox.Text;
+		private void IMGBox_TextChanged(object sender, EventArgs e) {
+			ApplicationSettings.LastImgPath = IMGBox.Text;
 		}
 
 		private void XMLBox_TextChanged(object sender, EventArgs e) {

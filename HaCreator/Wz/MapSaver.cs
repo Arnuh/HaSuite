@@ -700,7 +700,7 @@ namespace HaCreator.Wz {
 			}
 		}
 
-		public void SaveMapImage() {
+		public WzImage CreateMapImage() {
 			CreateImage();
 			SaveMapInfo();
 			SaveMiniMap();
@@ -716,6 +716,11 @@ namespace HaCreator.Wz {
 			SaveMisc();
 			SaveMirrorFieldData();
 			SaveAdditionals();
+			return image;
+		}
+
+		public void SaveMapImage() {
+			CreateMapImage();
 			InsertImage();
 		}
 

@@ -155,7 +155,7 @@ namespace HaCreator.MapEditor {
 						continue;
 					}
 
-					MapLoader.CreateMapFromHam(multiBoard, tabs, file.Value, hcsm.MakeRightClickHandler());
+					//MapLoader.CreateMapFromHam(multiBoard, tabs, file.Value, hcsm.MakeRightClickHandler());
 				}
 			}
 

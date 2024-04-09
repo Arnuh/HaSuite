@@ -28,15 +28,14 @@ namespace HaCreator.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FieldSelector));
             this.loadButton = new System.Windows.Forms.Button();
             this.WZSelect = new System.Windows.Forms.RadioButton();
             this.XMLSelect = new System.Windows.Forms.RadioButton();
             this.XMLBox = new System.Windows.Forms.TextBox();
-            this.HAMBox = new System.Windows.Forms.TextBox();
-            this.HAMSelect = new System.Windows.Forms.RadioButton();
+            this.IMGBox = new System.Windows.Forms.TextBox();
+            this.IMGSelect = new System.Windows.Forms.RadioButton();
             this.tabControl_maps = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.mapBrowser = new HaCreator.CustomControls.MapBrowser();
@@ -91,32 +90,32 @@ namespace HaCreator.GUI
             this.XMLBox.Click += new System.EventHandler(this.BrowseXML_Click);
             this.XMLBox.TextChanged += new System.EventHandler(this.XMLBox_TextChanged);
             // 
-            // HAMBox
+            // IMGBox
             // 
-            this.HAMBox.Enabled = false;
-            this.HAMBox.Location = new System.Drawing.Point(64, 12);
-            this.HAMBox.Name = "HAMBox";
-            this.HAMBox.Size = new System.Drawing.Size(692, 22);
-            this.HAMBox.TabIndex = 1;
-            this.HAMBox.Click += new System.EventHandler(this.BrowseHAM_Click);
-            this.HAMBox.TextChanged += new System.EventHandler(this.HAMBox_TextChanged);
+            this.IMGBox.Enabled = false;
+            this.IMGBox.Location = new System.Drawing.Point(64, 12);
+            this.IMGBox.Name = "IMGBox";
+            this.IMGBox.Size = new System.Drawing.Size(692, 22);
+            this.IMGBox.TabIndex = 1;
+            this.IMGBox.Click += new System.EventHandler(this.BrowseIMG_Click);
+            this.IMGBox.TextChanged += new System.EventHandler(this.IMGBox_TextChanged);
             // 
-            // HAMSelect
+            // IMGSelect
             // 
-            this.HAMSelect.AutoSize = true;
-            this.HAMSelect.Location = new System.Drawing.Point(11, 13);
-            this.HAMSelect.Name = "HAMSelect";
-            this.HAMSelect.Size = new System.Drawing.Size(50, 17);
-            this.HAMSelect.TabIndex = 0;
-            this.HAMSelect.Text = "HAM";
-            this.HAMSelect.UseVisualStyleBackColor = true;
+            this.IMGSelect.AutoSize = true;
+            this.IMGSelect.Location = new System.Drawing.Point(11, 13);
+            this.IMGSelect.Name = "IMGSelect";
+            this.IMGSelect.Size = new System.Drawing.Size(46, 17);
+            this.IMGSelect.TabIndex = 0;
+            this.IMGSelect.Text = "IMG";
+            this.IMGSelect.UseVisualStyleBackColor = true;
             // 
             // tabControl_maps
             // 
             this.tabControl_maps.Controls.Add(this.tabPage1);
             this.tabControl_maps.Controls.Add(this.tabPage2);
             this.tabControl_maps.Location = new System.Drawing.Point(8, 86);
-            this.tabControl_maps.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl_maps.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl_maps.Name = "tabControl_maps";
             this.tabControl_maps.SelectedIndex = 0;
             this.tabControl_maps.Size = new System.Drawing.Size(769, 510);
@@ -126,9 +125,9 @@ namespace HaCreator.GUI
             // 
             this.tabPage1.Controls.Add(this.mapBrowser);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage1.Size = new System.Drawing.Size(761, 484);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Maps";
@@ -147,9 +146,9 @@ namespace HaCreator.GUI
             // tabPage2
             // 
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage2.Size = new System.Drawing.Size(761, 484);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "History";
@@ -166,14 +165,14 @@ namespace HaCreator.GUI
             this.searchBox.WatermarkActive = true;
             this.searchBox.WatermarkText = "Type here";
             // 
-            // Load
+            // FieldSelector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(783, 637);
             this.Controls.Add(this.tabControl_maps);
-            this.Controls.Add(this.HAMBox);
-            this.Controls.Add(this.HAMSelect);
+            this.Controls.Add(this.IMGBox);
+            this.Controls.Add(this.IMGSelect);
             this.Controls.Add(this.searchBox);
             this.Controls.Add(this.XMLBox);
             this.Controls.Add(this.XMLSelect);
@@ -182,10 +181,10 @@ namespace HaCreator.GUI
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = ((System.Drawing.Icon) (resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MaximizeBox = false;
-            this.Name = "Load";
+            this.Name = "FieldSelector";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Load";
             this.Load += new System.EventHandler(this.Load_Load);
@@ -194,7 +193,6 @@ namespace HaCreator.GUI
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -205,8 +203,8 @@ namespace HaCreator.GUI
         private System.Windows.Forms.TextBox XMLBox;
         private WatermarkTextBox searchBox;
         private CustomControls.MapBrowser mapBrowser;
-        private System.Windows.Forms.TextBox HAMBox;
-        private System.Windows.Forms.RadioButton HAMSelect;
+        private System.Windows.Forms.TextBox IMGBox;
+        private System.Windows.Forms.RadioButton IMGSelect;
         private System.Windows.Forms.TabControl tabControl_maps;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;

@@ -29,6 +29,7 @@ using HaCreator.Wz;
 using HaRepacker.GUI;
 using MapleLib;
 using MapleLib.Helpers;
+using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.WzStructure.Data;
 using SystemWinCtl = System.Windows.Controls;
 using Application = System.Windows.Forms.Application;
@@ -551,22 +552,20 @@ namespace HaCreator.MapEditor {
 
 		#region Ribbon Handlers
 
-		private string lastSaveLoc;
-
 		public void Ribbon_ExportClicked() {
-			var ofd = new SaveFileDialog {Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham"};
-			if (lastSaveLoc != null) {
-				ofd.FileName = lastSaveLoc;
-			}
+			var board = multiBoard.SelectedBoard;
+			var ofd = new SaveFileDialog {Title = "Select export location", Filter = "HaCreator Map File (*.xml)|*.xml", FileName = board.MapInfo.id.ToString()};
 
 			if (ofd.ShowDialog() != DialogResult.OK) {
 				return;
 			}
-
-			lastSaveLoc = ofd.FileName;
-			// No need to lock, SerializeBoard locks only the critical areas to cut down on locked time
 			try {
-				File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard(true));
+				var serializer = new WzClassicXmlSerializer(4, LineBreak.Unix, true);
+				var saver = new MapSaver(board);
+				lock (board.ParentControl) {
+					var img = saver.CreateMapImage();
+					serializer.SerializeImage(img, ofd.FileName);
+				}
 			} catch (Exception e) {
 				MessageBox.Show(string.Format("Could not save: {0}\r\n\r\n{1}", e.Message, e.StackTrace));
 			}

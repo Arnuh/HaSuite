@@ -1045,18 +1045,5 @@ namespace HaCreator.Wz {
 		public static string GetFormattedMapNameForTabItem(int mapId, string streetName, string mapName) {
 			return $"[{(mapId == -1 ? "<NEW>" : mapId.ToString())}] {streetName}: {mapName}"; // Header of the tab
 		}
-
-		public static void CreateMapFromHam(MultiBoard multiBoard, TabControl Tabs, string data,
-			RoutedEventHandler[] rightClickHandler) {
-			CreateMap("", "", -1, true, "", CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), Tabs,
-				multiBoard);
-			multiBoard.SelectedBoard.Loading = true; // Prevent TS Change callbacks while were loading
-			lock (multiBoard) {
-				multiBoard.SelectedBoard.SerializationManager.DeserializeBoard(data);
-				multiBoard.AdjustScrollBars();
-			}
-
-			multiBoard.SelectedBoard.Loading = false;
-		}
 	}
 }

@@ -587,6 +587,9 @@ namespace MapleLib.WzLib.Serialization {
 		private readonly bool freeResources;
 		private readonly byte[] iv, UserKey;
 
+		public WzImgDeserializer(bool freeResources, WzMapleVersion encryption) : this(freeResources, WzTool.GetIvByMapleVersion(encryption), WzTool.GetUserKeyByMapleVersion(encryption)) {
+		}
+
 		public WzImgDeserializer(bool freeResources, byte[] iv, byte[] UserKey) {
 			this.freeResources = freeResources;
 			this.iv = iv;
@@ -990,6 +993,9 @@ namespace MapleLib.WzLib.Serialization {
 		private readonly bool useMemorySaving;
 		private readonly byte[] iv, UserKey;
 		private readonly WzImgDeserializer imgDeserializer;
+
+		public WzXmlDeserializer(bool useMemorySaving, WzMapleVersion encryption) : this(useMemorySaving, WzTool.GetIvByMapleVersion(encryption), WzTool.GetUserKeyByMapleVersion(encryption)) {
+		}
 
 		public WzXmlDeserializer(bool useMemorySaving, byte[] iv, byte[] UserKey) {
 			this.useMemorySaving = useMemorySaving;
