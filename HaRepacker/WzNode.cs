@@ -50,6 +50,35 @@ namespace HaRepacker {
 					Nodes.Add(new WzNode(prop));
 			}
 		}
+		
+		private void RefreshChilds(WzObject SourceObject) {
+			Tag = SourceObject ?? throw new NullReferenceException("Cannot create a null WzNode");
+			SourceObject.HRTag = this;
+
+			if (SourceObject is WzFile file) {
+				SourceObject = file.WzDirectory;
+			}
+
+			if (SourceObject is WzDirectory directory) {
+				foreach (var dir in directory.WzDirectories)
+					AddIfMissing(dir);
+				foreach (var img in directory.WzImages)
+					AddIfMissing(img);
+			} else if (SourceObject is WzImage image) {
+				if (!image.Parsed) return;
+				foreach (var prop in image.WzProperties)
+					AddIfMissing(prop);
+			} else if (SourceObject is IPropertyContainer container) {
+				foreach (var prop in container.WzProperties)
+					AddIfMissing(prop);
+			}
+		}
+
+		private void AddIfMissing(WzObject obj) {
+			if (GetChildNode(this, obj.Name) == null) {
+				Nodes.Add(new WzNode(obj));
+			}
+		}
 
 		public void DeleteWzNode() {
 			Remove();
@@ -209,6 +238,10 @@ namespace HaRepacker {
 		public void Reparse() {
 			Nodes.Clear();
 			ParseChilds((WzObject) Tag);
+		}
+
+		public void Refresh() {
+			RefreshChilds((WzObject) Tag);
 		}
 
 		public void OnWzObjectAdded(WzObject obj, UndoRedoManager undoRedoMan) {

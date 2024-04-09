@@ -1695,7 +1695,7 @@ namespace HaRepacker.GUI {
 
 			// Adds all the children to the node
 			MainPanel.DataTree.BeginUpdate();
-			selectedNode.Reparse();
+			selectedNode.Refresh();
 			MainPanel.DataTree.EndUpdate();
 		}
 
