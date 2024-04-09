@@ -246,7 +246,6 @@ namespace HaRepacker {
 
 		public void OnWzObjectAdded(WzObject obj, UndoRedoManager undoRedoMan) {
 			var node = new WzNode(obj, true);
-			node.ParseChilds(obj);
 			Nodes.Add(node);
 			undoRedoMan?.AddUndoBatch(new List<UndoRedoAction>
 				{UndoRedoManager.ObjectAdded(this, node)});
