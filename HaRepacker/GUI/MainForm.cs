@@ -14,6 +14,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,7 +93,8 @@ namespace HaRepacker.GUI {
 			if (usingPipes) {
 				try {
 					var security = new PipeSecurity();
-					security.SetAccessRule(new PipeAccessRule("Everyone", PipeAccessRights.FullControl, AccessControlType.Allow));
+					var sid = new SecurityIdentifier(WellKnownSidType.WorldSid , null);
+					security.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.FullControl, AccessControlType.Allow));
 					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, security);
 					Program.pipeThread = new Thread(PipeServer) {
 						IsBackground = true
