@@ -589,7 +589,7 @@ namespace MapleLib.WzLib {
 				var tempFile = Path.GetFileNameWithoutExtension(path) + ".TEMP";
 
 				using (var fs = new FileStream(tempFile, FileMode.Append, FileAccess.Write)) {
-					wzDir.GenerateDataFile(isWzIvSimilar, isWzUserKeyDefault, fs);
+					wzDir.GenerateDataFile(isWzIvSimilar, WzIv, isWzUserKeyDefault, UserKey, fs);
 				}
 
 				WzTool.StringCache.Clear();

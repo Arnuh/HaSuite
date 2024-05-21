@@ -329,7 +329,11 @@ namespace MapleLib.WzLib {
 		/// <param name="isWzUserKeyDefault">Uses the default MapleStory UserKey or a custom key.</param>
 		/// <param name="prevOpenedStream">The previously opened file stream</param>
 		/// <returns></returns>
-		internal int GenerateDataFile(bool isWzIvSimilar, bool isWzUserKeyDefault, FileStream prevOpenedStream) {
+		internal int GenerateDataFile(bool isWzIvSimilar, byte[] WzIv, bool isWzUserKeyDefault, byte[] UserKey, FileStream prevOpenedStream) {
+			// Parameter 'WzIv' hides field 'byte[] MapleLib.WzLib.WzDirectory.WzIv'
+			// Parameter 'UserKey' hides field 'byte[] MapleLib.WzLib.WzDirectory.UserKey'
+			// These are only used for saving. We don't care about the overriden values because those are only for loading
+			// Which we do elsewhere.
 			size = 0;
 			var entryCount = subDirs.Count + images.Count;
 			if (entryCount == 0) {
@@ -387,7 +391,7 @@ namespace MapleLib.WzLib {
 			foreach (var dir in subDirs) {
 				var nameLen = WzTool.GetWzObjectValueLength(dir.name, 3);
 				size += nameLen;
-				size += dir.GenerateDataFile(isWzIvSimilar, isWzUserKeyDefault, prevOpenedStream);
+				size += dir.GenerateDataFile(isWzIvSimilar, WzIv, isWzUserKeyDefault, UserKey, prevOpenedStream);
 				size += WzTool.GetCompressedIntLength(dir.size);
 				size += WzTool.GetCompressedIntLength(dir.Checksum);
 				size += 4;
