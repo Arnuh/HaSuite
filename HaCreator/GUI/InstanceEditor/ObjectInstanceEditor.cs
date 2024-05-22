@@ -46,7 +46,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			LoadOptionalInt(item.ry, ryInt, ryBox, Defaults.Object.RY);
 			LoadOptionalInt(item.cx, cxInt, cxBox, Defaults.Object.CX);
 			LoadOptionalInt(item.cy, cyInt, cyBox, Defaults.Object.CY);
-			if (!Defaults.Object.Tags.Equals(item.tags)) {
+			if (Defaults.Object.Tags.Equals(item.tags)) {
 				tagsEnable.Checked = false;
 			} else {
 				tagsEnable.Checked = true;
