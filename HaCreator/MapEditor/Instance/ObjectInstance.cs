@@ -52,12 +52,6 @@ namespace HaCreator.MapEditor.Instance {
 
 		public override MapleDrawableInfo BaseInfo => baseInfo;
 
-		public override XNA.Color GetColor(SelectionInfo sel, bool selected) {
-			var c = base.GetColor(sel, selected);
-			if (_hide) c.R = (byte) UserSettings.HiddenLifeR;
-			return c;
-		}
-
 		public bool Flip {
 			get => flip;
 			set {
