@@ -1,9 +1,9 @@
-## HaSuite / Harepacker resurrected
+## HaSuite
 [![GitHub Downloads](https://img.shields.io/github/downloads/Arnuh/HaSuite/total.svg)]() 
 [![GitHub Release](https://img.shields.io/github/v/release/Arnuh/HaSuite)](https://github.com/Arnuh/HaSuite/releases)
 [![GitHub issues](https://img.shields.io/github/issues/Arnuh/HaSuite)](https://github.com/Arnuh/HaSuite/issues)
 
-A collection of tools for MapleStory, including a .wz file and map editor.
+A collection of WZ-related tools for MapleStory, with a focus on GMS v95 and lower, or partial support up to GMS v232 and the equivalent versions for all other MapleStory regions. Partial support for v233 or higher is currently not available.
 
 > Original thread: [HaSuite - HaCreator 2.1/HaRepacker 4.2.3](https://github.com/hadeutscher/HaSuite) | [Ragezone](http://forum.ragezone.com/f702/release-hasuite-hacreator-2-1-a-1068988/)
 
