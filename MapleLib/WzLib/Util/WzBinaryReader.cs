@@ -198,7 +198,8 @@ namespace MapleLib.WzLib.Util {
 		}
 
 		public string ReadStringBlock(uint offset) {
-			switch (ReadByte()) {
+			var type = ReadByte();
+			switch (type) {
 				case 0:
 				case WzImage.WzImageHeaderByte_WithoutOffset:
 					return ReadString();
@@ -206,7 +207,7 @@ namespace MapleLib.WzLib.Util {
 				case WzImage.WzImageHeaderByte_WithOffset:
 					return ReadStringAtOffset(offset + ReadInt32());
 				default:
-					return "";
+					throw new Exception($"Invalid ReadStringBlock {type} at position {BaseStream.Position} with offset {offset}");
 			}
 		}
 

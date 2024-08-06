@@ -243,6 +243,8 @@ namespace MapleLib.WzLib {
 					}
 
 					throw new Exception("Unsupported UOL type");
+				case "RawData":
+					return new WzRawDataProperty(name, reader, imgParent.ParseEverything) {Parent = parent};;
 				default:
 					throw new Exception("Unknown iname: " + iname);
 			}

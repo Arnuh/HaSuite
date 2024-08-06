@@ -253,6 +253,7 @@
         <Compile Include="WzLib\WzProperties\WzLuaProperty.cs"/>
         <Compile Include="WzLib\WzProperties\WzNullProperty.cs"/>
         <Compile Include="WzLib\WzProperties\WzPngProperty.cs"/>
+        <Compile Include="WzLib\WzProperties\WzRawDataProperty.cs" />
         <Compile Include="WzLib\WzProperties\WzSoundProperty.cs" />
         <Compile Include="WzLib\WzProperties\WzStringProperty.cs"/>
         <Compile Include="WzLib\WzProperties\WzSubProperty.cs"/>
