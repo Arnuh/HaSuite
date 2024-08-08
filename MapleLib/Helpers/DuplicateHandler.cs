@@ -28,40 +28,40 @@ namespace MapleLib.Helpers {
 			set => onRenameEntry = value;
 		}
 
-		public bool HandleResult(WzObject parent, WzObject obj, ReplaceResult result) {
+		public ReplaceResult HandleResult(WzObject parent, WzObject obj, ReplaceResult result) {
 			switch (result) {
 				case ReplaceResult.NoToAll:
 					noToAll = true;
-					return false;
+					return result;
 				case ReplaceResult.No:
-					return false;
+					return result;
 				case ReplaceResult.YesToAll:
 					parent[obj.Name].Remove();
 					yesToAll = true;
-					return true;
+					return result;
 				case ReplaceResult.Yes:
 					parent[obj.Name].Remove();
-					return true;
+					return result;
 				case ReplaceResult.Rename:
 					OnRenameEntry?.Invoke(obj);
-					return true;
+					return result;
 			}
 
-			return false;
+			return result;
 		}
 
-		public bool Handle(WzObject parent, WzObject obj) {
+		public ReplaceResult Handle(WzObject parent, WzObject obj) {
 			if (YesToAll) {
 				parent[obj.Name].Remove();
-				return true;
+				return ReplaceResult.YesToAll;
 			}
 
 			if (NoToAll) {
-				return false;
+				return ReplaceResult.NoToAll;
 			}
 
 			if (OnDuplicateEntry == null) {
-				return false;
+				return ReplaceResult.No;
 			}
 
 			var result = OnDuplicateEntry.Invoke(obj);

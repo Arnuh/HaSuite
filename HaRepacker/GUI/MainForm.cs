@@ -282,9 +282,15 @@ namespace HaRepacker.GUI {
 
 		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, WzObject obj) {
 			var parent = (WzObject) node.Tag;
-			if (parent.Add(dupeHandler, obj)) {
-				node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
+			var (success, result) = parent.Add(dupeHandler, obj);
+			if (!success) {
+				return;
 			}
+
+			if (result.IsRemoval()) {
+				node.RemoveExisting(obj);
+			}
+			node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
 		}
 
 		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, IEnumerable<WzObject> objects) {
@@ -292,9 +298,15 @@ namespace HaRepacker.GUI {
 			try {
 				var parent = (WzObject) node.Tag;
 				foreach (var obj in objects) {
-					if (parent.Add(dupeHandler, obj)) {
-						node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
+					var (success, result) = parent.Add(dupeHandler, obj);
+					if (!success) {
+						continue;
 					}
+
+					if (result.IsRemoval()) {
+						node.RemoveExisting(obj);
+					}
+					node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
 				}
 			} finally {
 				MainPanel.DataTree.EndUpdate();

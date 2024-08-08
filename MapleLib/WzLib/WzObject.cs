@@ -171,15 +171,16 @@ namespace MapleLib.WzLib {
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
-		public bool Add(DuplicateHandler handler, WzObject obj) {
+		public (bool, ReplaceResult) Add(DuplicateHandler handler, WzObject obj) {
 			var current = this;
 			if (current is WzFile file) {
 				current = file.WzDirectory;
 			}
-			
+			var result = ReplaceResult.NoneSelectedYet;
 			while (current[obj.Name] != null) {
-				if (!handler.Handle(this, obj)) {
-					return false;
+				result = handler.Handle(this, obj);
+				if (!result.IsSuccess()) {
+					return (false, result);
 				}
 			}
 
@@ -189,7 +190,7 @@ namespace MapleLib.WzLib {
 				} else if (obj is WzImage wzImgProperty) {
 					directory.AddImage(wzImgProperty);
 				} else {
-					return false;
+					return (false, result);
 				}
 			} else if (current is WzImage img) {
 				if (!img.Parsed) {
@@ -200,7 +201,7 @@ namespace MapleLib.WzLib {
 					img.AddProperty(imgProperty);
 					img.Changed = true;
 				} else {
-					return false;
+					return (false, result);
 				}
 			} else if (current is IPropertyContainer container) {
 				if (obj is WzImageProperty property) {
@@ -212,13 +213,13 @@ namespace MapleLib.WzLib {
 						}
 					}
 				} else {
-					return false;
+					return (false, result);
 				}
 			} else {
-				return false;
+				return (false, result);
 			}
 
-			return true;
+			return (true, result);
 		}
 
 		//Credits to BluePoop for the idea of using cast overriding

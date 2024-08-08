@@ -244,6 +244,13 @@ namespace HaRepacker {
 			RefreshChilds((WzObject) Tag);
 		}
 
+		public void RemoveExisting(WzObject obj) {
+			var existingNode = GetChildNode(this, obj.Name);
+			if (existingNode != null) {
+				Nodes.Remove(existingNode);
+			}
+		}
+        
 		public void OnWzObjectAdded(WzObject obj, UndoRedoManager undoRedoMan) {
 			var node = new WzNode(obj, true);
 			Nodes.Add(node);

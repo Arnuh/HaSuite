@@ -208,6 +208,7 @@
         <Compile Include="Helpers\ErrorLogger.cs"/>
         <Compile Include="Helpers\ImportTools.cs"/>
         <Compile Include="Helpers\ReplaceResult.cs"/>
+        <Compile Include="Helpers\ReplaceResultMethods.cs" />
         <Compile Include="Helpers\StringUtility.cs"/>
         <Compile Include="PacketLib\HexTool.cs"/>
         <Compile Include="SquishPNGWrapper.cs"/>

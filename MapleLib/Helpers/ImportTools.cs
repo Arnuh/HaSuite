@@ -26,7 +26,7 @@ namespace MapleLib.Helpers {
 
 					if (parent is WzDirectory dir) {
 						while (dir[img.Name] != null) {
-							if (!handler.Handle(dir, img)) {
+							if (!handler.Handle(dir, img).IsSuccess()) {
 								return;
 							}
 						}
@@ -34,7 +34,7 @@ namespace MapleLib.Helpers {
 						dir.AddImage(img, false);
 					} else if (parent is WzFile file) {
 						while (file.WzDirectory[img.Name] != null) {
-							if (!handler.Handle(file.WzDirectory, img)) {
+							if (!handler.Handle(file.WzDirectory, img).IsSuccess()) {
 								return;
 							}
 						}
@@ -48,7 +48,7 @@ namespace MapleLib.Helpers {
 					foreach (var obj in objects) {
 						if (parent is WzDirectory dir) {
 							while (dir[obj.Name] != null) {
-								if (!handler.Handle(dir, obj)) {
+								if (!handler.Handle(dir, obj).IsSuccess()) {
 									return;
 								}
 							}
@@ -56,7 +56,7 @@ namespace MapleLib.Helpers {
 							dir.AddImage((WzImage) obj, false);
 						} else if (parent is WzFile file) {
 							while (file.WzDirectory[obj.Name] != null) {
-								if (!handler.Handle(file.WzDirectory, obj)) {
+								if (!handler.Handle(file.WzDirectory, obj).IsSuccess()) {
 									return;
 								}
 							}
@@ -64,7 +64,7 @@ namespace MapleLib.Helpers {
 							file.WzDirectory.AddImage((WzImage) obj, false);
 						} else if (parent is IPropertyContainer subProp) {
 							while (subProp[obj.Name] != null) {
-								if (!handler.Handle(parent, obj)) {
+								if (!handler.Handle(parent, obj).IsSuccess()) {
 									return;
 								}
 							}
@@ -82,7 +82,7 @@ namespace MapleLib.Helpers {
 
 					if (parent is WzDirectory parentDir) {
 						while (parentDir[dir.Name] != null) {
-							if (!handler.Handle(parentDir, dir)) {
+							if (!handler.Handle(parentDir, dir).IsSuccess()) {
 								return;
 							}
 						}
@@ -90,7 +90,7 @@ namespace MapleLib.Helpers {
 						parentDir.AddDirectory(dir);
 					} else if (parent is WzFile file) {
 						while (file.WzDirectory[dir.Name] != null) {
-							if (!handler.Handle(file.WzDirectory, dir)) {
+							if (!handler.Handle(file.WzDirectory, dir).IsSuccess()) {
 								return;
 							}
 						}
@@ -104,7 +104,7 @@ namespace MapleLib.Helpers {
 				} else if (parent is IPropertyContainer propCon) {
 					var sub = new WzSubProperty(fileName);
 					while (propCon[fileName] != null) {
-						if (!handler.Handle(parent, sub)) {
+						if (!handler.Handle(parent, sub).IsSuccess()) {
 							return;
 						}
 					}
