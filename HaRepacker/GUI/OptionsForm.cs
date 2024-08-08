@@ -20,6 +20,7 @@ namespace HaRepacker.GUI {
 			this.mainPanel = mainPanel;
 
 			sortBox.Checked = Program.ConfigurationManager.UserSettings.Sort;
+			quickEditBox.Checked = Program.ConfigurationManager.UserSettings.QuickEdit;
 			loadRelated.Checked = Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles;
 			apngIncompEnable.Checked = Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame;
 			autoAssociateBox.Checked = Program.ConfigurationManager.UserSettings.AutoAssociate;
@@ -67,6 +68,7 @@ namespace HaRepacker.GUI {
 
 			var oldSort = Program.ConfigurationManager.UserSettings.Sort;
 			Program.ConfigurationManager.UserSettings.Sort = sortBox.Checked;
+			Program.ConfigurationManager.UserSettings.QuickEdit = quickEditBox.Checked;
 			Program.ConfigurationManager.UserSettings.AutoloadRelatedWzFiles = loadRelated.Checked;
 			Program.ConfigurationManager.UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
 			Program.ConfigurationManager.UserSettings.AutoAssociate = autoAssociateBox.Checked;
@@ -84,9 +86,6 @@ namespace HaRepacker.GUI {
 			Program.ConfigurationManager.ApplicationSettings.OpenAI_ApiKey = openAI_apiKey_textBox.Text;
 
 			Program.ConfigurationManager.Save();
-			if (oldSort != Program.ConfigurationManager.UserSettings.Sort) {
-				mainPanel.UpdateSorter();
-			}
 			Close();
 		}
 

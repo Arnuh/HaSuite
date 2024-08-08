@@ -19,7 +19,7 @@ namespace HaRepacker.FHMapper {
 		public static string SettingsPath = Path.Combine(ConfigurationManager.GetLocalFolderPath(), "Settings.ini");
 		public List<object> settings = new List<object>();
 		private readonly MainPanel MainPanel;
-		private TreeNode node;
+		private WzNode node;
 
 		// Fonts
 		private static Font FONT_DISPLAY_MAPID = new Font("Segoe UI", 20);

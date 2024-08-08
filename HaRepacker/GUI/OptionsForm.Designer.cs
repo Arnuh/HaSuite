@@ -28,15 +28,15 @@ namespace HaRepacker.GUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OptionsForm));
             this.sortBox = new System.Windows.Forms.CheckBox();
             this.loadRelated = new System.Windows.Forms.CheckBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.indentBox = new IntegerInput();
+            this.indentBox = new HaRepacker.GUI.Input.IntegerInput();
             this.lineBreakBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.apngIncompEnable = new System.Windows.Forms.CheckBox();
@@ -47,12 +47,14 @@ namespace HaRepacker.GUI
             this.themeColor__comboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.quickEditBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.openAI_apiKey_textBox = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.openAI_apiKey_textBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -87,21 +89,17 @@ namespace HaRepacker.GUI
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            //
+            // 
             // indentBox
             // 
             resources.ApplyResources(this.indentBox, "indentBox");
             this.indentBox.Name = "indentBox";
             this.indentBox.Value = 0;
             // 
-            // 
             // lineBreakBox
             // 
             this.lineBreakBox.FormattingEnabled = true;
-            this.lineBreakBox.Items.AddRange(new object[] {
-            resources.GetString("lineBreakBox.Items"),
-            resources.GetString("lineBreakBox.Items1"),
-            resources.GetString("lineBreakBox.Items2")});
+            this.lineBreakBox.Items.AddRange(new object[] {resources.GetString("lineBreakBox.Items"), resources.GetString("lineBreakBox.Items1"), resources.GetString("lineBreakBox.Items2")});
             resources.ApplyResources(this.lineBreakBox, "lineBreakBox");
             this.lineBreakBox.Name = "lineBreakBox";
             // 
@@ -146,9 +144,7 @@ namespace HaRepacker.GUI
             this.themeColor__comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             resources.ApplyResources(this.themeColor__comboBox, "themeColor__comboBox");
             this.themeColor__comboBox.FormattingEnabled = true;
-            this.themeColor__comboBox.Items.AddRange(new object[] {
-            resources.GetString("themeColor__comboBox.Items"),
-            resources.GetString("themeColor__comboBox.Items1")});
+            this.themeColor__comboBox.Items.AddRange(new object[] {resources.GetString("themeColor__comboBox.Items"), resources.GetString("themeColor__comboBox.Items1")});
             this.themeColor__comboBox.Name = "themeColor__comboBox";
             // 
             // label3
@@ -158,6 +154,7 @@ namespace HaRepacker.GUI
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.quickEditBox);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.sortBox);
             this.panel1.Controls.Add(this.themeColor__comboBox);
@@ -175,6 +172,18 @@ namespace HaRepacker.GUI
             resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Name = "panel1";
             // 
+            // quickEditBox
+            // 
+            resources.ApplyResources(this.quickEditBox, "quickEditBox");
+            this.quickEditBox.Name = "quickEditBox";
+            this.toolTip1.SetToolTip(this.quickEditBox, resources.GetString("quickEditBox.ToolTip"));
+            this.quickEditBox.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.linkLabel1);
@@ -184,32 +193,27 @@ namespace HaRepacker.GUI
             resources.ApplyResources(this.panel2, "panel2");
             this.panel2.Name = "panel2";
             // 
-            // label4
-            // 
-            resources.ApplyResources(this.label4, "label4");
-            this.label4.Name = "label4";
-            // 
-            // label5
-            // 
-            resources.ApplyResources(this.label5, "label5");
-            this.label5.Name = "label5";
-            // 
-            // openAI_apiKey_textBox
-            // 
-            resources.ApplyResources(this.openAI_apiKey_textBox, "openAI_apiKey_textBox");
-            this.openAI_apiKey_textBox.Name = "openAI_apiKey_textBox";
-            // 
-            // label6
-            // 
-            resources.ApplyResources(this.label6, "label6");
-            this.label6.Name = "label6";
-            // 
             // linkLabel1
             // 
             resources.ApplyResources(this.linkLabel1, "linkLabel1");
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.TabStop = true;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            // 
+            // openAI_apiKey_textBox
+            // 
+            resources.ApplyResources(this.openAI_apiKey_textBox, "openAI_apiKey_textBox");
+            this.openAI_apiKey_textBox.Name = "openAI_apiKey_textBox";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
             // 
             // OptionsForm
             // 
@@ -226,8 +230,11 @@ namespace HaRepacker.GUI
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
-
         }
+
+        private System.Windows.Forms.ToolTip toolTip1;
+
+        private System.Windows.Forms.CheckBox quickEditBox;
 
         #endregion
 

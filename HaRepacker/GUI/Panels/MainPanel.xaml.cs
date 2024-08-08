@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
@@ -23,6 +24,7 @@ using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using static MapleLib.Configuration.UserSettings;
+using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
 using Control = System.Windows.Forms.Control;
 using DataFormats = System.Windows.DataFormats;
@@ -50,13 +52,14 @@ namespace HaRepacker.GUI.Panels {
 			private set { }
 		}
 
+		public TreeViewMS DataTree => _dataTree;
+
 		// Etc
 		private static readonly List<WzObject> clipboard = new List<WzObject>();
 		private readonly UndoRedoManager undoRedoMan;
 
 		private bool isSelectingWzMapFieldLimit;
 		private bool isLoading;
-		private bool isRenamingNode;
 
 		/// <summary>
 		/// Constructor
@@ -67,6 +70,7 @@ namespace HaRepacker.GUI.Panels {
 			isLoading = true;
 
 			_mainForm = mainForm;
+			_dataTree.MainPanel = this;
 
 			// Events
 #if DEBUG
@@ -81,8 +85,8 @@ namespace HaRepacker.GUI.Panels {
 			// Set theme color
 			if (Program.ConfigurationManager.UserSettings.ThemeColor == (int) UserSettingsThemeColor.Dark) {
 				VisualStateManager.GoToState(this, "BlackTheme", false);
-				DataTree.BackColor = Color.Black;
-				DataTree.ForeColor = Color.White;
+				DataTree.Background = Brushes.Black;
+				DataTree.Foreground = Brushes.White;
 			}
 
 			nameBox.Header = "Name";
@@ -111,8 +115,6 @@ namespace HaRepacker.GUI.Panels {
 			textEditor.SaveButtonClicked += TextEditor_SaveButtonClicked;
 			Loaded += MainPanelXAML_Loaded;
 
-			UpdateSorter();
-
 			isLoading = false;
 		}
 
@@ -127,141 +129,13 @@ namespace HaRepacker.GUI.Panels {
 
 		#endregion
 
-		#region Data Tree
-
-		public void UpdateSorter() {
-			if (Program.ConfigurationManager.UserSettings.Sort) {
-				DataTree.TreeViewNodeSorter = new TreeViewNodeSorter();
-			} else {
-				DataTree.TreeViewNodeSorter = null;
-				// If you toggle off sorting but previously had a sorter
-				// It would still have Sorted as true and thus sort the nodes
-				// despite the sorter being null
-				DataTree.Sorted = false;
-			}
-		}
-
-		private void DataTree_DoubleClick(object sender, EventArgs e) {
-			if (DataTree.SelectedNode != null && DataTree.SelectedNode.Tag is WzImage &&
-			    DataTree.SelectedNode.Nodes.Count == 0) {
-				ParseOnDataTreeSelectedItem((WzNode) DataTree.SelectedNode);
-			}
-		}
-
-		private void DataTree_AfterSelect(object sender, TreeViewEventArgs e) {
-			if (DataTree.SelectedNode == null) return;
-
-			var node = (WzNode) DataTree.SelectedNode;
-			ShowObjectValue(node, (WzObject) node.Tag);
-			selectionLabel.Text = string.Format(Properties.Resources.SelectionType,
-				node.GetTypeName());
-		}
-
-		/// <summary>
-		/// Parse the data tree selected item on double clicking, or copy pasting into it.
-		/// </summary>
-		/// <param name="selectedNode"></param>
-		private static void ParseOnDataTreeSelectedItem(WzNode selectedNode, bool expandDataTree = true) {
-			var wzImage = (WzImage) selectedNode.Tag;
-
-			if (!wzImage.Parsed) {
-				wzImage.ParseImage();
-			}
-
-			selectedNode.Reparse();
-			if (expandDataTree) selectedNode.Expand();
-		}
-
-		private void DataTree_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
-			if (!DataTree.Focused) return;
-			var ctrl = (Control.ModifierKeys & Keys.Control) ==
-			           Keys.Control;
-			var alt = (Control.ModifierKeys & Keys.Alt) ==
-			          Keys.Alt;
-			var shift = (Control.ModifierKeys & Keys.Shift) ==
-			            Keys.Shift;
-			var filteredKeys = e.KeyData;
-			if (ctrl) filteredKeys = filteredKeys ^ Keys.Control;
-			if (alt) filteredKeys = filteredKeys ^ Keys.Alt;
-			if (shift) filteredKeys = filteredKeys ^ Keys.Shift;
-
-			switch (filteredKeys) {
-				case Keys.F2:
-					e.Handled = true;
-					e.SuppressKeyPress = true;
-					if (DataTree.SelectedNode.IsEditing) { // Not really needed apparently
-						isRenamingNode = false;
-						DataTree.SelectedNode.EndEdit(true);
-					} else {
-						isRenamingNode = true;
-						DataTree.SelectedNode.BeginEdit();
-					}
-
-					break;
-				case Keys.F5:
-					StartAnimateSelectedCanvas();
-					break;
-				case Keys.Escape:
-					e.Handled = true;
-					e.SuppressKeyPress = true;
-					break;
-
-				case Keys.Delete:
-					e.Handled = true;
-					e.SuppressKeyPress = true;
-
-					PromptRemoveSelectedTreeNodes();
-					break;
-			}
-
-			if (ctrl) {
-				switch (filteredKeys) {
-					case Keys.R: // Render map        
-
-						//HaRepackerMainPanel.
-						e.Handled = true;
-						e.SuppressKeyPress = true;
-						break;
-					case Keys.C:
-						DoCopy();
-						e.Handled = true;
-						e.SuppressKeyPress = true;
-						break;
-					case Keys.V:
-						DoPaste();
-						e.Handled = true;
-						e.SuppressKeyPress = true;
-						break;
-					case Keys.F: // open search box
-						if (grid_FindPanel.Visibility == Visibility.Collapsed) {
-							var sbb =
-								(Storyboard)
-								FindResource("Storyboard_Find_FadeIn");
-							sbb.Begin();
-
-							e.Handled = true;
-							e.SuppressKeyPress = true;
-						}
-
-						break;
-					case Keys.T:
-					case Keys.O:
-						e.Handled = true;
-						e.SuppressKeyPress = true;
-						break;
-				}
-			}
-		}
-
-		#endregion
-
 		#region Image directory add
 
 		/// <summary>
 		/// WzDirectory
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzDirectoryToSelectedNode(TreeNode target) {
+		public void AddWzDirectoryToSelectedNode(WzNode target) {
 			if (!(target.Tag is WzDirectory) && !(target.Tag is WzFile)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
 				return;
@@ -289,7 +163,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzDirectory
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzImageToSelectedNode(TreeNode target) {
+		public void AddWzImageToSelectedNode(WzNode target) {
 			string name;
 			if (!(target.Tag is WzDirectory) && !(target.Tag is WzFile)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
@@ -307,7 +181,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzByteProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzByteFloatToSelectedNode(TreeNode target) {
+		public void AddWzByteFloatToSelectedNode(WzNode target) {
 			string name;
 			double? d;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -326,7 +200,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzCanvasProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzCanvasToSelectedNode(TreeNode target) {
+		public void AddWzCanvasToSelectedNode(WzNode target) {
 			string name;
 			var bitmaps = new List<Bitmap>();
 			if (!(target.Tag is IPropertyContainer)) {
@@ -366,7 +240,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzCompressedInt
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzCompressedIntToSelectedNode(TreeNode target) {
+		public void AddWzCompressedIntToSelectedNode(WzNode target) {
 			string name;
 			int? value;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -388,7 +262,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzLongProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzLongToSelectedNode(TreeNode target) {
+		public void AddWzLongToSelectedNode(WzNode target) {
 			string name;
 			long? value;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -407,7 +281,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzConvexProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzConvexPropertyToSelectedNode(TreeNode target) {
+		public void AddWzConvexPropertyToSelectedNode(WzNode target) {
 			string name;
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
@@ -425,7 +299,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzNullProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzDoublePropertyToSelectedNode(TreeNode target) {
+		public void AddWzDoublePropertyToSelectedNode(WzNode target) {
 			string name;
 			double? d;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -444,7 +318,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzNullProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzNullPropertyToSelectedNode(TreeNode target) {
+		public void AddWzNullPropertyToSelectedNode(WzNode target) {
 			string name;
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
@@ -462,7 +336,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzSoundProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzSoundPropertyToSelectedNode(TreeNode target) {
+		public void AddWzSoundPropertyToSelectedNode(WzNode target) {
 			string name;
 			string path;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -481,7 +355,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzStringProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzStringPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzStringPropertyToSelectedIndex(WzNode target) {
 			string name;
 			string value;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -500,7 +374,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzSubProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzSubPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzSubPropertyToSelectedIndex(WzNode target) {
 			string name;
 			if (!(target.Tag is IPropertyContainer)) {
 				Warning.Error(Properties.Resources.MainCannotInsertToNode);
@@ -518,7 +392,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzUnsignedShortProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzUnsignedShortPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzUnsignedShortPropertyToSelectedIndex(WzNode target) {
 			string name;
 			int? value;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -539,7 +413,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzUOLProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzUOLPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzUOLPropertyToSelectedIndex(WzNode target) {
 			string name;
 			string value;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -558,7 +432,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzVectorProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzVectorPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzVectorPropertyToSelectedIndex(WzNode target) {
 			string name;
 			Point? pt;
 			if (!(target.Tag is IPropertyContainer)) {
@@ -579,7 +453,7 @@ namespace HaRepacker.GUI.Panels {
 		/// WzLuaProperty
 		/// </summary>
 		/// <param name="target"></param>
-		public void AddWzLuaPropertyToSelectedIndex(TreeNode target) {
+		public void AddWzLuaPropertyToSelectedIndex(WzNode target) {
 			/*           string name;
 			           string value;
 			           if (!(target.Tag is WzDirectory) && !(target.Tag is WzFile))
@@ -606,14 +480,14 @@ namespace HaRepacker.GUI.Panels {
 
 			var actions = new List<UndoRedoAction>();
 
-			var nodeArr = new TreeNode[DataTree.SelectedNodes.Count];
+			var nodeArr = new WzNode[DataTree.SelectedNodes.Count];
 			DataTree.SelectedNodes.CopyTo(nodeArr, 0);
 
 			foreach (WzNode node in nodeArr) {
 				// No parent is considered an unload
 				// Don't support redo
-				if (node.Parent != null) {
-					actions.Add(UndoRedoManager.ObjectRemoved((WzNode) node.Parent, node));
+				if (node.Parent is WzNode parentNode) {
+					actions.Add(UndoRedoManager.ObjectRemoved(parentNode, node));
 				}
 
 				node.DeleteWzNode();
@@ -649,7 +523,7 @@ namespace HaRepacker.GUI.Panels {
 			Action action = () => {
 				loadingPanel.OnStartAnimate();
 				grid_LoadingPanel.Visibility = Visibility.Visible;
-				treeView_WinFormsHost.Visibility = Visibility.Collapsed;
+				DataTree.Visibility = Visibility.Collapsed;
 			};
 			if (currentDispatcher != null) {
 				currentDispatcher.BeginInvoke(action);
@@ -666,7 +540,7 @@ namespace HaRepacker.GUI.Panels {
 			Action action = () => {
 				loadingPanel.OnPauseAnimate();
 				grid_LoadingPanel.Visibility = Visibility.Collapsed;
-				treeView_WinFormsHost.Visibility = Visibility.Visible;
+				DataTree.Visibility = Visibility.Visible;
 			};
 			if (currentDispatcher != null) {
 				currentDispatcher.BeginInvoke(action);
@@ -700,7 +574,10 @@ namespace HaRepacker.GUI.Panels {
 				foreach (WzNode node in DataTree.SelectedNodes) selectedNodes.Add((WzObject) node.Tag);
 			}
 
-			var path_title = ((WzNode) DataTree.SelectedNodes[0]).Parent?.FullPath ?? "Animate";
+			var path_title = "Animate";
+			if (DataTree.SelectedNodes[0] != null && DataTree.SelectedNode.Parent != null) {
+				path_title = (DataTree.SelectedNode.Parent as WzNode).GetFullPath();
+			}
 
 			var thread = new Thread(() => {
 				try {
@@ -1364,13 +1241,12 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			pasteTaskActive = true;
-			DataTree.BeginUpdate();
+			var parent = DataTree.SelectedNode;
 			try {
-				var parent = (WzNode) DataTree.SelectedNode;
 				var parentObj = (WzObject) parent.Tag;
 
 				if (parent.Tag is WzImage && parent.Nodes.Count == 0) {
-					ParseOnDataTreeSelectedItem(parent); // only parse the main node.
+					TreeViewMS.ParseOnDataTreeSelectedItem(parent); // only parse the main node.
 				}
 
 				if (parentObj is WzFile file) {
@@ -1400,7 +1276,6 @@ namespace HaRepacker.GUI.Panels {
 				}
 			} finally {
 				pasteTaskActive = false;
-				DataTree.EndUpdate();
 			}
 		}
 
@@ -1412,7 +1287,7 @@ namespace HaRepacker.GUI.Panels {
 		/// Shows the selected data treeview object to UI
 		/// </summary>
 		/// <param name="obj"></param>
-		private void ShowObjectValue(WzNode node, WzObject obj) {
+		public void ShowObjectValue(WzNode node, WzObject obj) {
 			if (obj.WzFileParent != null &&
 			    obj.WzFileParent
 				    .IsUnloaded) // this WZ is already unloaded from memory, dont attempt to display it (when the user clicks "reload" button while selection is on that)
@@ -1757,10 +1632,11 @@ namespace HaRepacker.GUI.Panels {
 
 						var node = (WzNode) prop.HRTag;
 						//if (node.Style == null) node.Style = new ElementStyle();
-						node.BackColor = Color.Yellow;
+						node.Background = Brushes.Yellow;
 						coloredNode = node;
-						node.EnsureVisible();
-						//DataTree.Focus();
+						node.Focus();
+						node.BringIntoView();
+						node.IsSelected = true;
 						finished = true;
 						searchidx++;
 						return;
@@ -1782,13 +1658,14 @@ namespace HaRepacker.GUI.Panels {
 			foreach (WzNode subnode in node.Nodes) {
 				if (0 <= subnode.Text.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase)) {
 					if (listSearchResults) {
-						searchResultsList.Add(subnode.FullPath.Replace(";", @"\"));
+						searchResultsList.Add(subnode.GetFullPath().Replace(";", @"\"));
 					} else if (currentidx == searchidx) {
 						//if (subnode.Style == null) subnode.Style = new ElementStyle();
-						subnode.BackColor = Color.Yellow;
+						subnode.Background = Brushes.Yellow;
 						coloredNode = subnode;
-						subnode.EnsureVisible();
-						//DataTree.Focus();
+						subnode.Focus();
+						subnode.BringIntoView();
+						subnode.IsSelected = true;
 						finished = true;
 						searchidx++;
 						return;
@@ -1820,16 +1697,16 @@ namespace HaRepacker.GUI.Panels {
 		/// <param name="e"></param>
 		private void button_allSearch_Click(object sender, RoutedEventArgs e) {
 			if (coloredNode != null) {
-				coloredNode.BackColor = Color.White;
+				coloredNode.Background = Brushes.White;
 				coloredNode = null;
 			}
 
-			if (findBox.Text == "" || DataTree.Nodes.Count == 0) {
+			if (findBox.Text == "" || DataTree.Items.Count == 0) {
 				return;
 			}
 
 			if (DataTree.SelectedNode == null) {
-				DataTree.SelectedNode = DataTree.Nodes[0];
+				(DataTree.Items[0] as WzNode).IsSelected = true;
 			}
 
 			finished = false;
@@ -1865,12 +1742,12 @@ namespace HaRepacker.GUI.Panels {
 		private void Form_OnSelectionChanged(string str) {
 			var splitPath = str.Split(@"\".ToCharArray());
 			WzNode node = null;
-			var collection = DataTree.Nodes;
+			var collection = DataTree.Items;
 			for (var i = 0; i < splitPath.Length; i++) {
 				node = GetNodeByName(collection, splitPath[i]);
 				if (node != null) {
 					if (node.Tag is WzImage && !((WzImage) node.Tag).Parsed && i != splitPath.Length - 1) {
-						ParseOnDataTreeSelectedItem(node, false);
+						TreeViewMS.ParseOnDataTreeSelectedItem(node, false);
 					}
 
 					collection = node.Nodes;
@@ -1878,14 +1755,14 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			if (node != null) {
-				DataTree.SelectedNode = node;
-				node.EnsureVisible();
-				DataTree.RefreshSelectedNodes();
+				node.IsSelected = true;
+				node.Focus();
+				node.BringIntoView();
 			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private WzNode GetNodeByName(TreeNodeCollection collection, string name) {
+		private WzNode GetNodeByName(ItemCollection collection, string name) {
 			foreach (WzNode node in collection) {
 				if (node.Text == name) {
 					return node;
@@ -1902,12 +1779,17 @@ namespace HaRepacker.GUI.Panels {
 		/// <param name="e"></param>
 		private void button_nextSearch_Click(object sender, RoutedEventArgs e) {
 			if (coloredNode != null) {
-				coloredNode.BackColor = Color.White;
+				coloredNode.Background = Brushes.White;
 				coloredNode = null;
 			}
 
-			if (findBox.Text == "" || DataTree.Nodes.Count == 0) return;
-			if (DataTree.SelectedNode == null) DataTree.SelectedNode = DataTree.Nodes[0];
+			if (findBox.Text == "" || DataTree.Items.Count == 0) {
+				return;
+			}
+
+			if (DataTree.SelectedNode == null) {
+				(DataTree.Items[0] as WzNode).IsSelected = true;
+			}
 			finished = false;
 			listSearchResults = false;
 			searchResultsList.Clear();
@@ -1930,7 +1812,8 @@ namespace HaRepacker.GUI.Panels {
 			if (!finished) {
 				MessageBox.Show(Properties.Resources.MainTreeEnd);
 				searchidx = 0;
-				DataTree.SelectedNode.EnsureVisible();
+				DataTree.SelectedNode.Focus();
+				DataTree.SelectedNode.BringIntoView();
 			}
 
 			findBox.Focus();
@@ -2045,21 +1928,9 @@ namespace HaRepacker.GUI.Panels {
 			MessageBox.Show($"Done.\r\nChecked {nodes} properties in {ms} ms");
 		}
 
-		private void DataTree_OnBeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-			if (isRenamingNode) {
-				isRenamingNode = false;
-				return;
-			}
-
-			e.CancelEdit = true;
-		}
-
-		private void DataTree_OnAfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
-			// Handle renaming the actual wz node after an F2 edit.
-			isRenamingNode = false;
-			if (string.IsNullOrEmpty(e.Label)) return;
-			var node = (WzNode) e.Node;
-			node.ChangeName(e.Label);
+		private void Items_Filter(object sender, FilterEventArgs e) {
+			var item = (WzNode) e.Item;
+			e.Accepted = item.IsVisible;
 		}
 	}
 }

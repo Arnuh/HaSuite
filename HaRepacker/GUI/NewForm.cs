@@ -115,7 +115,8 @@ namespace HaRepacker.GUI {
 				file.Header.RecalculateFileStart();
 				file.Name = name + ".wz";
 				file.WzDirectory.Name = name + ".wz";
-				panel.DataTree.Nodes.Add(new WzNode(file));
+				panel.DataTree.Items.Add(new WzNode(file));
+				panel.DataTree.Items.Refresh();
 			} else if (listBox.Checked) {
 				new ListEditor(null, wzMapleVersion).Show();
 			} else if (radioButton_hotfix.Checked) {
@@ -123,7 +124,8 @@ namespace HaRepacker.GUI {
 				img.MarkWzImageAsParsed();
 
 				var node = new WzNode(img);
-				panel.DataTree.Nodes.Add(node);
+				panel.DataTree.Items.Add(node);
+				panel.DataTree.Items.Refresh();
 			}
 
 			Close();

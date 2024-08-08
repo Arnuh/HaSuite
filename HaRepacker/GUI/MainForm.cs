@@ -83,10 +83,6 @@ namespace HaRepacker.GUI {
 			DragEnter += MainForm_DragEnter;
 			DragDrop += MainForm_DragDrop;
 
-			// Drag and drop at the data tree
-			MainPanel.DataTree.DragEnter += MainForm_DragEnter;
-			MainPanel.DataTree.DragDrop += MainForm_DragDrop;
-
 			// Set default selected main panel
 			UpdateSelectedMainPanelTab();
 
@@ -129,8 +125,7 @@ namespace HaRepacker.GUI {
 				}
 			}
 
-			var manager = new ContextMenuManager(MainPanel, MainPanel.UndoRedoMan);
-			WzNode.ContextMenuBuilder = manager.CreateMenu;
+			WzNode.ContextMenuManager = new ContextMenuManager(MainPanel);
 
 			// Focus on the tab control
 			tabControl_MainPanels.Focus();
@@ -181,56 +176,10 @@ namespace HaRepacker.GUI {
 
 				var node = new WzNode(loadedWzFile);
 
-				MainPanel.DataTree.BeginUpdate();
-				MainPanel.DataTree.Nodes.Add(node);
-				MainPanel.DataTree.EndUpdate();
+				MainPanel.DataTree.Items.Add(node);
+				MainPanel.DataTree.Items.Refresh();
 			} catch (Exception ex) {
 				Warning.Error(string.Format(Resources.MainCouldntOpenWZ, path));
-			}
-		}
-
-		/// <summary>
-		/// Sort all nodes that is a parent of 
-		/// </summary>
-		/// <param name="parent"></param>
-		public void SortNodesRecursively(WzNode parent) {
-			if (parent.TreeView.Sorted) {
-				// No reason to sort if sorting is already enabled
-				return;
-			}
-
-			var sorter = new TreeViewNodeSorter();
-			parent.TreeView.BeginUpdate();
-			SortNodesRecursively(sorter, parent.Nodes);
-			parent.TreeView.EndUpdate();
-		}
-
-		private void SortNodesRecursively(IComparer sorter, TreeNodeCollection nodes) {
-			var array = new TreeNode[nodes.Count];
-			nodes.CopyTo(array, 0);
-			Array.Sort(array, sorter);
-			nodes.Clear();
-			nodes.AddRange(array);
-			foreach (TreeNode node in nodes) {
-				SortNodesRecursively(sorter, node.Nodes);
-			}
-		}
-
-		public void SortNodeProperties(WzNode node) {
-			if (node.Tag is WzSubProperty subProperties) {
-				var nodeParent = (WzNode) node.Parent;
-
-				nodeParent.TreeView.BeginUpdate();
-
-				// sort the order in the WzSubProperty
-				subProperties.SortProperties();
-
-				// Refresh the TreeView view to be in synchronized with the new WzSubProperty's order
-				var newNode = new WzNode(subProperties, true);
-				nodeParent.Nodes[node.Index] = newNode;
-				nodeParent.Nodes.Remove(node);
-
-				nodeParent.TreeView.EndUpdate();
 			}
 		}
 
@@ -242,9 +191,8 @@ namespace HaRepacker.GUI {
 		public void InsertWzFileToPanel(WzFile f) {
 			var node = new WzNode(f);
 
-			MainPanel.DataTree.BeginUpdate();
-			MainPanel.DataTree.Nodes.Add(node);
-			MainPanel.DataTree.EndUpdate();
+			MainPanel.DataTree.Items.Add(node);
+			MainPanel.DataTree.Items.Refresh();
 		}
 
 		/// <summary>
@@ -255,29 +203,25 @@ namespace HaRepacker.GUI {
 		/// <param name="panel"></param>
 		/// <param name="currentDispatcher"></param>
 		public async void AddLoadedWzObjectToMainPanel(WzObject wzObj, Dispatcher currentDispatcher = null) {
-			var node = new WzNode(wzObj);
-
-			Debug.WriteLine("Adding wz object {0}, total size: {1}", wzObj.Name, MainPanel.DataTree.Nodes.Count);
+			Debug.WriteLine("Adding wz object {0}, total size: {1}", wzObj.Name, MainPanel.DataTree.Items.Count);
 
 			// execute in main thread
 			if (currentDispatcher != null) {
 				await currentDispatcher.BeginInvoke((Action) (() => {
-					MainPanel.DataTree.BeginUpdate();
-					MainPanel.DataTree.Nodes.Add(node);
-					MainPanel.DataTree.EndUpdate();
+					MainPanel.DataTree.Items.Add(new WzNode(wzObj));
+					MainPanel.DataTree.Items.Refresh();
 				}));
 			} else {
-				MainPanel.DataTree.BeginUpdate();
-				MainPanel.DataTree.Nodes.Add(node);
-				MainPanel.DataTree.EndUpdate();
+				MainPanel.DataTree.Items.Add(new WzNode(wzObj));
+				MainPanel.DataTree.Items.Refresh();
 			}
 
-			Debug.WriteLine("Done adding wz object {0}, total size: {1}", wzObj.Name, MainPanel.DataTree.Nodes.Count);
+			Debug.WriteLine("Done adding wz object {0}, total size: {1}", wzObj.Name, MainPanel.DataTree.Items.Count);
 		}
 		
 		public void AddObjectNoParent(WzObject obj) {
 			var node = new WzNode(obj, true);
-			MainPanel.DataTree.Nodes.Add(node);
+			MainPanel.DataTree.Items.Add(node);
 		}
 
 		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, WzObject obj) {
@@ -294,7 +238,6 @@ namespace HaRepacker.GUI {
 		}
 
 		public void AddObjectWithNode(DuplicateHandler dupeHandler, WzNode node, IEnumerable<WzObject> objects) {
-			MainPanel.DataTree.BeginUpdate();
 			try {
 				var parent = (WzObject) node.Tag;
 				foreach (var obj in objects) {
@@ -309,7 +252,7 @@ namespace HaRepacker.GUI {
 					node.OnWzObjectAdded(obj, MainPanel.UndoRedoMan);
 				}
 			} finally {
-				MainPanel.DataTree.EndUpdate();
+				node.Refresh();
 			}
 		}
 
@@ -801,7 +744,7 @@ namespace HaRepacker.GUI {
 
 		#region Open WZ File
 
-		private async void OpenFileInternal(string[] fileNames) {
+		public async void OpenFileInternal(string[] fileNames) {
 			var currentDispatcher = Dispatcher.CurrentDispatcher;
 
 			var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
@@ -1035,8 +978,8 @@ namespace HaRepacker.GUI {
 
 			var currentThread = Dispatcher.CurrentDispatcher;
 
-			var nodeArr = new TreeNode[MainPanel.DataTree.Nodes.Count];
-			MainPanel.DataTree.Nodes.CopyTo(nodeArr, 0);
+			var nodeArr = new WzNode[MainPanel.DataTree.Items.Count];
+			MainPanel.DataTree.Items.CopyTo(nodeArr, 0);
 			// Should parallel this like below?
 			foreach (WzNode node in nodeArr) {
 				if (node.Tag is WzFile) {
@@ -1074,13 +1017,13 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void renderMapToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (MainPanel.DataTree.SelectedNode == null) {
+			var node = MainPanel.DataTree.SelectedItem as WzNode;
+			if (node == null) {
 				return;
 			}
 
-			if (MainPanel.DataTree.SelectedNode.Tag is WzImage) {
+			if (node.Tag is WzImage img) {
 				var zoomLevel = double.Parse(zoomTextBox.TextBox.Text);
-				var img = (WzImage) MainPanel.DataTree.SelectedNode.Tag;
 				var mapName = img.Name.Substring(0, img.Name.Length - 4);
 
 				if (!Directory.Exists("Renders\\" + mapName)) Directory.CreateDirectory("Renders\\" + mapName);
@@ -1158,8 +1101,8 @@ namespace HaRepacker.GUI {
 		private void SaveToolStripMenuItem_Click(object sender, EventArgs e) {
 			WzNode node;
 			if (MainPanel.DataTree.SelectedNode == null) {
-				if (MainPanel.DataTree.Nodes.Count == 1) {
-					node = (WzNode) MainPanel.DataTree.Nodes[0];
+				if (MainPanel.DataTree.Items.Count == 1) {
+					node = (WzNode) MainPanel.DataTree.Items[0];
 				} else {
 					MessageBox.Show(Resources.MainSelectWzFolder,
 						Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1167,9 +1110,9 @@ namespace HaRepacker.GUI {
 				}
 			} else {
 				if (MainPanel.DataTree.SelectedNode.Tag is WzFile) {
-					node = (WzNode) MainPanel.DataTree.SelectedNode;
+					node = MainPanel.DataTree.SelectedNode;
 				} else {
-					node = ((WzNode) MainPanel.DataTree.SelectedNode).TopLevelNode;
+					node = MainPanel.DataTree.SelectedNode.TopLevelNode;
 				}
 			}
 
@@ -1389,9 +1332,11 @@ namespace HaRepacker.GUI {
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
 			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
-				if (node.Tag is WzDirectory) {
-					dirs.Add((WzDirectory) node.Tag);
-				} else if (node.Tag is WzImage) imgs.Add((WzImage) node.Tag);
+				if (node.Tag is WzDirectory dir) {
+					dirs.Add(dir);
+				} else if (node.Tag is WzImage image) {
+					imgs.Add(image);
+				}
 			}
 
 			var serializer = new WzImgSerializer();
@@ -1416,8 +1361,8 @@ namespace HaRepacker.GUI {
 
 			var objs = new List<WzObject>();
 			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
-				if (node.Tag is WzObject) {
-					objs.Add((WzObject) node.Tag);
+				if (node.Tag is WzObject obj) {
+					objs.Add(obj);
 				}
 			}
 
@@ -1475,7 +1420,9 @@ namespace HaRepacker.GUI {
 					dirs.Add(directory);
 				} else if (node.Tag is WzImage image) {
 					imgs.Add(image);
-				} else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+				} else if (node.Tag is WzFile file) {
+					dirs.Add(file.WzDirectory);
+				}
 			}
 
 			var serializer = new WzJsonBsonSerializer(
@@ -1509,7 +1456,9 @@ namespace HaRepacker.GUI {
 					dirs.Add(directory);
 				} else if (node.Tag is WzImage image) {
 					imgs.Add(image);
-				} else if (node.Tag is WzFile file) dirs.Add(file.WzDirectory);
+				} else if (node.Tag is WzFile file) {
+					dirs.Add(file.WzDirectory);
+				}
 			}
 
 			var serializer = new WzClassicXmlSerializer(
@@ -1539,11 +1488,13 @@ namespace HaRepacker.GUI {
 			var dirs = new List<WzDirectory>();
 			var imgs = new List<WzImage>();
 			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
-				if (node.Tag is WzDirectory) {
-					dirs.Add((WzDirectory) node.Tag);
-				} else if (node.Tag is WzImage) {
-					imgs.Add((WzImage) node.Tag);
-				} else if (node.Tag is WzFile) dirs.Add(((WzFile) node.Tag).WzDirectory);
+				if (node.Tag is WzDirectory dir) {
+					dirs.Add(dir);
+				} else if (node.Tag is WzImage img) {
+					imgs.Add(img);
+				} else if (node.Tag is WzFile file) {
+					dirs.Add(file.WzDirectory);
+				}
 			}
 
 			var serializer = new WzClassicXmlSerializer(
@@ -1574,8 +1525,8 @@ namespace HaRepacker.GUI {
 			var objs = new List<WzObject>();
 
 			foreach (WzNode node in MainPanel.DataTree.SelectedNodes) {
-				if (node.Tag is WzObject) {
-					objs.Add((WzObject) node.Tag);
+				if (node.Tag is WzObject obj) {
+					objs.Add(obj);
 				}
 			}
 
@@ -1591,19 +1542,19 @@ namespace HaRepacker.GUI {
 		}
 
 		private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.DataTree.BeginUpdate();
-			MainPanel.DataTree.ExpandAll();
-			MainPanel.DataTree.EndUpdate();
+			foreach (WzNode item in MainPanel.DataTree.Items) {
+				item.ExpandSubtree();
+			}
 		}
 
 		private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.DataTree.BeginUpdate();
-			MainPanel.DataTree.CollapseAll();
-			MainPanel.DataTree.EndUpdate();
+			foreach (WzNode item in MainPanel.DataTree.Items) {
+				item.CollapseAll();
+			}
 		}
 
 		private bool IsChildHoldingSelectedNode() {
-			var selectedNode = MainPanel.DataTree.SelectedNode;
+			var selectedNode = MainPanel.DataTree.SelectedItem as WzNode;
 			if (selectedNode == null) return false;
 			var tag = selectedNode.Tag;
 			return tag is WzDirectory ||
@@ -1616,7 +1567,8 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+			var node = MainPanel.DataTree.SelectedItem as WzNode;
+			var wzFile = ((WzObject) node.Tag).WzFileParent;
 			if (!(wzFile is WzFile)) {
 				return;
 			}
@@ -1643,7 +1595,8 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var wzFile = ((WzObject) MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+			var node = MainPanel.DataTree.SelectedItem as WzNode;
+			var wzFile = ((WzObject) node.Tag).WzFileParent;
 			if (!(wzFile is WzFile)) {
 				return;
 			}
@@ -1675,7 +1628,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var selectedNode = (WzNode) MainPanel.DataTree.SelectedNode;
+			var selectedNode = MainPanel.DataTree.SelectedItem as WzNode;
 			var selected = (WzObject) selectedNode.Tag;
 			var wzFile = selected.WzFileParent;
 			if (!(wzFile is WzFile)) {
@@ -1708,9 +1661,7 @@ namespace HaRepacker.GUI {
 			}
 
 			// Adds all the children to the node
-			MainPanel.DataTree.BeginUpdate();
 			selectedNode.Refresh();
-			MainPanel.DataTree.EndUpdate();
 		}
 
 		private void searchToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1770,7 +1721,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzDirectoryToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzDirectoryToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1779,7 +1730,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzImageToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzImageToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzImageToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1788,7 +1739,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzByteFloatPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzByteFloatToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzByteFloatToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1797,7 +1748,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzCanvasPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzCanvasToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzCanvasToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1806,7 +1757,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzCompressedIntPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzCompressedIntToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzCompressedIntToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1815,7 +1766,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzLongPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzLongToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzLongToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1824,7 +1775,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzConvexPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzConvexPropertyToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzConvexPropertyToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1833,7 +1784,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzDoublePropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzDoublePropertyToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzDoublePropertyToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1842,7 +1793,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzNullPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzNullPropertyToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzNullPropertyToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1851,7 +1802,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzSoundPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzSoundPropertyToSelectedNode(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzSoundPropertyToSelectedNode(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1860,7 +1811,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzStringPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzStringPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzStringPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1869,7 +1820,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzSubPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzSubPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzSubPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1878,7 +1829,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzUnsignedShortPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzUnsignedShortPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzUnsignedShortPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1887,7 +1838,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzUolPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzUOLPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzUOLPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1896,7 +1847,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void WzVectorPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzVectorPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzVectorPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		/// <summary>
@@ -1905,7 +1856,7 @@ namespace HaRepacker.GUI {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void wzLuaPropertyToolStripMenuItem_Click(object sender, EventArgs e) {
-			MainPanel.AddWzLuaPropertyToSelectedIndex(MainPanel.DataTree.SelectedNode);
+			MainPanel.AddWzLuaPropertyToSelectedIndex(MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		#endregion
@@ -1964,11 +1915,11 @@ namespace HaRepacker.GUI {
 			}
 
 			var deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(version), WzTool.GetUserKeyByMapleVersion(version));
-			WzDeserializeImportThread(deserializer, fileNames, (WzNode) MainPanel.DataTree.SelectedNode);
+			WzDeserializeImportThread(deserializer, fileNames, MainPanel.DataTree.SelectedItem as WzNode);
 		}
 
 		private void ImportImg(WzMapleVersion wzImageImportVersion, string[] fileNames) {
-			var selectedNode = MainPanel.DataTree.SelectedNode;
+			var selectedNode = MainPanel.DataTree.SelectedItem as WzNode;
 			if (selectedNode != null && !IsChildHoldingSelectedNode()) {
 				return;
 			}
@@ -1986,7 +1937,7 @@ namespace HaRepacker.GUI {
 				return;
 			}
 
-			var selectedNode = (WzNode) MainPanel.DataTree.SelectedNode;
+			var selectedNode = MainPanel.DataTree.SelectedItem as WzNode;
 
 			UpdateProgressBar(MainPanel.mainProgressBar, files.Length, true, true);
 			Task.WhenAll(files.Select(file => Task.Run(() => {

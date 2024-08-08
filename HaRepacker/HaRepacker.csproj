@@ -235,6 +235,9 @@
         <Compile Include="GUI\AboutForm.Designer.cs">
             <DependentUpon>AboutForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="GUI\Input\EditableTextBlock.xaml.cs">
+            <DependentUpon>EditableTextBlock.xaml</DependentUpon>
+        </Compile>
         <Compile Include="GUI\Input\PixelFormatSelector.cs">
             <SubType>Form</SubType>
         </Compile>
@@ -824,6 +827,10 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Include="GUI\Panels\SubPanels\XYPanel.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="GUI\Input\EditableTextBlock.xaml">
             <SubType>Designer</SubType>
             <Generator>MSBuild:Compile</Generator>
         </Page>

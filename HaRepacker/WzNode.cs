@@ -6,24 +6,72 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
+using HaRepacker.GUI.Input;
 using MapleLib.WzLib;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
-	public class WzNode : TreeNode {
-		public delegate ContextMenuStrip ContextMenuBuilderDelegate(WzNode node, WzObject obj);
-
-		public static ContextMenuBuilderDelegate ContextMenuBuilder = null;
+	public class WzNode : TreeViewItem {
+		public static ContextMenuManager ContextMenuManager = null;
 
 		private bool isWzObjectAddedManually;
-		public static Color NewObjectForeColor = Color.Red;
+		public static Brush NewObjectForeColor = Brushes.Red;
+
+		public string Text {
+			get {
+				if (Header is EditableTextBlock editableTextBlock) {
+					return editableTextBlock.Text;
+				}
+
+				return Header as string;
+			}
+			set {
+				if (Header is EditableTextBlock editableTextBlock) {
+					editableTextBlock.Text = value;
+				} else {
+					Header = value;
+				}
+			}
+		}
+
+		public ItemCollection Nodes => Items;
 
 		public WzNode(WzObject SourceObject, bool isWzObjectAddedManually = false)
-			: base(SourceObject.Name) {
+			: base() {
 			this.isWzObjectAddedManually = isWzObjectAddedManually;
-			if (isWzObjectAddedManually) ForeColor = NewObjectForeColor;
+			if (isWzObjectAddedManually) {
+				Foreground = NewObjectForeColor;
+			}
 
+			// Can't figure out how to keep performance comparable to the original
+			// So add an option to decide if people want this feature but slower sorts
+			// or just directly use strings which sort faster.
+			if (Program.ConfigurationManager.UserSettings.QuickEdit) {
+				var textBlock = new EditableTextBlock() {Text = SourceObject.Name};
+				textBlock.EditListener += (sender, e) => { ChangeName(textBlock.Text); };
+				Header = textBlock;
+			} else {
+				Header = SourceObject.Name;
+			}
+
+			if (Program.ConfigurationManager.UserSettings.Sort) {
+				Items.SortDescriptions.Clear();
+				Items.SortDescriptions.Add(TreeViewMS.Sort);
+			}
+
+			PreviewMouseRightButtonDown += (sender, e) => {
+				if (!(sender is WzNode node)) {
+					return;
+				}
+
+				node.IsSelected = true;
+				node.ContextMenu = ContextMenuManager.CreateMenu(this, SourceObject);
+			};
 			// Childs
 			ParseChilds(SourceObject);
 		}
@@ -38,17 +86,19 @@ namespace HaRepacker {
 
 			if (SourceObject is WzDirectory directory) {
 				foreach (var dir in directory.WzDirectories)
-					Nodes.Add(new WzNode(dir));
+					Items.Add(new WzNode(dir));
 				foreach (var img in directory.WzImages)
-					Nodes.Add(new WzNode(img));
+					Items.Add(new WzNode(img));
 			} else if (SourceObject is WzImage image) {
 				if (!image.Parsed) return;
 				foreach (var prop in image.WzProperties)
-					Nodes.Add(new WzNode(prop));
+					Items.Add(new WzNode(prop));
 			} else if (SourceObject is IPropertyContainer container) {
 				foreach (var prop in container.WzProperties)
-					Nodes.Add(new WzNode(prop));
+					Items.Add(new WzNode(prop));
 			}
+
+			Items.Refresh();
 		}
 		
 		private void RefreshChilds(WzObject SourceObject) {
@@ -76,12 +126,16 @@ namespace HaRepacker {
 
 		private void AddIfMissing(WzObject obj) {
 			if (GetChildNode(this, obj.Name) == null) {
-				Nodes.Add(new WzNode(obj));
+				Items.Add(new WzNode(obj));
 			}
 		}
 
 		public void DeleteWzNode() {
-			Remove();
+			if (Parent is WzNode parent) {
+				parent.Items.Remove(this);
+			} else if (Parent is TreeViewMS treeView) {
+				treeView.Items.Remove(this);
+			}
 
 			if (Tag is WzImageProperty property) {
 				if (property.ParentImage == null) // _inlink WzNode doesnt have a parent
@@ -107,7 +161,7 @@ namespace HaRepacker {
 			Tag is IPropertyContainer;
 
 		public static WzNode GetChildNode(WzNode parentNode, string name) {
-			foreach (WzNode node in parentNode.Nodes) {
+			foreach (WzNode node in parentNode.Items) {
 				if (node.Text == name) {
 					return node;
 				}
@@ -182,7 +236,7 @@ namespace HaRepacker {
 		public bool AddNode(WzNode node, bool reparseImage) {
 			if (CanNodeBeInserted(this, node.Text)) {
 				TryParseImage(reparseImage);
-				Nodes.Add(node);
+				Items.Add(node);
 				AddObjInternal((WzObject) node.Tag);
 				return true;
 			}
@@ -220,7 +274,7 @@ namespace HaRepacker {
 
 					undoRedoMan.AddUndoBatch(new List<UndoRedoAction>
 						{UndoRedoManager.ObjectAdded(this, node)});
-					node.EnsureVisible();
+					//node.EnsureVisible();
 					return node;
 				}
 
@@ -267,28 +321,94 @@ namespace HaRepacker {
 		/// </summary>
 		/// <param name="name"></param>
 		public void ChangeName(string name) {
+			if (Tag is WzObject obj) {
+				// Should we check node instead of wzobj?
+				if (obj.Name.Equals(name)) {
+					return;
+				}
+
+				obj.Name = Name;
+			}
 			Text = name;
-			((WzObject) Tag).Name = name;
 			if (Tag is WzImageProperty property) {
 				property.ParentImage.Changed = true;
 			}
 
 			isWzObjectAddedManually = true;
-			ForeColor = NewObjectForeColor;
+			Foreground = NewObjectForeColor;
 		}
 
 		public WzNode TopLevelNode {
 			get {
-				var parent = this;
-				while (parent.Level > 0) parent = (WzNode) parent.Parent;
-
-				return parent;
+				var parent = TreeViewMS.GetSelectedTreeViewItemParent(this);
+				return parent as WzNode;
 			}
 		}
 
-		public override ContextMenuStrip ContextMenuStrip {
-			get => ContextMenuBuilder == null ? null : ContextMenuBuilder(this, (WzObject) Tag);
-			set => base.ContextMenuStrip = value;
+		private static WzNode GetParentItem(TreeViewItem item) {
+			for (var i = VisualTreeHelper.GetParent(item); i != null; i = VisualTreeHelper.GetParent(i)) {
+				if (i is WzNode viewItem) {
+					return viewItem;
+				}
+			}
+
+			return null;
+		}
+
+		public string GetFullPath() {
+			var result = Text;
+
+			for (var i = GetParentItem(this); i != null; i = GetParentItem(i)) {
+				result = i.Text + "\\" + result;
+			}
+
+			return result;
+		}
+
+		public void CollapseAll() {
+			CollapseTreeviewItems(this);
+		}
+
+		public static void CollapseTreeviewItems(WzNode Item) {
+			Item.IsExpanded = false;
+			foreach (WzNode item in Item.Items) {
+				item.IsExpanded = false;
+
+				if (item.HasItems) {
+					CollapseTreeviewItems(item);
+				}
+			}
+		}
+
+		public T ParentOfType<T>(DependencyObject element) where T : DependencyObject {
+			if (element == null) {
+				return default;
+			}
+
+			return GetParents(element).OfType<T>().FirstOrDefault();
+		}
+
+		public IEnumerable<DependencyObject> GetParents(DependencyObject element) {
+			if (element == null) {
+				throw new ArgumentNullException("element");
+			}
+
+			while ((element = GetParent(element)) != null) {
+				yield return element;
+			}
+		}
+
+		private DependencyObject GetParent(DependencyObject element) {
+			var parent = VisualTreeHelper.GetParent(element);
+			if (parent != null) {
+				return parent;
+			}
+
+			if (element is FrameworkElement frameworkElement) {
+				parent = frameworkElement.Parent;
+			}
+
+			return parent;
 		}
 	}
 }

@@ -319,17 +319,25 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <WindowsFormsHost x:Name="treeView_WinFormsHost" Grid.Row="0">
-                    <local:TreeViewMS x:Name="DataTree"
-                                      AllowDrop="True"
-                                      LabelEdit="True"
-                                      AfterSelect="DataTree_AfterSelect"
-                                      KeyDown="DataTree_KeyDown"
-                                      DoubleClick="DataTree_DoubleClick"
-                                      AfterLabelEdit="DataTree_OnAfterLabelEdit"
-                                      BeforeLabelEdit="DataTree_OnBeforeLabelEdit" />
-                </WindowsFormsHost>
-
+                <Grid Grid.Row="0">
+                    <local:TreeViewMS x:Name="_dataTree" AllowDrop="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Standard">
+                        <FrameworkElement.Resources>
+                            <CollectionViewSource x:Key="Items2"
+                                                  Source="{Binding Items}"
+                                                  Filter="Items_Filter"
+                                                  IsLiveFilteringRequested="True"
+                                                  xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                <CollectionViewSource.LiveFilteringProperties>
+                                    <sys:String>IsVisible</sys:String>
+                                </CollectionViewSource.LiveFilteringProperties>
+                            </CollectionViewSource>
+                        </FrameworkElement.Resources>
+                        <ItemsControl.ItemsSource>
+                            <Binding Source="{StaticResource Items2}" />
+                        </ItemsControl.ItemsSource>
+                    </local:TreeViewMS>
+                </Grid>
+                
                 <!-- Find panel -->
                 <Grid x:Name="grid_FindPanel" Grid.Row="1" Grid.RowSpan="2" Opacity="1"
                       Margin="0,0,0,0" Background="White" Height="40" VerticalAlignment="Top"

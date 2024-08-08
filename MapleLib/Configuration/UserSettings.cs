@@ -24,7 +24,10 @@ namespace MapleLib.Configuration {
 		[JsonProperty(PropertyName = "AutoAssociate")]
 		public bool AutoAssociate = true;
 
-		[JsonProperty(PropertyName = "Sort")] public bool Sort;
+		[JsonProperty(PropertyName = "Sort")] public bool Sort = true;
+
+		[JsonProperty(PropertyName = "QuickEdit")]
+		public bool QuickEdit;
 
 		[JsonProperty(PropertyName = "SuppressWarnings")]
 		public bool SuppressWarnings;

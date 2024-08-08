@@ -5,74 +5,79 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
 using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using MapleLib.WzLib;
-using MapleLib.WzLib.WzProperties;
+using ContextMenu = System.Windows.Controls.ContextMenu;
 
 namespace HaRepacker {
 	public class ContextMenuManager {
-		private MainPanel parentPanel;
+		public MainPanel parentPanel;
 
-		public ContextMenuStrip WzFileMenu;
-		public ContextMenuStrip WzDirectoryMenu;
-		public ContextMenuStrip PropertyContainerMenu;
-		public ContextMenuStrip SubPropertyMenu;
-		public ContextMenuStrip PropertyMenu;
+		private MenuItem SaveFile;
+		private MenuItem Remove;
+		private MenuItem Unload;
+		private MenuItem Reload;
+		private MenuItem CollapseAllChildNode;
 
-		private ToolStripMenuItem SaveFile;
-		private ToolStripMenuItem Remove;
-		private ToolStripMenuItem Unload;
-		private ToolStripMenuItem Reload;
-		private ToolStripMenuItem CollapseAllChildNode;
-		private ToolStripMenuItem ExpandAllChildNode;
-		private ToolStripMenuItem SortAllChildViewNode, SortAllChildViewNode2;
-		private ToolStripMenuItem SortPropertiesByName;
+		private MenuItem ExpandAllChildNode;
+		//private MenuItem SortAllChildViewNode, SortAllChildViewNode2;
+		//private MenuItem SortPropertiesByName;
 
-		private ToolStripMenuItem AddPropsSubMenu;
-		private ToolStripMenuItem AddDirsSubMenu;
-		private ToolStripMenuItem AddEtcMenu;
-		private ToolStripMenuItem AddSortMenu;
-		private ToolStripMenuItem AddSortMenu_WithoutPropSort;
-		private ToolStripMenuItem AddImage;
-		private ToolStripMenuItem AddDirectory;
-		private ToolStripMenuItem AddByteFloat;
-		private ToolStripMenuItem AddCanvas;
-		private ToolStripMenuItem AddLong;
-		private ToolStripMenuItem AddInt;
-		private ToolStripMenuItem AddConvex;
-		private ToolStripMenuItem AddDouble;
-		private ToolStripMenuItem AddNull;
-		private ToolStripMenuItem AddSound;
-		private ToolStripMenuItem AddString;
-		private ToolStripMenuItem AddSub;
-		private ToolStripMenuItem AddUshort;
-		private ToolStripMenuItem AddUOL;
-		private ToolStripMenuItem AddVector;
-		private ToolStripMenuItem Rename;
-		private ToolStripMenuItem FixLink;
-		private ToolStripMenuItem FixPixFormat;
-		private ToolStripMenuItem CheckListWzEntries;
+		private MenuItem AddPropsSubMenu;
+		private MenuItem AddDirsSubMenu;
 
+		private MenuItem AddEtcMenu;
 
-		public ContextMenuManager(MainPanel haRepackerMainPanel, UndoRedoManager undoMan) {
+		//private MenuItem AddSortMenu;
+		//private MenuItem AddSortMenu_WithoutPropSort;
+		private MenuItem AddImage;
+		private MenuItem AddDirectory;
+		private MenuItem AddByteFloat;
+		private MenuItem AddCanvas;
+		private MenuItem AddLong;
+		private MenuItem AddInt;
+		private MenuItem AddConvex;
+		private MenuItem AddDouble;
+		private MenuItem AddNull;
+		private MenuItem AddSound;
+		private MenuItem AddString;
+		private MenuItem AddSub;
+		private MenuItem AddUshort;
+		private MenuItem AddUOL;
+		private MenuItem AddVector;
+		private MenuItem Rename;
+		private MenuItem FixLink;
+		private MenuItem FixPixFormat;
+		private MenuItem CheckListWzEntries;
+
+		private WzNode previousNode;
+
+		public ContextMenuManager(MainPanel haRepackerMainPanel) {
 			parentPanel = haRepackerMainPanel;
+			CreateItems();
+		}
 
-			SaveFile = new ToolStripMenuItem("Save", Resources.disk, delegate(object sender, EventArgs e) {
-				foreach (var node in GetNodes(sender)) new SaveForm(parentPanel, node).ShowDialog();
-			});
-			Rename = new ToolStripMenuItem("Rename", Resources.rename, delegate {
-				var currentNode = currNode;
+		private void CreateItems() {
+			SaveFile = new MenuItem() {Header = "Save", Icon = Resources.disk};
+			SaveFile.Click += delegate(object sender, RoutedEventArgs e) {
+				foreach (var node in GetNodes(sender)) {
+					new SaveForm(parentPanel, node).ShowDialog();
+				}
+			};
+			Rename = new MenuItem() {
+				Header = "Rename", Icon = Resources.rename
+			};
+			Rename.Click += delegate(object sender, RoutedEventArgs e) { parentPanel.PromptRenameWzTreeNode(GetNodes(sender)[0]); };
+			Remove = new MenuItem() {Header = "Remove", Icon = Resources.delete};
+			Remove.Click += delegate { parentPanel.PromptRemoveSelectedTreeNodes(); };
 
-				haRepackerMainPanel.PromptRenameWzTreeNode(currentNode);
-			});
-			Remove = new ToolStripMenuItem("Remove", Resources.delete, delegate { haRepackerMainPanel.PromptRemoveSelectedTreeNodes(); });
-
-			Unload = new ToolStripMenuItem("Unload", Resources.delete, delegate(object sender, EventArgs e) {
+			Unload = new MenuItem() {Header = "Unload", Icon = Resources.delete};
+			Unload.Click += delegate(object sender, RoutedEventArgs e) {
 				if (!Warning.Warn(Resources.MainUnloadFile)) {
 					return;
 				}
@@ -81,38 +86,54 @@ namespace HaRepacker {
 				foreach (var node in nodesSelected) {
 					parentPanel.MainForm.UnloadNode(node);
 				}
-			});
-			Reload = new ToolStripMenuItem("Reload", Resources.arrow_refresh, delegate(object sender, EventArgs e) {
+			};
+			Reload = new MenuItem() {
+				Header = "Reload", Icon = Resources.arrow_refresh
+			};
+			Unload.Click += delegate(object sender, RoutedEventArgs e) {
 				if (!Warning.Warn("Are you sure you want to reload this file?")) {
 					return;
 				}
 
 				var nodesSelected = GetNodes(sender);
 				foreach (var node in nodesSelected) // selected nodes
+				{
 					parentPanel.MainForm.ReloadWzFile(node.Tag as WzFile);
-			});
-			CollapseAllChildNode = new ToolStripMenuItem("Collapse All", Resources.collapse,
-				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) node.Collapse();
-				});
-			ExpandAllChildNode = new ToolStripMenuItem("Expand all", Resources.expand, delegate(object sender, EventArgs e) {
-				foreach (var node in GetNodes(sender)) node.ExpandAll();
-			});
+				}
+			};
+			CollapseAllChildNode = new MenuItem() {Header = "Collapse All", Icon = Resources.collapse};
+			CollapseAllChildNode.Click += delegate(object sender, RoutedEventArgs e) {
+				foreach (var node in GetNodes(sender)) {
+					node.CollapseAll();
+				}
+			};
+			ExpandAllChildNode = new MenuItem() {
+				Header = "Expand all", Icon = Resources.expand
+			};
+			ExpandAllChildNode.Click += delegate(object sender, RoutedEventArgs e) {
+				foreach (var node in GetNodes(sender)) {
+					node.ExpandSubtree();
+				}
+			};
 			// This only sorts the view, does not affect the actual order of the 
 			// wz properties
-			SortAllChildViewNode = new ToolStripMenuItem("Sort child nodes view", null,
-				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
-				});
-			SortAllChildViewNode2 = new ToolStripMenuItem("Sort child nodes view", null,
-				delegate(object sender, EventArgs e) {
-					foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
-				});
-			SortPropertiesByName = new ToolStripMenuItem("Sort properties by name", null, delegate(object sender, EventArgs e) {
+			/*SortAllChildViewNode = new MenuItem() {
+				Header = "Sort child nodes view"
+			};
+			SortAllChildViewNode.Click += delegate(object sender, RoutedEventArgs e) {
+				foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
+			};
+			SortAllChildViewNode2 = new MenuItem() {Header = "Sort child nodes view"};
+			SortAllChildViewNode2.Click += delegate(object sender, RoutedEventArgs e) {
+				foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodesRecursively(node);
+			};
+			SortPropertiesByName = new MenuItem() {Header = "Sort properties by name"};
+			SortPropertiesByName.Click += delegate(object sender, RoutedEventArgs e) {
 				foreach (var node in GetNodes(sender)) parentPanel.MainForm.SortNodeProperties(node);
-			});
+			};*/
 
-			AddImage = new ToolStripMenuItem("Image", null, delegate(object sender, EventArgs e) {
+			AddImage = new MenuItem() {Header = "Image"};
+			AddImage.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
@@ -121,154 +142,187 @@ namespace HaRepacker {
 
 				string name;
 				if (NameInputBox.Show("Add Image", 0, out name)) {
-					nodes[0].AddObject(new WzImage(name) {Changed = true}, undoMan);
+					nodes[0].AddObject(new WzImage(name) {Changed = true}, parentPanel.UndoRedoMan);
 				}
-			});
-			AddDirectory = new ToolStripMenuItem("Directory", null, delegate(object sender, EventArgs e) {
+			};
+			AddDirectory = new MenuItem() {Header = "Directory"};
+			AddDirectory.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzDirectoryToSelectedNode(nodes[0]);
-			});
-			AddByteFloat = new ToolStripMenuItem("Float", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzDirectoryToSelectedNode(nodes[0]);
+			};
+			AddByteFloat = new MenuItem() {Header = "Float"};
+			AddByteFloat.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzByteFloatToSelectedNode(nodes[0]);
-			});
-			AddCanvas = new ToolStripMenuItem("Canvas", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzByteFloatToSelectedNode(nodes[0]);
+			};
+			AddCanvas = new MenuItem() {Header = "Canvas"};
+			AddCanvas.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzCanvasToSelectedNode(nodes[0]);
-			});
-			AddLong = new ToolStripMenuItem("Long", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzCanvasToSelectedNode(nodes[0]);
+			};
+			AddLong = new MenuItem() {Header = "Long"};
+			AddLong.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzLongToSelectedNode(nodes[0]);
-			});
-			AddInt = new ToolStripMenuItem("Int", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzLongToSelectedNode(nodes[0]);
+			};
+			AddInt = new MenuItem() {Header = "Int"};
+			AddInt.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzCompressedIntToSelectedNode(nodes[0]);
-			});
-			AddConvex = new ToolStripMenuItem("Convex", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzCompressedIntToSelectedNode(nodes[0]);
+			};
+			AddConvex = new MenuItem() {Header = "Convex"};
+			AddConvex.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzConvexPropertyToSelectedNode(nodes[0]);
-			});
-			AddDouble = new ToolStripMenuItem("Double", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzConvexPropertyToSelectedNode(nodes[0]);
+			};
+			AddDouble = new MenuItem() {Header = "Double"};
+			AddDouble.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzDoublePropertyToSelectedNode(nodes[0]);
-			});
-			AddNull = new ToolStripMenuItem("Null", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzDoublePropertyToSelectedNode(nodes[0]);
+			};
+			AddNull = new MenuItem() {Header = "Null"};
+			AddNull.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzNullPropertyToSelectedNode(nodes[0]);
-			});
-			AddSound = new ToolStripMenuItem("Sound", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzNullPropertyToSelectedNode(nodes[0]);
+			};
+			AddSound = new MenuItem() {Header = "Sound"};
+			AddSound.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzSoundPropertyToSelectedNode(nodes[0]);
-			});
-			AddString = new ToolStripMenuItem("String", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzSoundPropertyToSelectedNode(nodes[0]);
+			};
+			AddString = new MenuItem() {Header = "String"};
+			AddString.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzStringPropertyToSelectedIndex(nodes[0]);
-			});
-			AddSub = new ToolStripMenuItem("Sub", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzStringPropertyToSelectedIndex(nodes[0]);
+			};
+			AddSub = new MenuItem() {Header = "Sub"};
+			AddSub.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzSubPropertyToSelectedIndex(nodes[0]);
-			});
-			AddUshort = new ToolStripMenuItem("Short", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzSubPropertyToSelectedIndex(nodes[0]);
+			};
+			AddUshort = new MenuItem() {Header = "Short"};
+			AddUshort.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzUnsignedShortPropertyToSelectedIndex(nodes[0]);
-			});
-			AddUOL = new ToolStripMenuItem("UOL", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzUnsignedShortPropertyToSelectedIndex(nodes[0]);
+			};
+			AddUOL = new MenuItem() {Header = "UOL"};
+			AddUOL.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzUOLPropertyToSelectedIndex(nodes[0]);
-			});
-			AddVector = new ToolStripMenuItem("Vector", null, delegate(object sender, EventArgs e) {
+				parentPanel.AddWzUOLPropertyToSelectedIndex(nodes[0]);
+			};
+			AddVector = new MenuItem() {Header = "Vector"};
+			AddVector.Click += delegate(object sender, RoutedEventArgs e) {
 				var nodes = GetNodes(sender);
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
 				}
 
-				haRepackerMainPanel.AddWzVectorPropertyToSelectedIndex(nodes[0]);
-			});
+				parentPanel.AddWzVectorPropertyToSelectedIndex(nodes[0]);
+			};
+			FixLink = new MenuItem() {Header = "Fix linked image for old MapleStory ver."};
+			FixLink.Click += delegate { parentPanel.FixLinkForOldMS_Click(); };
+			FixPixFormat = new MenuItem() {Header = "Fix wrong pixel formats"};
+			FixPixFormat.Click += delegate { parentPanel.FixAllIncorrectPixelFormats(); };
+			CheckListWzEntries = new MenuItem() {Header = "Check List.wz entries"};
+			CheckListWzEntries.Click += delegate { parentPanel.CheckListWzEntries(); };
+			AddDirsSubMenu = new MenuItem() {
+				Header = "Add"
+			};
+			AddDirsSubMenu.Items.Add(AddDirectory);
+			AddDirsSubMenu.Items.Add(AddImage);
+			AddPropsSubMenu = new MenuItem() {Header = "Add"};
+			AddPropsSubMenu.Items.Add(AddCanvas);
+			AddPropsSubMenu.Items.Add(AddConvex);
+			AddPropsSubMenu.Items.Add(AddDouble);
+			AddPropsSubMenu.Items.Add(AddByteFloat);
+			AddPropsSubMenu.Items.Add(AddLong);
+			AddPropsSubMenu.Items.Add(AddInt);
+			AddPropsSubMenu.Items.Add(AddNull);
+			AddPropsSubMenu.Items.Add(AddUshort);
+			AddPropsSubMenu.Items.Add(AddSound);
+			AddPropsSubMenu.Items.Add(AddString);
+			AddPropsSubMenu.Items.Add(AddSub);
+			AddPropsSubMenu.Items.Add(AddUOL);
+			AddPropsSubMenu.Items.Add(AddVector);
+			AddEtcMenu = new MenuItem() {
+				Header = "Etc"
+			};
+			AddEtcMenu.Items.Add(FixLink);
+			AddEtcMenu.Items.Add(FixPixFormat);
+			AddEtcMenu.Items.Add(CheckListWzEntries);
 
-			FixLink = new ToolStripMenuItem("Fix linked image for old MapleStory ver.", null, delegate { haRepackerMainPanel.FixLinkForOldMS_Click(); });
+			//AddSortMenu = new MenuItem(){ Header = "Sort", Icon = Resources.sort, SortAllChildViewNode, SortPropertiesByName);
 
-			FixPixFormat = new ToolStripMenuItem("Fix wrong pixel formats", null, delegate { haRepackerMainPanel.FixAllIncorrectPixelFormats(); });
-
-			CheckListWzEntries = new ToolStripMenuItem("Check List.wz entries", null, delegate { haRepackerMainPanel.CheckListWzEntries(); });
-
-			AddDirsSubMenu = new ToolStripMenuItem("Add", Resources.add,
-				AddDirectory, AddImage);
-			AddPropsSubMenu = new ToolStripMenuItem("Add", Resources.add,
-				AddCanvas, AddConvex, AddDouble, AddByteFloat, AddLong, AddInt, AddNull, AddUshort, AddSound, AddString, AddSub, AddUOL, AddVector);
-
-			AddEtcMenu = new ToolStripMenuItem("Etc", Resources.add,
-				FixLink, FixPixFormat, CheckListWzEntries);
-
-			AddSortMenu = new ToolStripMenuItem("Sort", Resources.sort, SortAllChildViewNode, SortPropertiesByName);
-
-			AddSortMenu_WithoutPropSort = new ToolStripMenuItem("Sort", Resources.sort, SortAllChildViewNode2);
+			//AddSortMenu_WithoutPropSort = new MenuItem(){ Header = "Sort", Icon = Resources.sort, SortAllChildViewNode2);
 		}
+
+		private ContextMenu _contextMenu;
 
 		/// <summary>
 		/// Toolstrip menu when right clicking on nodes
@@ -276,60 +330,64 @@ namespace HaRepacker {
 		/// <param name="node"></param>
 		/// <param name="Tag"></param>
 		/// <returns></returns>
-		public ContextMenuStrip CreateMenu(WzNode node, WzObject Tag) {
-			var currentDataTreeSelectedCount = parentPanel.DataTree.SelectedNodes.Count;
+		public ContextMenu CreateMenu(WzNode node, WzObject Tag) {
+			previousNode?.ContextMenu?.Items.Clear();
 
-			var toolStripmenuItems = new List<ToolStripItem>();
-
-			var menu = new ContextMenuStrip();
+			var menu = new ContextMenu();
 
 			if (Tag is WzImage || Tag is IPropertyContainer) {
-				toolStripmenuItems.Add(AddPropsSubMenu);
-				toolStripmenuItems.Add(Rename);
+				menu.Items.Add(AddPropsSubMenu);
+				menu.Items.Add(Rename);
 				// export, import
 				if (node.Parent != null) {
-					toolStripmenuItems.Add(Remove);
+					menu.Items.Add(Remove);
 				}
 			} else if (Tag is WzImageProperty) {
-				toolStripmenuItems.Add(Rename);
-				toolStripmenuItems.Add(Remove);
+				menu.Items.Add(Rename);
+				menu.Items.Add(Remove);
 			} else if (Tag is WzDirectory) {
-				toolStripmenuItems.Add(AddDirsSubMenu);
-				toolStripmenuItems.Add(Rename);
-				toolStripmenuItems.Add(Remove);
+				menu.Items.Add(AddDirsSubMenu);
+				menu.Items.Add(Rename);
+				menu.Items.Add(Remove);
 			} else if (Tag is WzFile) {
-				toolStripmenuItems.Add(AddDirsSubMenu);
-				toolStripmenuItems.Add(Rename);
-				toolStripmenuItems.Add(SaveFile);
-				toolStripmenuItems.Add(Unload);
-				toolStripmenuItems.Add(Reload);
+				menu.Items.Add(AddDirsSubMenu);
+				menu.Items.Add(Rename);
+				menu.Items.Add(SaveFile);
+				menu.Items.Add(Unload);
+				menu.Items.Add(Reload);
 			}
 
 			if (Tag is WzImage && node.Parent == null) {
-				toolStripmenuItems.Add(Unload);
+				menu.Items.Add(Unload);
 			}
 
-			toolStripmenuItems.Add(ExpandAllChildNode);
-			toolStripmenuItems.Add(CollapseAllChildNode);
-			toolStripmenuItems.Add(AddEtcMenu);
+			menu.Items.Add(ExpandAllChildNode);
+			menu.Items.Add(CollapseAllChildNode);
+			menu.Items.Add(AddEtcMenu);
 
-			if (Tag.GetType() == typeof(WzSubProperty)) {
-				toolStripmenuItems.Add(AddSortMenu);
+			/*if (Tag.GetType() == typeof(WzSubProperty)) {
+				menu.Items.Add(AddSortMenu);
 			} else {
-				toolStripmenuItems.Add(AddSortMenu_WithoutPropSort);
-			}
-
-			// Add
-			foreach (var toolStripItem in toolStripmenuItems) menu.Items.Add(toolStripItem);
-
-			currNode = node;
+				menu.Items.Add(AddSortMenu_WithoutPropSort);
+			}*/
+			previousNode = node;
 			return menu;
 		}
 
-		private WzNode currNode;
-
 		private WzNode[] GetNodes(object sender) {
-			return new[] {currNode};
+			if (!(sender is MenuItem mi)) {
+				return Array.Empty<WzNode>();
+			}
+
+			if (!(mi.Parent is ContextMenu cm)) {
+				return Array.Empty<WzNode>();
+			}
+
+			if (cm.PlacementTarget is WzNode node) {
+				return new[] {node};
+			}
+
+			return Array.Empty<WzNode>();
 		}
 	}
 }
