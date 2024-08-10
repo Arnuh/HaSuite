@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using MapleLib.Helpers;
+using MapleLib.Helpers.Exceptions;
 using MapleLib.WzLib;
 
 namespace MapleLib {
@@ -359,8 +360,7 @@ namespace MapleLib {
 
 			var parseStatus = wzf.ParseWzFile();
 			if (parseStatus != WzFileParseStatus.Success) {
-				MessageBox.Show("Error parsing " + baseName + ".wz (" + parseStatus.GetErrorDescription() + ")");
-				return false;
+				throw new ParseException($"Error parsing {baseName}.wz ({parseStatus.GetErrorDescription()})");
 			}
 
 			baseName = baseName.ToLower();

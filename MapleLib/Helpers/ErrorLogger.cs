@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 
 namespace MapleLib.Helpers {
 	public static class ErrorLogger {

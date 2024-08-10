@@ -14,7 +14,7 @@ using HaCreator.Properties;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
 using HaSharedLibrary.Wz;
-using MapleLib.Converters;
+using HaCreator.Converters;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Spine;
