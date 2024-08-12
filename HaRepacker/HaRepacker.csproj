@@ -131,53 +131,8 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="ICSharpCode.AvalonEdit, Version=6.3.0.90, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-            <HintPath>..\packages\AvalonEdit.6.3.0.90\lib\net462\ICSharpCode.AvalonEdit.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-            <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-        </Reference>
-        <Reference Include="MonoGame.Framework, Version=3.8.0.1641, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\lib\net452\MonoGame.Framework.dll</HintPath>
-        </Reference>
-        <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-            <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-        </Reference>
         <Reference Include="PresentationCore"/>
         <Reference Include="PresentationFramework"/>
-        <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.Direct3D9, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.Direct3D9.4.2.0\lib\net45\SharpDX.Direct3D9.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.MediaFoundation, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.MediaFoundation.4.2.0\lib\net45\SharpDX.MediaFoundation.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.XAudio2, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.XAudio2.4.2.0\lib\net45\SharpDX.XAudio2.dll</HintPath>
-        </Reference>
-        <Reference Include="SharpDX.XInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-            <HintPath>..\packages\SharpDX.XInput.4.2.0\lib\net45\SharpDX.XInput.dll</HintPath>
-        </Reference>
         <Reference Include="System"/>
         <Reference Include="System.ComponentModel.Composition"/>
         <Reference Include="System.Data"/>
@@ -192,28 +147,16 @@
             <Private>True</Private>
             <Private>True</Private>
         </Reference>
-        <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-            <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-        </Reference>
         <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
             <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
             <Private>True</Private>
             <Private>True</Private>
         </Reference>
-        <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-            <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-        </Reference>
         <Reference Include="System.Windows.Forms"/>
         <Reference Include="System.Xaml"/>
         <Reference Include="System.Xml"/>
-        <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.1.6643.41644, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\WeifenLuo.WinFormsUI.Docking.2.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-        </Reference>
         <Reference Include="WindowsBase"/>
         <Reference Include="WindowsFormsIntegration"/>
-        <Reference Include="WpfAnimatedGif, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9e7cd3b544a090dc, processorArchitecture=MSIL">
-            <HintPath>..\packages\WpfAnimatedGif.2.0.2\lib\net40\WpfAnimatedGif.dll</HintPath>
-        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AnimationBuilder.cs"/>
@@ -736,7 +679,6 @@
         <None Include="app.config"/>
         <None Include="app.manifest"/>
         <None Include="HaRepacker.res"/>
-        <None Include="packages.config"/>
         <None Include="Resources\page_white.png"/>
         <None Include="Resources\folder.png"/>
         <None Include="Resources\folder_add.png"/>
@@ -836,15 +778,66 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>
-    <ItemGroup/>
+    <ItemGroup>
+      <PackageReference Include="Antlr">
+        <Version>3.5.0.2</Version>
+      </PackageReference>
+      <PackageReference Include="AvalonEdit">
+        <Version>6.3.0.90</Version>
+      </PackageReference>
+      <PackageReference Include="MonoGame.Framework.WindowsDX">
+        <Version>3.8.0.1641</Version>
+      </PackageReference>
+      <PackageReference Include="Newtonsoft.Json">
+        <Version>13.0.3</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.Direct2D1">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.Direct3D11">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.Direct3D9">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.DXGI">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.Mathematics">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.MediaFoundation">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.XAudio2">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="SharpDX.XInput">
+        <Version>4.2.0</Version>
+      </PackageReference>
+      <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+        <Version>6.0.0</Version>
+      </PackageReference>
+      <PackageReference Include="System.Threading.Tasks.Extensions">
+        <Version>4.5.4</Version>
+      </PackageReference>
+      <PackageReference Include="WeifenLuo.WinFormsUI.Docking">
+        <Version>2.1.0</Version>
+      </PackageReference>
+      <PackageReference Include="WindowsAPICodePack-Core">
+        <Version>1.1.1</Version>
+      </PackageReference>
+      <PackageReference Include="WindowsAPICodePack-Shell">
+        <Version>1.1.1</Version>
+      </PackageReference>
+      <PackageReference Include="WpfAnimatedGif">
+        <Version>2.0.2</Version>
+      </PackageReference>
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <Import Project="..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets" Condition="Exists('..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets')"/>
-    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-        <PropertyGroup>
-            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-        </PropertyGroup>
-        <Error Condition="!Exists('..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets'))"/>
-    </Target>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
