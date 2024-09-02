@@ -351,6 +351,7 @@
         <Compile Include="GUI\Panels\SubPanels\XYPanel.xaml.cs">
             <DependentUpon>XYPanel.xaml</DependentUpon>
         </Compile>
+		<Compile Include="GUI\TreeViewHelper.cs"/>
         <Compile Include="Properties\Resources.ja.Designer.cs">
             <AutoGen>True</AutoGen>
             <DesignTime>True</DesignTime>

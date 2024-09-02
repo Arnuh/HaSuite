@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
 using MapleLib.WzLib;
@@ -305,7 +306,7 @@ namespace HaRepacker {
 
 							subsubnode.IsSelected = true;
 							subsubnode.IsExpanded = true;
-							subsubnode.BringIntoView();
+							TreeViewHelper.BringIntoView(subsubnode);
 							return true;
 						}
 					}
@@ -317,7 +318,7 @@ namespace HaRepacker {
 				}
 
 				subnode.IsSelected = true;
-				subnode.BringIntoView();
+				TreeViewHelper.BringIntoView(subnode);
 				return true;
 			}
 

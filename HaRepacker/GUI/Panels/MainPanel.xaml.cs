@@ -1635,7 +1635,7 @@ namespace HaRepacker.GUI.Panels {
 						node.Background = Brushes.Yellow;
 						coloredNode = node;
 						node.Focus();
-						node.BringIntoView();
+						TreeViewHelper.BringIntoView(node);
 						node.IsSelected = true;
 						finished = true;
 						searchidx++;
@@ -1664,7 +1664,7 @@ namespace HaRepacker.GUI.Panels {
 						subnode.Background = Brushes.Yellow;
 						coloredNode = subnode;
 						subnode.Focus();
-						subnode.BringIntoView();
+						TreeViewHelper.BringIntoView(subnode);
 						subnode.IsSelected = true;
 						finished = true;
 						searchidx++;
@@ -1757,7 +1757,7 @@ namespace HaRepacker.GUI.Panels {
 			if (node != null) {
 				node.IsSelected = true;
 				node.Focus();
-				node.BringIntoView();
+				TreeViewHelper.BringIntoView(node);
 			}
 		}
 
@@ -1813,7 +1813,7 @@ namespace HaRepacker.GUI.Panels {
 				MessageBox.Show(Properties.Resources.MainTreeEnd);
 				searchidx = 0;
 				DataTree.SelectedNode.Focus();
-				DataTree.SelectedNode.BringIntoView();
+				TreeViewHelper.BringIntoView(DataTree.SelectedNode);
 			}
 
 			findBox.Focus();
