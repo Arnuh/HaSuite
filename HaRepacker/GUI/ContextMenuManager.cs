@@ -90,7 +90,7 @@ namespace HaRepacker {
 			Reload = new MenuItem() {
 				Header = "Reload", Icon = Resources.arrow_refresh
 			};
-			Unload.Click += delegate(object sender, RoutedEventArgs e) {
+			Reload.Click += delegate(object sender, RoutedEventArgs e) {
 				if (!Warning.Warn("Are you sure you want to reload this file?")) {
 					return;
 				}
@@ -375,19 +375,7 @@ namespace HaRepacker {
 		}
 
 		private WzNode[] GetNodes(object sender) {
-			if (!(sender is MenuItem mi)) {
-				return Array.Empty<WzNode>();
-			}
-
-			if (!(mi.Parent is ContextMenu cm)) {
-				return Array.Empty<WzNode>();
-			}
-
-			if (cm.PlacementTarget is WzNode node) {
-				return new[] {node};
-			}
-
-			return Array.Empty<WzNode>();
+			return new[] {previousNode};
 		}
 	}
 }
