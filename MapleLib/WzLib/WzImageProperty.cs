@@ -161,8 +161,8 @@ namespace MapleLib.WzLib {
 						properties.Add(new WzStringProperty(name, reader.ReadStringBlock(offset)) {Parent = parent});
 						break;
 					case 9:
-						var eob = (int) (reader.ReadUInt32() + reader.BaseStream.Position);
-						WzImageProperty exProp = ParseExtendedProp(reader, offset, eob, name, parent, parentImg);
+						var eob = reader.ReadUInt32() + reader.BaseStream.Position;
+						WzImageProperty exProp = ParseExtendedProp(reader, offset, name, parent, parentImg);
 						properties.Add(exProp);
 						if (reader.BaseStream.Position != eob) reader.BaseStream.Position = eob;
 
@@ -175,22 +175,22 @@ namespace MapleLib.WzLib {
 			return properties;
 		}
 
-		internal static WzExtended ParseExtendedProp(WzBinaryReader reader, uint offset, int endOfBlock, string name,
+		internal static WzExtended ParseExtendedProp(WzBinaryReader reader, uint offset, string name,
 			WzObject parent, WzImage imgParent) {
 			switch (reader.ReadByte()) {
 				case 0x01:
 				case WzImage.WzImageHeaderByte_WithOffset:
-					return ExtractMore(reader, offset, endOfBlock, name,
+					return ExtractMore(reader, offset, name,
 						reader.ReadStringAtOffset(offset + reader.ReadInt32()), parent, imgParent);
 				case 0x00:
 				case WzImage.WzImageHeaderByte_WithoutOffset:
-					return ExtractMore(reader, offset, endOfBlock, name, "", parent, imgParent);
+					return ExtractMore(reader, offset, name, "", parent, imgParent);
 				default:
 					throw new Exception("Invalid byte read at ParseExtendedProp");
 			}
 		}
 
-		internal static WzExtended ExtractMore(WzBinaryReader reader, uint offset, int eob, string name, string iname,
+		internal static WzExtended ExtractMore(WzBinaryReader reader, uint offset, string name, string iname,
 			WzObject parent, WzImage imgParent) {
 			if (iname == "") iname = reader.ReadString();
 
@@ -225,7 +225,7 @@ namespace MapleLib.WzLib {
 					var convexEntryCount = reader.ReadCompressedInt();
 					convexProp.WzProperties.Capacity = convexEntryCount;
 					for (var i = 0; i < convexEntryCount; i++)
-						convexProp.AddProperty(ParseExtendedProp(reader, offset, 0, name, convexProp, imgParent));
+						convexProp.AddProperty(ParseExtendedProp(reader, offset, name, convexProp, imgParent));
 
 					return convexProp;
 				case "Sound_DX8":
