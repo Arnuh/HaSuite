@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -43,115 +43,41 @@ namespace Spine {
 		public const int Y4 = 7;
 
 		internal float x, y, rotation, scaleX = 1, scaleY = 1, width, height;
-
-		internal float regionOffsetX,
-			regionOffsetY,
-			regionWidth,
-			regionHeight,
-			regionOriginalWidth,
-			regionOriginalHeight;
-
+		internal float regionOffsetX, regionOffsetY, regionWidth, regionHeight, regionOriginalWidth, regionOriginalHeight;
 		internal float[] offset = new float[8], uvs = new float[8];
 		internal float r = 1, g = 1, b = 1, a = 1;
 
-		public float X {
-			get => x;
-			set => x = value;
-		}
+		public float X { get { return x; } set { x = value; } }
+		public float Y { get { return y; } set { y = value; } }
+		public float Rotation { get { return rotation; } set { rotation = value; } }
+		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
+		public float ScaleY { get { return scaleY; } set { scaleY = value; } }
+		public float Width { get { return width; } set { width = value; } }
+		public float Height { get { return height; } set { height = value; } }
 
-		public float Y {
-			get => y;
-			set => y = value;
-		}
+		public float R { get { return r; } set { r = value; } }
+		public float G { get { return g; } set { g = value; } }
+		public float B { get { return b; } set { b = value; } }
+		public float A { get { return a; } set { a = value; } }
 
-		public float Rotation {
-			get => rotation;
-			set => rotation = value;
-		}
+		public String Path { get; set; }
+		public Object RendererObject { get; set; }
+		public float RegionOffsetX { get { return regionOffsetX; } set { regionOffsetX = value; } }
+		public float RegionOffsetY { get { return regionOffsetY; } set { regionOffsetY = value; } } // Pixels stripped from the bottom left, unrotated.
+		public float RegionWidth { get { return regionWidth; } set { regionWidth = value; } }
+		public float RegionHeight { get { return regionHeight; } set { regionHeight = value; } } // Unrotated, stripped size.
+		public float RegionOriginalWidth { get { return regionOriginalWidth; } set { regionOriginalWidth = value; } }
+		public float RegionOriginalHeight { get { return regionOriginalHeight; } set { regionOriginalHeight = value; } } // Unrotated, unstripped size.
 
-		public float ScaleX {
-			get => scaleX;
-			set => scaleX = value;
-		}
+		public float[] Offset { get { return offset; } }
+		public float[] UVs { get { return uvs; } }
 
-		public float ScaleY {
-			get => scaleY;
-			set => scaleY = value;
-		}
-
-		public float Width {
-			get => width;
-			set => width = value;
-		}
-
-		public float Height {
-			get => height;
-			set => height = value;
-		}
-
-		public float R {
-			get => r;
-			set => r = value;
-		}
-
-		public float G {
-			get => g;
-			set => g = value;
-		}
-
-		public float B {
-			get => b;
-			set => b = value;
-		}
-
-		public float A {
-			get => a;
-			set => a = value;
-		}
-
-		public string Path { get; set; }
-		public object RendererObject { get; set; }
-
-		public float RegionOffsetX {
-			get => regionOffsetX;
-			set => regionOffsetX = value;
-		}
-
-		public float RegionOffsetY {
-			get => regionOffsetY;
-			set => regionOffsetY = value;
-		} // Pixels stripped from the bottom left, unrotated.
-
-		public float RegionWidth {
-			get => regionWidth;
-			set => regionWidth = value;
-		}
-
-		public float RegionHeight {
-			get => regionHeight;
-			set => regionHeight = value;
-		} // Unrotated, stripped size.
-
-		public float RegionOriginalWidth {
-			get => regionOriginalWidth;
-			set => regionOriginalWidth = value;
-		}
-
-		public float RegionOriginalHeight {
-			get => regionOriginalHeight;
-			set => regionOriginalHeight = value;
-		} // Unrotated, unstripped size.
-
-		public float[] Offset => offset;
-
-		public float[] UVs => uvs;
-
-		public RegionAttachment(string name)
+		public RegionAttachment (string name)
 			: base(name) {
 		}
 
-		public void SetUVs(float u, float v, float u2, float v2, bool rotate) {
-			var uvs = this.uvs;
+		public void SetUVs (float u, float v, float u2, float v2, bool rotate) {
+			float[] uvs = this.uvs;
 			if (rotate) {
 				uvs[X2] = u;
 				uvs[Y2] = v2;
@@ -173,31 +99,31 @@ namespace Spine {
 			}
 		}
 
-		public void UpdateOffset() {
-			var width = this.width;
-			var height = this.height;
-			var scaleX = this.scaleX;
-			var scaleY = this.scaleY;
-			var regionScaleX = width / regionOriginalWidth * scaleX;
-			var regionScaleY = height / regionOriginalHeight * scaleY;
-			var localX = -width / 2 * scaleX + regionOffsetX * regionScaleX;
-			var localY = -height / 2 * scaleY + regionOffsetY * regionScaleY;
-			var localX2 = localX + regionWidth * regionScaleX;
-			var localY2 = localY + regionHeight * regionScaleY;
-			var radians = rotation * (float) Math.PI / 180;
-			var cos = (float) Math.Cos(radians);
-			var sin = (float) Math.Sin(radians);
-			var x = this.x;
-			var y = this.y;
-			var localXCos = localX * cos + x;
-			var localXSin = localX * sin;
-			var localYCos = localY * cos + y;
-			var localYSin = localY * sin;
-			var localX2Cos = localX2 * cos + x;
-			var localX2Sin = localX2 * sin;
-			var localY2Cos = localY2 * cos + y;
-			var localY2Sin = localY2 * sin;
-			var offset = this.offset;
+		public void UpdateOffset () {
+			float width = this.width;
+			float height = this.height;
+			float scaleX = this.scaleX;
+			float scaleY = this.scaleY;
+			float regionScaleX = width / regionOriginalWidth * scaleX;
+			float regionScaleY = height / regionOriginalHeight * scaleY;
+			float localX = -width / 2 * scaleX + regionOffsetX * regionScaleX;
+			float localY = -height / 2 * scaleY + regionOffsetY * regionScaleY;
+			float localX2 = localX + regionWidth * regionScaleX;
+			float localY2 = localY + regionHeight * regionScaleY;
+			float radians = rotation * (float)Math.PI / 180;
+			float cos = (float)Math.Cos(radians);
+			float sin = (float)Math.Sin(radians);
+			float x = this.x;
+			float y = this.y;
+			float localXCos = localX * cos + x;
+			float localXSin = localX * sin;
+			float localYCos = localY * cos + y;
+			float localYSin = localY * sin;
+			float localX2Cos = localX2 * cos + x;
+			float localX2Sin = localX2 * sin;
+			float localY2Cos = localY2 * cos + y;
+			float localY2Sin = localY2 * sin;
+			float[] offset = this.offset;
 			offset[X1] = localXCos - localYSin;
 			offset[Y1] = localYCos + localXSin;
 			offset[X2] = localXCos - localY2Sin;
@@ -208,10 +134,10 @@ namespace Spine {
 			offset[Y4] = localYCos + localX2Sin;
 		}
 
-		public void ComputeWorldVertices(Bone bone, float[] worldVertices) {
+		public void ComputeWorldVertices (Bone bone, float[] worldVertices) {
 			float x = bone.skeleton.x + bone.worldX, y = bone.skeleton.y + bone.worldY;
 			float m00 = bone.m00, m01 = bone.m01, m10 = bone.m10, m11 = bone.m11;
-			var offset = this.offset;
+			float[] offset = this.offset;
 			worldVertices[X1] = offset[X1] * m00 + offset[Y1] * m01 + x;
 			worldVertices[Y1] = offset[X1] * m10 + offset[Y1] * m11 + y;
 			worldVertices[X2] = offset[X2] * m00 + offset[Y2] * m01 + x;

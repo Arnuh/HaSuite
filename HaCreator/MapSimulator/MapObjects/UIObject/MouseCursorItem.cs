@@ -4,7 +4,8 @@ using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 
 namespace HaCreator.MapSimulator.Objects.UIObject {
 	/// <summary>

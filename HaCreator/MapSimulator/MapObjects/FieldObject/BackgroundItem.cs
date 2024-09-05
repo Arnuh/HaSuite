@@ -6,7 +6,8 @@ using HaSharedLibrary.Render.DX;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace HaCreator.MapSimulator.Objects.FieldObject {
 	public class BackgroundItem : BaseDXDrawableItem {

@@ -24,14 +24,18 @@ namespace HaCreator.GUI {
 			this.board = board;
 			InitializeComponent();
 
-			foreach (var mapLayer in board.Layers) layerBox.Items.Add(mapLayer.ToString());
+			foreach (var mapLayer in board.Layers) {
+				layerBox.Items.Add(mapLayer.ToString());
+			}
 
 			if (board.SelectedLayerIndex == -1) {
 				layerBox.SelectedIndex = 0;
 				zmBox.SelectedIndex = 0;
 			} else {
 				layerBox.SelectedIndex = board.SelectedLayerIndex;
-				if (board.SelectedPlatform != -1) zmBox.SelectedItem = board.SelectedPlatform;
+				if (board.SelectedPlatform != -1) {
+					zmBox.SelectedItem = board.SelectedPlatform;
+				}
 			}
 		}
 
@@ -53,7 +57,10 @@ namespace HaCreator.GUI {
 		}
 
 		private bool LayerCapableOfHoldingSelectedItems(Layer layer) {
-			if (layer.tS == null) return true;
+			if (layer.tS == null) {
+				return true;
+			}
+
 			foreach (var item in items) {
 				if (item is TileInstance && ((TileInfo) item.BaseInfo).tS != layer.tS) {
 					return false;
@@ -76,7 +83,10 @@ namespace HaCreator.GUI {
 			var actions = new List<UndoRedoAction>();
 			var touchedLayers = new HashSet<int>();
 			foreach (var item in items) {
-				if (!(item is IContainsLayerInfo)) continue;
+				if (!(item is IContainsLayerInfo)) {
+					continue;
+				}
+
 				var li = (IContainsLayerInfo) item;
 				var oldLayer = li.LayerNumber;
 				var oldZm = li.PlatformNumber;

@@ -99,7 +99,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			} else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue) {
 				// If rope/ladder is closer, snap to it and change our rope/ladder policy, unless it was hard-set by the user
 				SnapMoveAllMouseBoundItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
-				if (!parentRope.ladderSetByUser) parentRope.ladder = closestIsLadder;
+				if (!parentRope.ladderSetByUser) {
+					parentRope.ladder = closestIsLadder;
+				}
 			}
 		}
 

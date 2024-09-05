@@ -12,31 +12,21 @@
 // #define FPS_TEST
 
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using HaCreator.Collections;
 using HaCreator.GUI;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
-using HaCreator.MapEditor.Text;
-using HaSharedLibrary.Util;
 using MapleLib.WzLib.WzStructure.Data;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using ContextMenu = System.Windows.Controls.ContextMenu;
 using DataFormats = System.Windows.DataFormats;
 using DragDropEffects = System.Windows.Forms.DragDropEffects;
 using DragEventArgs = System.Windows.Forms.DragEventArgs;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
-using Matrix = Microsoft.Xna.Framework.Matrix;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using Mouse = HaCreator.MapEditor.Input.Mouse;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -44,25 +34,15 @@ using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using ScrollEventArgs = System.Windows.Controls.Primitives.ScrollEventArgs;
 using Size = System.Windows.Size;
-using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaCreator.MapEditor {
 	public partial class MultiBoard : UserControl {
-		private GraphicsDevice DxDevice;
-		private SpriteBatch sprite;
-		private readonly PresentationParameters pParams = new PresentationParameters();
-		private Texture2D pixel;
-
-		private FontEngine fontEngine;
-		private Thread renderer;
-		private bool needsReset;
 		private readonly IntPtr dxHandle;
 		private readonly UserObjectsManager userObjs;
-		private Scheduler scheduler;
 
 		// UI
-		private readonly List<Board> boards = new List<Board>();
+		private readonly List<Board> boards = new();
 		private Board selectedBoard;
 		private HaCreatorStateManager _HaCreatorStateManager;
 
@@ -80,13 +60,10 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		private WindowState CurrentHostWindowState = WindowState.Normal;
-		private System.Drawing.Size _CurrentDXWindowSize;
+		public WindowState CurrentHostWindowState = WindowState.Normal;
 
-		public System.Drawing.Size CurrentDXWindowSize {
-			get => _CurrentDXWindowSize;
-			private set { }
-		}
+		public double ActualHeight => Device.ActualHeight;
+		public double ActualWidth => Device.ActualWidth;
 
 #if FPS_TEST
         private FPSCounter fpsCounter = new FPSCounter();
@@ -104,110 +81,47 @@ namespace HaCreator.MapEditor {
 		}
 
 		public void UpdateWindowSize(Size CurrentWindowSize) {
-			_CurrentDXWindowSize = DxContainer.ClientSize;
+			//_CurrentDXWindowSize = DxContainer.ClientSize;
 
-			needsReset = true;
+			Device.OnSizeChanged();
 		}
 
 		private void MultiBoard2_SizeChanged(object sender, SizeChangedEventArgs e) {
-			_CurrentDXWindowSize = DxContainer.ClientSize;
+			//_CurrentDXWindowSize = DxContainer.ClientSize;
 		}
 
 		#endregion
-
-		private void RenderLoop() {
-			PrepareDXDevice();
-			pixel = CreatePixel();
-			DeviceReady = true;
-
-			while (!Program.AbortThreads) {
-				if (DeviceReady && CurrentHostWindowState != WindowState.Minimized) {
-					RenderFrame();
-#if FPS_TEST
-                    fpsCounter.Tick();
-#endif
-				} else {
-					Thread.Sleep(100);
-				}
-			}
-		}
 
 		#region Initialization
 
 		public MultiBoard() {
 			InitializeComponent();
 
-			if (!DesignerProperties.GetIsInDesignMode(this)) // stupid errors popping up in design mode 
-			{
+			if (!DesignerProperties.GetIsInDesignMode(this)) { // stupid errors popping up in design mode 
 				winFormDXHolder.Visibility = Visibility.Visible;
 			}
 
-			dxHandle = DxContainer.Handle;
+			Device.MultiBoard = this;
+
 			userObjs = new UserObjectsManager(this);
 			SizeChanged += MultiBoard2_SizeChanged;
 		}
 
-		/// <summary>
-		/// Starts the multi board along with associated graphics device
-		/// </summary>
 		public void Start() {
-			if (DeviceReady) {
+			if (Device.DeviceReady) {
 				return;
 			}
 
+			Device.Start();
 			//if (selectedBoard == null) 
 			//    throw new Exception("Cannot start without a selected board");
 			Visibility = Visibility.Visible;
 
 			AdjustScrollBars();
-			renderer = new Thread(RenderLoop);
-			renderer.Start();
-
-			var clientList = new Dictionary<Action, int>();
-			clientList.Add(delegate {
-				//if (BackupCheck != null)
-				//    BackupCheck.Invoke();
-			}, 1000);
-			scheduler = new Scheduler(clientList);
 		}
 
 		public void Stop() {
-			if (renderer != null) {
-				renderer.Join();
-				renderer = null;
-			}
-
-			if (scheduler != null) scheduler.Dispose();
-		}
-
-		public static GraphicsDevice CreateGraphicsDevice(
-			PresentationParameters pParams) {
-			GraphicsDevice result;
-			try {
-				result = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,
-					GraphicsProfile.HiDef, pParams);
-			} catch (Exception e) {
-				MessageBox.Show(string.Format("Graphics adapter is not supported: {0}\r\n\r\n{1}", e.Message,
-					e.StackTrace));
-				Environment.Exit(0);
-				// This code will never be reached, but VS still requires this path to end
-				throw;
-			}
-
-			return result;
-		}
-
-		private void PrepareDXDevice() {
-			pParams.BackBufferWidth = Math.Max(_CurrentDXWindowSize.Width, 1);
-			pParams.BackBufferHeight = Math.Max(_CurrentDXWindowSize.Height, 1);
-			pParams.BackBufferFormat = SurfaceFormat.Color;
-			pParams.DepthStencilFormat = DepthFormat.Depth24Stencil8;
-			pParams.DeviceWindowHandle = dxHandle;
-			pParams.IsFullScreen = false;
-			//pParams.PresentationInterval = PresentInterval.Immediate;
-			DxDevice = CreateGraphicsDevice(pParams);
-			fontEngine = new FontEngine(UserSettings.FontName, UserSettings.FontStyle, UserSettings.FontSize, DxDevice);
-			sprite = new SpriteBatch(DxDevice);
+			//
 		}
 
 		#endregion
@@ -224,13 +138,6 @@ namespace HaCreator.MapEditor {
 			if (BoardRemoved != null) {
 				BoardRemoved.Invoke(board, null);
 			}
-		}
-
-		private Texture2D CreatePixel() {
-			var bmp = new Bitmap(1, 1);
-			bmp.SetPixel(0, 0, System.Drawing.Color.White);
-
-			return bmp.ToTexture2D(DxDevice);
 		}
 
 		/// <summary>
@@ -251,110 +158,22 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public void DrawLine(SpriteBatch sprite, Vector2 start, Vector2 end, Color color) {
-			var width = (int) Vector2.Distance(start, end);
-			var rotation = (float) Math.Atan2(end.Y - start.Y, end.X - start.X);
-			sprite.Draw(pixel, new Rectangle((int) start.X, (int) start.Y, width, UserSettings.LineWidth), null, color,
-				rotation, new Vector2(0f, 0f), SpriteEffects.None, 1f);
-		}
-
-		public void DrawRectangle(SpriteBatch sprite, Rectangle rectangle, Color color) {
-			//clockwise
-			var pt1 = new Vector2(rectangle.Left, rectangle.Top);
-			var pt2 = new Vector2(rectangle.Right, rectangle.Top);
-			var pt3 = new Vector2(rectangle.Right, rectangle.Bottom);
-			var pt4 = new Vector2(rectangle.Left, rectangle.Bottom);
-
-			DrawLine(sprite, pt1, pt2, color);
-			DrawLine(sprite, pt2, pt3, color);
-			DrawLine(sprite, pt3, pt4, color);
-			DrawLine(sprite, pt4, pt1, color);
-		}
-
-		public void FillRectangle(SpriteBatch sprite, Rectangle rectangle, Color color) {
-			sprite.Draw(pixel, rectangle, color);
-		}
-
-		public void DrawDot(SpriteBatch sprite, int x, int y, Color color, int dotSize) {
-			var dotW = UserSettings.DotWidth * dotSize;
-			FillRectangle(sprite, new Rectangle(x - dotW, y - dotW, dotW * 2, dotW * 2), color);
-		}
-
-		public void DrawString(SpriteBatch sprite, string str, int x, int y) {
-			fontEngine.DrawString(sprite, new System.Drawing.Point(x, y), Color.Black, str, 1000);
-		}
-
-		public void RenderFrame() {
-			if (needsReset) {
-				needsReset = false;
-
-				Dispatcher.Invoke(delegate { AdjustScrollBars(); });
-				ResetDevice();
-			}
-
-			DxDevice.Clear(ClearOptions.Target, UserSettings.altBackground ? UserSettings.altBackgroundColor : Color.White, 1.0f, 0);
-#if UseXNAZorder
-            sprite.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
-#else
-			sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null,
-				Matrix.CreateScale((float) _scale, (float) _scale, 1f));
-#endif
-
-			if (selectedBoard != null) // No map selected to draw on
-			{
-				lock (this) {
-					if (selectedBoard != null) { // check again
-
-						selectedBoard.RenderBoard(sprite);
-						if (selectedBoard.MapSize.X < _CurrentDXWindowSize.Width) {
-							DrawLine(sprite, new Vector2(MapSize.X, 0),
-								new Vector2(MapSize.X, _CurrentDXWindowSize.Height), Color.Black);
-						}
-
-						if (selectedBoard.MapSize.Y < _CurrentDXWindowSize.Height) {
-							DrawLine(sprite, new Vector2(0, MapSize.Y),
-								new Vector2(_CurrentDXWindowSize.Width, MapSize.Y), Color.Black);
-						}
-					}
-				}
-			}
-#if FPS_TEST
-            fontEngine.DrawString(sprite, new System.Drawing.Point(), Color.Black, fpsCounter.Frames.ToString(), 1000);
-#endif
-			sprite.End();
-			try {
-				DxDevice.Present();
-			} catch (DeviceLostException) {
-			} catch (DeviceNotResetException) {
-				needsReset = true;
-			}
-		}
-
 		public bool IsItemInRange(int x, int y, int w, int h, int xshift, int yshift) {
-			return x + xshift + w > 0 && y + yshift + h > 0 && x + xshift < _CurrentDXWindowSize.Width / _scale &&
-			       y + yshift < _CurrentDXWindowSize.Height / _scale;
+			return x + xshift + w > 0 && y + yshift + h > 0 && x + xshift < Device.ActualWidth / _scale &&
+			       y + yshift < Device.ActualHeight / _scale;
 		}
 
 		#endregion
 
 		#region Properties
 
-		public bool DeviceReady { get; set; }
-
-		public FontEngine FontEngine => fontEngine;
-
 		public double MaxHScroll => hScrollBar.Maximum;
 
 		public double MaxVScroll => vScrollBar.Maximum;
 
-		/// <summary>
-		/// Gets the graphic device for rendering on the multiboard
-		/// </summary>
-		public GraphicsDevice GraphicsDevice => DxDevice;
-
 		public List<Board> Boards => boards;
 
-		public Board SelectedBoard {
+		public Board? SelectedBoard {
 			get => selectedBoard;
 			set {
 				lock (this) {
@@ -393,7 +212,10 @@ namespace HaCreator.MapEditor {
 		#region Human I\O Handling
 
 		private BoardItem GetHighestBoardItem(List<BoardItem> items) {
-			if (items.Count < 1) return null;
+			if (items.Count < 1) {
+				return null;
+			}
+
 			var highestZ = -1;
 			BoardItem highestItem = null;
 			int zSum;
@@ -436,7 +258,10 @@ namespace HaCreator.MapEditor {
 			if (list.ListType == ItemTypes.None) {
 				for (var i = 0; i < list.Count; i++) {
 					var item = (BoardItem) list[i];
-					if ((selectedBoard.EditedTypes & item.Type) != item.Type) continue;
+					if ((selectedBoard.EditedTypes & item.Type) != item.Type) {
+						continue;
+					}
+
 					if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom)
 					    && !(item is Mouse)
 					    && item.CheckIfLayerSelected(sel)
@@ -564,7 +389,7 @@ namespace HaCreator.MapEditor {
 		public new event MouseDoubleClickDelegate MouseDoubleClick; //"new" is to make VS shut up with it's warnings
 
 		public delegate void ShortcutKeyPressedDelegate(Board selectedBoard, bool ctrl, bool shift, bool alt,
-			Keys key);
+			Key key);
 
 		public event ShortcutKeyPressedDelegate ShortcutKeyPressed;
 
@@ -582,13 +407,13 @@ namespace HaCreator.MapEditor {
 		public event HaRibbon.EmptyEvent CloseTabRequested;
 		public event EventHandler<bool> SwitchTabRequested;
 		public event HaRibbon.EmptyEvent BackupCheck;
-
+		
 		/// <summary>
 		/// Mouse click
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseClick(object sender, MouseEventArgs e) {
+		public void Device_MouseClick(object sender, MouseEventArgs e) {
 			// We only handle right click here because left click is handled more thoroughly by up-down handlers
 			var x = (int) (e.X / _scale);
 			var y = (int) (e.Y / _scale);
@@ -612,7 +437,7 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseDoubleClick(object sender, MouseEventArgs e) {
+		public void Device_MouseDoubleClick(object sender, MouseEventArgs e) {
 			var x = (int) (e.X / _scale);
 			var y = (int) (e.Y / _scale);
 			if (e.Button == MouseButtons.Left && MouseDoubleClick != null) {
@@ -625,19 +450,39 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
+		public void Device_OnMouseDoubleClick(object sender, System.Windows.Input.MouseEventArgs e) {
+			var position = e.GetPosition(Device as IInputElement);
+			var x = (int) (position.X / _scale);
+			var y = (int) (position.Y / _scale);
+			if (e.LeftButton == MouseButtonState.Released && MouseDoubleClick != null) {
+				var realPosition = new Point((int) position.X, (int) position.Y);
+				lock (this) {
+					MouseDoubleClick(selectedBoard, GetObjectUnderPoint(new Point(x, y)), realPosition,
+						new Point(PhysicalToVirtual(x, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
+							PhysicalToVirtual(y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Mouse wheel
 		/// Wheelup = positive, Wheeldown = negative
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseWheel(object sender, MouseEventArgs e) {
-			var rotationDelta = e.Delta;
+		public void Device_MouseWheel(object sender, MouseEventArgs e) {
+			MouseWheel(e.Delta);
+		}
 
+		public void Device_OnMouseWheel(object sender, MouseWheelEventArgs e) {
+			MouseWheel(e.Delta);
+		}
+
+		private void MouseWheel(int rotationDelta) {
 			if (Keyboard.Modifiers == ModifierKeys.Control) {
-				if (e.Delta < 0) {
+				if (rotationDelta < 0) {
 					_scale -= 0.1;
-				} else if (e.Delta > 0) {
+				} else if (rotationDelta > 0) {
 					_scale += 0.1;
 				}
 
@@ -649,13 +494,13 @@ namespace HaCreator.MapEditor {
 				}
 			}
 		}
-
+		
 		/// <summary>
 		/// Mouse down
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseDown(object sender, MouseEventArgs e) {
+		public void Device_MouseDown(object sender, MouseEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
@@ -667,7 +512,7 @@ namespace HaCreator.MapEditor {
 			// We will move it to its correct position by invoking the move event handler manually.
 			if (selectedBoard.Mouse.X != x || selectedBoard.Mouse.Y != y) {
 				// No need to lock because MouseMove locks anyway
-				DxContainer_MouseMove(sender, e);
+				Device_MouseMove(sender, e);
 			}
 
 			selectedBoard.Mouse.IsDown = true;
@@ -687,12 +532,46 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
+		public void Device_OnMouseDown(object sender, MouseButtonEventArgs e) {
+			if (selectedBoard == null) {
+				return;
+			}
+
+			var position = e.GetPosition(Device as IInputElement);
+
+			var x = (int) (position.X / _scale);
+			var y = (int) (position.Y / _scale);
+
+			// If the mouse has not been moved while we were in focus (e.g. when clicking on the editor while another window focused), this event will be sent without a mousemove event preceding it.
+			// We will move it to its correct position by invoking the move event handler manually.
+			if (selectedBoard.Mouse.X != x || selectedBoard.Mouse.Y != y) {
+				// No need to lock because MouseMove locks anyway
+				Device_OnMouseMove(sender, e);
+			}
+
+			selectedBoard.Mouse.IsDown = true;
+			if (e.ChangedButton == MouseButton.Middle) {
+				selectedBoard.Mouse.CameraPanning = true;
+				selectedBoard.Mouse.CameraPanningStart = new Point((int) (position.X + selectedBoard.hScroll), (int) (position.Y + selectedBoard.vScroll));
+			} else if (e.ChangedButton == MouseButton.Left && LeftMouseDown != null) {
+				var realPosition = new Point((int) position.X, (int) position.Y);
+				lock (this) {
+					var objsUnderMouse = GetObjectsUnderPoint(new Point(x, y), out var selectedItemHigher);
+					LeftMouseDown(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem,
+						realPosition,
+						new Point(PhysicalToVirtual(x, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
+							PhysicalToVirtual(y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)),
+						selectedItemHigher);
+				}
+			}
+		}
+
 		/// <summary>
 		/// Mouse up
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseUp(object sender, MouseEventArgs e) {
+		public void Device_MouseUp(object sender, MouseEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
@@ -715,12 +594,52 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		/// <summary>
-		/// Key down
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		public void DxContainer_KeyDown(object sender, KeyEventArgs e) {
+		public void Device_OnMouseUp(object sender, MouseButtonEventArgs e) {
+			if (selectedBoard == null) {
+				return;
+			}
+
+			if (e.ClickCount == 2) {
+				Device_OnMouseDoubleClick(sender, e);
+				return;
+			}
+
+			var position = e.GetPosition(Device as IInputElement);
+
+			var x = (int) (position.X / _scale);
+			var y = (int) (position.Y / _scale);
+
+			if (e.ChangedButton == MouseButton.Right && RightMouseClick != null) {
+				var realPosition = new Point((int) position.X, (int) position.Y);
+				lock (this) {
+					RightMouseClick(
+						selectedBoard,
+						GetObjectUnderPoint(new Point(x, y)),
+						realPosition,
+						new Point(
+							PhysicalToVirtual(x, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
+							PhysicalToVirtual(y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)),
+						selectedBoard.Mouse.State);
+				}
+			}
+
+			selectedBoard.Mouse.IsDown = false;
+			if (e.ChangedButton == MouseButton.Middle) {
+				selectedBoard.Mouse.CameraPanning = false;
+			} else if (e.ChangedButton == MouseButton.Left && LeftMouseUp != null) {
+				var realPosition = new Point((int) position.X, (int) position.Y);
+				lock (this) {
+					var objsUnderMouse = GetObjectsUnderPoint(new Point(x, y), out var selectedItemHigher);
+					LeftMouseUp(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem,
+						realPosition,
+						new Point(PhysicalToVirtual(x, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
+							PhysicalToVirtual(y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)),
+						selectedItemHigher);
+				}
+			}
+		}
+
+		public void Ribbon_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
@@ -748,7 +667,33 @@ namespace HaCreator.MapEditor {
 					}
 
 					lock (this) {
-						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, filteredKeys);
+						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, KeyInterop.KeyFromVirtualKey((int) filteredKeys));
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Key down
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public void Device_OnKeyDown(object sender, KeyEventArgs e) {
+			if (selectedBoard == null) {
+				return;
+			}
+
+			lock (this) {
+				if (ShortcutKeyPressed != null) {
+					var ctrl = (Keyboard.Modifiers & ModifierKeys.Control) ==
+					           ModifierKeys.Control;
+					var alt = (Keyboard.Modifiers & ModifierKeys.Alt) ==
+					          ModifierKeys.Alt;
+					var shift = (Keyboard.Modifiers & ModifierKeys.Shift) ==
+					            ModifierKeys.Shift;
+
+					lock (this) {
+						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, e.Key);
 					}
 				}
 			}
@@ -759,13 +704,27 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_MouseMove(object sender, MouseEventArgs e) {
+		public void Device_MouseMove(object sender, MouseEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
 
-			var x = (int) (e.X / _scale);
-			var y = (int) (e.Y / _scale);
+			MouseMove(e.X, e.Y);
+		}
+
+		public void Device_OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
+			if (selectedBoard == null) {
+				return;
+			}
+
+			var position = e.GetPosition(Device as IInputElement);
+
+			MouseMove(position.X, position.Y);
+		}
+
+		private void MouseMove(double posX, double posY) {
+			var x = (int) (posX / _scale);
+			var y = (int) (posY / _scale);
 			lock (this) {
 				if (VirtualToPhysical(selectedBoard.Mouse.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0) !=
 				    x
@@ -779,7 +738,7 @@ namespace HaCreator.MapEditor {
 					selectedBoard.Mouse.Move(newPos.X, newPos.Y);
 
 					if (MouseMoved != null) {
-						MouseMoved.Invoke(selectedBoard, oldPos, newPos, new Point(e.X, e.Y));
+						MouseMoved.Invoke(selectedBoard, oldPos, newPos, new Point((int) posX, (int) posY));
 					}
 				}
 			}
@@ -790,7 +749,7 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_DragEnter(object sender, DragEventArgs e) {
+		public void Device_DragEnter(object sender, DragEventArgs e) {
 			lock (this) {
 				if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
 					e.Effect = DragDropEffects.Copy;
@@ -800,12 +759,22 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
+		public void Device_OnDragEnter(object sender, System.Windows.DragEventArgs e) {
+			lock (this) {
+				if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+					e.Effects = System.Windows.DragDropEffects.Copy;
+				} else {
+					e.Effects = System.Windows.DragDropEffects.None;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Drag drop
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void DxContainer_DragDrop(object sender, DragEventArgs e) {
+		public void Device_DragDrop(object sender, DragEventArgs e) {
 			lock (this) {
 				if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
@@ -815,24 +784,46 @@ namespace HaCreator.MapEditor {
 
 				var data = (string[]) e.Data.GetData(DataFormats.FileDrop);
 
-				var x = (int) (e.X / _scale);
-				var y = (int) (e.Y / _scale);
-				// be warned when run under visual studio. it inherits VS's scaling and VS's window location
-				var p = PointToScreen(new System.Windows.Point(x, y));
-				foreach (var file in data) {
-					Bitmap bmp;
-					try {
-						bmp = (Bitmap) Image.FromFile(file);
-					} catch {
-						continue;
-					}
+				DragDrop(e.X, e.Y, data);
+			}
+		}
 
-					if (ImageDropped != null) {
-						ImageDropped.Invoke(selectedBoard, bmp, Path.GetFileNameWithoutExtension(file),
-							new Point(
-								PhysicalToVirtual((int) p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
-								PhysicalToVirtual((int) p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
-					}
+		public void Device_OnDrop(object sender, System.Windows.DragEventArgs e) {
+			lock (this) {
+				if (!e.Data.GetDataPresent(DataFormats.FileDrop)) {
+					return;
+				}
+
+				if (!AssertLayerSelected()) {
+					return;
+				}
+
+				var data = (string[]) e.Data.GetData(DataFormats.FileDrop);
+
+				var position = e.GetPosition(Device as IInputElement);
+
+				DragDrop(position.X, position.Y, data);
+			}
+		}
+
+		private void DragDrop(double posX, double posY, string[] data) {
+			var x = (int) (posX / _scale);
+			var y = (int) (posY / _scale);
+			// be warned when run under visual studio. it inherits VS's scaling and VS's window location
+			var p = PointToScreen(new System.Windows.Point(x, y));
+			foreach (var file in data) {
+				Bitmap bmp;
+				try {
+					bmp = (Bitmap) Image.FromFile(file);
+				} catch {
+					continue;
+				}
+
+				if (ImageDropped != null) {
+					ImageDropped.Invoke(selectedBoard, bmp, Path.GetFileNameWithoutExtension(file),
+						new Point(
+							PhysicalToVirtual((int) p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0),
+							PhysicalToVirtual((int) p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
 				}
 			}
 		}
@@ -848,10 +839,6 @@ namespace HaCreator.MapEditor {
 				UIElement sender) // Were not overriding OnMouseWheel anymore because it's better to override it in mainform
 		{
 			lock (this) {
-				if (!DeviceReady) {
-					return false;
-				}
-
 				var newMousePoint = e.MouseDevice.GetPosition(sender);
 
 				var oldvalue = vScrollBar.Value;
@@ -877,9 +864,9 @@ namespace HaCreator.MapEditor {
 
 		public void AdjustScrollBars() {
 			lock (this) {
-				if (MapSize.X > _CurrentDXWindowSize.Width) {
+				if (MapSize.X > ActualWidth) {
 					hScrollBar.IsEnabled = true;
-					hScrollBar.Maximum = MapSize.X - _CurrentDXWindowSize.Width;
+					hScrollBar.Maximum = MapSize.X - ActualWidth;
 					hScrollBar.Minimum = 0;
 					if (hScrollBar.Maximum < selectedBoard.hScroll) {
 						hScrollBar.Value = hScrollBar.Maximum - 1;
@@ -893,9 +880,9 @@ namespace HaCreator.MapEditor {
 					hScrollBar.Maximum = 0;
 				}
 
-				if (MapSize.Y > _CurrentDXWindowSize.Height) {
+				if (MapSize.Y > ActualHeight) {
 					vScrollBar.IsEnabled = true;
-					vScrollBar.Maximum = MapSize.Y - _CurrentDXWindowSize.Height;
+					vScrollBar.Maximum = MapSize.Y - ActualHeight;
 					vScrollBar.Minimum = 0;
 					if (vScrollBar.Maximum < selectedBoard.vScroll) {
 						vScrollBar.Value = vScrollBar.Maximum - 1;
@@ -909,16 +896,6 @@ namespace HaCreator.MapEditor {
 					vScrollBar.Maximum = 0;
 				}
 			}
-		}
-
-
-		private void ResetDevice() {
-			// Note that this function has to be thread safe - it is called from the renderer thread
-			/*if (form.WindowState == FormWindowState.Minimized)
-			    return;*/
-			pParams.BackBufferWidth = _CurrentDXWindowSize.Width;
-			pParams.BackBufferHeight = _CurrentDXWindowSize.Height;
-			DxDevice.Reset(pParams);
 		}
 
 		/// <summary>
@@ -1029,39 +1006,57 @@ namespace HaCreator.MapEditor {
 		public event EventHandler<bool> MinimapStateChanged;
 
 		public void OnSelectedItemChanged(BoardItem selectedItem) {
-			if (SelectedItemChanged != null) SelectedItemChanged.Invoke(selectedItem);
+			if (SelectedItemChanged != null) {
+				SelectedItemChanged.Invoke(selectedItem);
+			}
 		}
 
 		public void InvokeReturnToSelectionState() {
-			if (ReturnToSelectionState != null) ReturnToSelectionState.Invoke();
+			if (ReturnToSelectionState != null) {
+				ReturnToSelectionState.Invoke();
+			}
 		}
 
 		public void SendToBackClicked(BoardItem item) {
-			if (OnSendToBackClicked != null) OnSendToBackClicked.Invoke(item);
+			if (OnSendToBackClicked != null) {
+				OnSendToBackClicked.Invoke(item);
+			}
 		}
 
 		public void BringToFrontClicked(BoardItem item) {
-			if (OnBringToFrontClicked != null) OnBringToFrontClicked.Invoke(item);
+			if (OnBringToFrontClicked != null) {
+				OnBringToFrontClicked.Invoke(item);
+			}
 		}
 
 		public void EditInstanceClicked(BoardItem item) {
-			if (OnEditInstanceClicked != null) OnEditInstanceClicked.Invoke(item);
+			if (OnEditInstanceClicked != null) {
+				OnEditInstanceClicked.Invoke(item);
+			}
 		}
 
 		public void EditBaseClicked(BoardItem item) {
-			if (OnEditBaseClicked != null) OnEditBaseClicked.Invoke(item);
+			if (OnEditBaseClicked != null) {
+				OnEditBaseClicked.Invoke(item);
+			}
 		}
 
 		public void LayerTSChanged(Layer layer) {
-			if (OnLayerTSChanged != null) OnLayerTSChanged.Invoke(layer);
+			if (OnLayerTSChanged != null) {
+				OnLayerTSChanged.Invoke(layer);
+			}
 		}
 
 		public void UndoListChanged() {
-			if (OnUndoListChanged != null) OnUndoListChanged.Invoke();
+			if (OnUndoListChanged != null) {
+				OnUndoListChanged.Invoke();
+			}
 		}
 
 		public void RedoListChanged() {
-			if (OnRedoListChanged != null) OnRedoListChanged.Invoke();
+			if (OnRedoListChanged != null) {
+				OnRedoListChanged.Invoke();
+			}
 		}
 
 		#endregion

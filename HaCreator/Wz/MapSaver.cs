@@ -140,7 +140,10 @@ namespace HaCreator.Wz {
 		}
 
 		private void SaveMiniMap() {
-			if (board.MiniMap == null || board.MinimapRectangle == null) return;
+			if (board.MiniMap == null || board.MinimapRectangle == null) {
+				return;
+			}
+
 			var miniMap = new WzSubProperty();
 			var canvas = new WzCanvasProperty {
 				PngProperty = new WzPngProperty()
@@ -163,7 +166,9 @@ namespace HaCreator.Wz {
 
 				// Info
 				var l = board.Layers[layer];
-				if (l.tS != null) infoProp["tS"] = InfoTool.SetString(l.tS);
+				if (l.tS != null) {
+					infoProp["tS"] = InfoTool.SetString(l.tS);
+				}
 
 				layerProp["info"] = infoProp;
 
@@ -198,8 +203,9 @@ namespace HaCreator.Wz {
 						obj["tags"] = InfoTool.SetOptionalString(objInst.tags, Defaults.Object.Tags);
 						if (objInst.QuestInfo != null) {
 							var questParent = new WzSubProperty();
-							foreach (var objQuest in objInst.QuestInfo)
+							foreach (var objQuest in objInst.QuestInfo) {
 								questParent[objQuest.questId.ToString()] = InfoTool.SetInt((int) objQuest.state);
+							}
 
 							obj["quest"] = questParent;
 						}
@@ -258,7 +264,9 @@ namespace HaCreator.Wz {
 		}
 
 		public void SaveChairs() {
-			if (board.BoardItems.Chairs.Count == 0) return;
+			if (board.BoardItems.Chairs.Count == 0) {
+				return;
+			}
 
 			var chairParent = new WzSubProperty();
 			for (var i = 0; i < board.BoardItems.Chairs.Count; i++) {
@@ -320,7 +328,9 @@ namespace HaCreator.Wz {
 		}
 
 		public void SaveTooltips() {
-			if (board.BoardItems.ToolTips.Count == 0) return;
+			if (board.BoardItems.ToolTips.Count == 0) {
+				return;
+			}
 
 			var retainTooltipStrings = true;
 			var tooltipParent = new WzSubProperty();
@@ -376,7 +386,7 @@ namespace HaCreator.Wz {
 				if (retainTooltipStrings) {
 					// This prop must exist if we are retaining, otherwise the map would not load
 					var strTooltipProp = (WzSubProperty) strTooltipParent[tooltipPropStr];
-					
+
 					var titleProp = (WzStringProperty) strTooltipProp["Title"];
 					if (titleProp == null) {
 						strTooltipProp["Title"] = titleProp = new WzStringProperty("Title", ttInst.Title);
@@ -452,7 +462,9 @@ namespace HaCreator.Wz {
 		private void SavePlatform(int layer, int zM, WzSubProperty prop) {
 			foreach (var line in board.BoardItems.FootholdLines) {
 				// Save all footholds in the platform (same layer and zM)
-				if (line.LayerNumber != layer || line.PlatformNumber != zM) continue;
+				if (line.LayerNumber != layer || line.PlatformNumber != zM) {
+					continue;
+				}
 
 				var anchor1 = line.FirstDot;
 				var anchor2 = line.SecondDot;
@@ -482,13 +494,17 @@ namespace HaCreator.Wz {
 			board.BoardItems.FootholdLines.Sort(FootholdLine.FHSorter);
 
 			var fhIndex = 1;
-			foreach (var line in board.BoardItems.FootholdLines) line.num = fhIndex++;
+			foreach (var line in board.BoardItems.FootholdLines) {
+				line.num = fhIndex++;
+			}
 
 			for (var layer = 0; layer <= 7; layer++) {
 				var fhLayerProp = new WzSubProperty();
 				foreach (var fhInst in board.BoardItems.FootholdLines) {
 					// Search only footholds in our layer, that weren't already saved
-					if (fhInst.LayerNumber != layer || fhInst.saved) continue;
+					if (fhInst.LayerNumber != layer || fhInst.saved) {
+						continue;
+					}
 
 					var zM = fhInst.PlatformNumber;
 					var fhPlatProp = new WzSubProperty();
@@ -496,7 +512,9 @@ namespace HaCreator.Wz {
 					fhLayerProp[zM.ToString()] = fhPlatProp;
 				}
 
-				if (fhLayerProp.WzProperties.Count > 0) fhParent[layer.ToString()] = fhLayerProp;
+				if (fhLayerProp.WzProperties.Count > 0) {
+					fhParent[layer.ToString()] = fhLayerProp;
+				}
 			}
 
 			image["foothold"] = fhParent;
@@ -594,11 +612,17 @@ namespace HaCreator.Wz {
 				}
 			}
 
-			if (areaParent.WzProperties.Count > 0) image["area"] = areaParent;
+			if (areaParent.WzProperties.Count > 0) {
+				image["area"] = areaParent;
+			}
 
-			if (buffParent.WzProperties.Count > 0) image["BuffZone"] = buffParent;
+			if (buffParent.WzProperties.Count > 0) {
+				image["BuffZone"] = buffParent;
+			}
 
-			if (swimParent.WzProperties.Count > 0) image["swimArea"] = swimParent;
+			if (swimParent.WzProperties.Count > 0) {
+				image["swimArea"] = swimParent;
+			}
 		}
 
 		public void SaveMirrorFieldData() {
@@ -688,7 +712,9 @@ namespace HaCreator.Wz {
 				}
 			}
 
-			if (mirrorFieldDataParent.WzProperties.Count > 0) image["MirrorFieldData"] = mirrorFieldDataParent;
+			if (mirrorFieldDataParent.WzProperties.Count > 0) {
+				image["MirrorFieldData"] = mirrorFieldDataParent;
+			}
 		}
 
 		/// <summary>
@@ -730,15 +756,33 @@ namespace HaCreator.Wz {
 			var bestFoothold = -1;
 			var y1 = int.MaxValue;
 			foreach (var fh in board.BoardItems.FootholdLines) {
-				if (fh.IsWall) continue;
+				if (fh.IsWall) {
+					continue;
+				}
+
 				var x1 = fh.FirstDot.X;
 				var x2 = fh.SecondDot.X;
-				if (x1 >= x2) continue;
-				if (x1 > x) continue;
-				if (x2 < x) continue;
+				if (x1 >= x2) {
+					continue;
+				}
+
+				if (x1 > x) {
+					continue;
+				}
+
+				if (x2 < x) {
+					continue;
+				}
+
 				var y2 = fh.FirstDot.Y + (x - x1) * (fh.SecondDot.Y - fh.FirstDot.Y) / (x2 - x1);
-				if (y2 < y) continue;
-				if (y2 >= y1) continue;
+				if (y2 < y) {
+					continue;
+				}
+
+				if (y2 >= y1) {
+					continue;
+				}
+
 				y1 = y2;
 				bestFoothold = fh.num;
 			}
@@ -789,7 +833,9 @@ namespace HaCreator.Wz {
 				var a = board.BoardItems.FHAnchors[i];
 				var b = board.BoardItems.FHAnchors[i + 1];
 				if (a.X == b.X && a.Y == b.Y && a.LayerNumber == b.LayerNumber && (a.user || b.user)) {
-					if (a.user != b.user) a.user = false;
+					if (a.user != b.user) {
+						a.user = false;
+					}
 
 					FootholdAnchor.MergeAnchors(a, b); // Transfer lines from b to a
 					b.RemoveItem(null); // Remove b
@@ -801,7 +847,9 @@ namespace HaCreator.Wz {
 
 			// Organize edU tiles
 			foreach (var li in board.BoardItems.TileObjs) {
-				if (!(li is TileInstance)) continue;
+				if (!(li is TileInstance)) {
+					continue;
+				}
 
 				var tileInst = (TileInstance) li;
 				var tileInfo = (TileInfo) li.BaseInfo;
@@ -830,7 +878,9 @@ namespace HaCreator.Wz {
 					var contAnchor = FindOptimalContinuationAnchor(
 						(tileInst.BoundItemsList[1].Y + tileInst.BoundItemsList[nitems - 2].Y) / 2,
 						tileInst.BoundItemsList[1].X, tileInst.BoundItemsList[nitems - 2].X, tileInst.LayerNumber);
-					if (contAnchor == null) continue;
+					if (contAnchor == null) {
+						continue;
+					}
 
 					// The anchor is guaranteed to have exactly 1 line
 					var anchorLine = (FootholdLine) contAnchor.connectedLines[0];
@@ -846,19 +896,24 @@ namespace HaCreator.Wz {
 					     direction == Direction.Right ? i < nitems : i > 0;
 					     i += direction == Direction.Right ? 1 : -1) {
 						var anchor = (FootholdAnchor) tileInst.BoundItemsList[i];
-						if (direction == Direction.Right ? anchor.X >= contAnchor.X : anchor.X <= contAnchor.X) break;
+						if (direction == Direction.Right ? anchor.X >= contAnchor.X : anchor.X <= contAnchor.X) {
+							break;
+						}
 
 						remainingIndex = i;
 					}
 
-					if (remainingIndex == -1) continue;
+					if (remainingIndex == -1) {
+						continue;
+					}
 
 					remainingAnchor = (FootholdAnchor) tileInst.BoundItemsList[remainingIndex];
 					var deleteStart = direction == Direction.Right ? remainingIndex + 1 : 0;
 					var deleteEnd = direction == Direction.Right ? nitems : remainingIndex;
 
-					for (var i = deleteStart; i < deleteEnd; i++)
+					for (var i = deleteStart; i < deleteEnd; i++) {
 						((FootholdAnchor) tileInst.BoundItemsList[deleteStart]).RemoveItem(null);
+					}
 
 					board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor,
 						anchorLine.ForbidFallDown, anchorLine.CantThrough, anchorLine.Piece, anchorLine.Force));
@@ -867,11 +922,15 @@ namespace HaCreator.Wz {
 
 			// Remove all Tile-FH bindings since they have no meaning now
 			foreach (var li in board.BoardItems.TileObjs) {
-				if (!(li is TileInstance)) continue;
+				if (!(li is TileInstance)) {
+					continue;
+				}
 
 				var tileInst = (TileInstance) li;
 
-				while (tileInst.BoundItemsList.Count > 0) tileInst.ReleaseItem(tileInst.BoundItemsList[0]);
+				while (tileInst.BoundItemsList.Count > 0) {
+					tileInst.ReleaseItem(tileInst.BoundItemsList[0]);
+				}
 			}
 
 			board.UndoRedoMan.UndoList.Clear();
@@ -934,7 +993,9 @@ namespace HaCreator.Wz {
 			}
 
 			var oldId = board.MapInfo.id;
-			if (oldId == newId) return;
+			if (oldId == newId) {
+				return;
+			}
 
 			board.MapInfo.id = newId;
 			foreach (var portalInst in board.BoardItems.Portals) {

@@ -26,11 +26,14 @@ namespace HaCreator.GUI.EditorPanels {
 			hcsm.SetObjPanel(this);
 
 			var sortedObjSets = new List<string>();
-			foreach (var oS in Program.InfoManager.ObjectSets)
+			foreach (var oS in Program.InfoManager.ObjectSets) {
 				sortedObjSets.Add(oS.Key);
+			}
+
 			sortedObjSets.Sort();
-			foreach (var oS in sortedObjSets)
+			foreach (var oS in sortedObjSets) {
 				objSetListBox.Items.Add(oS);
+			}
 		}
 
 		private void objSetListBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -42,12 +45,18 @@ namespace HaCreator.GUI.EditorPanels {
 			objL1ListBox.Items.Clear();
 			objImagesContainer.Controls.Clear();
 			var oSImage = Program.InfoManager.ObjectSets[(string) objSetListBox.SelectedItem];
-			if (!oSImage.Parsed) oSImage.ParseImage();
+			if (!oSImage.Parsed) {
+				oSImage.ParseImage();
+			}
 
-			foreach (var l0Prop in oSImage.WzProperties) objL0ListBox.Items.Add(l0Prop.Name);
+			foreach (var l0Prop in oSImage.WzProperties) {
+				objL0ListBox.Items.Add(l0Prop.Name);
+			}
 
 			// select the first item automatically
-			if (objL0ListBox.Items.Count > 0) objL0ListBox.SelectedIndex = 0;
+			if (objL0ListBox.Items.Count > 0) {
+				objL0ListBox.SelectedIndex = 0;
+			}
 		}
 
 		private void objL0ListBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -59,15 +68,22 @@ namespace HaCreator.GUI.EditorPanels {
 			objImagesContainer.Controls.Clear();
 			var l0Prop =
 				Program.InfoManager.ObjectSets[(string) objSetListBox.SelectedItem][(string) objL0ListBox.SelectedItem];
-			foreach (var l1Prop in l0Prop.WzProperties) objL1ListBox.Items.Add(l1Prop.Name);
+			foreach (var l1Prop in l0Prop.WzProperties) {
+				objL1ListBox.Items.Add(l1Prop.Name);
+			}
 
 			// select the first item automatically
-			if (objL1ListBox.Items.Count > 0) objL1ListBox.SelectedIndex = 0;
+			if (objL1ListBox.Items.Count > 0) {
+				objL1ListBox.SelectedIndex = 0;
+			}
 		}
 
 		private void objL1ListBox_SelectedIndexChanged(object sender, EventArgs e) {
 			lock (hcsm.MultiBoard) {
-				if (objL1ListBox.SelectedItem == null) return;
+				if (objL1ListBox.SelectedItem == null) {
+					return;
+				}
+
 				objImagesContainer.Controls.Clear();
 				var l1Prop =
 					Program.InfoManager.ObjectSets[(string) objSetListBox.SelectedItem][
@@ -96,7 +112,9 @@ namespace HaCreator.GUI.EditorPanels {
 
 		private void objItem_Click(object sender, MouseEventArgs e) {
 			lock (hcsm.MultiBoard) {
-				if (!hcsm.MultiBoard.AssertLayerSelected()) return;
+				if (!hcsm.MultiBoard.AssertLayerSelected()) {
+					return;
+				}
 
 				hcsm.EnterEditMode(ItemTypes.Objects);
 				hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo) ((ImageViewer) sender).Tag);

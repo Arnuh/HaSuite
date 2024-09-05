@@ -6,7 +6,9 @@
 
 using System;
 using System.Collections.Generic;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -49,7 +51,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public void ConnectSecondDot(MapleDot secondDot) {
-			if (!beforeConnecting) return;
+			if (!beforeConnecting) {
+				return;
+			}
+
 			this.secondDot.connectedLines.Clear();
 			this.secondDot = secondDot;
 			this.secondDot.connectedLines.Add(this);
@@ -58,7 +63,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public virtual void OnPlaced(List<UndoRedoAction> undoPipe) {
 			lock (board.ParentControl) {
-				if (undoPipe != null) undoPipe.Add(UndoRedoManager.LineAdded(this, firstDot, secondDot));
+				if (undoPipe != null) {
+					undoPipe.Add(UndoRedoManager.LineAdded(this, firstDot, secondDot));
+				}
 			}
 		}
 
@@ -68,7 +75,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				secondDot.DisconnectLine(this);
 				if (this is FootholdLine) {
 					board.BoardItems.FootholdLines.Remove((FootholdLine) this);
-				} else if (this is RopeLine) board.BoardItems.RopeLines.Remove((RopeLine) this);
+				} else if (this is RopeLine) {
+					board.BoardItems.RopeLines.Remove((RopeLine) this);
+				}
 
 				if (!(secondDot is Mouse) && undoPipe != null) {
 					undoPipe.Add(UndoRedoManager.LineRemoved(this, firstDot, secondDot));
@@ -76,7 +85,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 				if (removeDots) {
 					firstDot.RemoveItem(undoPipe);
-					if (secondDot != null) secondDot.RemoveItem(undoPipe);
+					if (secondDot != null) {
+						secondDot.RemoveItem(undoPipe);
+					}
 				}
 			}
 		}
@@ -145,8 +156,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			return InactiveColor;
 		}
 
-		public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			board.ParentControl.DrawLine(sprite, new XNA.Vector2(firstDot.X + xShift, firstDot.Y + yShift),
+		public virtual void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
+			graphics.DrawLine(new XNA.Vector2(firstDot.X + xShift, firstDot.Y + yShift),
 				new XNA.Vector2(secondDot.X + xShift, secondDot.Y + yShift), color);
 		}
 

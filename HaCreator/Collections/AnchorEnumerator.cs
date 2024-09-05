@@ -13,8 +13,8 @@ namespace HaCreator.Collections {
 		private bool started;
 		private FootholdAnchor first;
 		private FootholdAnchor curr;
-		private readonly HashSet<FootholdAnchor> visited = new HashSet<FootholdAnchor>();
-		private readonly Stack<FootholdAnchor> toVisit = new Stack<FootholdAnchor>();
+		private readonly HashSet<FootholdAnchor> visited = new();
+		private readonly Stack<FootholdAnchor> toVisit = new();
 
 
 		public AnchorEnumerator(FootholdAnchor start) {
@@ -39,7 +39,9 @@ namespace HaCreator.Collections {
 			var anchors = new List<FootholdAnchor>();
 			foreach (FootholdLine line in curr.connectedLines) {
 				var anchor = line.GetOtherAnchor(curr);
-				if (!visited.Contains(anchor)) anchors.Add(anchor);
+				if (!visited.Contains(anchor)) {
+					anchors.Add(anchor);
+				}
 			}
 
 			if (anchors.Count == 0) {

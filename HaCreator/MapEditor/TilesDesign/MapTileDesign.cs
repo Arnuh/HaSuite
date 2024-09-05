@@ -29,6 +29,6 @@ namespace HaCreator.MapEditor.TilesDesign {
 	public abstract class MapTileDesign {
 		public string type;
 
-		public List<MapTileDesignPotential> potentials = new List<MapTileDesignPotential>();
+		public List<MapTileDesignPotential> potentials = new();
 	}
 }

@@ -11,19 +11,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Threading;
-using HaRepacker.Comparer;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Interaction;
 using HaRepacker.GUI.Panels;
@@ -91,7 +86,7 @@ namespace HaRepacker.GUI {
 					var security = new PipeSecurity();
 					var sid = new SecurityIdentifier(WellKnownSidType.WorldSid , null);
 					security.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.FullControl, AccessControlType.Allow));
-					Program.pipe = new NamedPipeServerStream(Program.pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, security);
+					Program.pipe = NamedPipeServerStreamAcl.Create(Program.pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, security);
 					Program.pipeThread = new Thread(PipeServer) {
 						IsBackground = true
 					};

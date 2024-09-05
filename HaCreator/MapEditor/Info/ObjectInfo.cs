@@ -67,7 +67,9 @@ namespace HaCreator.MapEditor.Info {
 
 		private static List<XNA.Point> ParsePropToOffsetList(WzImageProperty prop) {
 			var result = new List<XNA.Point>();
-			foreach (WzVectorProperty point in prop.WzProperties) result.Add(WzInfoTools.VectorToXNAPoint(point));
+			foreach (WzVectorProperty point in prop.WzProperties) {
+				result.Add(WzInfoTools.VectorToXNAPoint(point));
+			}
 
 			return result;
 		}
@@ -82,8 +84,9 @@ namespace HaCreator.MapEditor.Info {
 				result.Add(ParsePropToOffsetList((WzConvexProperty) prop));
 			} else if (prop is WzSubProperty) {
 				try {
-					foreach (WzConvexProperty offsetSet in prop.WzProperties)
+					foreach (WzConvexProperty offsetSet in prop.WzProperties) {
 						result.Add(ParsePropToOffsetList(offsetSet));
+					}
 				} catch (InvalidCastException) {
 				}
 			} else {
@@ -163,7 +166,10 @@ namespace HaCreator.MapEditor.Info {
 			string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets) {
 			var instance = new ObjectInstance(this, layer, board, x, y, z, zM, r, hide, reactor, flow, rx,
 				ry, cx, cy, name, tags, questInfo, flip);
-			if (parseOffsets) ParseOffsets(instance, board, x, y);
+			if (parseOffsets) {
+				ParseOffsets(instance, board, x, y);
+			}
+
 			return instance;
 		}
 

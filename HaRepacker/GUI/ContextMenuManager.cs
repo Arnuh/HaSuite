@@ -13,6 +13,7 @@ using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using MapleLib.WzLib;
 using ContextMenu = System.Windows.Controls.ContextMenu;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
 	public class ContextMenuManager {

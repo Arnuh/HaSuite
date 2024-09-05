@@ -31,12 +31,13 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace Spine {
 	// #region License
 	// /*
 	// Microsoft Public License (Ms-PL)
-	// MonoGame - Copyright Â© 2009 The MonoGame Team
+	// MonoGame - Copyright © 2009 The MonoGame Team
 	//
 	// All rights reserved.
 	//
@@ -81,15 +82,15 @@ namespace Spine {
 		private VertexPositionColorTexture[] vertexArray = { };
 		private short[] triangles = { };
 
-		public MeshBatcher() {
+		public MeshBatcher () {
 			items = new List<MeshItem>(256);
 			freeItems = new Queue<MeshItem>(256);
 			EnsureCapacity(256, 512);
 		}
 
 		/// <summary>Returns a pooled MeshItem.</summary>
-		public MeshItem NextItem(int vertexCount, int triangleCount) {
-			var item = freeItems.Count > 0 ? freeItems.Dequeue() : new MeshItem();
+		public MeshItem NextItem (int vertexCount, int triangleCount) {
+			MeshItem item = freeItems.Count > 0 ? freeItems.Dequeue() : new MeshItem();
 			if (item.vertices.Length < vertexCount) item.vertices = new VertexPositionColorTexture[vertexCount];
 			if (item.triangles.Length < triangleCount) item.triangles = new int[triangleCount];
 			item.vertexCount = vertexCount;
@@ -98,30 +99,29 @@ namespace Spine {
 			return item;
 		}
 
-		private void EnsureCapacity(int vertexCount, int triangleCount) {
+		private void EnsureCapacity (int vertexCount, int triangleCount) {
 			if (vertexArray.Length < vertexCount) vertexArray = new VertexPositionColorTexture[vertexCount];
 			if (triangles.Length < triangleCount) triangles = new short[triangleCount];
 		}
 
-		public void Draw(GraphicsDevice device) {
+		public void Draw (GraphicsDevice device) {
 			if (items.Count == 0) return;
 
-			var itemCount = items.Count;
+			int itemCount = items.Count;
 			int vertexCount = 0, triangleCount = 0;
-			for (var i = 0; i < itemCount; i++) {
-				var item = items[i];
+			for (int i = 0; i < itemCount; i++) {
+				MeshItem item = items[i];
 				vertexCount += item.vertexCount;
 				triangleCount += item.triangleCount;
 			}
-
 			EnsureCapacity(vertexCount, triangleCount);
 
 			vertexCount = 0;
 			triangleCount = 0;
 			Texture2D lastTexture = null;
-			for (var i = 0; i < itemCount; i++) {
-				var item = items[i];
-				var itemVertexCount = item.vertexCount;
+			for (int i = 0; i < itemCount; i++) {
+				MeshItem item = items[i];
+				int itemVertexCount = item.vertexCount;
 
 				if (item.texture != lastTexture || vertexCount + itemVertexCount > short.MaxValue) {
 					FlushVertexArray(device, vertexCount, triangleCount);
@@ -131,10 +131,10 @@ namespace Spine {
 					device.Textures[0] = lastTexture;
 				}
 
-				var itemTriangles = item.triangles;
-				var itemTriangleCount = item.triangleCount;
+				int[] itemTriangles = item.triangles;
+				int itemTriangleCount = item.triangleCount;
 				for (int ii = 0, t = triangleCount; ii < itemTriangleCount; ii++, t++)
-					triangles[t] = (short) (itemTriangles[ii] + vertexCount);
+					triangles[t] = (short)(itemTriangles[ii] + vertexCount);
 				triangleCount += itemTriangleCount;
 
 				Array.Copy(item.vertices, 0, vertexArray, vertexCount, itemVertexCount);
@@ -143,12 +143,11 @@ namespace Spine {
 				item.texture = null;
 				freeItems.Enqueue(item);
 			}
-
 			FlushVertexArray(device, vertexCount, triangleCount);
 			items.Clear();
 		}
 
-		private void FlushVertexArray(GraphicsDevice device, int vertexCount, int triangleCount) {
+		private void FlushVertexArray (GraphicsDevice device, int vertexCount, int triangleCount) {
 			if (vertexCount == 0) return;
 			device.DrawUserIndexedPrimitives(
 				PrimitiveType.TriangleList,

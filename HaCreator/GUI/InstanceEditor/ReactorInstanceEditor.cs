@@ -11,6 +11,7 @@ using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class ReactorInstanceEditor : EditorBase {

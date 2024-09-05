@@ -7,6 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HaCreator.CustomControls;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -58,17 +60,17 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override ItemTypes Type => ItemTypes.ToolTips;
 
-		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
-			base.Draw(sprite, dotColor, xShift, yShift);
+		public override void Draw(Renderer graphics, XNA.Color dotColor, int xShift, int yShift) {
+			base.Draw(graphics, dotColor, xShift, yShift);
 			if (title != null) {
-				Board.ParentControl.FontEngine.DrawString(sprite,
+				graphics.DrawString(
 					new Point(X + xShift + 2, Y + yShift + 2), XNA.Color.Black,
 					title, Width);
 			}
 
 			if (desc != null) {
-				var titleHeight = (int) Math.Ceiling(Board.ParentControl.FontEngine.MeasureString(title).Height);
-				Board.ParentControl.FontEngine.DrawString(sprite,
+				var titleHeight = (int) Math.Ceiling(Board.ParentControl.Device.FontEngine.MeasureString(title).Height);
+				graphics.DrawString(
 					new Point(X + xShift + 2, Y + yShift + 2 + titleHeight),
 					XNA.Color.Black, desc, Width);
 			}

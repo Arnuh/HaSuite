@@ -18,12 +18,17 @@ namespace HaCreator.GUI {
 			InitializeComponent();
 			targetListBox = target;
 			var sortedTileSets = new List<string>();
-			foreach (var tS in Program.InfoManager.TileSets)
+			foreach (var tS in Program.InfoManager.TileSets) {
 				sortedTileSets.Add(tS.Key);
+			}
+
 			sortedTileSets.Sort();
 			foreach (var tS in sortedTileSets) {
 				var tSImage = Program.InfoManager.TileSets[tS];
-				if (!tSImage.Parsed) tSImage.ParseImage();
+				if (!tSImage.Parsed) {
+					tSImage.ParseImage();
+				}
+
 				var enh0 = tSImage["enH0"];
 				if (enh0 == null) {
 					continue;
@@ -41,7 +46,10 @@ namespace HaCreator.GUI {
 		}
 
 		private void item_DoubleClick(object sender, MouseEventArgs e) {
-			if (selectedItem == null) return;
+			if (selectedItem == null) {
+				return;
+			}
+
 			targetListBox.SelectedItem = selectedItem.Name;
 			Close();
 		}

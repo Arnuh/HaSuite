@@ -27,7 +27,10 @@ namespace HaCreator.Collections {
 				do {
 					replaceList:
 					currListIndex++;
-					if (currListIndex == parent.AllItemLists.Length) return false;
+					if (currListIndex == parent.AllItemLists.Length) {
+						return false;
+					}
+
 					currList = parent.AllItemLists[currListIndex];
 					if (currList.IsItem != items) {
 						goto replaceList;

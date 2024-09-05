@@ -5,7 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.MonoGame;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -47,12 +49,12 @@ namespace HaCreator.MapEditor.Instance {
 			_vRange = vRange;
 		}
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
 				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
-			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
+			graphics.Draw(baseInfo.GetTexture(graphics), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
 				SpriteEffects.None, 1f);
-			base.Draw(sprite, color, xShift, yShift);
+			base.Draw(graphics, color, xShift, yShift);
 		}
 
 		public override MapleDrawableInfo BaseInfo => baseInfo;

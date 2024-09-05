@@ -11,6 +11,7 @@ using HaCreator.MapEditor.Info.Default;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class TooltipInstanceEditor : EditorBase {
@@ -22,7 +23,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			xInput.Value = item.X;
 			yInput.Value = item.Y;
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
-			
+
 			titleBox.Text = item.Title;
 
 			if (!item.Desc.Equals(Defaults.ToolTip.Desc)) {

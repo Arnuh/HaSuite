@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -31,6 +31,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+
 #if WINDOWS_STOREAPP
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -38,9 +40,9 @@ using Windows.Storage;
 
 namespace Spine {
 	public class Atlas {
-		private List<AtlasPage> pages = new List<AtlasPage>();
-		private List<AtlasRegion> regions = new List<AtlasRegion>();
-		private TextureLoader textureLoader;
+		List<AtlasPage> pages = new List<AtlasPage>();
+		List<AtlasRegion> regions = new List<AtlasRegion>();
+		TextureLoader textureLoader;
 
 #if WINDOWS_STOREAPP
 		private async Task ReadFile(string path, TextureLoader textureLoader) {
@@ -59,13 +61,14 @@ namespace Spine {
 			this.ReadFile(path, textureLoader).Wait();
 		}
 #else
-		public Atlas(string path, TextureLoader textureLoader) {
+		public Atlas (String path, TextureLoader textureLoader) {
+
 #if WINDOWS_PHONE
             Stream stream = Microsoft.Xna.Framework.TitleContainer.OpenStream(path);
             using (StreamReader reader = new StreamReader(stream))
             {
 #else
-			using (var reader = new StreamReader(path)) {
+            using (StreamReader reader = new StreamReader(path)) {
 #endif
 				try {
 					Load(reader, Path.GetDirectoryName(path), textureLoader);
@@ -76,99 +79,92 @@ namespace Spine {
 		}
 #endif
 
-		public Atlas(TextReader reader, string dir, TextureLoader textureLoader) {
+		public Atlas (TextReader reader, String dir, TextureLoader textureLoader) {
 			Load(reader, dir, textureLoader);
 		}
 
-		public Atlas(List<AtlasPage> pages, List<AtlasRegion> regions) {
+		public Atlas (List<AtlasPage> pages, List<AtlasRegion> regions) {
 			this.pages = pages;
 			this.regions = regions;
-			textureLoader = null;
+			this.textureLoader = null;
 		}
 
-		private void Load(TextReader reader, string imagesDir, TextureLoader textureLoader) {
+		private void Load (TextReader reader, String imagesDir, TextureLoader textureLoader) {
 			if (textureLoader == null) throw new ArgumentNullException("textureLoader cannot be null.");
 			this.textureLoader = textureLoader;
 
-			var tuple = new string[4];
+			String[] tuple = new String[4];
 			AtlasPage page = null;
 			while (true) {
-				var line = reader.ReadLine();
+				String line = reader.ReadLine();
 				if (line == null) break;
-				if (line.Trim().Length == 0) {
+				if (line.Trim().Length == 0)
 					page = null;
-				} else if (page == null) {
+				else if (page == null) {
 					page = new AtlasPage();
 					page.name = line;
 
-					if (readTuple(reader, tuple) == 2) {
-						// size is only optional for an atlas packed with an old TexturePacker.
+					if (readTuple(reader, tuple) == 2) { // size is only optional for an atlas packed with an old TexturePacker.
 						page.width = int.Parse(tuple[0]);
 						page.height = int.Parse(tuple[1]);
 						readTuple(reader, tuple);
 					}
-
-					page.format = (Format) Enum.Parse(typeof(Format), tuple[0], false);
+					page.format = (Format)Enum.Parse(typeof(Format), tuple[0], false);
 
 					readTuple(reader, tuple);
-					page.minFilter = (TextureFilter) Enum.Parse(typeof(TextureFilter), tuple[0], false);
-					page.magFilter = (TextureFilter) Enum.Parse(typeof(TextureFilter), tuple[1], false);
+					page.minFilter = (TextureFilter)Enum.Parse(typeof(TextureFilter), tuple[0], false);
+					page.magFilter = (TextureFilter)Enum.Parse(typeof(TextureFilter), tuple[1], false);
 
-					var direction = readValue(reader);
+					String direction = readValue(reader);
 					page.uWrap = TextureWrap.ClampToEdge;
 					page.vWrap = TextureWrap.ClampToEdge;
-					if (direction == "x") {
+					if (direction == "x")
 						page.uWrap = TextureWrap.Repeat;
-					} else if (direction == "y") {
+					else if (direction == "y")
 						page.vWrap = TextureWrap.Repeat;
-					} else if (direction == "xy") {
+					else if (direction == "xy")
 						page.uWrap = page.vWrap = TextureWrap.Repeat;
-					}
 
 					textureLoader.Load(page, Path.Combine(imagesDir, line));
 
 					pages.Add(page);
+
 				} else {
-					var region = new AtlasRegion();
+					AtlasRegion region = new AtlasRegion();
 					region.name = line;
 					region.page = page;
 
-					region.rotate = bool.Parse(readValue(reader));
+					region.rotate = Boolean.Parse(readValue(reader));
 
 					readTuple(reader, tuple);
-					var x = int.Parse(tuple[0]);
-					var y = int.Parse(tuple[1]);
+					int x = int.Parse(tuple[0]);
+					int y = int.Parse(tuple[1]);
 
 					readTuple(reader, tuple);
-					var width = int.Parse(tuple[0]);
-					var height = int.Parse(tuple[1]);
+					int width = int.Parse(tuple[0]);
+					int height = int.Parse(tuple[1]);
 
-					region.u = x / (float) page.width;
-					region.v = y / (float) page.height;
+					region.u = x / (float)page.width;
+					region.v = y / (float)page.height;
 					if (region.rotate) {
-						region.u2 = (x + height) / (float) page.width;
-						region.v2 = (y + width) / (float) page.height;
+						region.u2 = (x + height) / (float)page.width;
+						region.v2 = (y + width) / (float)page.height;
 					} else {
-						region.u2 = (x + width) / (float) page.width;
-						region.v2 = (y + height) / (float) page.height;
+						region.u2 = (x + width) / (float)page.width;
+						region.v2 = (y + height) / (float)page.height;
 					}
-
 					region.x = x;
 					region.y = y;
 					region.width = Math.Abs(width);
 					region.height = Math.Abs(height);
 
 					if (readTuple(reader, tuple) == 4) { // split is optional
-						region.splits = new[] {
-							int.Parse(tuple[0]), int.Parse(tuple[1]),
-							int.Parse(tuple[2]), int.Parse(tuple[3])
-						};
+						region.splits = new int[] {int.Parse(tuple[0]), int.Parse(tuple[1]),
+								int.Parse(tuple[2]), int.Parse(tuple[3])};
 
 						if (readTuple(reader, tuple) == 4) { // pad is optional, but only present with splits
-							region.pads = new[] {
-								int.Parse(tuple[0]), int.Parse(tuple[1]),
-								int.Parse(tuple[2]), int.Parse(tuple[3])
-							};
+							region.pads = new int[] {int.Parse(tuple[0]), int.Parse(tuple[1]),
+									int.Parse(tuple[2]), int.Parse(tuple[3])};
 
 							readTuple(reader, tuple);
 						}
@@ -188,33 +184,32 @@ namespace Spine {
 			}
 		}
 
-		private static string readValue(TextReader reader) {
-			var line = reader.ReadLine();
-			var colon = line.IndexOf(':');
+		static String readValue (TextReader reader) {
+			String line = reader.ReadLine();
+			int colon = line.IndexOf(':');
 			if (colon == -1) throw new Exception("Invalid line: " + line);
 			return line.Substring(colon + 1).Trim();
 		}
 
 		/// <summary>Returns the number of tuple values read (1, 2 or 4).</summary>
-		private static int readTuple(TextReader reader, string[] tuple) {
-			var line = reader.ReadLine();
-			var colon = line.IndexOf(':');
+		static int readTuple (TextReader reader, String[] tuple) {
+			String line = reader.ReadLine();
+			int colon = line.IndexOf(':');
 			if (colon == -1) throw new Exception("Invalid line: " + line);
 			int i = 0, lastMatch = colon + 1;
 			for (; i < 3; i++) {
-				var comma = line.IndexOf(',', lastMatch);
+				int comma = line.IndexOf(',', lastMatch);
 				if (comma == -1) break;
 				tuple[i] = line.Substring(lastMatch, comma - lastMatch).Trim();
 				lastMatch = comma + 1;
 			}
-
 			tuple[i] = line.Substring(lastMatch).Trim();
 			return i + 1;
 		}
 
-		public void FlipV() {
+		public void FlipV () {
 			for (int i = 0, n = regions.Count; i < n; i++) {
-				var region = regions[i];
+				AtlasRegion region = regions[i];
 				region.v = 1 - region.v;
 				region.v2 = 1 - region.v2;
 			}
@@ -223,17 +218,13 @@ namespace Spine {
 		/// <summary>Returns the first region found with the specified name. This method uses string comparison to find the region, so the result
 		/// should be cached rather than calling this method multiple times.</summary>
 		/// <returns>The region, or null.</returns>
-		public AtlasRegion FindRegion(string name) {
-			for (int i = 0, n = regions.Count; i < n; i++) {
-				if (regions[i].name == name) {
-					return regions[i];
-				}
-			}
-
+		public AtlasRegion FindRegion (String name) {
+			for (int i = 0, n = regions.Count; i < n; i++)
+				if (regions[i].name == name) return regions[i];
 			return null;
 		}
 
-		public void Dispose() {
+		public void Dispose () {
 			if (textureLoader == null) return;
 			for (int i = 0, n = pages.Count; i < n; i++)
 				textureLoader.Unload(pages[i].rendererObject);
@@ -267,19 +258,19 @@ namespace Spine {
 	}
 
 	public class AtlasPage {
-		public string name;
+		public String name;
 		public Format format;
 		public TextureFilter minFilter;
 		public TextureFilter magFilter;
 		public TextureWrap uWrap;
 		public TextureWrap vWrap;
-		public object rendererObject;
+		public Object rendererObject;
 		public int width, height;
 	}
 
 	public class AtlasRegion {
 		public AtlasPage page;
-		public string name;
+		public String name;
 		public int x, y, width, height;
 		public float u, v, u2, v2;
 		public float offsetX, offsetY;
@@ -291,7 +282,7 @@ namespace Spine {
 	}
 
 	public interface TextureLoader {
-		void Load(AtlasPage page, string path);
-		void Unload(object texture);
+		void Load (AtlasPage page, String path);
+		void Unload (Object texture);
 	}
 }

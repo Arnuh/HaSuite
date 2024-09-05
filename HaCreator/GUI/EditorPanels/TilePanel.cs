@@ -29,11 +29,14 @@ namespace HaCreator.GUI.EditorPanels {
 			hcsm.SetTilePanel(this);
 
 			var sortedTileSets = new List<string>();
-			foreach (var tS in Program.InfoManager.TileSets)
+			foreach (var tS in Program.InfoManager.TileSets) {
 				sortedTileSets.Add(tS.Key);
+			}
+
 			sortedTileSets.Sort();
-			foreach (var tS in sortedTileSets)
+			foreach (var tS in sortedTileSets) {
 				tileSetList.Items.Add(tS);
+			}
 		}
 
 		private void searchResultsBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -104,7 +107,9 @@ namespace HaCreator.GUI.EditorPanels {
 		private void tileItem_Click(object sender, MouseEventArgs e) {
 			lock (hcsm.MultiBoard) {
 				var item = (ImageViewer) sender;
-				if (!hcsm.MultiBoard.AssertLayerSelected()) return;
+				if (!hcsm.MultiBoard.AssertLayerSelected()) {
+					return;
+				}
 
 				var layer = hcsm.MultiBoard.SelectedBoard.SelectedLayer;
 				if (layer.tS != null) {

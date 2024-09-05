@@ -41,7 +41,9 @@ namespace HaCreator.MapEditor.Info {
 			var npcImage = WzInfoTools.GetNpcImage(image);
 			if (npcImage != null) {
 				Image = npcImage.GetLinkedWzCanvasBitmap();
-				if (Image.Width == 1 && Image.Height == 1) Image = Resources.placeholder;
+				if (Image.Width == 1 && Image.Height == 1) {
+					Image = Resources.placeholder;
+				}
 
 				Origin = WzInfoTools.PointFToSystemPoint(npcImage.GetCanvasOriginPosition());
 			} else {
@@ -86,14 +88,20 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
-			if (Image == null) ParseImage();
+			if (Image == null) {
+				ParseImage();
+			}
+
 			return new NpcInstance(this, board, x, y, UserSettings.Npcrx0Offset, UserSettings.Npcrx1Offset, 8, Defaults.Life.LimitedName, Defaults.Life.MobTime,
 				flip, Defaults.Life.Hide, Defaults.Life.Info, Defaults.Life.Team);
 		}
 
 		public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift,
 			string limitedname, int mobTime, bool flip, bool hide, int info, int team) {
-			if (Image == null) ParseImage();
+			if (Image == null) {
+				ParseImage();
+			}
+
 			return new NpcInstance(this, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide,
 				info, team);
 		}
@@ -136,8 +144,7 @@ namespace HaCreator.MapEditor.Info {
 
 			set => _LinkedWzImage = value;
 		}
-		
+
 		public string Link => link;
-		
 	}
 }

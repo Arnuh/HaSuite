@@ -1,10 +1,10 @@
 ﻿/******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -33,7 +33,7 @@ using System.Collections.Generic;
 
 namespace Spine {
 	public class IkConstraint {
-		private const float radDeg = 180 / (float) Math.PI;
+		private const float radDeg = 180 / (float)Math.PI;
 
 		internal IkConstraintData data;
 		internal List<Bone> bones = new List<Bone>();
@@ -41,26 +41,13 @@ namespace Spine {
 		internal int bendDirection;
 		internal float mix;
 
-		public IkConstraintData Data => data;
+		public IkConstraintData Data { get { return data; } }
+		public List<Bone> Bones { get { return bones; } }
+		public Bone Target { get { return target; } set { target = value; } }
+		public int BendDirection { get { return bendDirection; } set { bendDirection = value; } }
+		public float Mix { get { return mix; } set { mix = value; } }
 
-		public List<Bone> Bones => bones;
-
-		public Bone Target {
-			get => target;
-			set => target = value;
-		}
-
-		public int BendDirection {
-			get => bendDirection;
-			set => bendDirection = value;
-		}
-
-		public float Mix {
-			get => mix;
-			set => mix = value;
-		}
-
-		public IkConstraint(IkConstraintData data, Skeleton skeleton) {
+		public IkConstraint (IkConstraintData data, Skeleton skeleton) {
 			if (data == null) throw new ArgumentNullException("data cannot be null.");
 			if (skeleton == null) throw new ArgumentNullException("skeleton cannot be null.");
 			this.data = data;
@@ -68,35 +55,35 @@ namespace Spine {
 			bendDirection = data.bendDirection;
 
 			bones = new List<Bone>(data.bones.Count);
-			foreach (var boneData in data.bones)
+			foreach (BoneData boneData in data.bones)
 				bones.Add(skeleton.FindBone(boneData.name));
 			target = skeleton.FindBone(data.target.name);
 		}
 
-		public void apply() {
-			var target = this.target;
-			var bones = this.bones;
+		public void apply () {
+			Bone target = this.target;
+			List<Bone> bones = this.bones;
 			switch (bones.Count) {
-				case 1:
-					apply(bones[0], target.worldX, target.worldY, mix);
-					break;
-				case 2:
-					apply(bones[0], bones[1], target.worldX, target.worldY, bendDirection, mix);
-					break;
+			case 1:
+				apply(bones[0], target.worldX, target.worldY, mix);
+				break;
+			case 2:
+				apply(bones[0], bones[1], target.worldX, target.worldY, bendDirection, mix);
+				break;
 			}
 		}
 
-		public override string ToString() {
+		override public String ToString () {
 			return data.name;
 		}
 
 		/// <summary>Adjusts the bone rotation so the tip is as close to the target position as possible. The target is specified
 		/// in the world coordinate system.</summary>
-		public static void apply(Bone bone, float targetX, float targetY, float alpha) {
-			var parentRotation = !bone.data.inheritRotation || bone.parent == null ? 0 : bone.parent.worldRotation;
-			var rotation = bone.rotation;
-			var rotationIK = (float) Math.Atan2(targetY - bone.worldY, targetX - bone.worldX) * radDeg;
-			if (bone.worldFlipX != bone.worldFlipY != Bone.yDown) rotationIK = -rotationIK;
+		static public void apply (Bone bone, float targetX, float targetY, float alpha) {
+			float parentRotation = (!bone.data.inheritRotation || bone.parent == null) ? 0 : bone.parent.worldRotation;
+			float rotation = bone.rotation;
+			float rotationIK = (float)Math.Atan2(targetY - bone.worldY, targetX - bone.worldX) * radDeg;
+			if (bone.worldFlipX != (bone.worldFlipY != Bone.yDown)) rotationIK = -rotationIK;
 			rotationIK -= parentRotation;
 			bone.rotationIK = rotation + (rotationIK - rotation) * alpha;
 		}
@@ -104,17 +91,15 @@ namespace Spine {
 		/// <summary>Adjusts the parent and child bone rotations so the tip of the child is as close to the target position as
 		/// possible. The target is specified in the world coordinate system.</summary>
 		/// <param name="child">Any descendant bone of the parent.</param>
-		public static void apply(Bone parent, Bone child, float targetX, float targetY, int bendDirection,
-			float alpha) {
+		static public void apply (Bone parent, Bone child, float targetX, float targetY, int bendDirection, float alpha) {
 			float childRotation = child.rotation, parentRotation = parent.rotation;
 			if (alpha == 0) {
 				child.rotationIK = childRotation;
 				parent.rotationIK = parentRotation;
 				return;
 			}
-
 			float positionX, positionY;
-			var parentParent = parent.parent;
+			Bone parentParent = parent.parent;
 			if (parentParent != null) {
 				parentParent.worldToLocal(targetX, targetY, out positionX, out positionY);
 				targetX = (positionX - parent.x) * parentParent.worldScaleX;
@@ -123,7 +108,6 @@ namespace Spine {
 				targetX -= parent.x;
 				targetY -= parent.y;
 			}
-
 			if (child.parent == parent) {
 				positionX = child.x;
 				positionY = child.y;
@@ -131,48 +115,35 @@ namespace Spine {
 				child.parent.localToWorld(child.x, child.y, out positionX, out positionY);
 				parent.worldToLocal(positionX, positionY, out positionX, out positionY);
 			}
-
 			float childX = positionX * parent.worldScaleX, childY = positionY * parent.worldScaleY;
-			var offset = (float) Math.Atan2(childY, childX);
-			float len1 = (float) Math.Sqrt(childX * childX + childY * childY),
-				len2 = child.data.length * child.worldScaleX;
+			float offset = (float)Math.Atan2(childY, childX);
+			float len1 = (float)Math.Sqrt(childX * childX + childY * childY), len2 = child.data.length * child.worldScaleX;
 			// Based on code by Ryan Juckett with permission: Copyright (c) 2008-2009 Ryan Juckett, http://www.ryanjuckett.com/
-			var cosDenom = 2 * len1 * len2;
+			float cosDenom = 2 * len1 * len2;
 			if (cosDenom < 0.0001f) {
-				child.rotationIK = childRotation +
-				                   ((float) Math.Atan2(targetY, targetX) * radDeg - parentRotation - childRotation)
-				                   * alpha;
+				child.rotationIK = childRotation + ((float)Math.Atan2(targetY, targetX) * radDeg - parentRotation - childRotation)
+					* alpha;
 				return;
 			}
-
-			var cos = (targetX * targetX + targetY * targetY - len1 * len1 - len2 * len2) / cosDenom;
-			if (cos < -1) {
+			float cos = (targetX * targetX + targetY * targetY - len1 * len1 - len2 * len2) / cosDenom;
+			if (cos < -1)
 				cos = -1;
-			} else if (cos > 1) {
+			else if (cos > 1)
 				cos = 1;
-			}
-
-			var childAngle = (float) Math.Acos(cos) * bendDirection;
-			float adjacent = len1 + len2 * cos, opposite = len2 * (float) Math.Sin(childAngle);
-			var parentAngle = (float) Math.Atan2(targetY * adjacent - targetX * opposite,
-				targetX * adjacent + targetY * opposite);
-			var rotation = (parentAngle - offset) * radDeg - parentRotation;
-			if (rotation > 180) {
+			float childAngle = (float)Math.Acos(cos) * bendDirection;
+			float adjacent = len1 + len2 * cos, opposite = len2 * (float)Math.Sin(childAngle);
+			float parentAngle = (float)Math.Atan2(targetY * adjacent - targetX * opposite, targetX * adjacent + targetY * opposite);
+			float rotation = (parentAngle - offset) * radDeg - parentRotation;
+			if (rotation > 180)
 				rotation -= 360;
-			} else if (rotation < -180) //
-			{
+			else if (rotation < -180) //
 				rotation += 360;
-			}
-
 			parent.rotationIK = parentRotation + rotation * alpha;
 			rotation = (childAngle + offset) * radDeg - childRotation;
-			if (rotation > 180) {
+			if (rotation > 180)
 				rotation -= 360;
-			} else if (rotation < -180) //
-			{
+			else if (rotation < -180) //
 				rotation += 360;
-			}
-
 			child.rotationIK = childRotation + (rotation + parent.worldRotation - child.parent.worldRotation) * alpha;
 		}
 	}

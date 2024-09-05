@@ -325,7 +325,16 @@ namespace MapleLib.WzLib.WzProperties {
 				}
 
 				using (zlib) {
-					zlib.Read(decompressedBuffer, 0, decompressedBuffer.Length);
+					var totalRead = 0;
+					while (totalRead < decompressedBuffer.Length) {
+						var read = zlib.Read(decompressedBuffer.AsSpan(totalRead));
+						if (read == 0) {
+							break;
+						}
+
+						totalRead += read;
+					}
+
 					return decompressedBuffer;
 				}
 			}
@@ -592,7 +601,7 @@ namespace MapleLib.WzLib.WzProperties {
 			// Declare a pointer to the first element of the rawData array
 			// This allows us to directly access the memory of the rawData array
 			// without having to access it through the array indexer, which is slower
-			fixed (byte* pRawData = rawData) {
+			/*fixed (byte* pRawData = rawData) {
 				// Declare a pointer to the first element of the decoded array
 				fixed (byte* pDecoded = decoded) {
 					// Iterate over the elements of the rawData array using the pointer
@@ -608,6 +617,17 @@ namespace MapleLib.WzLib.WzProperties {
 						*(pDecoded + i * 2 + 1) = g;
 					}
 				}
+			}*/
+			for (var i = 0; i < uncompressedSize; i++) {
+				var byteAtPosition = rawData[i];
+
+				var low = byteAtPosition & 0x0F;
+				var b = (byte) (low | (low << 4));
+				decoded[i * 2] = b;
+
+				var high = byteAtPosition & 0xF0;
+				var g = (byte) (high | (high >> 4));
+				decoded[i * 2 + 1] = g;
 			}
 
 			// Copy the decoded data to the bitmap using a pointer

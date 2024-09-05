@@ -31,11 +31,13 @@ namespace HaCreator.MapEditor.Text {
 			//format.Alignment = StringAlignment.Near;
 			//format.LineAlignment = StringAlignment.Near;
 
-			for (var ch = (char) 0; ch < 0x100; ch++) characters[ch] = RasterizeCharacter(ch);
+			for (var ch = (char) 0; ch < 0x100; ch++) {
+				characters[ch] = RasterizeCharacter(ch);
+			}
 		}
 
 		private Brush brush = new SolidBrush(Color.White);
-		private StringFormat format = new StringFormat();
+		private StringFormat format = new();
 
 		private CharTexture RasterizeCharacter(char ch) {
 			var text = ch.ToString();

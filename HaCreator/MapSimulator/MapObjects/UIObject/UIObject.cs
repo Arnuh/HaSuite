@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using static HaCreator.MapSimulator.MapObjects.UIObject.UIObjectButtonEvent;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapSimulator.MapObjects.UIObject {
 	/// <summary>

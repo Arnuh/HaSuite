@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MapleLib.WzLib.WzProperties;
-using Spine;
+using spine_2._1._25_netcore;
 
 namespace MapleLib.WzLib.Spine {
 	public class WzSpineAtlasLoader {

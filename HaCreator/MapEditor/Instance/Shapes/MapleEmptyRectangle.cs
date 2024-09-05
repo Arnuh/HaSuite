@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections.Generic;
+using HaCreator.CustomControls;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -123,7 +125,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			}
 		}
 
-		public virtual void Draw(SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel) {
+		public virtual void Draw(Renderer graphics, int xShift, int yShift, SelectionInfo sel) {
 			var lineColor = ab.GetColor(sel);
 			int x, y;
 			if (a.X < b.X) {
@@ -138,10 +140,10 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				y = c.Y + yShift;
 			}
 
-			ab.Draw(sprite, lineColor, xShift, yShift);
-			bc.Draw(sprite, lineColor, xShift, yShift);
-			cd.Draw(sprite, lineColor, xShift, yShift);
-			da.Draw(sprite, lineColor, xShift, yShift);
+			ab.Draw(graphics, lineColor, xShift, yShift);
+			bc.Draw(graphics, lineColor, xShift, yShift);
+			cd.Draw(graphics, lineColor, xShift, yShift);
+			da.Draw(graphics, lineColor, xShift, yShift);
 		}
 
 		public ItemTypes Type => ItemTypes.Misc;

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Input;
+using MessageBox = System.Windows.MessageBox;
 
 namespace HaCreator.GUI {
 	/// <summary>
@@ -84,7 +85,9 @@ namespace HaCreator.GUI {
 		private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
 			var el = (UIElement) sender;
 
-			if (multiBoard.TriggerMouseWheel(e, el)) base.OnMouseWheel(e);
+			if (multiBoard.TriggerMouseWheel(e, el)) {
+				base.OnMouseWheel(e);
+			}
 		}
 
 		private void Hcsm_CloseRequested() {

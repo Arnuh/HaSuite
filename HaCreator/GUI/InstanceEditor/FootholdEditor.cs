@@ -32,7 +32,9 @@ namespace HaCreator.GUI.InstanceEditor {
 				forceEnable.CheckState = CheckState.Indeterminate;
 			} else {
 				forceEnable.Checked = force != 0;
-				if (forceEnable.Checked) forceInt.Value = (int) force;
+				if (forceEnable.Checked) {
+					forceInt.Value = (int) force;
+				}
 			}
 
 			indeterminate = false;
@@ -47,7 +49,9 @@ namespace HaCreator.GUI.InstanceEditor {
 				pieceEnable.CheckState = CheckState.Indeterminate;
 			} else {
 				pieceEnable.Checked = force != 0;
-				if (pieceEnable.Checked) pieceInt.Value = piece;
+				if (pieceEnable.Checked) {
+					pieceInt.Value = piece;
+				}
 			}
 
 			indeterminate = false;
@@ -88,27 +92,35 @@ namespace HaCreator.GUI.InstanceEditor {
 		}
 
 		protected override void okButton_Click(object sender, EventArgs e) {
-			if (footholds.Length == 0) return;
+			if (footholds.Length == 0) {
+				return;
+			}
 
 			lock (footholds[0].Board.ParentControl) {
 				if (forceEnable.CheckState != CheckState.Indeterminate) {
 					var force = forceEnable.Checked ? decimal.ToDouble(forceInt.Value) : 0.0;
-					foreach (var line in footholds) line.Force = force;
+					foreach (var line in footholds) {
+						line.Force = force;
+					}
 				}
 
 				if (pieceEnable.CheckState != CheckState.Indeterminate) {
 					var piece = pieceEnable.Checked ? (int) pieceInt.Value : 0;
-					foreach (var line in footholds) line.Piece = piece;
+					foreach (var line in footholds) {
+						line.Piece = piece;
+					}
 				}
 
 				if (cantThroughBox.CheckState != CheckState.Indeterminate) {
-					foreach (var line in footholds)
+					foreach (var line in footholds) {
 						line.CantThrough = cantThroughBox.Checked;
+					}
 				}
 
 				if (forbidFallDownBox.CheckState != CheckState.Indeterminate) {
-					foreach (var line in footholds)
+					foreach (var line in footholds) {
 						line.ForbidFallDown = forbidFallDownBox.Checked;
+					}
 				}
 			}
 

@@ -10,6 +10,7 @@ using HaCreator.MapEditor;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class RopeInstanceEditor : EditorBase {

@@ -6,7 +6,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.MonoGame;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -53,7 +55,10 @@ namespace HaCreator.MapEditor.Instance {
 		public bool Flip {
 			get => flip;
 			set {
-				if (flip == value) return;
+				if (flip == value) {
+					return;
+				}
+
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
 				if (flip) {
@@ -66,17 +71,17 @@ namespace HaCreator.MapEditor.Instance {
 
 		public int UnflippedX => flip ? BaseX + Width - 2 * Origin.X : BaseX;
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			if (sprite == null || baseInfo.GetTexture(sprite) == null) {
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
+			if (baseInfo.GetTexture(graphics) == null) {
 				return;
 			}
 
 			var destinationRectangle =
 				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
-			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
+			graphics.Sprite.Draw(baseInfo.GetTexture(graphics), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
 
-			base.Draw(sprite, color, xShift, yShift);
+			base.Draw(graphics, color, xShift, yShift);
 		}
 
 		public override MapleDrawableInfo BaseInfo => baseInfo;
@@ -164,7 +169,7 @@ namespace HaCreator.MapEditor.Instance {
 		public int CalculateBackgroundPosX() {
 			//double dpi = ScreenDPIUtil.GetScreenScaleFactor(); // dpi affected via window.. does not have to be calculated manually
 			double dpi = 1;
-			var width = (int) (Board.ParentControl.CurrentDXWindowSize.Width / 2 / dpi); // 400;
+			var width = (int) (Board.ParentControl.ActualWidth / 2 / dpi); // 400;
 
 			return rx * (Board.hScroll - Board.CenterPoint.X + width) / 100 + base.X /*- Origin.X*/ + width -
 				Board.CenterPoint.X + Board.hScroll;
@@ -173,7 +178,7 @@ namespace HaCreator.MapEditor.Instance {
 		public int CalculateBackgroundPosY() {
 			//double dpi = ScreenDPIUtil.GetScreenScaleFactor(); // dpi affected via window.. does not have to be calculated manually
 			double dpi = 1;
-			var height = (int) (Board.ParentControl.CurrentDXWindowSize.Height / 2 / dpi); // 300;
+			var height = (int) (Board.ParentControl.ActualHeight / 2 / dpi); // 300;
 
 			return ry * (Board.vScroll - Board.CenterPoint.Y + height) / 100 + base.Y /*- Origin.X*/ + height -
 				Board.CenterPoint.Y + Board.vScroll;
@@ -182,7 +187,7 @@ namespace HaCreator.MapEditor.Instance {
 		public int ReverseBackgroundPosX(int bgPos) {
 			//double dpi = ScreenDPIUtil.GetScreenScaleFactor(); // dpi affected via window.. does not have to be calculated manually
 			double dpi = 1;
-			var width = (int) (Board.ParentControl.CurrentDXWindowSize.Width / 2 / dpi); // 400;
+			var width = (int) (Board.ParentControl.ActualWidth / 2 / dpi); // 400;
 
 			return bgPos - Board.hScroll + Board.CenterPoint.X - width -
 			       rx * (Board.hScroll - Board.CenterPoint.X + width) / 100;
@@ -191,7 +196,7 @@ namespace HaCreator.MapEditor.Instance {
 		public int ReverseBackgroundPosY(int bgPos) {
 			//double dpi = ScreenDPIUtil.GetScreenScaleFactor(); // dpi affected via window.. does not have to be calculated manually
 			double dpi = 1;
-			var height = (int) (Board.ParentControl.CurrentDXWindowSize.Height / 2 / dpi); // 300;
+			var height = (int) (Board.ParentControl.ActualHeight / 2 / dpi); // 300;
 
 			return bgPos - Board.vScroll + Board.CenterPoint.Y - height -
 			       ry * (Board.vScroll - Board.CenterPoint.Y + height) / 100;
@@ -298,14 +303,18 @@ namespace HaCreator.MapEditor.Instance {
 			_spineAni = json.spineAni;
 			_spineRandomStart = json.spineRandomStart;
 
-			baseInfo = BackgroundInfo.Get(board.ParentControl.GraphicsDevice, json.bs, json.backgroundInfoType,
+			baseInfo = BackgroundInfo.Get(board.ParentControl.Device.GraphicsDevice, json.bs, json.backgroundInfoType,
 				json.no);
 		}
 
 		public override void PostDeserializationActions(bool? selected, XNA.Point? offset) {
-			if (selected.HasValue) Selected = selected.Value;
+			if (selected.HasValue) {
+				Selected = selected.Value;
+			}
 
-			if (offset.HasValue) Move(X + offset.Value.X, Y + offset.Value.Y);
+			if (offset.HasValue) {
+				Move(X + offset.Value.X, Y + offset.Value.Y);
+			}
 		}
 	}
 }

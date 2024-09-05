@@ -1,10 +1,10 @@
 ﻿/******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -28,8 +28,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace Spine {
 	/// <summary>Draws region and mesh attachments.</summary>
@@ -39,28 +41,20 @@ namespace Spine {
 		private const int BL = 2;
 		private const int BR = 3;
 
-		private GraphicsDevice device;
-		private MeshBatcher batcher;
-		private RasterizerState rasterizerState;
-		private float[] vertices = new float[8];
-		private int[] quadTriangles = {0, 1, 2, 1, 3, 2};
-		private BlendState defaultBlendState;
+		GraphicsDevice device;
+		MeshBatcher batcher;
+		RasterizerState rasterizerState;
+		float[] vertices = new float[8];
+		int[] quadTriangles = { 0, 1, 2, 1, 3, 2 };
+		BlendState defaultBlendState;
 
-		private BasicEffect effect;
-
-		public BasicEffect Effect {
-			get => effect;
-			set => effect = value;
-		}
+		BasicEffect effect;
+		public BasicEffect Effect { get { return effect; } set { effect = value; } }
 
 		private bool premultipliedAlpha;
+		public bool PremultipliedAlpha { get { return premultipliedAlpha; } set { premultipliedAlpha = value; } }
 
-		public bool PremultipliedAlpha {
-			get => premultipliedAlpha;
-			set => premultipliedAlpha = value;
-		}
-
-		public SkeletonMeshRenderer(GraphicsDevice device) {
+		public SkeletonMeshRenderer (GraphicsDevice device) {
 			this.device = device;
 
 			batcher = new MeshBatcher();
@@ -77,59 +71,57 @@ namespace Spine {
 			Bone.yDown = true;
 		}
 
-		public void Begin() {
+		public void Begin () {
 			defaultBlendState = premultipliedAlpha ? BlendState.AlphaBlend : BlendState.NonPremultiplied;
 
 			device.RasterizerState = rasterizerState;
 			device.BlendState = defaultBlendState;
 
-			effect.Projection =
-				Matrix.CreateOrthographicOffCenter(0, device.Viewport.Width, device.Viewport.Height, 0, 1, 0);
+			effect.Projection = Matrix.CreateOrthographicOffCenter(0, device.Viewport.Width, device.Viewport.Height, 0, 1, 0);
 		}
 
-		public void End() {
-			foreach (var pass in effect.CurrentTechnique.Passes) {
+		public void End () {
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
 				pass.Apply();
 				batcher.Draw(device);
 			}
 		}
 
-		public void Draw(Skeleton skeleton) {
-			var vertices = this.vertices;
-			var drawOrder = skeleton.DrawOrder;
+		public void Draw (Skeleton skeleton) {
+			float[] vertices = this.vertices;
+			List<Slot> drawOrder = skeleton.DrawOrder;
 			float skeletonR = skeleton.R, skeletonG = skeleton.G, skeletonB = skeleton.B, skeletonA = skeleton.A;
 			for (int i = 0, n = drawOrder.Count; i < n; i++) {
-				var slot = drawOrder[i];
-				var attachment = slot.Attachment;
+				Slot slot = drawOrder[i];
+				Attachment attachment = slot.Attachment;
 				if (attachment is RegionAttachment) {
-					var regionAttachment = (RegionAttachment) attachment;
-					var blend = slot.Data.AdditiveBlending ? BlendState.Additive : defaultBlendState;
+					RegionAttachment regionAttachment = (RegionAttachment)attachment;
+					BlendState blend = slot.Data.AdditiveBlending ? BlendState.Additive : defaultBlendState;
 					if (device.BlendState != blend) {
 						End();
 						device.BlendState = blend;
 					}
 
-					var item = batcher.NextItem(4, 6);
+					MeshItem item = batcher.NextItem(4, 6);
 					item.triangles = quadTriangles;
-					var itemVertices = item.vertices;
+					VertexPositionColorTexture[] itemVertices = item.vertices;
 
-					var region = (AtlasRegion) regionAttachment.RendererObject;
-					item.texture = (Texture2D) region.page.rendererObject;
+					AtlasRegion region = (AtlasRegion)regionAttachment.RendererObject;
+					item.texture = (Texture2D)region.page.rendererObject;
 
 					Color color;
-					var a = skeletonA * slot.A * regionAttachment.A;
+					float a = skeletonA * slot.A * regionAttachment.A;
 					if (premultipliedAlpha) {
 						color = new Color(
-							skeletonR * slot.R * regionAttachment.R * a,
-							skeletonG * slot.G * regionAttachment.G * a,
-							skeletonB * slot.B * regionAttachment.B * a, a);
+								skeletonR * slot.R * regionAttachment.R * a,
+								skeletonG * slot.G * regionAttachment.G * a,
+								skeletonB * slot.B * regionAttachment.B * a, a);
 					} else {
 						color = new Color(
-							skeletonR * slot.R * regionAttachment.R,
-							skeletonG * slot.G * regionAttachment.G,
-							skeletonB * slot.B * regionAttachment.B, a);
+								skeletonR * slot.R * regionAttachment.R,
+								skeletonG * slot.G * regionAttachment.G,
+								skeletonB * slot.B * regionAttachment.B, a);
 					}
-
 					itemVertices[TL].Color = color;
 					itemVertices[BL].Color = color;
 					itemVertices[BR].Color = color;
@@ -149,7 +141,7 @@ namespace Spine {
 					itemVertices[TR].Position.Y = vertices[RegionAttachment.Y4];
 					itemVertices[TR].Position.Z = 0;
 
-					var uvs = regionAttachment.UVs;
+					float[] uvs = regionAttachment.UVs;
 					itemVertices[TL].TextureCoordinate.X = uvs[RegionAttachment.X1];
 					itemVertices[TL].TextureCoordinate.Y = uvs[RegionAttachment.Y1];
 					itemVertices[BL].TextureCoordinate.X = uvs[RegionAttachment.X2];
@@ -159,34 +151,34 @@ namespace Spine {
 					itemVertices[TR].TextureCoordinate.X = uvs[RegionAttachment.X4];
 					itemVertices[TR].TextureCoordinate.Y = uvs[RegionAttachment.Y4];
 				} else if (attachment is MeshAttachment) {
-					var mesh = (MeshAttachment) attachment;
-					var vertexCount = mesh.Vertices.Length;
+					MeshAttachment mesh = (MeshAttachment)attachment;
+					int vertexCount = mesh.Vertices.Length;
 					if (vertices.Length < vertexCount) vertices = new float[vertexCount];
 					mesh.ComputeWorldVertices(slot, vertices);
 
-					var triangles = mesh.Triangles;
-					var item = batcher.NextItem(vertexCount, triangles.Length);
+					int[] triangles = mesh.Triangles;
+					MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
 					item.triangles = triangles;
 
-					var region = (AtlasRegion) mesh.RendererObject;
-					item.texture = (Texture2D) region.page.rendererObject;
+					AtlasRegion region = (AtlasRegion)mesh.RendererObject;
+					item.texture = (Texture2D)region.page.rendererObject;
 
 					Color color;
-					var a = skeletonA * slot.A * mesh.A;
+					float a = skeletonA * slot.A * mesh.A;
 					if (premultipliedAlpha) {
 						color = new Color(
-							skeletonR * slot.R * mesh.R * a,
-							skeletonG * slot.G * mesh.G * a,
-							skeletonB * slot.B * mesh.B * a, a);
+								skeletonR * slot.R * mesh.R * a,
+								skeletonG * slot.G * mesh.G * a,
+								skeletonB * slot.B * mesh.B * a, a);
 					} else {
 						color = new Color(
-							skeletonR * slot.R * mesh.R,
-							skeletonG * slot.G * mesh.G,
-							skeletonB * slot.B * mesh.B, a);
+								skeletonR * slot.R * mesh.R,
+								skeletonG * slot.G * mesh.G,
+								skeletonB * slot.B * mesh.B, a);
 					}
 
-					var uvs = mesh.UVs;
-					var itemVertices = item.vertices;
+					float[] uvs = mesh.UVs;
+					VertexPositionColorTexture[] itemVertices = item.vertices;
 					for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2) {
 						itemVertices[ii].Color = color;
 						itemVertices[ii].Position.X = vertices[v];
@@ -196,34 +188,34 @@ namespace Spine {
 						itemVertices[ii].TextureCoordinate.Y = uvs[v + 1];
 					}
 				} else if (attachment is SkinnedMeshAttachment) {
-					var mesh = (SkinnedMeshAttachment) attachment;
-					var vertexCount = mesh.UVs.Length;
+					SkinnedMeshAttachment mesh = (SkinnedMeshAttachment)attachment;
+					int vertexCount = mesh.UVs.Length;
 					if (vertices.Length < vertexCount) vertices = new float[vertexCount];
 					mesh.ComputeWorldVertices(slot, vertices);
 
-					var triangles = mesh.Triangles;
-					var item = batcher.NextItem(vertexCount, triangles.Length);
+					int[] triangles = mesh.Triangles;
+					MeshItem item = batcher.NextItem(vertexCount, triangles.Length);
 					item.triangles = triangles;
 
-					var region = (AtlasRegion) mesh.RendererObject;
-					item.texture = (Texture2D) region.page.rendererObject;
+					AtlasRegion region = (AtlasRegion)mesh.RendererObject;
+					item.texture = (Texture2D)region.page.rendererObject;
 
 					Color color;
-					var a = skeletonA * slot.A * mesh.A;
+					float a = skeletonA * slot.A * mesh.A;
 					if (premultipliedAlpha) {
 						color = new Color(
-							skeletonR * slot.R * mesh.R * a,
-							skeletonG * slot.G * mesh.G * a,
-							skeletonB * slot.B * mesh.B * a, a);
+								skeletonR * slot.R * mesh.R * a,
+								skeletonG * slot.G * mesh.G * a,
+								skeletonB * slot.B * mesh.B * a, a);
 					} else {
 						color = new Color(
-							skeletonR * slot.R * mesh.R,
-							skeletonG * slot.G * mesh.G,
-							skeletonB * slot.B * mesh.B, a);
+								skeletonR * slot.R * mesh.R,
+								skeletonG * slot.G * mesh.G,
+								skeletonB * slot.B * mesh.B, a);
 					}
 
-					var uvs = mesh.UVs;
-					var itemVertices = item.vertices;
+					float[] uvs = mesh.UVs;
+					VertexPositionColorTexture[] itemVertices = item.vertices;
 					for (int ii = 0, v = 0; v < vertexCount; ii++, v += 2) {
 						itemVertices[ii].Color = color;
 						itemVertices[ii].Position.X = vertices[v];

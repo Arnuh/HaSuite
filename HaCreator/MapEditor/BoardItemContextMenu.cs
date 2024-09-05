@@ -32,7 +32,9 @@ namespace HaCreator.MapEditor {
 
 		public ContextMenuStrip Menu {
 			get {
-				if (cms == null) generateContextMenuStrip();
+				if (cms == null) {
+					generateContextMenuStrip();
+				}
 
 				return cms;
 			}
@@ -105,7 +107,9 @@ namespace HaCreator.MapEditor {
 			foreach (var currList in new[]
 				         {generalCategory, zCategory, platformCategory}) {
 				if (currList.Count > 0) {
-					if (hasItems) cms.Items.Add(new ToolStripSeparator());
+					if (hasItems) {
+						cms.Items.Add(new ToolStripSeparator());
+					}
 
 					cms.Items.AddRange(currList.ToArray());
 					hasItems = true;
@@ -121,7 +125,9 @@ namespace HaCreator.MapEditor {
 		private void LoadPortalTargetMap_Click(object sender, EventArgs e) {
 			var portal = (PortalInstance) target;
 
-			if (portal.tm != MapConstants.MaxMap) multiboard.HaCreatorStateManager.LoadMap(portal.tm);
+			if (portal.tm != MapConstants.MaxMap) {
+				multiboard.HaCreatorStateManager.LoadMap(portal.tm);
+			}
 		}
 
 		/// <summary>
@@ -138,8 +144,9 @@ namespace HaCreator.MapEditor {
 			lock (multiboard) {
 				for (var i = 0; i < board.SelectedItems.Count; i++) {
 					if (board.SelectedItems[i] is FootholdAnchor) {
-						foreach (var x in new AnchorEnumerator((FootholdAnchor) board.SelectedItems[i]))
+						foreach (var x in new AnchorEnumerator((FootholdAnchor) board.SelectedItems[i])) {
 							x.Selected = true;
+						}
 					}
 				}
 
@@ -160,7 +167,9 @@ namespace HaCreator.MapEditor {
 
 		private void selectPlat_Click(object sender, EventArgs e) {
 			lock (multiboard) {
-				foreach (var x in new AnchorEnumerator((FootholdAnchor) target)) x.Selected = true;
+				foreach (var x in new AnchorEnumerator((FootholdAnchor) target)) {
+					x.Selected = true;
+				}
 			}
 		}
 

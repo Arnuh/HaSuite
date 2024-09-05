@@ -19,7 +19,7 @@ using MapleLib.WzLib.WzProperties;
 namespace HaCreator.CustomControls {
 	public partial class MapBrowser : UserControl {
 		private bool loadMapAvailable;
-		private readonly List<string> maps = new List<string>();
+		private readonly List<string> maps = new();
 
 		public MapBrowser() {
 			InitializeComponent();
@@ -71,8 +71,9 @@ namespace HaCreator.CustomControls {
 			}
 
 			// Maps
-			foreach (var map in Program.InfoManager.Maps)
+			foreach (var map in Program.InfoManager.Maps) {
 				maps.Add(string.Format("{0} - {1} : {2}", map.Key, map.Value.Item1, map.Value.Item2));
+			}
 
 			maps.Sort();
 
@@ -80,8 +81,9 @@ namespace HaCreator.CustomControls {
 				maps.Insert(0, "CashShopPreview");
 				maps.Insert(1, "ITCPreview");
 
-				foreach (var mapLogin in mapLogins)
+				foreach (var mapLogin in mapLogins) {
 					maps.Insert(0, mapLogin.Replace(".img", ""));
+				}
 			}
 
 			var mapsObjs = maps.Cast<object>().ToArray();

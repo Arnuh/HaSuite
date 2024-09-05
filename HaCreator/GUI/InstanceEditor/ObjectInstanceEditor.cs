@@ -13,6 +13,7 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class ObjectInstanceEditor : EditorBase {
@@ -55,8 +56,9 @@ namespace HaCreator.GUI.InstanceEditor {
 
 			if (item.QuestInfo != null) {
 				questEnable.Checked = true;
-				foreach (var info in item.QuestInfo)
+				foreach (var info in item.QuestInfo) {
 					questList.Items.Add(info);
+				}
 			}
 		}
 
@@ -96,7 +98,10 @@ namespace HaCreator.GUI.InstanceEditor {
 				item.tags = tagsEnable.Checked ? tagsBox.Text : Defaults.Object.Tags;
 				if (questEnable.Checked) {
 					var questInfo = new List<ObjectInstanceQuest>();
-					foreach (ObjectInstanceQuest info in questList.Items) questInfo.Add(info);
+					foreach (ObjectInstanceQuest info in questList.Items) {
+						questInfo.Add(info);
+					}
+
 					item.QuestInfo = questInfo;
 				} else {
 					item.QuestInfo = null;
@@ -112,7 +117,10 @@ namespace HaCreator.GUI.InstanceEditor {
 			if (cbx.Tag is Control) {
 				((Control) cbx.Tag).Enabled = featureActivated;
 			} else {
-				foreach (var control in (Control[]) cbx.Tag) control.Enabled = featureActivated;
+				foreach (var control in (Control[]) cbx.Tag) {
+					control.Enabled = featureActivated;
+				}
+
 				foreach (var control in (Control[]) cbx.Tag) {
 					if (control is CheckBox) {
 						enablingCheckBox_CheckChanged(control, e);
@@ -122,7 +130,9 @@ namespace HaCreator.GUI.InstanceEditor {
 		}
 
 		private void questRemove_Click(object sender, EventArgs e) {
-			if (questList.SelectedIndex != -1) questList.Items.RemoveAt(questList.SelectedIndex);
+			if (questList.SelectedIndex != -1) {
+				questList.Items.RemoveAt(questList.SelectedIndex);
+			}
 		}
 
 		private void questAdd_Click(object sender, EventArgs e) {

@@ -66,9 +66,13 @@ namespace HaCreator.MapEditor.Info {
 				return null;
 			}
 
-			if (!mobImage.Parsed) mobImage.ParseImage();
+			if (!mobImage.Parsed) {
+				mobImage.ParseImage();
+			}
 
-			if (mobImage.HCTag == null) mobImage.HCTag = Load(mobImage);
+			if (mobImage.HCTag == null) {
+				mobImage.HCTag = Load(mobImage);
+			}
 
 			var result = (MobInfo) mobImage.HCTag;
 			result.ParseImageIfNeeded();

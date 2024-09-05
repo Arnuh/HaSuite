@@ -114,7 +114,9 @@ namespace HaCreator.GUI {
 				Program.WzManager = null; // old loaded items
 			}
 
-			if (Program.InfoManager != null) Program.InfoManager.Clear();
+			if (Program.InfoManager != null) {
+				Program.InfoManager.Clear();
+			}
 
 			_wzMapleVersion = fileVersion; // set version to static vars
 
@@ -364,7 +366,9 @@ namespace HaCreator.GUI {
 				fileVersion = WzTool.DetectMapleVersionAt(wzPath, out _);
 			}
 
-			if (!InitializeWzFiles(wzPath, fileVersion)) return;
+			if (!InitializeWzFiles(wzPath, fileVersion)) {
+				return;
+			}
 
 			var mb = new MultiBoard();
 			var mapBoard = new Board(
@@ -378,7 +382,10 @@ namespace HaCreator.GUI {
 
 			foreach (var mapid in Program.InfoManager.Maps.Keys) {
 				var mapImage = WzInfoTools.FindMapImage(mapid, Program.WzManager);
-				if (mapImage == null) continue;
+				if (mapImage == null) {
+					continue;
+				}
+
 				UpdateUI_CurrentLoading(mapImage.Name);
 
 				mapImage.ParseImage();
@@ -458,7 +465,9 @@ namespace HaCreator.GUI {
 		private void Initialization_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Enter) {
 				button_initialise_Click(null, null);
-			} else if (e.KeyCode == Keys.Escape) Close();
+			} else if (e.KeyCode == Keys.Escape) {
+				Close();
+			}
 		}
 
 		private void encryptionBox_SelectedIndexChanged(object sender, EventArgs e) {
@@ -497,7 +506,10 @@ namespace HaCreator.GUI {
 					var nameProp = (WzStringProperty) mob["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
 					var id = WzInfoTools.AddLeadingZeros(mob.Name, 7);
-					if (Program.InfoManager.Mobs.ContainsKey(id)) continue;
+					if (Program.InfoManager.Mobs.ContainsKey(id)) {
+						continue;
+					}
+
 					Program.InfoManager.Mobs.Add(id, name);
 				}
 			}
@@ -543,7 +555,10 @@ namespace HaCreator.GUI {
 					var nameProp = (WzStringProperty) npc["name"];
 					var name = nameProp == null ? "" : nameProp.Value;
 					var id = WzInfoTools.AddLeadingZeros(npc.Name, 7);
-					if (Program.InfoManager.NPCs.ContainsKey(id)) continue;
+					if (Program.InfoManager.NPCs.ContainsKey(id)) {
+						continue;
+					}
+
 					Program.InfoManager.NPCs.Add(id, name);
 				}
 			}
@@ -609,7 +624,9 @@ namespace HaCreator.GUI {
 							} else if (bgmImage is WzUOLProperty uolBGM) // is UOL property
 							{
 								var linkVal = ((WzUOLProperty) bgmImage).LinkValue;
-								if (linkVal is WzSoundProperty linkCanvas) binProperty = linkCanvas;
+								if (linkVal is WzSoundProperty linkCanvas) {
+									binProperty = linkCanvas;
+								}
 							}
 
 							if (binProperty != null) {
@@ -636,8 +653,9 @@ namespace HaCreator.GUI {
 				throw new Exception("MapHelper.img not found in map.wz.");
 			}
 
-			foreach (WzCanvasProperty mark in mapWzImg["mark"].WzProperties)
+			foreach (WzCanvasProperty mark in mapWzImg["mark"].WzProperties) {
 				Program.InfoManager.MapMarks[mark.Name] = mark.GetLinkedWzCanvasBitmap();
+			}
 		}
 
 		/// <summary>
@@ -648,8 +666,9 @@ namespace HaCreator.GUI {
 
 			var mapWzDirs = (WzDirectory) Program.WzManager.FindWzImageByName("map", "Tile");
 			if (mapWzDirs != null) {
-				foreach (var tileset in mapWzDirs.WzImages)
+				foreach (var tileset in mapWzDirs.WzImages) {
 					Program.InfoManager.TileSets[WzInfoTools.RemoveExtension(tileset.Name)] = tileset;
+				}
 
 				bLoadedInMap = true;
 				return; // only needs to be loaded once
@@ -660,8 +679,9 @@ namespace HaCreator.GUI {
 			if (!bLoadedInMap) {
 				var tileWzDirs = Program.WzManager.GetWzDirectoriesFromBase("map\\tile");
 				foreach (var tileWzDir in tileWzDirs)
-				foreach (var tileset in tileWzDir.WzImages)
+				foreach (var tileset in tileWzDir.WzImages) {
 					Program.InfoManager.TileSets[WzInfoTools.RemoveExtension(tileset.Name)] = tileset;
+				}
 			}
 		}
 
@@ -673,8 +693,9 @@ namespace HaCreator.GUI {
 
 			var mapWzDirs = (WzDirectory) Program.WzManager.FindWzImageByName("map", "Obj");
 			if (mapWzDirs != null) {
-				foreach (var objset in mapWzDirs.WzImages)
+				foreach (var objset in mapWzDirs.WzImages) {
 					Program.InfoManager.ObjectSets[WzInfoTools.RemoveExtension(objset.Name)] = objset;
+				}
 
 				bLoadedInMap = true;
 				return; // only needs to be loaded once
@@ -685,8 +706,9 @@ namespace HaCreator.GUI {
 			if (!bLoadedInMap) {
 				var objWzDirs = Program.WzManager.GetWzDirectoriesFromBase("map\\obj");
 				foreach (var objWzDir in objWzDirs)
-				foreach (var objset in objWzDir.WzImages)
+				foreach (var objset in objWzDir.WzImages) {
 					Program.InfoManager.ObjectSets[WzInfoTools.RemoveExtension(objset.Name)] = objset;
+				}
 			}
 		}
 
@@ -698,8 +720,9 @@ namespace HaCreator.GUI {
 
 			var mapWzDirs = (WzDirectory) Program.WzManager.FindWzImageByName("map", "Back");
 			if (mapWzDirs != null) {
-				foreach (var bgset in mapWzDirs.WzImages)
+				foreach (var bgset in mapWzDirs.WzImages) {
 					Program.InfoManager.BackgroundSets[WzInfoTools.RemoveExtension(bgset.Name)] = bgset;
+				}
 
 				bLoadedInMap = true;
 			}
@@ -709,14 +732,17 @@ namespace HaCreator.GUI {
 			if (!bLoadedInMap) {
 				var backWzDirs = Program.WzManager.GetWzDirectoriesFromBase("map\\back");
 				foreach (var backWzDir in backWzDirs)
-				foreach (var bgset in backWzDir.WzImages)
+				foreach (var bgset in backWzDir.WzImages) {
 					Program.InfoManager.BackgroundSets[WzInfoTools.RemoveExtension(bgset.Name)] = bgset;
+				}
 			}
 		}
 
 		public void ExtractMaps(string mapWzName) {
 			var mapWzImg = (WzDirectory) Program.WzManager.FindWzImageByName(mapWzName, "Map");
-			if (mapWzImg == null) return;
+			if (mapWzImg == null) {
+				return;
+			}
 
 			// KMSB Format
 			foreach (var map in mapWzImg.WzImages) {
@@ -729,7 +755,10 @@ namespace HaCreator.GUI {
 				Program.WzManager.IsKMSBWzFormat = true;
 				var streetName = (WzStringProperty) info["streetName"];
 				var mapName = (WzStringProperty) info["mapName"];
-				if (Program.InfoManager.Maps.ContainsKey(mapId)) continue;
+				if (Program.InfoManager.Maps.ContainsKey(mapId)) {
+					continue;
+				}
+
 				if (mapName == null) {
 					Program.InfoManager.Maps[mapId] = new Tuple<string, string>("", "");
 				} else {
@@ -747,7 +776,10 @@ namespace HaCreator.GUI {
 
 				foreach (var map in mapWzDirs.WzImages) {
 					var mapId = map.Name.Substring(0, map.Name.Length - 4);
-					if (Program.InfoManager.Maps.ContainsKey(mapId)) continue;
+					if (Program.InfoManager.Maps.ContainsKey(mapId)) {
+						continue;
+					}
+
 					Program.InfoManager.Maps[mapId] = new Tuple<string, string>("", "");
 				}
 			}
@@ -797,7 +829,10 @@ namespace HaCreator.GUI {
 			var portalParent = (WzSubProperty) mapImg["portal"];
 			var editorParent = (WzSubProperty) portalParent["editor"];
 			foreach (var key in Program.InfoManager.PortalIdByType.Keys) {
-				if (editorParent[key] == null) continue;
+				if (editorParent[key] == null) {
+					continue;
+				}
+
 				Program.InfoManager.PortalTypeById.Add(key);
 			}
 

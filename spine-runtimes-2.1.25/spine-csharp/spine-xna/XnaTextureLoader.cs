@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -28,25 +28,28 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+﻿using System;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Spine {
 	public class XnaTextureLoader : TextureLoader {
-		private GraphicsDevice device;
+		GraphicsDevice device;
 
-		public XnaTextureLoader(GraphicsDevice device) {
+		public XnaTextureLoader (GraphicsDevice device) {
 			this.device = device;
 		}
 
-		public void Load(AtlasPage page, string path) {
-			var texture = Util.LoadTexture(device, path);
+		public void Load (AtlasPage page, String path) {
+			Texture2D texture = Util.LoadTexture(device, path);
 			page.rendererObject = texture;
 			page.width = texture.Width;
 			page.height = texture.Height;
 		}
 
-		public void Unload(object texture) {
-			((Texture2D) texture).Dispose();
+		public void Unload (Object texture) {
+			((Texture2D)texture).Dispose();
 		}
 	}
 }

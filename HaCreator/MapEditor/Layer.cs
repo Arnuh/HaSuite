@@ -14,8 +14,8 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor {
 	public class Layer {
-		private List<LayeredItem> items = new List<LayeredItem>(); //needed?
-		private readonly SortedSet<int> zms = new SortedSet<int>();
+		private List<LayeredItem> items = new(); //needed?
+		private readonly SortedSet<int> zms = new();
 		private readonly int num;
 		private readonly Board board;
 		private string _tS;
@@ -39,7 +39,9 @@ namespace HaCreator.MapEditor {
 				lock (board.ParentControl) {
 					if (_tS != value) {
 						_tS = value;
-						if (!board.Loading) board.ParentControl.LayerTSChanged(this);
+						if (!board.Loading) {
+							board.ParentControl.LayerTSChanged(this);
+						}
 					}
 				}
 			}
@@ -73,7 +75,9 @@ namespace HaCreator.MapEditor {
 
 		public void RecheckZM() {
 			zMList.Clear();
-			foreach (var li in items) zMList.Add(li.PlatformNumber);
+			foreach (var li in items) {
+				zMList.Add(li.PlatformNumber);
+			}
 		}
 
 		/// <summary>

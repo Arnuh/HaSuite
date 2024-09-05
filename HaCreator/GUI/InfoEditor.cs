@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
 using CheckBox = System.Windows.Forms.CheckBox;
 using Control = System.Windows.Forms.Control;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI {
 	public partial class InfoEditor : EditorBase {
@@ -70,19 +71,27 @@ namespace HaCreator.GUI {
 			yBox.Value = board.MapSize.Y;
 
 			var sortedBGMs = new List<string>();
-			foreach (var bgm in Program.InfoManager.BGMs)
+			foreach (var bgm in Program.InfoManager.BGMs) {
 				sortedBGMs.Add(bgm.Key);
+			}
+
 			sortedBGMs.Sort();
-			foreach (var bgm in sortedBGMs)
+			foreach (var bgm in sortedBGMs) {
 				bgmBox.Items.Add(bgm);
+			}
+
 			bgmBox.SelectedItem = info.bgm;
 
 			var sortedMarks = new List<string>();
-			foreach (var mark in Program.InfoManager.MapMarks)
+			foreach (var mark in Program.InfoManager.MapMarks) {
 				sortedMarks.Add(mark.Key);
+			}
+
 			sortedMarks.Sort();
-			foreach (var mark in sortedMarks)
+			foreach (var mark in sortedMarks) {
 				markBox.Items.Add(mark);
+			}
+
 			markBox.SelectedIndex = 0;
 
 			switch (info.mapType) {
@@ -168,8 +177,9 @@ namespace HaCreator.GUI {
 			// Allowed item
 			if (info.allowedItem != null) {
 				allowedItemsEnable.Checked = true;
-				foreach (var id in info.allowedItem)
+				foreach (var id in info.allowedItem) {
 					allowedItems.Items.Add(id.ToString());
+				}
 			}
 
 			optionsList.SetChecked(0, info.cloud);
@@ -317,7 +327,10 @@ namespace HaCreator.GUI {
 				info.decInterval = GetOptionalInt(decInterval, decIntervalEnable, Defaults.Info.DecInterval);
 				info.protectItem = GetOptionalInt(protectItem, protectEnable, Defaults.Info.ProtectItem);
 
-				if (helpEnable.Checked) info.help = helpBox.Text.Replace("\r\n", @"\n");
+				if (helpEnable.Checked) {
+					info.help = helpBox.Text.Replace("\r\n", @"\n");
+				}
+
 				if (summonMobEnable.Checked) {
 					info.timeMob = new TimeMob(
 						GetOptionalInt(timedMobStart, timedMobEnable, 0),
@@ -336,8 +349,9 @@ namespace HaCreator.GUI {
 
 				if (allowedItemsEnable.Checked) {
 					info.allowedItem = new List<int>();
-					foreach (string id in allowedItems.Items)
+					foreach (string id in allowedItems.Items) {
 						info.allowedItem.Add(int.Parse(id));
+					}
 				}
 
 				info.cloud = optionsList.Checked(0);
@@ -414,8 +428,10 @@ namespace HaCreator.GUI {
 			if (cbx.Tag is Control) {
 				((Control) cbx.Tag).Enabled = featureActivated;
 			} else {
-				foreach (var control in (Control[]) cbx.Tag)
+				foreach (var control in (Control[]) cbx.Tag) {
 					control.Enabled = featureActivated;
+				}
+
 				foreach (var control in (Control[]) cbx.Tag) {
 					if (control is CheckBox) {
 						enablingCheckBox_CheckChanged(control, e);

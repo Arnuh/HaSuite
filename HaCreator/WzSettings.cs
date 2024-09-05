@@ -23,23 +23,23 @@ namespace HaCreator {
 		public static Color TabColor = Color.LightSteelBlue;
 		public static int LineWidth = 1;
 		public static int DotWidth = 3;
-		public static XNA.Color SelectSquare = new XNA.Color(0, 0, 255, 255);
-		public static XNA.Color SelectSquareFill = new XNA.Color(0, 0, 200, 200);
-		public static XNA.Color SelectedColor = new XNA.Color(0, 0, 255, 250);
-		public static XNA.Color VRColor = new XNA.Color(0, 0, 255, 255);
+		public static XNA.Color SelectSquare = new(0, 0, 255, 255);
+		public static XNA.Color SelectSquareFill = new(0, 0, 200, 200);
+		public static XNA.Color SelectedColor = new(0, 0, 255, 250);
+		public static XNA.Color VRColor = new(0, 0, 255, 255);
 		public static XNA.Color FootholdColor = XNA.Color.Red;
 		public static XNA.Color FootholdSideColor = XNA.Color.LimeGreen;
 		public static XNA.Color RopeColor = XNA.Color.Green;
 		public static XNA.Color ChairColor = XNA.Color.Orange;
 		public static XNA.Color ToolTipColor = XNA.Color.SkyBlue;
-		public static XNA.Color ToolTipFill = new XNA.Color(0, 0, 255, 100);
-		public static XNA.Color ToolTipSelectedFill = new XNA.Color(0, 0, 255, 150);
-		public static XNA.Color ToolTipCharFill = new XNA.Color(0, 255, 0, 100);
-		public static XNA.Color ToolTipCharSelectedFill = new XNA.Color(0, 255, 0, 150);
+		public static XNA.Color ToolTipFill = new(0, 0, 255, 100);
+		public static XNA.Color ToolTipSelectedFill = new(0, 0, 255, 150);
+		public static XNA.Color ToolTipCharFill = new(0, 255, 0, 100);
+		public static XNA.Color ToolTipCharSelectedFill = new(0, 255, 0, 150);
 		public static XNA.Color ToolTipBindingLine = XNA.Color.Magenta;
 		public static XNA.Color MiscColor = XNA.Color.Brown;
-		public static XNA.Color MiscFill = new XNA.Color(150, 75, 0, 100);
-		public static XNA.Color MiscSelectedFill = new XNA.Color(150, 75, 0, 150);
+		public static XNA.Color MiscFill = new(150, 75, 0, 100);
+		public static XNA.Color MiscSelectedFill = new(150, 75, 0, 150);
 		public static XNA.Color OriginColor = XNA.Color.LightGreen;
 		public static XNA.Color MinimapBoundColor = XNA.Color.DarkOrange;
 		public static int NonActiveAlpha = 63;
@@ -92,7 +92,7 @@ namespace HaCreator {
 			theoreticalEditedTypes =
 				ItemTypes.All ^ ItemTypes.Backgrounds; // are subject to the current mode of operation
 
-		public static Size LastMapSize = new Size(800, 800);
+		public static Size LastMapSize = new(800, 800);
 		public static int lastRadioIndex = 3;
 		public static bool randomTiles = true;
 		public static bool InfoMode = false;

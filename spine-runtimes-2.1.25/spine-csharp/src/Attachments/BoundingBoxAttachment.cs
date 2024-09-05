@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -28,31 +28,30 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+using System;
+
 namespace Spine {
 	/// <summary>Attachment that has a polygon for bounds checking.</summary>
 	public class BoundingBoxAttachment : Attachment {
 		internal float[] vertices;
 
-		public float[] Vertices {
-			get => vertices;
-			set => vertices = value;
-		}
+		public float[] Vertices { get { return vertices; } set { vertices = value; } }
 
-		public BoundingBoxAttachment(string name)
+		public BoundingBoxAttachment (string name)
 			: base(name) {
 		}
 
 		/// <param name="worldVertices">Must have at least the same length as this attachment's vertices.</param>
-		public void ComputeWorldVertices(Bone bone, float[] worldVertices) {
+		public void ComputeWorldVertices (Bone bone, float[] worldVertices) {
 			float x = bone.skeleton.x + bone.worldX, y = bone.skeleton.y + bone.worldY;
-			var m00 = bone.m00;
-			var m01 = bone.m01;
-			var m10 = bone.m10;
-			var m11 = bone.m11;
-			var vertices = this.vertices;
+			float m00 = bone.m00;
+			float m01 = bone.m01;
+			float m10 = bone.m10;
+			float m11 = bone.m11;
+			float[] vertices = this.vertices;
 			for (int i = 0, n = vertices.Length; i < n; i += 2) {
-				var px = vertices[i];
-				var py = vertices[i + 1];
+				float px = vertices[i];
+				float py = vertices[i + 1];
 				worldVertices[i] = px * m00 + py * m01 + x;
 				worldVertices[i + 1] = px * m10 + py * m11 + y;
 			}

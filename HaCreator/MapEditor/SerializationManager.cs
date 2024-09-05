@@ -85,7 +85,9 @@ namespace HaCreator.MapEditor {
 
 			// Make binding references and deserialize them
 			var refDict = MakeDeserializationRefDict(items);
-			for (var i = 0; i < items.Count; i++) items[i].DeserializeBindings(itemBindings[i], refDict);
+			for (var i = 0; i < items.Count; i++) {
+				items[i].DeserializeBindings(itemBindings[i], refDict);
+			}
 
 			return items;
 		}
@@ -121,7 +123,9 @@ namespace HaCreator.MapEditor {
 		public void DeserializeBoard(string data) {
 			dynamic serData = JsonConvert.DeserializeObject(data);
 			serData = Deserialize2(serData);
-			if (serData.userobjs != null) board.ParentControl.UserObjects.DeserializeObjects(serData.userobjs);
+			if (serData.userobjs != null) {
+				board.ParentControl.UserObjects.DeserializeObjects(serData.userobjs);
+			}
 
 			board.MapSize = DeserializePoint(serData.size);
 			board.CenterPoint = DeserializePoint(serData.center);
@@ -132,7 +136,9 @@ namespace HaCreator.MapEditor {
 			board.VRRectangle = vrSer == null ? null : new VRRectangle(board, vrSer);
 			board.MinimapRectangle = mmSer == null ? null : new MinimapRectangle(board, mmSer);
 			board.MapInfo = JsonConvert.DeserializeObject<MapInfo>(serData.info);
-			foreach (ISerializable item in DeserializeList(serData.items)) item.AddToBoard(null);
+			foreach (ISerializable item in DeserializeList(serData.items)) {
+				item.AddToBoard(null);
+			}
 
 			board.RegenerateMinimap();
 			((TabItemContainer) board.TabPage.Tag).Text = board.MapInfo.strMapName;
@@ -146,14 +152,18 @@ namespace HaCreator.MapEditor {
 
 		private Dictionary<ISerializable, long> MakeSerializationRefDict(List<ISerializable> items) {
 			var result = new Dictionary<ISerializable, long>(items.Count);
-			for (var i = 0; i < items.Count; i++) result.Add(items[i], i);
+			for (var i = 0; i < items.Count; i++) {
+				result.Add(items[i], i);
+			}
 
 			return result;
 		}
 
 		private Dictionary<long, ISerializable> MakeDeserializationRefDict(List<ISerializable> items) {
 			var result = new Dictionary<long, ISerializable>(items.Count);
-			for (var i = 0; i < items.Count; i++) result.Add(i, items[i]);
+			for (var i = 0; i < items.Count; i++) {
+				result.Add(i, items[i]);
+			}
 
 			return result;
 		}
@@ -161,7 +171,9 @@ namespace HaCreator.MapEditor {
 		private object Deserialize2(JToken obj) {
 			if (obj is JObject) {
 				IDictionary<string, object> result = new ExpandoObject();
-				foreach (var pair in (JObject) obj) result.Add(pair.Key, Deserialize2(pair.Value));
+				foreach (var pair in (JObject) obj) {
+					result.Add(pair.Key, Deserialize2(pair.Value));
+				}
 
 				return result;
 			}
@@ -173,7 +185,9 @@ namespace HaCreator.MapEditor {
 			if (obj is JArray) {
 				var jarr = (JArray) obj;
 				var arr = new object[jarr.Count];
-				for (var i = 0; i < jarr.Count; i++) arr[i] = Deserialize2(jarr[i]);
+				for (var i = 0; i < jarr.Count; i++) {
+					arr[i] = Deserialize2(jarr[i]);
+				}
 
 				return arr;
 			}

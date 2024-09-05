@@ -9,12 +9,13 @@ using System.Collections.Generic;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaCreator.MapEditor.UndoRedo {
 	public class UndoRedoManager {
-		public List<UndoRedoBatch> UndoList = new List<UndoRedoBatch>();
-		public List<UndoRedoBatch> RedoList = new List<UndoRedoBatch>();
+		public List<UndoRedoBatch> UndoList = new();
+		public List<UndoRedoBatch> RedoList = new();
 		private readonly Board parentBoard;
 
 		public UndoRedoManager(Board parentBoard) {

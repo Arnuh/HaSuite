@@ -11,7 +11,9 @@ using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace HaRepacker.GUI.Panels {

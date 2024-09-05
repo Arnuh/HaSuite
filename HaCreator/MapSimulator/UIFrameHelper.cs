@@ -37,8 +37,9 @@ namespace HaCreator.MapSimulator {
 			// Fill background with bitmap
 			if (c != null) {
 				for (var column = (int) fillRectangleBGRange.Y; column < fillRectangleBGRange.Width; column += c.Width)
-				for (var row = (int) fillRectangleBGRange.X; row < fillRectangleBGRange.Height; row += c.Height)
+				for (var row = (int) fillRectangleBGRange.X; row < fillRectangleBGRange.Height; row += c.Height) {
 					graphics.DrawImage(c.ToImage(), new PointF(row, column));
+				}
 			}
 
 			// Frames
@@ -47,22 +48,30 @@ namespace HaCreator.MapSimulator {
 				for (var i = nw.Width;
 				     i <= targetImageWidth - nw.Width;
 				     i += n.Width) // Fill top from (Top left to top right)
+				{
 					graphics.DrawImage(n.ToImage(), new PointF(i, 0));
+				}
 
 				for (var i = sw.Width;
 				     i <= targetImageWidth - sw.Width;
 				     i += s.Width) // Fill Bottom from (Bottom left to bottom right)
+				{
 					graphics.DrawImage(s.ToImage(), new PointF(i, targetImageHeight - s.Height));
+				}
 
 				for (var i = targetImageHeight - sw.Height;
 				     i >= nw.Height;
 				     i -= w.Height) // Fill Left from (Bottom left to top left)
+				{
 					graphics.DrawImage(w.ToImage(), new PointF(0, i));
+				}
 
 				for (var i = targetImageHeight - sw.Height;
 				     i >= nw.Height;
 				     i -= e.Height) // Fill right from (Bottom right to top right)
+				{
 					graphics.DrawImage(e.ToImage(), new PointF(targetImageWidth - e.Width, i));
+				}
 
 				// Frame corners
 				graphics.DrawImage(ne.ToImage(), new PointF(targetImageWidth - ne.Width, 0)); // top right

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class GeneralInstanceEditor : EditorBase {

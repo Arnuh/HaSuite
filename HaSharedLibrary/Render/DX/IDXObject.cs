@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
 
 namespace HaSharedLibrary.Render.DX {
 	public interface IDXObject {

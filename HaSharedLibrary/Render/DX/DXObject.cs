@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 

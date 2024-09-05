@@ -95,7 +95,9 @@ namespace HaCreator {
 			}
 
 			SettingsManager.SaveSettings();
-			if (Restarting) Application.Restart();
+			if (Restarting) {
+				Application.Restart();
+			}
 
 			if (WzManager != null) // doesnt initialise on load until WZ files are loaded via Initialization.xaml.cs
 			{

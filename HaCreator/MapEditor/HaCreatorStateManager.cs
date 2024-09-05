@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using HaCreator.Exceptions;
 using HaCreator.GUI;
 using HaCreator.GUI.EditorPanels;
@@ -33,6 +34,7 @@ using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.WzStructure.Data;
 using SystemWinCtl = System.Windows.Controls;
 using Application = System.Windows.Forms.Application;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -102,7 +104,7 @@ namespace HaCreator.MapEditor {
 			this.ribbon.NewPlatformClicked += ribbon_NewPlatformClicked;
 			this.ribbon.UserObjsClicked += Ribbon_UserObjsClicked;
 			this.ribbon.ExportClicked += Ribbon_ExportClicked;
-			this.ribbon.RibbonKeyDown += multiBoard.DxContainer_KeyDown;
+			this.ribbon.RibbonKeyDown += Ribbon_KeyDown;
 			this.ribbon.MapPhysicsClicked += Ribbon_EditMapPhysicsClicked;
 			this.ribbon.AltBackgroundToggled += Ribbon_AltBackgroundToggled;
 			this.ribbon.FhSideToggled += Ribbon_FhSideToggled;
@@ -204,7 +206,7 @@ namespace HaCreator.MapEditor {
 			textblock_RCursorX.Text = newPos.X.ToString();
 			textblock_RCursorY.Text = newPos.Y.ToString();
 
-			textblock_Scale.Text = selectedBoard.ParentControl.Scale.ToString();
+			textblock_Scale.Text = selectedBoard.ParentControl.Scale.ToString() + " - " + selectedBoard.ParentControl.ActualWidth;
 		}
 
 		/// <summary>
@@ -433,7 +435,9 @@ namespace HaCreator.MapEditor {
 			var selectedBoard = container.Board;
 
 			var mapId = selectedBoard.MapInfo.id;
-			if (mapId == -1) return;
+			if (mapId == -1) {
+				return;
+			}
 
 			CloseMapTab(sender, e);
 
@@ -559,6 +563,7 @@ namespace HaCreator.MapEditor {
 			if (ofd.ShowDialog() != DialogResult.OK) {
 				return;
 			}
+
 			try {
 				var serializer = new WzClassicXmlSerializer(4, LineBreak.Unix, true);
 				var saver = new MapSaver(board);
@@ -598,7 +603,9 @@ namespace HaCreator.MapEditor {
 			var mf = new MainForm(null, false, firstRun);
 			mf.unloadAllToolStripMenuItem.Visible = false;
 			mf.reloadAllToolStripMenuItem.Visible = false;
-			foreach (var entry in Program.WzManager.WzFileList) mf.Interop_AddLoadedWzFileToManager(entry);
+			foreach (var entry in Program.WzManager.WzFileList) {
+				mf.Interop_AddLoadedWzFileToManager(entry);
+			}
 
 			ww.EndWait();
 			lock (multiBoard) {
@@ -669,7 +676,7 @@ namespace HaCreator.MapEditor {
 		}
 
 		private void Ribbon_MapSimulationClicked() {
-			multiBoard.DeviceReady = false;
+			multiBoard.Device.DeviceReady = false;
 
 
 			var selectedBoard = multiBoard.SelectedBoard;
@@ -681,7 +688,7 @@ namespace HaCreator.MapEditor {
 			var mapSimulator =
 				MapSimulatorLoader.CreateAndShowMapSimulator(selectedBoard, (string) tab.Header);
 
-			multiBoard.DeviceReady = true;
+			multiBoard.Device.DeviceReady = true;
 		}
 
 		private void Ribbon_ParallaxToggled(bool pressed) {
@@ -734,7 +741,9 @@ namespace HaCreator.MapEditor {
 		}
 
 		private void Ribbon_ExitClicked() {
-			if (CloseRequested != null) CloseRequested.Invoke();
+			if (CloseRequested != null) {
+				CloseRequested.Invoke();
+			}
 		}
 
 		private void Ribbon_SettingsClicked() {
@@ -762,7 +771,9 @@ namespace HaCreator.MapEditor {
 				r.ShowDialog();
 			}
 
-			if (Program.Restarting && CloseRequested != null) CloseRequested.Invoke();
+			if (Program.Restarting && CloseRequested != null) {
+				CloseRequested.Invoke();
+			}
 		}
 
 		private void Ribbon_SaveClicked() {
@@ -820,7 +831,7 @@ namespace HaCreator.MapEditor {
 				var deviceLoadedThisTime = false;
 
 				// load multiboard early before map
-				if (!multiBoard.DeviceReady) {
+				if (!multiBoard.Device.DeviceReady) {
 					ribbon.SetEnabled(true);
 					ribbon.SetOptions(UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping,
 						ApplicationSettings.randomTiles, ApplicationSettings.InfoMode);
@@ -831,7 +842,9 @@ namespace HaCreator.MapEditor {
 				}
 
 				if (loader == null || loader.ShowDialog() == DialogResult.OK) {
-					if (deviceLoadedThisTime) FirstMapLoaded?.Invoke();
+					if (deviceLoadedThisTime) {
+						FirstMapLoaded?.Invoke();
+					}
 
 					multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1
 						? -1
@@ -883,6 +896,10 @@ namespace HaCreator.MapEditor {
 		private void Ribbon_FhSideToggled(bool pressed) {
 			UserSettings.displayFHSide = pressed;
 		}
+
+		private void Ribbon_KeyDown(object sender, KeyEventArgs e) {
+			multiBoard.Ribbon_KeyDown(sender, e);
+		}	
 
 		#endregion
 

@@ -14,23 +14,23 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.Wz {
 	public class WzInformationManager {
-		public Dictionary<string, string> NPCs = new Dictionary<string, string>();
-		public Dictionary<string, string> Mobs = new Dictionary<string, string>();
-		public Dictionary<string, ReactorInfo> Reactors = new Dictionary<string, ReactorInfo>();
-		public Dictionary<string, WzImage> TileSets = new Dictionary<string, WzImage>();
-		public Dictionary<string, WzImage> ObjectSets = new Dictionary<string, WzImage>();
+		public Dictionary<string, string> NPCs = new();
+		public Dictionary<string, string> Mobs = new();
+		public Dictionary<string, ReactorInfo> Reactors = new();
+		public Dictionary<string, WzImage> TileSets = new();
+		public Dictionary<string, WzImage> ObjectSets = new();
 
-		public Dictionary<string, WzImage> BackgroundSets = new Dictionary<string, WzImage>();
-		public Dictionary<string, WzSoundProperty> BGMs = new Dictionary<string, WzSoundProperty>();
+		public Dictionary<string, WzImage> BackgroundSets = new();
+		public Dictionary<string, WzSoundProperty> BGMs = new();
 
-		public Dictionary<string, Bitmap> MapMarks = new Dictionary<string, Bitmap>();
-		public Dictionary<string, Tuple<string, string>> Maps = new Dictionary<string, Tuple<string, string>>();
+		public Dictionary<string, Bitmap> MapMarks = new();
+		public Dictionary<string, Tuple<string, string>> Maps = new();
 
-		public Dictionary<int, PortalInfo> Portals = new Dictionary<int, PortalInfo>();
+		public Dictionary<int, PortalInfo> Portals = new();
 
-		public List<string> PortalTypeById = new List<string>();
+		public List<string> PortalTypeById = new();
 
-		public Dictionary<string, int> PortalIdByType = new Dictionary<string, int> {
+		public Dictionary<string, int> PortalIdByType = new() {
 			{PortalType.Names.StartPoint, PortalType.StartPoint},
 			{PortalType.Names.Invisible, PortalType.Invisible},
 			{PortalType.Names.Visible, PortalType.Visible},
@@ -49,7 +49,7 @@ namespace HaCreator.Wz {
 			{PortalType.Names.ScriptHiddenUng, PortalType.ScriptHiddenUng}
 		};
 
-		public Dictionary<string, PortalGameImageInfo> GamePortals = new Dictionary<string, PortalGameImageInfo>();
+		public Dictionary<string, PortalGameImageInfo> GamePortals = new();
 
 		/// <summary>
 		/// Clears existing data loaded

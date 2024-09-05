@@ -59,14 +59,18 @@ namespace HaCreator.GUI.EditorPanels {
 				var item = (ImageViewer) sender;
 				switch (item.Name) {
 					case "Foothold":
-						if (!hcsm.MultiBoard.AssertLayerSelected()) return;
+						if (!hcsm.MultiBoard.AssertLayerSelected()) {
+							return;
+						}
 
 						hcsm.EnterEditMode(ItemTypes.Footholds);
 						hcsm.MultiBoard.SelectedBoard.Mouse.SetFootholdMode();
 						hcsm.MultiBoard.Focus();
 						break;
 					case "Rope":
-						if (!hcsm.MultiBoard.AssertLayerSelected()) return;
+						if (!hcsm.MultiBoard.AssertLayerSelected()) {
+							return;
+						}
 
 						hcsm.EnterEditMode(ItemTypes.Ropes);
 						hcsm.MultiBoard.SelectedBoard.Mouse.SetRopeMode();

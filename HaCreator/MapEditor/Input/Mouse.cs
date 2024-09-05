@@ -9,10 +9,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,8 +23,8 @@ using Xna = Microsoft.Xna.Framework;
 namespace HaCreator.MapEditor.Input {
 	public class Mouse : MapleDot //inheriting mapledot to make it easier to attach maplelines to it
 	{
-		private Bitmap placeholder = new Bitmap(1, 1);
-		private Point origin = new Point(0, 0);
+		private Bitmap placeholder = new(1, 1);
+		private Point origin = new(0, 0);
 		private bool isDown;
 		private bool minimapBrowseOngoing;
 		private bool cameraPanning;
@@ -124,7 +126,9 @@ namespace HaCreator.MapEditor.Input {
 						}
 					}
 
-					foreach (var item in items) ReleaseItem(item);
+					foreach (var item in items) {
+						ReleaseItem(item);
+					}
 
 					var undoPipe = new List<UndoRedoAction>();
 					clock.OnItemPlaced(undoPipe);
@@ -187,7 +191,9 @@ namespace HaCreator.MapEditor.Input {
 				foreach (var anchor in Board.BoardItems.FHAnchors) {
 					if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) &&
 					    anchor.CheckIfLayerSelected(sel)) {
-						if (anchor.connectedLines.Count > 1) continue;
+						if (anchor.connectedLines.Count > 1) {
+							continue;
+						}
 
 						if (connectedLines.Count > 0) // Are we already holding a foothold?
 						{
@@ -230,7 +236,9 @@ namespace HaCreator.MapEditor.Input {
 					Board.BoardItems.FootholdLines.Remove(fh);
 				} else if (state == MouseState.Clock) {
 					var items = BoundItems.Keys.ToList();
-					foreach (var item in items) item.RemoveItem(null);
+					foreach (var item in items) {
+						item.RemoveItem(null);
+					}
 				}
 
 				InputHandler.ClearBoundItems(Board);
@@ -385,7 +393,7 @@ namespace HaCreator.MapEditor.Input {
 
 		public override MapleDrawableInfo BaseInfo => null;
 
-		public override void Draw(SpriteBatch sprite,
+		public override void Draw(Renderer graphics,
 			Xna.Color color, int xShift, int yShift) {
 		}
 

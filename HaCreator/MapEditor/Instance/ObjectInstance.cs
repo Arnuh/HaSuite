@@ -7,8 +7,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.MonoGame;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -55,7 +57,10 @@ namespace HaCreator.MapEditor.Instance {
 		public bool Flip {
 			get => flip;
 			set {
-				if (flip == value) return;
+				if (flip == value) {
+					return;
+				}
+
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
 				if (flip) {
@@ -68,34 +73,34 @@ namespace HaCreator.MapEditor.Instance {
 
 		public int UnflippedX => flip ? X + Width - 2 * Origin.X : X;
 
-		private void DrawOffsetMap(SpriteBatch sprite, List<List<XNA.Point>> offsetMap, int xBase, int yBase) {
+		private void DrawOffsetMap(Renderer graphics, List<List<XNA.Point>> offsetMap, int xBase, int yBase) {
 			foreach (var offsetList in offsetMap)
 			foreach (var offset in offsetList) {
-				Board.ParentControl.DrawDot(sprite, xBase + offset.X, yBase + offset.Y,
+				graphics.DrawDot(xBase + offset.X, yBase + offset.Y,
 					MultiBoard.RopeInactiveColor, 1);
 			}
 		}
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
 				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
 
-			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0),
+			graphics.Draw(baseInfo.GetTexture(graphics), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
 			if (ApplicationSettings.InfoMode) {
 				var xBase = X + xShift;
 				var yBase = Y + yShift;
 				var oi = baseInfo;
 				if (oi.RopeOffsets != null) {
-					DrawOffsetMap(sprite, oi.RopeOffsets, xBase, yBase);
+					DrawOffsetMap(graphics, oi.RopeOffsets, xBase, yBase);
 				}
 
 				if (oi.LadderOffsets != null) {
-					DrawOffsetMap(sprite, oi.LadderOffsets, xBase, yBase);
+					DrawOffsetMap(graphics, oi.LadderOffsets, xBase, yBase);
 				}
 			}
 
-			base.Draw(sprite, color, xShift, yShift);
+			base.Draw(graphics, color, xShift, yShift);
 		}
 
 		public override Bitmap Image => baseInfo.Image;

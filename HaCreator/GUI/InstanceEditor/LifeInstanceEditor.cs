@@ -13,6 +13,7 @@ using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework;
 using static HaCreator.GUI.InstanceEditor.EditorTools;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class LifeInstanceEditor : EditorBase {
