@@ -325,7 +325,7 @@ namespace HaRepacker {
 					return;
 				}
 
-				obj.Name = Name;
+				obj.Name = name;
 			}
 			Text = name;
 			if (Tag is WzImageProperty property) {
