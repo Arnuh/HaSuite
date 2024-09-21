@@ -15,7 +15,10 @@ namespace HaCreator.CustomControls {
 		}
 
 		private void ScrollablePictureBox_SizeChanged(object sender, EventArgs e) {
-			if (Width * Height == 0) return;
+			if (Width * Height == 0) {
+				return;
+			}
+
 			AutoScrollPosition = new Point();
 			pictureBox.Location = new Point();
 			pictureBox.Size = pictureBox.Image == null ? new Size(0, 0) : pictureBox.Image.Size;

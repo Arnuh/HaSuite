@@ -5,7 +5,8 @@ using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.MapSimulator.Objects.UIObject {
 	/// <summary>
@@ -13,7 +14,7 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 	/// </summary>
 	public class MinimapItem : BaseDXDrawableItem, IUIObjectEvents {
 		private readonly BaseDXDrawableItem item_pixelDot;
-		private readonly List<MapObjects.UIObject.UIObject> uiButtons = new List<MapObjects.UIObject.UIObject>();
+		private readonly List<MapObjects.UIObject.UIObject> uiButtons = new();
 
 		private MapObjects.UIObject.UIObject objUIBtMin;
 		private MapObjects.UIObject.UIObject objUIBtMax;
@@ -116,8 +117,9 @@ namespace HaCreator.MapSimulator.Objects.UIObject {
 		#region IClickableUIObject
 
 		public void CheckMouseEvent(int shiftCenteredX, int shiftCenteredY, MouseState mouseState) {
-			foreach (var uiBtn in uiButtons)
+			foreach (var uiBtn in uiButtons) {
 				uiBtn.CheckMouseEvent(shiftCenteredX, shiftCenteredY, Position.X, Position.Y, mouseState);
+			}
 		}
 
 		#endregion

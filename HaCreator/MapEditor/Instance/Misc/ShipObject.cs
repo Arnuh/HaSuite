@@ -5,7 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.MonoGame;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -67,7 +69,10 @@ namespace HaCreator.MapEditor.Instance.Misc {
 		public bool Flip {
 			get => flip;
 			set {
-				if (flip == value) return;
+				if (flip == value) {
+					return;
+				}
+
 				flip = value;
 				var xFlipShift = Width - 2 * Origin.X;
 				if (flip) {
@@ -80,10 +85,10 @@ namespace HaCreator.MapEditor.Instance.Misc {
 
 		public int UnflippedX => flip ? X + Width - 2 * Origin.X : X;
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
 				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
-			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0),
+			graphics.Draw(baseInfo.GetTexture(graphics), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0),
 				Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
 		}
 

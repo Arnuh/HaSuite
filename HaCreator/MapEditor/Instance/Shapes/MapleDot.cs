@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -20,12 +22,12 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			: base(board, x, y, -1) {
 		}
 
-		public List<MapleLine> connectedLines = new List<MapleLine>();
+		public List<MapleLine> connectedLines = new();
 
 		public abstract XNA.Color Color { get; }
 		public abstract XNA.Color InactiveColor { get; }
 
-		private static Point origin = new Point(UserSettings.DotWidth, UserSettings.DotWidth);
+		private static Point origin = new(UserSettings.DotWidth, UserSettings.DotWidth);
 
 		public static void OnDotWidthChanged() {
 			origin = new Point(UserSettings.DotWidth, UserSettings.DotWidth);
@@ -41,8 +43,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			lock (board.ParentControl) {
 				base.OnItemPlaced(undoPipe);
 				if (RemoveConnectedLines) {
-					foreach (var line in connectedLines)
+					foreach (var line in connectedLines) {
 						line.OnPlaced(undoPipe);
+					}
 				}
 			}
 		}
@@ -53,8 +56,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			lock (board.ParentControl) {
 				base.RemoveItem(undoPipe);
 				if (RemoveConnectedLines) {
-					while (connectedLines.Count > 0)
+					while (connectedLines.Count > 0) {
 						connectedLines[0].Remove(false, undoPipe);
+					}
 				}
 			}
 		}
@@ -75,8 +79,8 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 
 		public override Point Origin => origin;
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			Board.ParentControl.FillRectangle(sprite,
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
+			graphics.FillRectangle(
 				new XNA.Rectangle(X - UserSettings.DotWidth + xShift, Y - UserSettings.DotWidth + yShift,
 					UserSettings.DotWidth * 2, UserSettings.DotWidth * 2), color);
 		}
@@ -91,7 +95,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			get => base.X;
 			set {
 				base.X = value;
-				if (PointMoved != null) PointMoved.Invoke();
+				if (PointMoved != null) {
+					PointMoved.Invoke();
+				}
 			}
 		}
 
@@ -99,7 +105,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			get => base.Y;
 			set {
 				base.Y = value;
-				if (PointMoved != null) PointMoved.Invoke();
+				if (PointMoved != null) {
+					PointMoved.Invoke();
+				}
 			}
 		}
 
@@ -164,7 +172,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				}
 			}
 
-			if (closestAnchor == null) return;
+			if (closestAnchor == null) {
+				return;
+			}
 
 			if (this is Mouse) {
 				if (xClosest) {

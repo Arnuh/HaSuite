@@ -126,8 +126,9 @@ namespace HaCreator.GUI.InstanceEditor {
 			if (cbx.Tag is Control) {
 				((Control) cbx.Tag).Enabled = featureActivated;
 			} else {
-				foreach (var control in (Control[]) cbx.Tag)
+				foreach (var control in (Control[]) cbx.Tag) {
 					control.Enabled = featureActivated;
+				}
 
 				foreach (var control in (Control[]) cbx.Tag) {
 					if (control is CheckBox) {

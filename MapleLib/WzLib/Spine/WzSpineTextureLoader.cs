@@ -23,7 +23,7 @@ SOFTWARE.
 
 using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore;
 
 namespace MapleLib.WzLib.Spine {
 	public class WzSpineTextureLoader : TextureLoader {

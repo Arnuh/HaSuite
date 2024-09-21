@@ -22,7 +22,7 @@ namespace HaCreator.MapEditor.Info {
 		private string _no;
 		private int _mag;
 		private int _z;
-		private List<XNA.Point> footholdOffsets = new List<XNA.Point>();
+		private List<XNA.Point> footholdOffsets = new();
 
 		public TileInfo(Bitmap image, Point origin, string tS, string u, string no, int mag, int z,
 			WzObject parentObject)
@@ -43,7 +43,9 @@ namespace HaCreator.MapEditor.Info {
 			var mag = Program.InfoManager.TileSets[tS]["info"]["mag"].GetOptionalInt(Defaults.Tile.Mag);
 			var prop = Program.InfoManager.TileSets[tS][u];
 			var tileInfoProp = prop[no];
-			if (tileInfoProp == null) tileInfoProp = prop[defaultNo];
+			if (tileInfoProp == null) {
+				tileInfoProp = prop[defaultNo];
+			}
 
 			if (tileInfoProp.HCTag == null) {
 				tileInfoProp.HCTag = Load((WzCanvasProperty) tileInfoProp, tS, u, no, mag);
@@ -70,11 +72,14 @@ namespace HaCreator.MapEditor.Info {
 				tS, u, no, mag, z, parentObject);
 			var footholds = (WzConvexProperty) parentObject["foothold"];
 			if (footholds != null) {
-				foreach (WzVectorProperty foothold in footholds.WzProperties)
+				foreach (WzVectorProperty foothold in footholds.WzProperties) {
 					result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(foothold));
+				}
 			}
 
-			if (UserSettings.FixFootholdMispositions) FixFootholdMispositions(result);
+			if (UserSettings.FixFootholdMispositions) {
+				FixFootholdMispositions(result);
+			}
 
 			return result;
 		}
@@ -163,7 +168,10 @@ namespace HaCreator.MapEditor.Info {
 		public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, bool flip,
 			bool parseOffsets) {
 			var instance = new TileInstance(this, layer, board, x, y, z, zM);
-			if (parseOffsets) ParseOffsets(instance, board, x, y);
+			if (parseOffsets) {
+				ParseOffsets(instance, board, x, y);
+			}
+
 			return instance;
 		}
 

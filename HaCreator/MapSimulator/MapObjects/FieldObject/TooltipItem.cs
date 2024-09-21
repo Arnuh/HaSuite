@@ -4,7 +4,7 @@ using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore.spine_xna;
 
 namespace HaCreator.MapSimulator.Objects.FieldObject {
 	public class TooltipItem : BaseDXDrawableItem {

@@ -104,23 +104,34 @@ namespace HaCreator.CustomControls {
 		private float CalculateMP() {
 			float mp = 1;
 			float dx = 0, dy = 0;
-			if (MaxWidth > 0 && m_Image.Width > MaxWidth) dx = (float) MaxWidth / m_Image.Width;
+			if (MaxWidth > 0 && m_Image.Width > MaxWidth) {
+				dx = (float) MaxWidth / m_Image.Width;
+			}
 
-			if (MaxHeight > 0 && m_Image.Height > MaxHeight) dy = (float) MaxHeight / m_Image.Height;
+			if (MaxHeight > 0 && m_Image.Height > MaxHeight) {
+				dy = (float) MaxHeight / m_Image.Height;
+			}
 
 			if (dx != 0 && dy == 0) {
 				mp = dx;
 			} else if (dy != 0 && dx == 0) {
 				mp = dy;
-			} else if (dx != 0 && dy != 0) mp = Math.Min(dx, dy);
+			} else if (dx != 0 && dy != 0) {
+				mp = Math.Min(dx, dy);
+			}
 
 			return mp;
 		}
 
 		protected override void OnPaint(PaintEventArgs e) {
 			var g = e.Graphics;
-			if (g == null) return;
-			if (m_Image == null) return;
+			if (g == null) {
+				return;
+			}
+
+			if (m_Image == null) {
+				return;
+			}
 
 			var mp = CalculateMP();
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,7 +7,10 @@ using HaRepacker.Converters;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using static MapleLib.Configuration.UserSettings;
+using CheckBox = System.Windows.Controls.CheckBox;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Point = System.Windows.Point;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>

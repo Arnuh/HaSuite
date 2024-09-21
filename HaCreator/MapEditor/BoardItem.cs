@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HaCreator.CustomControls;
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,16 +24,16 @@ namespace HaCreator.MapEditor {
 		protected XNA.Vector3 position;
 
 		private Dictionary<BoardItem, XNA.Point>
-			boundItems = new Dictionary<BoardItem, XNA.Point>(); //key = BoardItem; value = point (distance)
+			boundItems = new(); //key = BoardItem; value = point (distance)
 
-		private readonly List<BoardItem> boundItemsList = new List<BoardItem>();
+		private readonly List<BoardItem> boundItemsList = new();
 		private BoardItem parent;
 		private bool selected;
 		protected Board board;
 
 		/*temporary fields used by other functions*/
 		public BoardItem tempParent = null; //for mouse drag-drop
-		public XNA.Point moveStartPos = new XNA.Point(); //for undo of drag-drop
+		public XNA.Point moveStartPos = new(); //for undo of drag-drop
 
 		public BoardItem(Board board, int x, int y, int z) {
 			position = new XNA.Vector3(x, y, z);
@@ -49,10 +51,13 @@ namespace HaCreator.MapEditor {
 		public virtual void OnItemPlaced(List<UndoRedoAction> undoPipe) {
 			lock (Board.ParentControl) {
 				var items = boundItems.Keys.ToList();
-				foreach (var item in items)
+				foreach (var item in items) {
 					item.OnItemPlaced(undoPipe);
+				}
 
-				if (undoPipe != null) undoPipe.Add(UndoRedoManager.ItemAdded(this));
+				if (undoPipe != null) {
+					undoPipe.Add(UndoRedoManager.ItemAdded(this));
+				}
 
 				if (parent != null) {
 					if (!(parent is Mouse) && undoPipe != null) {
@@ -66,10 +71,13 @@ namespace HaCreator.MapEditor {
 		public virtual void RemoveItem(List<UndoRedoAction> undoPipe) {
 			lock (Board.ParentControl) {
 				var items = boundItems.Keys.ToList();
-				foreach (var item in items)
+				foreach (var item in items) {
 					item.RemoveItem(undoPipe);
+				}
 
-				if (undoPipe != null) undoPipe.Add(UndoRedoManager.ItemDeleted(this));
+				if (undoPipe != null) {
+					undoPipe.Add(UndoRedoManager.ItemDeleted(this));
+				}
 
 				if (parent != null) {
 					if (!(parent is Mouse) && undoPipe != null) {
@@ -87,7 +95,10 @@ namespace HaCreator.MapEditor {
 
 		public virtual void BindItem(BoardItem item, XNA.Point distance) {
 			lock (Board.ParentControl) {
-				if (boundItems.ContainsKey(item)) return;
+				if (boundItems.ContainsKey(item)) {
+					return;
+				}
+
 				boundItems[item] = distance;
 				boundItemsList.Add(item);
 				item.parent = this;
@@ -142,9 +153,9 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+		public virtual void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
 			if (ApplicationSettings.InfoMode) {
-				Board.ParentControl.DrawDot(sprite, X + xShift, Y + yShift, UserSettings.OriginColor, 1);
+				graphics.DrawDot(X + xShift, Y + yShift, UserSettings.OriginColor, 1);
 			}
 		}
 
@@ -247,7 +258,10 @@ namespace HaCreator.MapEditor {
 			get => selected;
 			set {
 				lock (Board.ParentControl) {
-					if (selected == value) return;
+					if (selected == value) {
+						return;
+					}
+
 					selected = value;
 					if (value && !board.SelectedItems.Contains(this)) {
 						board.SelectedItems.Add(this);
@@ -287,7 +301,9 @@ namespace HaCreator.MapEditor {
 
 		public virtual List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems) {
 			var serList = new List<ISerializableSelector>();
-			foreach (var item in BoundItems.Keys) serList.Add(item);
+			foreach (var item in BoundItems.Keys) {
+				serList.Add(item);
+			}
 
 			return serList;
 		}
@@ -347,13 +363,17 @@ namespace HaCreator.MapEditor {
 		}
 
 		public virtual void AddToBoard(List<UndoRedoAction> undoPipe) {
-			if (undoPipe != null) OnItemPlaced(undoPipe);
+			if (undoPipe != null) {
+				OnItemPlaced(undoPipe);
+			}
 
 			board.BoardItems.Add(this, false);
 		}
 
 		public virtual void PostDeserializationActions(bool? selected, XNA.Point? offset) {
-			if (selected.HasValue) Selected = selected.Value;
+			if (selected.HasValue) {
+				Selected = selected.Value;
+			}
 
 			if (offset.HasValue) {
 				position.X += offset.Value.X;

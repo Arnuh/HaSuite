@@ -100,7 +100,9 @@ namespace HaCreator.CustomControls {
 		//Override the ItemCheck event with our own
 		protected override void OnItemCheck(ItemCheckEventArgs ice) {
 			//Allow checks to be changed only if AutoCheck = True
-			if (AllowChecks == false) ice.NewValue = ice.CurrentValue;
+			if (AllowChecks == false) {
+				ice.NewValue = ice.CurrentValue;
+			}
 		}
 
 		//----------------------------------------------------------
@@ -129,7 +131,9 @@ namespace HaCreator.CustomControls {
 
 		public void SetChecked(int index, bool value) {
 			var bufAllowChecks = AllowChecks;
-			if (AllowChecks == false) AllowChecks = true;
+			if (AllowChecks == false) {
+				AllowChecks = true;
+			}
 
 			SetItemChecked(index, value);
 			AllowChecks = bufAllowChecks;

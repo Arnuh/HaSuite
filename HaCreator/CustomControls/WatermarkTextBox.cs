@@ -76,7 +76,9 @@ namespace HaCreator.CustomControls {
 		}
 
 		protected override void OnTextChanged(EventArgs e) {
-			if (WatermarkActive) return;
+			if (WatermarkActive) {
+				return;
+			}
 
 			base.OnTextChanged(e);
 		}

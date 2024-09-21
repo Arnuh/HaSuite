@@ -7,6 +7,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using CheckBox = System.Windows.Controls.CheckBox;
 
 namespace HaCreator.CustomControls {
 	public class CheckboxButton : CheckBox {

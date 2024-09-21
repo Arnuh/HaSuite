@@ -53,12 +53,18 @@ namespace HaCreator.MapEditor.Info {
 		}
 
 		public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip) {
-			if (Image == null) ParseImage();
+			if (Image == null) {
+				ParseImage();
+			}
+
 			return new ReactorInstance(this, board, x, y, UserSettings.defaultReactorTime, "", flip);
 		}
 
 		public BoardItem CreateInstance(Board board, int x, int y, int reactorTime, string name, bool flip) {
-			if (Image == null) ParseImage();
+			if (Image == null) {
+				ParseImage();
+			}
+
 			return new ReactorInstance(this, board, x, y, reactorTime, name, flip);
 		}
 
@@ -94,7 +100,7 @@ namespace HaCreator.MapEditor.Info {
 			}
 			set => _LinkedWzImage = value;
 		}
-		
+
 		public string Link => link;
 	}
 }

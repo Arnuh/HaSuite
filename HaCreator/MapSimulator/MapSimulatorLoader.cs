@@ -22,7 +22,7 @@ using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
-using Spine;
+using spine_2._1._25_netcore;
 using Color = System.Drawing.Color;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -249,12 +249,16 @@ namespace HaCreator.MapSimulator {
 			var isObjectLayer = source.Parent.Name == "spine";
 			if (isObjectLayer) { // load spine if the source is already the directory we need
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
-				if (spineAtlasPath != null) spineAtlas = source[spineAtlasPath + ".atlas"];
+				if (spineAtlasPath != null) {
+					spineAtlas = source[spineAtlasPath + ".atlas"];
+				}
 			} else if (!string.IsNullOrEmpty(spineAniPath)) {
 				var spineSource = (WzImageProperty) source.Parent?.Parent["spine"]?[source.Name];
 
 				var spineAtlasPath = ((WzStringProperty) spineSource["spine"])?.GetString();
-				if (spineAtlasPath != null) spineAtlas = spineSource[spineAtlasPath + ".atlas"];
+				if (spineAtlasPath != null) {
+					spineAtlas = spineSource[spineAtlasPath + ".atlas"];
+				}
 			} else { // simply check if 'spine' WzStringProperty exist, fix for Adele town
 				var spineAtlasPath = ((WzStringProperty) source["spine"])?.GetString();
 				if (spineAtlasPath != null) {
@@ -263,7 +267,10 @@ namespace HaCreator.MapSimulator {
 				}
 			}
 
-			if (!(spineAtlas is WzStringProperty stringObj)) return false;
+			if (!(spineAtlas is WzStringProperty stringObj)) {
+				return false;
+			}
+
 			if (!stringObj.IsSpineAtlasResources) {
 				return false;
 			}
@@ -295,8 +302,9 @@ namespace HaCreator.MapSimulator {
 				spineObject.state.SetAnimation(0, spineAniPath, true);
 			} else {
 				var i = 0;
-				foreach (var animation in spineObject.spineAnimationItem.SkeletonData.Animations)
+				foreach (var animation in spineObject.spineAnimationItem.SkeletonData.Animations) {
 					spineObject.state.SetAnimation(i++, animation.Name, true);
+				}
 			}
 
 			prop.MSTagSpine = spineObject;
@@ -821,8 +829,10 @@ namespace HaCreator.MapSimulator {
 
 		private static string DumpFhList(List<FootholdLine> fhs) {
 			var res = "";
-			foreach (var fh in fhs)
+			foreach (var fh in fhs) {
 				res += fh.FirstDot.X + "," + fh.FirstDot.Y + " : " + fh.SecondDot.X + "," + fh.SecondDot.Y + "\r\n";
+			}
+
 			return res;
 		}
 	}

@@ -7,8 +7,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.TilesDesign;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
@@ -69,10 +71,16 @@ namespace HaCreator.MapEditor.Instance {
 					}
 
 					foreach (var snapInfo in tilegroup.potentials) {
-						if (snapInfo.type != tile.baseInfo.u) continue;
+						if (snapInfo.type != tile.baseInfo.u) {
+							continue;
+						}
+
 						var distance = InputHandler.Distance(X - tile.X + snapInfo.x * mag,
 							Y - tile.Y + snapInfo.y * mag);
-						if (distance > threshold) continue;
+						if (distance > threshold) {
+							continue;
+						}
+
 						result.Add(new Tuple<double, TileInstance, MapTileDesignPotential>(distance, tile, snapInfo));
 					}
 				}
@@ -84,7 +92,9 @@ namespace HaCreator.MapEditor.Instance {
 		public void DoSnap() {
 			// Get candidates
 			var candidates = FindSnappableTiles(UserSettings.SnapDistance);
-			if (candidates.Count == 0) return;
+			if (candidates.Count == 0) {
+				return;
+			}
 
 			// Get closest candidate
 			var best = 0;
@@ -121,13 +131,13 @@ namespace HaCreator.MapEditor.Instance {
 			}
 		}
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
 			var destinationRectangle =
 				new XNA.Rectangle(X + xShift - Origin.X, Y + yShift - Origin.Y, Width, Height);
-			sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f,
+			graphics.Draw(baseInfo.GetTexture(graphics), destinationRectangle, null, color, 0f,
 				new XNA.Vector2(0f, 0f), /*Flip ? SpriteEffects.FlipHorizontally : */SpriteEffects.None,
 				0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
-			base.Draw(sprite, color, xShift, yShift);
+			base.Draw(graphics, color, xShift, yShift);
 		}
 
 		// Only to be used by layer TS changing, do not use this for ANYTHING else.

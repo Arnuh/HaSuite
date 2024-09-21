@@ -24,7 +24,10 @@ namespace HaCreator.GUI.EditorPanels {
 
 			foreach (var pt in Program.InfoManager.PortalTypeById) {
 				var pInfo = PortalInfo.GetPortalInfoByType(Program.InfoManager.PortalIdByType[pt]);
-				if (pInfo == null) continue;
+				if (pInfo == null) {
+					continue;
+				}
+
 				try {
 					var item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[pt], true);
 					item.Tag = pInfo;

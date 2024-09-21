@@ -3,25 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:customControls="clr-namespace:HaCreator.CustomControls"
-
+             xmlns:monoGame="clr-namespace:HaCreator.MapEditor.MonoGame"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
-
-
     <Grid>
+        <!--<monoGame:WpfRenderer x:Name="Device" AllowDrop="True" />-->
         <WindowsFormsHost x:Name="winFormDXHolder" Margin="0,0,20,20" Visibility="Collapsed">
-            <customControls:DirectXHolder x:Name="DxContainer"
-                                          DragEnter="DxContainer_DragEnter"
-                                          DragDrop="DxContainer_DragDrop"
-                                          KeyDown="DxContainer_KeyDown"
-                                          MouseClick="DxContainer_MouseClick"
-                                          MouseDoubleClick="DxContainer_MouseDoubleClick"
-                                          MouseDown="DxContainer_MouseDown"
-                                          MouseMove="DxContainer_MouseMove"
-                                          MouseUp="DxContainer_MouseUp"
-                                          MouseWheel="DxContainer_MouseWheel"
-                                          AllowDrop="True" />
+            <monoGame:WinformRenderer x:Name="Device" AllowDrop="True" />
         </WindowsFormsHost>
 
         <ScrollBar x:Name="vScrollBar" HorizontalAlignment="Right"

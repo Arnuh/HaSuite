@@ -83,8 +83,9 @@ namespace HaCreator.MapEditor {
 
 					// Execute the serialization queue
 					if (serQueue.Count > 0) {
-						foreach (var serReq in serQueue)
+						foreach (var serReq in serQueue) {
 							ioQueue.Add(serReq.Key, serReq.Value.SerializeBoard(false));
+						}
 					}
 
 
@@ -95,8 +96,9 @@ namespace HaCreator.MapEditor {
 							Directory.CreateDirectory(basePath);
 						}
 
-						foreach (var ioRequest in ioQueue)
+						foreach (var ioRequest in ioQueue) {
 							File.WriteAllText(Path.Combine(basePath, ioRequest.Key), ioRequest.Value);
+						}
 					}
 				}
 			}
@@ -136,8 +138,9 @@ namespace HaCreator.MapEditor {
 					return false;
 				}
 
-				foreach (var file in new DirectoryInfo(basePath).GetFiles())
+				foreach (var file in new DirectoryInfo(basePath).GetFiles()) {
 					loadedFiles.Add(file.Name.ToLower(), File.ReadAllText(file.FullName));
+				}
 			}
 
 			if (loadedFiles.Count == 0) {

@@ -30,7 +30,7 @@ using MapleLib.WzLib.WzStructure.Data.MapStructure;
 namespace MapleLib.WzLib.WzStructure {
 	public class MapInfo //Credits to Bui for some of the info
 	{
-		public static MapInfo Default = new MapInfo();
+		public static MapInfo Default = new();
 
 		private WzImage image;
 
@@ -44,7 +44,7 @@ namespace MapleLib.WzLib.WzStructure {
 		public int version = 10;
 
 		// Other properties that is not supported by HaCreator yet, but still gets dumped back when saving
-		public readonly List<WzImageProperty> unsupportedInfoProperties = new List<WzImageProperty>();
+		public readonly List<WzImageProperty> unsupportedInfoProperties = new();
 
 		//Must have
 		public string bgm = "Bgm00/GoPicnic";
@@ -110,8 +110,8 @@ namespace MapleLib.WzLib.WzStructure {
 		public string mapDesc = "";
 
 		//Special
-		public List<WzImageProperty> additionalProps = new List<WzImageProperty>();
-		public List<WzImageProperty> additionalNonInfoProps = new List<WzImageProperty>();
+		public List<WzImageProperty> additionalProps = new();
+		public List<WzImageProperty> additionalNonInfoProps = new();
 		public string strMapName = "<Untitled>";
 		public string strStreetName = "<Untitled>";
 		public string strCategoryName = "HaCreator";
@@ -318,8 +318,9 @@ namespace MapleLib.WzLib.WzStructure {
 					case "allowedItem":
 						allowedItem = new List<int>();
 						if (prop.WzProperties != null && prop.WzProperties.Count > 0) {
-							foreach (var item in prop.WzProperties)
+							foreach (var item in prop.WzProperties) {
 								allowedItem.Add(item.GetInt());
+							}
 						}
 
 						break;
@@ -657,7 +658,9 @@ namespace MapleLib.WzLib.WzStructure {
 			info["noRegenMap"] = noRegenMap.SetOptionalBool(Defaults.Info.NoRegenMap);
 			if (allowedItem != null) {
 				var prop = new WzSubProperty();
-				for (var i = 0; i < allowedItem.Count; i++) prop[i.ToString()] = InfoTool.SetInt(allowedItem[i]);
+				for (var i = 0; i < allowedItem.Count; i++) {
+					prop[i.ToString()] = InfoTool.SetInt(allowedItem[i]);
+				}
 
 				info["allowedItem"] = prop;
 			}
@@ -673,7 +676,9 @@ namespace MapleLib.WzLib.WzStructure {
 			info["allMoveCheck"] = allMoveCheck.SetOptionalBool(Defaults.Info.AllMoveCheck);
 			info["consumeItemCoolTime"] = consumeItemCoolTime.SetOptionalBool(Defaults.Info.ConsumeItemCoolTime);
 			info["zeroSideOnly"] = zeroSideOnly.SetOptionalBool(Defaults.Info.ZeroSideOnly);
-			foreach (var prop in additionalProps) info.AddProperty(prop);
+			foreach (var prop in additionalProps) {
+				info.AddProperty(prop);
+			}
 
 			// Add back all unsupported properties
 			info.AddProperties(unsupportedInfoProperties);

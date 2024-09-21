@@ -66,7 +66,10 @@ namespace HaCreator.GUI.InstanceEditor {
 			}
 
 			tnBox.Text = item.tn;
-			if (item.script != null) scriptBox.Text = item.script;
+			if (item.script != null) {
+				scriptBox.Text = item.script;
+			}
+
 			LoadOptionalInt(item.delay, delayBox, delayEnable, Defaults.Portal.Delay);
 			LoadOptionalInt(item.hRange, hRangeBox, rangeEnable, Defaults.Portal.HRange);
 			LoadOptionalInt(item.vRange, vRangeBox, rangeEnable, Defaults.Portal.VRange);
@@ -74,7 +77,9 @@ namespace HaCreator.GUI.InstanceEditor {
 			LoadOptionalInt(item.verticalImpact, vImpactBox, vImpactEnable, Defaults.Portal.VerticalImpact);
 			onlyOnce.Checked = item.onlyOnce;
 			hideTooltip.Checked = item.hideTooltip;
-			if (item.image != null) portalImageList.SelectedItem = item.image;
+			if (item.image != null) {
+				portalImageList.SelectedItem = item.image;
+			}
 		}
 
 		protected override void cancelButton_Click(object sender, EventArgs e) {
@@ -374,8 +379,10 @@ namespace HaCreator.GUI.InstanceEditor {
 				portalImageList.Items.Add("default");
 				portalImageBox.Image = null;
 				rowMan.SetVisible("image");
-				foreach (DictionaryEntry image in Program.InfoManager.GamePortals[ptName])
+				foreach (DictionaryEntry image in Program.InfoManager.GamePortals[ptName]) {
 					portalImageList.Items.Add(image.Key);
+				}
+
 				portalImageList.SelectedIndex = 0;
 			}
 		}
@@ -431,15 +438,16 @@ namespace HaCreator.GUI.InstanceEditor {
 
 	public class ControlRowManager {
 		private ControlRow[] rows;
-		private Hashtable names = new Hashtable();
+		private Hashtable names = new();
 		private Form form;
 
 		public ControlRowManager(ControlRow[] rows, Form form) {
 			this.form = form;
 			this.rows = rows;
 			var index = 0;
-			foreach (var row in rows)
+			foreach (var row in rows) {
 				names[row.rowName] = index++;
+			}
 		}
 
 		public void SetInvisible(string name) {
@@ -448,15 +456,21 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		public void SetInvisible(int index) {
 			var row = rows[index];
-			if (row.invisible) return;
+			if (row.invisible) {
+				return;
+			}
+
 			row.invisible = true;
-			foreach (var c in row.controls)
+			foreach (var c in row.controls) {
 				c.Visible = false;
+			}
+
 			var size = row.rowSize;
 			for (var i = index + 1; i < rows.Length; i++) {
 				row = rows[i];
-				foreach (var c in row.controls)
+				foreach (var c in row.controls) {
 					c.Location = new System.Drawing.Point(c.Location.X, c.Location.Y - size);
+				}
 			}
 
 			form.Height -= size;
@@ -468,15 +482,21 @@ namespace HaCreator.GUI.InstanceEditor {
 
 		public void SetVisible(int index) {
 			var row = rows[index];
-			if (!row.invisible) return;
+			if (!row.invisible) {
+				return;
+			}
+
 			row.invisible = false;
-			foreach (var c in row.controls)
+			foreach (var c in row.controls) {
 				c.Visible = true;
+			}
+
 			var size = row.rowSize;
 			for (var i = index + 1; i < rows.Length; i++) {
 				row = rows[i];
-				foreach (var c in row.controls)
+				foreach (var c in row.controls) {
 					c.Location = new System.Drawing.Point(c.Location.X, c.Location.Y + size);
+				}
 			}
 
 			form.Height += size;

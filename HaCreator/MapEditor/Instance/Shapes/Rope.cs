@@ -41,7 +41,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				board.BoardItems.RopeAnchors.Remove(secondAnchor);
 				board.BoardItems.RopeLines.Remove(line);
 				board.BoardItems.Ropes.Remove(this);
-				if (undoPipe != null) undoPipe.Add(UndoRedoManager.RopeRemoved(this));
+				if (undoPipe != null) {
+					undoPipe.Add(UndoRedoManager.RopeRemoved(this));
+				}
 			}
 		}
 
@@ -138,7 +140,9 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public void PostDeserializationActions(bool? selected, XNA.Point? offset) {
-			if (selected.HasValue) firstAnchor.Selected = secondAnchor.Selected = selected.Value;
+			if (selected.HasValue) {
+				firstAnchor.Selected = secondAnchor.Selected = selected.Value;
+			}
 
 			if (offset.HasValue) {
 				firstAnchor.MoveSilent(firstAnchor.X + offset.Value.X, firstAnchor.Y + offset.Value.Y);

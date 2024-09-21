@@ -6,6 +6,8 @@
 
 using System;
 using System.Collections.Generic;
+using HaCreator.CustomControls;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,15 +65,18 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			return MultiBoard.FootholdSideInactiveColor;
 		}
 
-		public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift) {
-			base.Draw(sprite, color, xShift, yShift);
+		public override void Draw(Renderer graphics, XNA.Color color, int xShift, int yShift) {
+			base.Draw(graphics, color, xShift, yShift);
 
 #if DEBUG
-			board.ParentControl.DrawString(sprite, $"{num}, P: {prev}, N: {next}",
+			graphics.DrawString($"{num}, P: {prev}, N: {next}",
 				MultiBoard.VirtualToPhysical(firstDot.X, board.CenterPoint.X, board.hScroll, 0),
 				MultiBoard.VirtualToPhysical(firstDot.Y - 20, board.CenterPoint.Y, board.vScroll, 0));
 #endif
-			if (!UserSettings.displayFHSide) return;
+			if (!UserSettings.displayFHSide) {
+				return;
+			}
+
 			var xOffset = 1;
 			var yOffset = 1;
 
@@ -84,7 +89,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			}
 
 			// The side the line is on means it blocks you from that direction.
-			board.ParentControl.DrawLine(sprite, new XNA.Vector2(firstDot.X + xShift + xOffset, firstDot.Y + yShift + yOffset),
+			graphics.DrawLine(new XNA.Vector2(firstDot.X + xShift + xOffset, firstDot.Y + yShift + yOffset),
 				new XNA.Vector2(secondDot.X + xShift + xOffset, secondDot.Y + yShift + yOffset), GetColorSide(board.GetUserSelectionInfo()));
 		}
 
@@ -177,10 +182,22 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public static int FHSorter(FootholdLine a, FootholdLine b) {
-			if (a.num == 0 && b.num != 0) return 1;
-			if (a.num != 0 && b.num == 0) return -1;
-			if (a.num > b.num) return 1;
-			if (a.num < b.num) return -1;
+			if (a.num == 0 && b.num != 0) {
+				return 1;
+			}
+
+			if (a.num != 0 && b.num == 0) {
+				return -1;
+			}
+
+			if (a.num > b.num) {
+				return 1;
+			}
+
+			if (a.num < b.num) {
+				return -1;
+			}
+
 			return 0;
 		}
 

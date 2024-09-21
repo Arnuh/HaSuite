@@ -7,7 +7,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -113,7 +115,7 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 			return true;
 		}
 
-		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
+		public override void Draw(Renderer graphics, XNA.Color dotColor, int xShift, int yShift) {
 			var lineColor = ab.Color;
 			if (Selected) {
 				lineColor = dotColor;
@@ -132,11 +134,11 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 				y = c.Y + yShift;
 			}
 
-			Board.ParentControl.FillRectangle(sprite, new XNA.Rectangle(x, y, Width, Height), Color);
-			ab.Draw(sprite, lineColor, xShift, yShift);
-			bc.Draw(sprite, lineColor, xShift, yShift);
-			cd.Draw(sprite, lineColor, xShift, yShift);
-			da.Draw(sprite, lineColor, xShift, yShift);
+			graphics.FillRectangle(new XNA.Rectangle(x, y, Width, Height), Color);
+			ab.Draw(graphics, lineColor, xShift, yShift);
+			bc.Draw(graphics, lineColor, xShift, yShift);
+			cd.Draw(graphics, lineColor, xShift, yShift);
+			da.Draw(graphics, lineColor, xShift, yShift);
 		}
 
 		public override MapleDrawableInfo BaseInfo => null;
@@ -259,11 +261,14 @@ namespace HaCreator.MapEditor.Instance.Shapes {
 		}
 
 		public override void PostDeserializationActions(bool? selected, XNA.Point? offset) {
-			if (selected.HasValue) Selected = selected.Value;
+			if (selected.HasValue) {
+				Selected = selected.Value;
+			}
 
 			if (offset.HasValue) {
-				foreach (var dot in new[] {a, b, c, d})
+				foreach (var dot in new[] {a, b, c, d}) {
 					dot.MoveSilent(dot.X + offset.Value.X, dot.Y + offset.Value.Y);
+				}
 			}
 		}
 

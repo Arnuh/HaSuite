@@ -11,6 +11,10 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaCreator.CustomControls {
 	public abstract class PropertyChangeNotifierBase : INotifyPropertyChanged {
@@ -18,11 +22,16 @@ namespace HaCreator.CustomControls {
 
 		protected virtual void OnPropertyChanged(string propertyName) {
 			var handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+			if (handler != null) {
+				handler(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 
 		protected bool SetField<T>(ref T field, T value, string propertyName) {
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			if (EqualityComparer<T>.Default.Equals(field, value)) {
+				return false;
+			}
+
 			field = value;
 			OnPropertyChanged(propertyName);
 			return true;
@@ -56,7 +65,7 @@ namespace HaCreator.CustomControls {
 	}
 
 	public class HaListItemCollection : PropertyChangeNotifierBase {
-		private ObservableCollection<HaListItem> items = new ObservableCollection<HaListItem>();
+		private ObservableCollection<HaListItem> items = new();
 
 		public ObservableCollection<HaListItem> Items => items;
 	}
@@ -66,7 +75,7 @@ namespace HaCreator.CustomControls {
 	/// </summary>
 	public partial class HaList : UserControl {
 		private int selectedIndex = -1;
-		private HaListItemCollection dataContext = new HaListItemCollection();
+		private HaListItemCollection dataContext = new();
 
 		public HaList() {
 			InitializeComponent();
@@ -76,11 +85,15 @@ namespace HaCreator.CustomControls {
 
 		private void HaList_PreviewKeyDown(object sender, KeyEventArgs e) {
 			if (e.Key == Key.Up) {
-				if (IsEnabled && SelectedIndex != 0) SelectedIndex--;
+				if (IsEnabled && SelectedIndex != 0) {
+					SelectedIndex--;
+				}
 
 				e.Handled = true;
 			} else if (e.Key == Key.Down) {
-				if (IsEnabled && SelectedIndex != Items.Count - 1) SelectedIndex++;
+				if (IsEnabled && SelectedIndex != Items.Count - 1) {
+					SelectedIndex++;
+				}
 
 				e.Handled = true;
 			}

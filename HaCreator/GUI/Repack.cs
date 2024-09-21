@@ -25,7 +25,9 @@ namespace HaCreator.GUI {
 			InitializeComponent();
 
 			toRepack = Program.WzManager.GetUpdatedWzFiles();
-			foreach (var wzf in toRepack) checkedListBox_changedFiles.Items.Add(wzf.Name, CheckState.Checked);
+			foreach (var wzf in toRepack) {
+				checkedListBox_changedFiles.Items.Add(wzf.Name, CheckState.Checked);
+			}
 		}
 
 		/// <summary>
@@ -49,7 +51,9 @@ namespace HaCreator.GUI {
 		private void Repack_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Escape) {
 				Close();
-			} else if (e.KeyCode == Keys.Enter) button_repack_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) {
+				button_repack_Click(null, null);
+			}
 		}
 
 		/// <summary>

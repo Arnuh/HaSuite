@@ -82,7 +82,9 @@ namespace HaCreator.MapEditor.Info {
 				return (BackgroundInfo) bgInfoProp.HCTagSpine;
 			}
 
-			if (bgInfoProp.HCTag == null) bgInfoProp.HCTag = Load(graphicsDevice, bgInfoProp, bS, type, no);
+			if (bgInfoProp.HCTag == null) {
+				bgInfoProp.HCTag = Load(graphicsDevice, bgInfoProp, bS, type, no);
+			}
 
 			return (BackgroundInfo) bgInfoProp.HCTag;
 		}

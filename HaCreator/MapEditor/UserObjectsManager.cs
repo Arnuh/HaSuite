@@ -24,8 +24,8 @@ namespace HaCreator.MapEditor {
 
 		private MultiBoard multiBoard;
 		private WzImageProperty l1prop;
-		private List<ObjectInfo> newObjects = new List<ObjectInfo>();
-		private Dictionary<string, byte[]> newObjectsData = new Dictionary<string, byte[]>();
+		private List<ObjectInfo> newObjects = new();
+		private Dictionary<string, byte[]> newObjectsData = new();
 		private string serializedFormCache;
 		private bool dirty;
 
@@ -46,10 +46,14 @@ namespace HaCreator.MapEditor {
 			}
 
 			var osimg = Program.InfoManager.ObjectSets[oS];
-			if (osimg[Program.APP_NAME] == null) osimg[Program.APP_NAME] = new WzSubProperty();
+			if (osimg[Program.APP_NAME] == null) {
+				osimg[Program.APP_NAME] = new WzSubProperty();
+			}
 
 			var l0prop = osimg[Program.APP_NAME];
-			if (l0prop[l1] == null) l0prop[l1] = new WzSubProperty();
+			if (l0prop[l1] == null) {
+				l0prop[l1] = new WzSubProperty();
+			}
 
 			l1prop = l0prop[l1];
 		}

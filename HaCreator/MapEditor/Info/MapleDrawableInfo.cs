@@ -5,6 +5,8 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.CustomControls;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.Properties;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib;
@@ -37,12 +39,12 @@ namespace HaCreator.MapEditor.Info {
 		/// <returns></returns>
 		public abstract BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip);
 
-		public virtual Texture2D GetTexture(SpriteBatch sprite) {
+		public virtual Texture2D GetTexture(Renderer graphics) {
 			if (texture == null) {
 				if (image != null && image.Width == 1 && image.Height == 1) {
-					texture = Resources.placeholder.ToTexture2D(sprite.GraphicsDevice);
+					texture = Resources.placeholder.ToTexture2D(graphics.GraphicsDevice);
 				} else {
-					texture = image.ToTexture2D(sprite.GraphicsDevice);
+					texture = image.ToTexture2D(graphics.GraphicsDevice);
 				}
 			}
 

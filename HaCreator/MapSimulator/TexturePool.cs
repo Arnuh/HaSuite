@@ -10,7 +10,7 @@ namespace HaCreator.MapSimulator {
 	/// TODO: A more efficient way of releasing resources when its not used for some time
 	/// </summary>
 	public class TexturePool : IDisposable {
-		private readonly Dictionary<string, Texture2D> TEXTURE_POOL = new Dictionary<string, Texture2D>();
+		private readonly Dictionary<string, Texture2D> TEXTURE_POOL = new();
 
 		/// <summary>
 		/// Get the previously loaded texture from the pool

@@ -1,10 +1,10 @@
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
- *
+ * 
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
- *
+ * 
  * You are granted a perpetual, non-exclusive, non-sublicensable and
  * non-transferable license to install, execute and perform the Spine Runtimes
  * Software (the "Software") solely for internal use. Without the written
@@ -15,7 +15,7 @@
  * trademark, patent or other intellectual property or proprietary rights
  * notices on or in the Software, including any copy thereof. Redistributions
  * in binary or source form must include this license and terms.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY ESOTERIC SOFTWARE "AS IS" AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -34,18 +34,15 @@ namespace Spine {
 	public class AtlasAttachmentLoader : AttachmentLoader {
 		private Atlas[] atlasArray;
 
-		public AtlasAttachmentLoader(params Atlas[] atlasArray) {
+		public AtlasAttachmentLoader (params Atlas[] atlasArray) {
 			if (atlasArray == null) throw new ArgumentNullException("atlas array cannot be null.");
 			this.atlasArray = atlasArray;
 		}
 
-		public RegionAttachment NewRegionAttachment(Skin skin, string name, string path) {
-			var region = FindRegion(path);
-			if (region == null) {
-				throw new Exception("Region not found in atlas: " + path + " (region attachment: " + name + ")");
-			}
-
-			var attachment = new RegionAttachment(name);
+		public RegionAttachment NewRegionAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = FindRegion(path);
+			if (region == null) throw new Exception("Region not found in atlas: " + path + " (region attachment: " + name + ")");
+			RegionAttachment attachment = new RegionAttachment(name);
 			attachment.RendererObject = region;
 			attachment.SetUVs(region.u, region.v, region.u2, region.v2, region.rotate);
 			attachment.regionOffsetX = region.offsetX;
@@ -57,13 +54,10 @@ namespace Spine {
 			return attachment;
 		}
 
-		public MeshAttachment NewMeshAttachment(Skin skin, string name, string path) {
-			var region = FindRegion(path);
-			if (region == null) {
-				throw new Exception("Region not found in atlas: " + path + " (mesh attachment: " + name + ")");
-			}
-
-			var attachment = new MeshAttachment(name);
+		public MeshAttachment NewMeshAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = FindRegion(path);
+			if (region == null) throw new Exception("Region not found in atlas: " + path + " (mesh attachment: " + name + ")");
+			MeshAttachment attachment = new MeshAttachment(name);
 			attachment.RendererObject = region;
 			attachment.RegionU = region.u;
 			attachment.RegionV = region.v;
@@ -79,13 +73,10 @@ namespace Spine {
 			return attachment;
 		}
 
-		public SkinnedMeshAttachment NewSkinnedMeshAttachment(Skin skin, string name, string path) {
-			var region = FindRegion(path);
-			if (region == null) {
-				throw new Exception("Region not found in atlas: " + path + " (skinned mesh attachment: " + name + ")");
-			}
-
-			var attachment = new SkinnedMeshAttachment(name);
+		public SkinnedMeshAttachment NewSkinnedMeshAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = FindRegion(path);
+			if (region == null) throw new Exception("Region not found in atlas: " + path + " (skinned mesh attachment: " + name + ")");
+			SkinnedMeshAttachment attachment = new SkinnedMeshAttachment(name);
 			attachment.RendererObject = region;
 			attachment.RegionU = region.u;
 			attachment.RegionV = region.v;
@@ -101,18 +92,17 @@ namespace Spine {
 			return attachment;
 		}
 
-		public BoundingBoxAttachment NewBoundingBoxAttachment(Skin skin, string name) {
+		public BoundingBoxAttachment NewBoundingBoxAttachment (Skin skin, String name) {
 			return new BoundingBoxAttachment(name);
 		}
 
 		public AtlasRegion FindRegion(string name) {
 			AtlasRegion region;
 
-			for (var i = 0; i < atlasArray.Length; i++) {
+			for (int i = 0; i < atlasArray.Length; i++) {
 				region = atlasArray[i].FindRegion(name);
-				if (region != null) {
+				if (region != null)
 					return region;
-				}
 			}
 
 			return null;

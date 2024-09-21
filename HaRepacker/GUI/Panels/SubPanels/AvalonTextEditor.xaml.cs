@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ICSharpCode.AvalonEdit.Highlighting;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>

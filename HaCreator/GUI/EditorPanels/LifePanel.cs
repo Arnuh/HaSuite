@@ -16,9 +16,9 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.EditorPanels {
 	public partial class LifePanel : UserControl {
-		private readonly List<string> reactors = new List<string>();
-		private readonly List<string> npcs = new List<string>();
-		private readonly List<string> mobs = new List<string>();
+		private readonly List<string> reactors = new();
+		private readonly List<string> npcs = new();
+		private readonly List<string> mobs = new();
 
 		private HaCreatorStateManager hcsm;
 
@@ -29,11 +29,17 @@ namespace HaCreator.GUI.EditorPanels {
 		public void Initialize(HaCreatorStateManager hcsm) {
 			this.hcsm = hcsm;
 
-			foreach (var entry in Program.InfoManager.Reactors) reactors.Add(entry.Value.ID);
+			foreach (var entry in Program.InfoManager.Reactors) {
+				reactors.Add(entry.Value.ID);
+			}
 
-			foreach (var entry in Program.InfoManager.NPCs) npcs.Add(entry.Key + " - " + entry.Value);
+			foreach (var entry in Program.InfoManager.NPCs) {
+				npcs.Add(entry.Key + " - " + entry.Value);
+			}
 
-			foreach (var entry in Program.InfoManager.Mobs) mobs.Add(entry.Key + " - " + entry.Value);
+			foreach (var entry in Program.InfoManager.Mobs) {
+				mobs.Add(entry.Key + " - " + entry.Value);
+			}
 
 			ReloadLifeList();
 		}
@@ -66,7 +72,10 @@ namespace HaCreator.GUI.EditorPanels {
 		private void lifeListBox_SelectedValueChanged(object sender, EventArgs e) {
 			lock (hcsm.MultiBoard) {
 				lifePictureBox.Image = new Bitmap(1, 1);
-				if (lifeListBox.SelectedItem == null) return;
+				if (lifeListBox.SelectedItem == null) {
+					return;
+				}
+
 				if (reactorRButton.Checked) {
 					var info = Program.InfoManager.Reactors[(string) lifeListBox.SelectedItem];
 					lifePictureBox.Image = new Bitmap(info.Image);
@@ -81,7 +90,9 @@ namespace HaCreator.GUI.EditorPanels {
 						return;
 					}
 
-					if (info.Height == 1 && info.Width == 1) info.Image = Resources.placeholder;
+					if (info.Height == 1 && info.Width == 1) {
+						info.Image = Resources.placeholder;
+					}
 
 					lifePictureBox.Image = new Bitmap(info.Image);
 					hcsm.EnterEditMode(ItemTypes.NPCs);

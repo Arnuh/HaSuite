@@ -13,6 +13,7 @@ using HaCreator.Wz;
 using HaCreator.Wz.Data;
 using HaSharedLibrary.Wz;
 using MapleLib.WzLib.WzStructure.Data;
+using MapType = HaCreator.Wz.Data.MapType;
 
 namespace HaCreator.GUI {
 	public partial class Save : Form {
@@ -150,7 +151,9 @@ namespace HaCreator.GUI {
 		private void Save_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Escape) {
 				Close();
-			} else if (e.KeyCode == Keys.Enter) saveButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) {
+				saveButton_Click(null, null);
+			}
 		}
 
 		/// <summary>

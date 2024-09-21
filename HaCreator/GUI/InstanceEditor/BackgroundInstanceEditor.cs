@@ -16,7 +16,8 @@ using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Render.DX;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
-using Spine;
+using spine_2._1._25_netcore;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.GUI.InstanceEditor {
 	public partial class BackgroundInstanceEditor : EditorBase {
@@ -33,6 +34,7 @@ namespace HaCreator.GUI.InstanceEditor {
 			} else {
 				zInput.Value = item.Z;
 			}
+
 			flipCheck.Checked = item.Flip;
 
 			pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item);
@@ -148,7 +150,10 @@ namespace HaCreator.GUI.InstanceEditor {
 					sort = true;
 				}
 
-				if (sort) item.Board.BoardItems.Sort();
+				if (sort) {
+					item.Board.BoardItems.Sort();
+				}
+
 				if (actions.Count > 0) {
 					item.Board.UndoRedoMan.AddUndoBatch(actions);
 				}

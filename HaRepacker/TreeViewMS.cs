@@ -60,11 +60,17 @@ namespace HaRepacker {
 			SelectedItemChanged += DataTree_AfterSelect;
 			KeyDown += Tree_KeyDown;
 			TextInput += Tree_TextInput;
+
+			PreviewMouseRightButtonDown += (sender, e) => {
+				ContextMenu = new ContextMenuManager(this).CreateMenu();
+				e.Handled = true;
+			};
+            
 			if (IsSelectionChangeActiveProperty == null) {
 				return;
 			}
 			SelectedItemChanged += (sender, e) => {
-				if (!(SelectedItem is WzNode node)) {
+				if (SelectedItem is not WzNode node) {
 					return;
 				}
 
@@ -267,16 +273,18 @@ namespace HaRepacker {
 				}
 			}
 		}
-
-		private readonly bool SearchDeep = true;
-		private bool SearchStartFound = false;
+		
 		private string SearchTerm = "";
-		private bool IsSearching = false;
+		private bool IsSearching;
+		private DateTime LastSearch = DateTime.Now;
 
 		private void Tree_TextInput(object sender, TextCompositionEventArgs e) {
-			//LastSearch = DateTime.Now;
+			if ((DateTime.Now - LastSearch).Seconds > 1) {
+				SearchTerm = "";
+			}
+
+			LastSearch = DateTime.Now;
 			SearchTerm += e.Text;
-			SearchStartFound = SelectedItem == null;
 
 			IsSearching = true;
 			foreach (var t in Items) {
@@ -289,31 +297,14 @@ namespace HaRepacker {
 		}
 
 		private bool SearchTreeView(TreeViewItem node, string searchterm) {
-			if (node.IsSelected) {
-				SearchStartFound = true;
-			}
-
-			// Search current level first
 			foreach (TreeViewItem subnode in node.Items) {
-				// Search subnodes to the current node first
-				if (subnode.IsSelected) {
-					SearchStartFound = true;
-					if (subnode.IsExpanded) {
-						foreach (TreeViewItem subsubnode in subnode.Items) {
-							if (!SearchStartFound || !subsubnode.Header.ToString().ToLower().StartsWith(searchterm)) {
-								continue;
-							}
-
-							subsubnode.IsSelected = true;
-							subsubnode.IsExpanded = true;
-							TreeViewHelper.BringIntoView(subsubnode);
-							return true;
-						}
+				if (subnode.IsExpanded) {
+					if (SearchTreeView(subnode, searchterm)) {
+						return true;
 					}
 				}
 
-				// Then search nodes on the same level
-				if (!SearchStartFound || !subnode.Header.ToString().ToLower().StartsWith(searchterm)) {
+				if (!subnode.Header.ToString().ToLower().StartsWith(searchterm)) {
 					continue;
 				}
 
@@ -321,21 +312,6 @@ namespace HaRepacker {
 				TreeViewHelper.BringIntoView(subnode);
 				return true;
 			}
-
-			// If not found, search subnodes
-			foreach (TreeViewItem subnode in node.Items) {
-				if (SearchStartFound && !SearchDeep) {
-					continue;
-				}
-
-				if (!SearchTreeView(subnode, searchterm)) {
-					continue;
-				}
-
-				node.IsExpanded = true;
-				return true;
-			}
-
 			return false;
 		}
 

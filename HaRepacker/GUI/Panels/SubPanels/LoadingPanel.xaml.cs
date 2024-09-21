@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using WpfAnimatedGif;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
 	/// <summary>

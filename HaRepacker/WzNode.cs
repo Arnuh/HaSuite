@@ -4,20 +4,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Media;
 using HaRepacker.GUI.Input;
 using MapleLib.WzLib;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
 	public class WzNode : TreeViewItem {
-		public static ContextMenuManager ContextMenuManager = null;
 
 		private bool isWzObjectAddedManually;
 		public static Brush NewObjectForeColor = Brushes.Red;
@@ -63,15 +60,6 @@ namespace HaRepacker {
 				Items.SortDescriptions.Clear();
 				Items.SortDescriptions.Add(TreeViewMS.Sort);
 			}
-
-			PreviewMouseRightButtonDown += (sender, e) => {
-				if (!(sender is WzNode node)) {
-					return;
-				}
-
-				node.IsSelected = true;
-				node.ContextMenu = ContextMenuManager.CreateMenu(this, SourceObject);
-			};
 			// Childs
 			ParseChilds(SourceObject);
 		}
@@ -327,7 +315,7 @@ namespace HaRepacker {
 					return;
 				}
 
-				obj.Name = Name;
+				obj.Name = name;
 			}
 			Text = name;
 			if (Tag is WzImageProperty property) {
@@ -380,15 +368,15 @@ namespace HaRepacker {
 			}
 		}
 
-		public T ParentOfType<T>(DependencyObject element) where T : DependencyObject {
+		public static T? ParentOfType<T>(DependencyObject? element) where T : DependencyObject {
 			if (element == null) {
-				return default;
+				return null;
 			}
 
 			return GetParents(element).OfType<T>().FirstOrDefault();
 		}
 
-		public IEnumerable<DependencyObject> GetParents(DependencyObject element) {
+		public static IEnumerable<DependencyObject> GetParents(DependencyObject element) {
 			if (element == null) {
 				throw new ArgumentNullException("element");
 			}
@@ -398,7 +386,7 @@ namespace HaRepacker {
 			}
 		}
 
-		private DependencyObject GetParent(DependencyObject element) {
+		private static DependencyObject GetParent(DependencyObject element) {
 			var parent = VisualTreeHelper.GetParent(element);
 			if (parent != null) {
 				return parent;

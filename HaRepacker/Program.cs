@@ -8,6 +8,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
+using System.Reflection;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,6 +17,7 @@ using HaRepacker.Properties;
 using MapleLib;
 using MapleLib.Configuration;
 using Microsoft.Win32;
+using Resources = HaRepacker.Properties.Resources;
 
 namespace HaRepacker {
 	public static class Program {
@@ -44,7 +46,7 @@ namespace HaRepacker {
 		[STAThread]
 		private static void Main(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
+			
 			// Localisation
 			var ci = GetMainCulture(CultureInfo.CurrentCulture);
 			Resources.Culture = ci;

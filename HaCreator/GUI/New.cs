@@ -120,7 +120,9 @@ namespace HaCreator.GUI {
 		private void New_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Escape) {
 				Close();
-			} else if (e.KeyCode == Keys.Enter) newButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) {
+				newButton_Click(null, null);
+			}
 		}
 
 		#endregion

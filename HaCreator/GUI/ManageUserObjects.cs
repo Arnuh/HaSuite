@@ -27,14 +27,17 @@ namespace HaCreator.GUI {
 
 		private void ManageUserObjects_KeyDown(object sender, KeyEventArgs e) {
 			e.Handled = true;
-			if (e.KeyCode == Keys.Escape) Close();
+			if (e.KeyCode == Keys.Escape) {
+				Close();
+			}
 		}
 
 		private void ManageUserObjects_Load(object sender, EventArgs e) {
 			var oldProps = new List<WzImageProperty>();
 			var newProps = new List<WzImageProperty>();
-			foreach (var prop in userObjs.L1Property.WzProperties)
+			foreach (var prop in userObjs.L1Property.WzProperties) {
 				(userObjs.NewObjects.Any(x => x.l2 == prop.Name) ? newProps : oldProps).Add(prop);
+			}
 
 			oldProps.ForEach(x => objsList.Items.Add(new UserObject(x, false)));
 			newProps.ForEach(x => objsList.Items.Add(new UserObject(x, true)));

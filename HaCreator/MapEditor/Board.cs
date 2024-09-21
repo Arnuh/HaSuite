@@ -10,9 +10,11 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Controls;
 using HaCreator.Collections;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.MonoGame;
 using HaCreator.MapEditor.UndoRedo;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib.WzStructure;
@@ -33,10 +35,10 @@ namespace HaCreator.MapEditor {
 		private Point centerPoint;
 		private readonly BoardItemsManager boardItems;
 		private readonly Layer[] mapLayers = new Layer[MapConstants.MaxMapLayers];
-		private readonly List<BoardItem> selected = new List<BoardItem>();
+		private readonly List<BoardItem> selected = new();
 		private MultiBoard parent;
 		private readonly Mouse mouse;
-		private MapInfo mapInfo = new MapInfo();
+		private MapInfo mapInfo = new();
 		private bool bIsNewMapDesign; // determines if this board is a new map design or editing an existing map.
 		private Bitmap miniMap;
 		private System.Drawing.Point miniMapPos;
@@ -101,12 +103,12 @@ namespace HaCreator.MapEditor {
 			serMan = new SerializationManager(this);
 		}
 
-		public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel) {
+		public void RenderList(IMapleList list, Renderer graphics, int xShift, int yShift, SelectionInfo sel) {
 			if (list.ListType == ItemTypes.None) {
 				foreach (BoardItem item in list) {
 					if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
 						    yShift - item.Origin.Y) && (sel.visibleTypes & item.Type) != 0) {
-						item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
+						item.Draw(graphics, item.GetColor(sel, item.Selected), xShift, yShift);
 					}
 				}
 			} else if ((sel.visibleTypes & list.ListType) != 0) {
@@ -114,7 +116,7 @@ namespace HaCreator.MapEditor {
 					foreach (BoardItem item in list) {
 						if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X,
 							    yShift - item.Origin.Y)) {
-							item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
+							item.Draw(graphics, item.GetColor(sel, item.Selected), xShift, yShift);
 						}
 					}
 				} else {
@@ -123,7 +125,7 @@ namespace HaCreator.MapEditor {
 							    Math.Min(line.FirstDot.Y, line.SecondDot.Y),
 							    Math.Abs(line.FirstDot.X - line.SecondDot.X),
 							    Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift)) {
-							line.Draw(sprite, line.GetColor(sel), xShift, yShift);
+							line.Draw(graphics, line.GetColor(sel), xShift, yShift);
 						}
 					}
 				}
@@ -187,7 +189,7 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public void RenderBoard(SpriteBatch sprite) {
+		public void Draw(Renderer graphics) {
 			if (mapInfo == null) {
 				return;
 			}
@@ -197,7 +199,9 @@ namespace HaCreator.MapEditor {
 			var sel = GetUserSelectionInfo();
 
 			// Render the object lists
-			foreach (var list in boardItems.AllItemLists) RenderList(list, sprite, xShift, yShift, sel);
+			foreach (var list in boardItems.AllItemLists) {
+				RenderList(list, graphics, xShift, yShift, sel);
+			}
 
 			// Render the user's selection square
 			if (mouse.MultiSelectOngoing) {
@@ -206,22 +210,22 @@ namespace HaCreator.MapEditor {
 						MultiBoard.VirtualToPhysical(mouse.MultiSelectStart.Y, centerPoint.Y, vScroll, 0)),
 					new Point(MultiBoard.VirtualToPhysical(mouse.X, centerPoint.X, hScroll, 0),
 						MultiBoard.VirtualToPhysical(mouse.Y, centerPoint.Y, vScroll, 0)));
-				parent.DrawRectangle(sprite, selectionRect, UserSettings.SelectSquare);
+				graphics.DrawRectangle(selectionRect, UserSettings.SelectSquare);
 				selectionRect.X++;
 				selectionRect.Y++;
 				selectionRect.Width--;
 				selectionRect.Height--;
-				parent.FillRectangle(sprite, selectionRect, UserSettings.SelectSquareFill);
+				graphics.FillRectangle(selectionRect, UserSettings.SelectSquareFill);
 			}
 
 			// Render VR if it exists
 			if (VRRectangle != null && (sel.visibleTypes & VRRectangle.Type) != 0) {
-				VRRectangle.Draw(sprite, xShift, yShift, sel);
+				VRRectangle.Draw(graphics, xShift, yShift, sel);
 			}
 
 			// Render minimap rectangle
 			if (MinimapRectangle != null && (sel.visibleTypes & MinimapRectangle.Type) != 0) {
-				MinimapRectangle.Draw(sprite, xShift, yShift, sel);
+				MinimapRectangle.Draw(graphics, xShift, yShift, sel);
 			}
 
 			// Render the minimap itself
@@ -233,27 +237,27 @@ namespace HaCreator.MapEditor {
 
 				// Render gray area
 				var mapArea = new Rectangle(minimapArea.X, minimapArea.Y, (int) (minimapArea.Width / scale), (int) (minimapArea.Height / scale));
-				parent.FillRectangle(sprite, mapArea, Color.Gray);
+				graphics.FillRectangle(mapArea, Color.Gray);
 				// Render minimap
 				if (miniMapTexture == null) {
-					miniMapTexture = miniMap.ToTexture2D(parent.GraphicsDevice);
+					miniMapTexture = miniMap.ToTexture2D(graphics.GraphicsDevice);
 				}
 
-				sprite.Draw(miniMapTexture, minimapImageArea, null, Color.White, 0, new Vector2(0, 0),
+				graphics.Draw(miniMapTexture, minimapImageArea, null, Color.White, 0, new Vector2(0, 0),
 					SpriteEffects.None, 0.99999f);
 				// Render current location on minimap
-				parent.DrawRectangle(sprite,
+				graphics.DrawRectangle(
 					new Rectangle((int) (hScroll / (double) _mag / scale), (int) (vScroll / (double) _mag / scale),
-						(int) (parent.CurrentDXWindowSize.Width / (double) _mag / scale),
-						(int) (parent.CurrentDXWindowSize.Height / (double) _mag / scale)), Color.Blue);
+						(int) (parent.ActualWidth / _mag / scale),
+						(int) (parent.ActualHeight / _mag / scale)), Color.Blue);
 
 				// Render minimap borders
-				parent.DrawRectangle(sprite, minimapImageArea, Color.Black);
+				graphics.DrawRectangle(minimapImageArea, Color.Black);
 			}
 
 			// Render center point if InfoMode on
 			if (ApplicationSettings.InfoMode) {
-				parent.FillRectangle(sprite,
+				graphics.FillRectangle(
 					new Rectangle(MultiBoard.VirtualToPhysical(-5, centerPoint.X, hScroll, 0),
 						MultiBoard.VirtualToPhysical(-5, centerPoint.Y, vScroll, 0), 10, 10), Color.DarkRed);
 			}

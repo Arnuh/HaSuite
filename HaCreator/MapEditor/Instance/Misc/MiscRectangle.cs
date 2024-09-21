@@ -5,7 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using System.Drawing;
+using HaCreator.CustomControls;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.MonoGame;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using XNA = Microsoft.Xna.Framework;
@@ -30,9 +32,9 @@ namespace HaCreator.MapEditor.Instance.Misc {
 
 		public override ItemTypes Type => ItemTypes.Misc;
 
-		public override void Draw(SpriteBatch sprite, XNA.Color dotColor, int xShift, int yShift) {
-			base.Draw(sprite, dotColor, xShift, yShift);
-			board.ParentControl.FontEngine.DrawString(sprite, new Point(X + xShift + 2, Y + yShift + 2),
+		public override void Draw(Renderer graphics, XNA.Color dotColor, int xShift, int yShift) {
+			base.Draw(graphics, dotColor, xShift, yShift);
+			graphics.DrawString(new Point(X + xShift + 2, Y + yShift + 2),
 				XNA.Color.Black, Name, Width);
 		}
 

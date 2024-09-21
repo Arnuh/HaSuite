@@ -1,6 +1,7 @@
 ﻿using System;
 using HaCreator.MapEditor.Instance.Shapes;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.MapEditor {
 	public class SnapHelper {
@@ -30,7 +31,10 @@ namespace HaCreator.MapEditor {
 
 				var targetY = fh.CalculateY(boardItem.X);
 				var distance = Math.Abs(targetY - y);
-				if (!(closestDistance > distance)) continue;
+				if (!(closestDistance > distance)) {
+					continue;
+				}
+
 				closestDistance = distance;
 				closestLine = fh;
 			}

@@ -101,8 +101,10 @@ namespace HaCreator.MapEditor.UndoRedo {
 					break;
 				case UndoRedoType.ItemsLayerChanged:
 					InputHandler.ClearSelectedItems(((BoardItem) ((List<IContainsLayerInfo>) ParamC)[0]).Board);
-					foreach (var layerInfoItem in (List<IContainsLayerInfo>) ParamC)
+					foreach (var layerInfoItem in (List<IContainsLayerInfo>) ParamC) {
 						layerInfoItem.LayerNumber = (int) ParamA;
+					}
+
 					((BoardItem) ((List<IContainsLayerInfo>) ParamC)[0]).Board.Layers[(int) ParamA].RecheckTileSet();
 					((BoardItem) ((List<IContainsLayerInfo>) ParamC)[0]).Board.Layers[(int) ParamB].RecheckTileSet();
 					break;

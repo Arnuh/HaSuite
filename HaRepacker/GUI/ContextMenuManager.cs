@@ -7,16 +7,21 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using HaRepacker.Converters;
 using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using MapleLib.WzLib;
 using ContextMenu = System.Windows.Controls.ContextMenu;
+using Image = System.Windows.Controls.Image;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
 	public class ContextMenuManager {
-		public MainPanel parentPanel;
+		private MainPanel parentPanel;
+		private TreeViewMS _treeViewMs;
 
 		private MenuItem SaveFile;
 		private MenuItem Remove;
@@ -55,63 +60,74 @@ namespace HaRepacker {
 		private MenuItem FixPixFormat;
 		private MenuItem CheckListWzEntries;
 
-		private WzNode previousNode;
-
-		public ContextMenuManager(MainPanel haRepackerMainPanel) {
-			parentPanel = haRepackerMainPanel;
+		public ContextMenuManager(TreeViewMS treeView) {
+			_treeViewMs = treeView;
+			parentPanel = _treeViewMs.MainPanel;
 			CreateItems();
 		}
 
 		private void CreateItems() {
-			SaveFile = new MenuItem() {Header = "Save", Icon = Resources.disk};
-			SaveFile.Click += delegate(object sender, RoutedEventArgs e) {
-				foreach (var node in GetNodes(sender)) {
+			SaveFile = new MenuItem() {Header = "Save", Icon = new Image {
+				Source = Resources.disk.ToWpfBitmap()
+			}};
+			SaveFile.Click += delegate {
+				foreach (var node in GetNodes()) {
 					new SaveForm(parentPanel, node).ShowDialog();
 				}
 			};
 			Rename = new MenuItem() {
-				Header = "Rename", Icon = Resources.rename
+				Header = "Rename", Icon = new Image {
+					Source = Resources.rename.ToWpfBitmap()
+				}
 			};
-			Rename.Click += delegate(object sender, RoutedEventArgs e) { parentPanel.PromptRenameWzTreeNode(GetNodes(sender)[0]); };
-			Remove = new MenuItem() {Header = "Remove", Icon = Resources.delete};
+			Rename.Click += delegate { parentPanel.PromptRenameWzTreeNode(GetNodes()[0]); };
+			Remove = new MenuItem() {Header = "Remove", Icon = new Image {
+				Source = Resources.delete.ToWpfBitmap()
+			}};
 			Remove.Click += delegate { parentPanel.PromptRemoveSelectedTreeNodes(); };
 
-			Unload = new MenuItem() {Header = "Unload", Icon = Resources.delete};
-			Unload.Click += delegate(object sender, RoutedEventArgs e) {
+			Unload = new MenuItem() {Header = "Unload", Icon = new Image {
+				Source = Resources.delete.ToWpfBitmap()
+			}};
+			Unload.Click += delegate {
 				if (!Warning.Warn(Resources.MainUnloadFile)) {
 					return;
 				}
 
-				var nodesSelected = GetNodes(sender);
-				foreach (var node in nodesSelected) {
+				foreach (var node in GetNodes()) {
 					parentPanel.MainForm.UnloadNode(node);
 				}
 			};
 			Reload = new MenuItem() {
-				Header = "Reload", Icon = Resources.arrow_refresh
+				Header = "Reload", Icon = new Image {
+					Source = Resources.arrow_refresh.ToWpfBitmap()
+				}
 			};
-			Reload.Click += delegate(object sender, RoutedEventArgs e) {
+			Reload.Click += delegate {
 				if (!Warning.Warn("Are you sure you want to reload this file?")) {
 					return;
 				}
 
-				var nodesSelected = GetNodes(sender);
-				foreach (var node in nodesSelected) // selected nodes
+				foreach (var node in GetNodes()) // selected nodes
 				{
 					parentPanel.MainForm.ReloadWzFile(node.Tag as WzFile);
 				}
 			};
-			CollapseAllChildNode = new MenuItem() {Header = "Collapse All", Icon = Resources.collapse};
-			CollapseAllChildNode.Click += delegate(object sender, RoutedEventArgs e) {
-				foreach (var node in GetNodes(sender)) {
+			CollapseAllChildNode = new MenuItem() {Header = "Collapse All", Icon = new Image {
+				Source = Resources.collapse.ToWpfBitmap()
+			}};
+			CollapseAllChildNode.Click += delegate {
+				foreach (var node in GetNodes()) {
 					node.CollapseAll();
 				}
 			};
 			ExpandAllChildNode = new MenuItem() {
-				Header = "Expand all", Icon = Resources.expand
+				Header = "Expand all", Icon = new Image {
+					Source = Resources.expand.ToWpfBitmap()
+				}
 			};
-			ExpandAllChildNode.Click += delegate(object sender, RoutedEventArgs e) {
-				foreach (var node in GetNodes(sender)) {
+			ExpandAllChildNode.Click += delegate {
+				foreach (var node in GetNodes()) {
 					node.ExpandSubtree();
 				}
 			};
@@ -134,7 +150,7 @@ namespace HaRepacker {
 
 			AddImage = new MenuItem() {Header = "Image"};
 			AddImage.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -147,7 +163,7 @@ namespace HaRepacker {
 			};
 			AddDirectory = new MenuItem() {Header = "Directory"};
 			AddDirectory.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -157,7 +173,7 @@ namespace HaRepacker {
 			};
 			AddByteFloat = new MenuItem() {Header = "Float"};
 			AddByteFloat.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -167,7 +183,7 @@ namespace HaRepacker {
 			};
 			AddCanvas = new MenuItem() {Header = "Canvas"};
 			AddCanvas.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -177,7 +193,7 @@ namespace HaRepacker {
 			};
 			AddLong = new MenuItem() {Header = "Long"};
 			AddLong.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -187,7 +203,7 @@ namespace HaRepacker {
 			};
 			AddInt = new MenuItem() {Header = "Int"};
 			AddInt.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -197,7 +213,7 @@ namespace HaRepacker {
 			};
 			AddConvex = new MenuItem() {Header = "Convex"};
 			AddConvex.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -207,7 +223,7 @@ namespace HaRepacker {
 			};
 			AddDouble = new MenuItem() {Header = "Double"};
 			AddDouble.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -217,7 +233,7 @@ namespace HaRepacker {
 			};
 			AddNull = new MenuItem() {Header = "Null"};
 			AddNull.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -227,7 +243,7 @@ namespace HaRepacker {
 			};
 			AddSound = new MenuItem() {Header = "Sound"};
 			AddSound.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -237,7 +253,7 @@ namespace HaRepacker {
 			};
 			AddString = new MenuItem() {Header = "String"};
 			AddString.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -247,7 +263,7 @@ namespace HaRepacker {
 			};
 			AddSub = new MenuItem() {Header = "Sub"};
 			AddSub.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -257,7 +273,7 @@ namespace HaRepacker {
 			};
 			AddUshort = new MenuItem() {Header = "Short"};
 			AddUshort.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -267,7 +283,7 @@ namespace HaRepacker {
 			};
 			AddUOL = new MenuItem() {Header = "UOL"};
 			AddUOL.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -277,7 +293,7 @@ namespace HaRepacker {
 			};
 			AddVector = new MenuItem() {Header = "Vector"};
 			AddVector.Click += delegate(object sender, RoutedEventArgs e) {
-				var nodes = GetNodes(sender);
+				var nodes = GetNodes();
 				if (nodes.Length != 1) {
 					MessageBox.Show("Please select only ONE node");
 					return;
@@ -330,10 +346,16 @@ namespace HaRepacker {
 		/// <param name="node"></param>
 		/// <param name="Tag"></param>
 		/// <returns></returns>
-		public ContextMenu CreateMenu(WzNode node, WzObject Tag) {
-			previousNode?.ContextMenu?.Items.Clear();
-
+		public ContextMenu CreateMenu() {
 			var menu = new ContextMenu();
+
+			var nodes = GetNodes();
+			if (nodes.Length == 0) {
+				return menu;
+			}
+
+			var Tag = nodes[0].Tag as WzObject;
+			var node = nodes[0];
 
 			if (Tag is WzImage || Tag is IPropertyContainer) {
 				menu.Items.Add(AddPropsSubMenu);
@@ -370,12 +392,11 @@ namespace HaRepacker {
 			} else {
 				menu.Items.Add(AddSortMenu_WithoutPropSort);
 			}*/
-			previousNode = node;
 			return menu;
 		}
 
-		private WzNode[] GetNodes(object sender) {
-			return new[] {previousNode};
+		private WzNode[] GetNodes() {
+			return _treeViewMs.SelectedNodes.ToArray();
 		}
 	}
 }

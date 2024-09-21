@@ -43,7 +43,10 @@ namespace HaCreator.CustomControls {
 					System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
 			dialog.Topmost = true;
 			dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-			if (!(bool) dialog.ShowDialog()) return;
+			if (!(bool) dialog.ShowDialog()) {
+				return;
+			}
+
 			Color = Color.FromArgb(dialog.SelectedColor.A, dialog.SelectedColor.R, dialog.SelectedColor.G,
 				dialog.SelectedColor.B);
 			Invalidate();

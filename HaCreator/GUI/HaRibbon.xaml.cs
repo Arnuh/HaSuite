@@ -88,103 +88,103 @@ namespace HaCreator.GUI {
 			}
 		}
 
-		public static readonly RoutedUICommand New = new RoutedUICommand("New", "New", typeof(HaRibbon),
+		public static readonly RoutedUICommand New = new("New", "New", typeof(HaRibbon),
 			new InputGestureCollection {new KeyGesture(Key.N, ModifierKeys.Control)});
 
-		public static readonly RoutedUICommand Open = new RoutedUICommand("Open", "Open", typeof(HaRibbon),
+		public static readonly RoutedUICommand Open = new("Open", "Open", typeof(HaRibbon),
 			new InputGestureCollection {new KeyGesture(Key.O, ModifierKeys.Control)});
 
-		public static readonly RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(HaRibbon),
+		public static readonly RoutedUICommand Save = new("Save", "Save", typeof(HaRibbon),
 			new InputGestureCollection {new KeyGesture(Key.S, ModifierKeys.Control)});
 
-		public static readonly RoutedUICommand Repack = new RoutedUICommand("Repack", "Repack", typeof(HaRibbon),
+		public static readonly RoutedUICommand Repack = new("Repack", "Repack", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand About = new RoutedUICommand("About", "About", typeof(HaRibbon),
+		public static readonly RoutedUICommand About = new("About", "About", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Help = new RoutedUICommand("Help", "Help", typeof(HaRibbon),
+		public static readonly RoutedUICommand Help = new("Help", "Help", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Settings = new RoutedUICommand("Settings", "Settings", typeof(HaRibbon),
+		public static readonly RoutedUICommand Settings = new("Settings", "Settings", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Exit = new RoutedUICommand("Exit", "Exit", typeof(HaRibbon),
+		public static readonly RoutedUICommand Exit = new("Exit", "Exit", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand ViewBoxes = new RoutedUICommand("ViewBoxes", "ViewBoxes",
+		public static readonly RoutedUICommand ViewBoxes = new("ViewBoxes", "ViewBoxes",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Minimap = new RoutedUICommand("Minimap", "Minimap", typeof(HaRibbon),
+		public static readonly RoutedUICommand Minimap = new("Minimap", "Minimap", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Parallax = new RoutedUICommand("Parallax", "Parallax", typeof(HaRibbon),
+		public static readonly RoutedUICommand Parallax = new("Parallax", "Parallax", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Finalize = new RoutedUICommand("Finalize", "Finalize", typeof(HaRibbon),
+		public static readonly RoutedUICommand Finalize = new("Finalize", "Finalize", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand AllLayerView = new RoutedUICommand("AllLayerView", "AllLayerView",
+		public static readonly RoutedUICommand AllLayerView = new("AllLayerView", "AllLayerView",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand MapSim = new RoutedUICommand("MapSim", "MapSim", typeof(HaRibbon),
+		public static readonly RoutedUICommand MapSim = new("MapSim", "MapSim", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand RegenMinimap = new RoutedUICommand("RegenMinimap", "RegenMinimap",
+		public static readonly RoutedUICommand RegenMinimap = new("RegenMinimap", "RegenMinimap",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Snapping = new RoutedUICommand("Snapping", "Snapping", typeof(HaRibbon),
+		public static readonly RoutedUICommand Snapping = new("Snapping", "Snapping", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Random = new RoutedUICommand("Random", "Random", typeof(HaRibbon),
+		public static readonly RoutedUICommand Random = new("Random", "Random", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand InfoMode = new RoutedUICommand("InfoMode", "InfoMode", typeof(HaRibbon),
+		public static readonly RoutedUICommand InfoMode = new("InfoMode", "InfoMode", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("PheRepacker", "PheRepacker",
+		public static readonly RoutedUICommand HaRepacker = new("PheRepacker", "PheRepacker",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand LayerUp = new RoutedUICommand("LayerUp", "LayerUp", typeof(HaRibbon),
+		public static readonly RoutedUICommand LayerUp = new("LayerUp", "LayerUp", typeof(HaRibbon),
 			new InputGestureCollection {new KeyGesture(Key.OemPlus, ModifierKeys.Control)});
 
-		public static readonly RoutedUICommand LayerDown = new RoutedUICommand("LayerDown", "LayerDown",
+		public static readonly RoutedUICommand LayerDown = new("LayerDown", "LayerDown",
 			typeof(HaRibbon),
 			new InputGestureCollection {new KeyGesture(Key.OemMinus, ModifierKeys.Control)});
 
-		public static readonly RoutedUICommand AllPlatformView = new RoutedUICommand("AllPlatformView",
+		public static readonly RoutedUICommand AllPlatformView = new("AllPlatformView",
 			"AllPlatformView", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand PlatformUp = new RoutedUICommand("PlatformUp", "PlatformUp",
+		public static readonly RoutedUICommand PlatformUp = new("PlatformUp", "PlatformUp",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand PlatformDown = new RoutedUICommand("PlatformDown", "PlatformDown",
+		public static readonly RoutedUICommand PlatformDown = new("PlatformDown", "PlatformDown",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand NewPlatform = new RoutedUICommand("NewPlatform", "NewPlatform",
+		public static readonly RoutedUICommand NewPlatform = new("NewPlatform", "NewPlatform",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand UserObjs = new RoutedUICommand("UserObjs", "UserObjs", typeof(HaRibbon),
+		public static readonly RoutedUICommand UserObjs = new("UserObjs", "UserObjs", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand Export = new RoutedUICommand("Export", "Export", typeof(HaRibbon),
+		public static readonly RoutedUICommand Export = new("Export", "Export", typeof(HaRibbon),
 			new InputGestureCollection());
 
-		public static readonly RoutedUICommand PhysicsEdit = new RoutedUICommand("PhysicsEdit", "PhysicsEdit",
+		public static readonly RoutedUICommand PhysicsEdit = new("PhysicsEdit", "PhysicsEdit",
 			typeof(HaRibbon),
 			new InputGestureCollection());
 
 		#region Debug Items
 
-		public static readonly RoutedUICommand ShowMapProperties = new RoutedUICommand("ShowMapProperties",
+		public static readonly RoutedUICommand ShowMapProperties = new("ShowMapProperties",
 			"ShowMapProperties", typeof(HaRibbon),
 			new InputGestureCollection());
 
@@ -344,13 +344,17 @@ namespace HaCreator.GUI {
 		private void LayerUp_Executed(object sender, ExecutedRoutedEventArgs e) {
 			if (UserSettings.InverseUpDown && sender != null) {
 				LayerDown_Executed(null, null);
-			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != layerBox.Items.Count - 1) layerBox.SelectedIndex++;
+			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != layerBox.Items.Count - 1) {
+				layerBox.SelectedIndex++;
+			}
 		}
 
 		private void LayerDown_Executed(object sender, ExecutedRoutedEventArgs e) {
 			if (UserSettings.InverseUpDown && sender != null) {
 				LayerUp_Executed(null, null);
-			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != 0) layerBox.SelectedIndex--;
+			} else if (layerBox.IsEnabled && layerBox.SelectedIndex != 0) {
+				layerBox.SelectedIndex--;
+			}
 		}
 
 		private void PlatformUp_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -364,7 +368,9 @@ namespace HaCreator.GUI {
 		private void PlatformDown_Executed(object sender, ExecutedRoutedEventArgs e) {
 			if (UserSettings.InverseUpDown && sender != null) {
 				PlatformUp_Executed(null, null);
-			} else if (platformBox.IsEnabled && platformBox.SelectedIndex != 0) platformBox.SelectedIndex--;
+			} else if (platformBox.IsEnabled && platformBox.SelectedIndex != 0) {
+				platformBox.SelectedIndex--;
+			}
 		}
 
 		private void NewPlatform_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -413,7 +419,9 @@ namespace HaCreator.GUI {
 			beginInternalEditing();
 
 			platformBox.ClearItems();
-			foreach (var zm in zms) platformBox.Items.Add(new HaListItem(zm.ToString(), zm));
+			foreach (var zm in zms) {
+				platformBox.Items.Add(new HaListItem(zm.ToString(), zm));
+			}
 
 			platformBox.SelectedIndex = 0;
 
@@ -562,8 +570,9 @@ namespace HaCreator.GUI {
 			foreach (var cb in new[] {
 				         tilesCheck, objsCheck, npcsCheck, mobsCheck, reactCheck, portalCheck, fhCheck, ropeCheck,
 				         chairCheck, tooltipCheck, bgCheck, miscCheck, mirrorFieldDataCheck
-			         })
+			         }) {
 				cb.IsChecked = state;
+			}
 
 			ViewBoxes_Executed(null, null);
 		}

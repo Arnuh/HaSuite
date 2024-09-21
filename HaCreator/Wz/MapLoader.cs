@@ -192,14 +192,37 @@ namespace HaCreator.Wz {
 				var y1 = InfoTool.GetInt(fh["y1"]);
 				var y2 = InfoTool.GetInt(fh["y2"]);
 
-				if (x1 > mostRight) mostRight = x1;
-				if (x1 < mostLeft) mostLeft = x1;
-				if (x2 > mostRight) mostRight = x2;
-				if (x2 < mostLeft) mostLeft = x2;
-				if (y1 > mostBottom) mostBottom = y1;
-				if (y1 < mostTop) mostTop = y1;
-				if (y2 > mostBottom) mostBottom = y2;
-				if (y2 < mostTop) mostTop = y2;
+				if (x1 > mostRight) {
+					mostRight = x1;
+				}
+
+				if (x1 < mostLeft) {
+					mostLeft = x1;
+				}
+
+				if (x2 > mostRight) {
+					mostRight = x2;
+				}
+
+				if (x2 < mostLeft) {
+					mostLeft = x2;
+				}
+
+				if (y1 > mostBottom) {
+					mostBottom = y1;
+				}
+
+				if (y1 < mostTop) {
+					mostTop = y1;
+				}
+
+				if (y2 > mostBottom) {
+					mostBottom = y2;
+				}
+
+				if (y2 < mostTop) {
+					mostTop = y2;
+				}
 			}
 
 			if (mostRight == int.MinValue || mostLeft == int.MaxValue || mostTop == int.MaxValue ||
@@ -255,8 +278,9 @@ namespace HaCreator.Wz {
 					List<ObjectInstanceQuest> questInfo = null;
 					if (questParent != null) {
 						questInfo = new List<ObjectInstanceQuest>();
-						foreach (WzIntProperty info in questParent.WzProperties)
+						foreach (WzIntProperty info in questParent.WzProperties) {
 							questInfo.Add(new ObjectInstanceQuest(int.Parse(info.Name), (QuestState) info.Value));
+						}
 					}
 
 					var objInfo = ObjectInfo.Get(oS, l0, l1, l2);
@@ -351,7 +375,10 @@ namespace HaCreator.Wz {
 
 		public static void LoadReactors(WzImage mapImage, Board mapBoard) {
 			var reactorParent = (WzSubProperty) mapImage["reactor"];
-			if (reactorParent == null) return;
+			if (reactorParent == null) {
+				return;
+			}
+
 			foreach (WzSubProperty reactor in reactorParent.WzProperties) {
 				var x = InfoTool.GetInt(reactor["x"]);
 				var y = InfoTool.GetInt(reactor["y"]);
@@ -533,7 +560,9 @@ namespace HaCreator.Wz {
 
 		public static void LoadToolTips(WzImage mapImage, Board mapBoard) {
 			var tooltipsParent = (WzSubProperty) mapImage["ToolTip"];
-			if (tooltipsParent == null) return;
+			if (tooltipsParent == null) {
+				return;
+			}
 
 			var tooltipsStringImage = (WzImage) Program.WzManager.FindWzImageByName("string", "ToolTipHelp.img");
 			if (tooltipsStringImage == null) {
@@ -618,7 +647,7 @@ namespace HaCreator.Wz {
 					infoType = BackgroundInfoType.Background;
 				}
 
-				var bgInfo = BackgroundInfo.Get(mapBoard.ParentControl.GraphicsDevice, bS, infoType, no);
+				var bgInfo = BackgroundInfo.Get(mapBoard.ParentControl.Device.GraphicsDevice, bS, infoType, no);
 				if (bgInfo == null) {
 					continue;
 				}
@@ -880,13 +909,21 @@ namespace HaCreator.Wz {
 					// We have no VR info, so set all VRs according to their target
 					vr = new Rectangle(leftTarget, topTarget, rightTarget, botTarget);
 				} else {
-					if (vr.Value.Left < leftTarget) leftOffs = leftTarget - vr.Value.Left;
+					if (vr.Value.Left < leftTarget) {
+						leftOffs = leftTarget - vr.Value.Left;
+					}
 
-					if (vr.Value.Top < topTarget) topOffs = topTarget - vr.Value.Top;
+					if (vr.Value.Top < topTarget) {
+						topOffs = topTarget - vr.Value.Top;
+					}
 
-					if (vr.Value.Right > rightTarget) rightOffs = vr.Value.Right - rightTarget;
+					if (vr.Value.Right > rightTarget) {
+						rightOffs = vr.Value.Right - rightTarget;
+					}
 
-					if (vr.Value.Bottom > botTarget) botOffs = vr.Value.Bottom - botTarget;
+					if (vr.Value.Bottom > botTarget) {
+						botOffs = vr.Value.Bottom - botTarget;
+					}
 				}
 
 				mapSize = new XNA.Point(minimapSize.X + leftOffs + rightOffs, minimapSize.Y + topOffs + botOffs);
@@ -918,7 +955,9 @@ namespace HaCreator.Wz {
 			var copyPropNames = VerifyMapPropsKnown(mapImage, false);
 
 			var info = new MapInfo(mapImage, mapName, streetName, categoryName);
-			foreach (var copyPropName in copyPropNames) info.additionalNonInfoProps.Add(mapImage[copyPropName]);
+			foreach (var copyPropName in copyPropNames) {
+				info.additionalNonInfoProps.Add(mapImage[copyPropName]);
+			}
 
 			var type = GetMapType(mapImage);
 			if (type == MapType.RegularMap) {
@@ -962,7 +1001,9 @@ namespace HaCreator.Wz {
 						new XNA.Rectangle(mmPos.X, mmPos.Y, minimapSize.X, minimapSize.Y));
 				}
 
-				if (hasVR) mapBoard.VRRectangle = new VRRectangle(mapBoard, VR);
+				if (hasVR) {
+					mapBoard.VRRectangle = new VRRectangle(mapBoard, VR);
+				}
 				// ensure that the MultiBoard.GraphicDevice is loaded at this point before loading images
 
 				LoadLayers(mapImage, mapBoard);
@@ -1029,7 +1070,9 @@ namespace HaCreator.Wz {
 
 				multiBoard.SelectedBoard = newBoard;
 				menu.Tag = newBoard;
-				foreach (MenuItem item in menu.Items) item.Tag = newTabPage;
+				foreach (MenuItem item in menu.Items) {
+					item.Tag = newTabPage;
+				}
 
 				multiBoard.HaCreatorStateManager.UpdateEditorPanelVisibility();
 			}

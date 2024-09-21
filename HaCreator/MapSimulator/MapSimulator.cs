@@ -25,9 +25,12 @@ using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Spine;
+using spine_2._1._25_netcore;
+using spine_2._1._25_netcore.spine_xna;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
 using Encoder = System.Drawing.Imaging.Encoder;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -51,7 +54,7 @@ namespace HaCreator.MapSimulator {
 		private Matrix matrixScale;
 
 		private GraphicsDeviceManager _DxDeviceManager;
-		private readonly TexturePool texturePool = new TexturePool();
+		private readonly TexturePool texturePool = new();
 		private bool bSaveScreenshot, bSaveScreenshotComplete = true; // flag for saving a screenshot file
 
 		private SpriteBatch spriteBatch;
@@ -59,18 +62,18 @@ namespace HaCreator.MapSimulator {
 
 		// Objects, NPCs
 		public List<BaseDXDrawableItem>[] mapObjects;
-		private readonly List<BaseDXDrawableItem> mapObjects_NPCs = new List<BaseDXDrawableItem>();
-		private readonly List<BaseDXDrawableItem> mapObjects_Mobs = new List<BaseDXDrawableItem>();
-		private readonly List<BaseDXDrawableItem> mapObjects_Reactors = new List<BaseDXDrawableItem>();
+		private readonly List<BaseDXDrawableItem> mapObjects_NPCs = new();
+		private readonly List<BaseDXDrawableItem> mapObjects_Mobs = new();
+		private readonly List<BaseDXDrawableItem> mapObjects_Reactors = new();
 
 		private readonly List<BaseDXDrawableItem>
-			mapObjects_Portal = new List<BaseDXDrawableItem>(); // perhaps mapobjects should be in a single pool
+			mapObjects_Portal = new(); // perhaps mapobjects should be in a single pool
 
-		private readonly List<BaseDXDrawableItem> mapObjects_tooltips = new List<BaseDXDrawableItem>();
+		private readonly List<BaseDXDrawableItem> mapObjects_tooltips = new();
 
 		// Backgrounds
-		private readonly List<BackgroundItem> backgrounds_front = new List<BackgroundItem>();
-		private readonly List<BackgroundItem> backgrounds_back = new List<BackgroundItem>();
+		private readonly List<BackgroundItem> backgrounds_front = new();
+		private readonly List<BackgroundItem> backgrounds_back = new();
 
 		// Boundary, borders
 		private Rectangle vr_fieldBoundary;
@@ -424,8 +427,9 @@ namespace HaCreator.MapSimulator {
 
 			while (!t_tiles.IsCompleted || !t_Background.IsCompleted || !t_reactor.IsCompleted || !t_npc.IsCompleted ||
 			       !t_mobs.IsCompleted || !t_portal.IsCompleted ||
-			       !t_tooltips.IsCompleted || !t_cursor.IsCompleted || !t_spine.IsCompleted || !t_minimap.IsCompleted)
+			       !t_tooltips.IsCompleted || !t_cursor.IsCompleted || !t_spine.IsCompleted || !t_minimap.IsCompleted) {
 				Thread.Sleep(100);
+			}
 
 #if DEBUG
 			// test benchmark
@@ -525,8 +529,9 @@ namespace HaCreator.MapSimulator {
 			var bitmap_vrBorder = new Bitmap(width, height);
 
 			for (var x = 0; x < bitmap_vrBorder.Width; x++)
-			for (var y = 0; y < bitmap_vrBorder.Height; y++)
+			for (var y = 0; y < bitmap_vrBorder.Height; y++) {
 				bitmap_vrBorder.SetPixel(x, y, brBorderColor); // is there a better way of doing this than looping?
+			}
 
 			var texture_vrBoundaryRect = bitmap_vrBorder.ToTexture2D(graphicsDevice);
 			return texture_vrBoundaryRect;
@@ -634,7 +639,9 @@ namespace HaCreator.MapSimulator {
 				SetCameraMoveX(bIsLeftKeyPressed, bIsRightKeyPressed, moveOffset);
 			}
 
-			if (bIsUpKeyPressed || bIsDownKeyPressed) SetCameraMoveY(bIsUpKeyPressed, bIsDownKeyPressed, moveOffset);
+			if (bIsUpKeyPressed || bIsDownKeyPressed) {
+				SetCameraMoveY(bIsUpKeyPressed, bIsDownKeyPressed, moveOffset);
+			}
 
 			// Minimap M
 			if (newKeyboardState.IsKeyDown(Keys.M)) {

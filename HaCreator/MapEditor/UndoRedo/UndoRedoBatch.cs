@@ -9,17 +9,21 @@ using System.Linq;
 
 namespace HaCreator.MapEditor.UndoRedo {
 	public class UndoRedoBatch {
-		public List<UndoRedoAction> Actions = new List<UndoRedoAction>();
+		public List<UndoRedoAction> Actions = new();
 
 		public void UndoRedo(Board board) {
 			var layersToRecheck = new HashSet<int>();
-			foreach (var action in Actions)
+			foreach (var action in Actions) {
 				action.UndoRedo(layersToRecheck);
+			}
+
 			layersToRecheck.ToList().ForEach(x => board.Layers[x].RecheckTileSet());
 		}
 
 		public void SwitchActions() {
-			foreach (var action in Actions) action.SwitchAction();
+			foreach (var action in Actions) {
+				action.SwitchAction();
+			}
 		}
 	}
 }

@@ -28,7 +28,8 @@ using MapleLib.WzLib.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Spine;
+using spine_2._1._25_netcore;
+using spine_2._1._25_netcore.spine_xna;
 
 namespace HaSharedLibrary.GUI {
 	public class SpineAnimationWindow : Game {

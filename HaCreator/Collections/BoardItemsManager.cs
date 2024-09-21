@@ -17,34 +17,32 @@ using HaCreator.MapEditor.Instance.Shapes;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace HaCreator.Collections {
 	public class BoardItemsManager {
-		public MapleList<BackgroundInstance> BackBackgrounds =
-			new MapleList<BackgroundInstance>(ItemTypes.Backgrounds, true);
+		public MapleList<BackgroundInstance> BackBackgrounds = new(ItemTypes.Backgrounds, true);
 
-		public MapleList<LayeredItem> TileObjs = new MapleList<LayeredItem>(ItemTypes.None, true);
-		public MapleList<MobInstance> Mobs = new MapleList<MobInstance>(ItemTypes.Mobs, true);
-		public MapleList<NpcInstance> NPCs = new MapleList<NpcInstance>(ItemTypes.NPCs, true);
-		public MapleList<ReactorInstance> Reactors = new MapleList<ReactorInstance>(ItemTypes.Reactors, true);
-		public MapleList<PortalInstance> Portals = new MapleList<PortalInstance>(ItemTypes.Portals, true);
+		public MapleList<LayeredItem> TileObjs = new(ItemTypes.None, true);
+		public MapleList<MobInstance> Mobs = new(ItemTypes.Mobs, true);
+		public MapleList<NpcInstance> NPCs = new(ItemTypes.NPCs, true);
+		public MapleList<ReactorInstance> Reactors = new(ItemTypes.Reactors, true);
+		public MapleList<PortalInstance> Portals = new(ItemTypes.Portals, true);
 
-		public MapleList<BackgroundInstance> FrontBackgrounds =
-			new MapleList<BackgroundInstance>(ItemTypes.Backgrounds, true);
+		public MapleList<BackgroundInstance> FrontBackgrounds = new(ItemTypes.Backgrounds, true);
 
-		public MapleList<FootholdLine> FootholdLines = new MapleList<FootholdLine>(ItemTypes.Footholds, false);
-		public MapleList<RopeLine> RopeLines = new MapleList<RopeLine>(ItemTypes.Ropes, false);
-		public MapleList<FootholdAnchor> FHAnchors = new MapleList<FootholdAnchor>(ItemTypes.Footholds, true);
-		public MapleList<RopeAnchor> RopeAnchors = new MapleList<RopeAnchor>(ItemTypes.Ropes, true);
-		public MapleList<Chair> Chairs = new MapleList<Chair>(ItemTypes.Chairs, true);
-		public MapleList<ToolTipChar> CharacterToolTips = new MapleList<ToolTipChar>(ItemTypes.ToolTips, true);
-		public MapleList<ToolTipInstance> ToolTips = new MapleList<ToolTipInstance>(ItemTypes.ToolTips, true);
-		public MapleList<ToolTipDot> ToolTipDots = new MapleList<ToolTipDot>(ItemTypes.ToolTips, true);
-		public MapleList<BoardItem> MiscItems = new MapleList<BoardItem>(ItemTypes.Misc, true);
-		public MapleList<MapleDot> SpecialDots = new MapleList<MapleDot>(ItemTypes.Misc, true);
+		public MapleList<FootholdLine> FootholdLines = new(ItemTypes.Footholds, false);
+		public MapleList<RopeLine> RopeLines = new(ItemTypes.Ropes, false);
+		public MapleList<FootholdAnchor> FHAnchors = new(ItemTypes.Footholds, true);
+		public MapleList<RopeAnchor> RopeAnchors = new(ItemTypes.Ropes, true);
+		public MapleList<Chair> Chairs = new(ItemTypes.Chairs, true);
+		public MapleList<ToolTipChar> CharacterToolTips = new(ItemTypes.ToolTips, true);
+		public MapleList<ToolTipInstance> ToolTips = new(ItemTypes.ToolTips, true);
+		public MapleList<ToolTipDot> ToolTipDots = new(ItemTypes.ToolTips, true);
+		public MapleList<BoardItem> MiscItems = new(ItemTypes.Misc, true);
+		public MapleList<MapleDot> SpecialDots = new(ItemTypes.Misc, true);
 
-		public MapleList<MirrorFieldData> MirrorFieldDatas =
-			new MapleList<MirrorFieldData>(ItemTypes.MirrorFieldData, true);
+		public MapleList<MirrorFieldData> MirrorFieldDatas = new(ItemTypes.MirrorFieldData, true);
 
 		/// <summary>
 		/// Checks if a BaseDXDrawableItem is within any of the MirrorFieldData in the field.
@@ -76,7 +74,7 @@ namespace HaCreator.Collections {
 		/// </summary>
 		public MapInfo MapInfo => board.MapInfo;
 
-		public List<Rope> Ropes = new List<Rope>();
+		public List<Rope> Ropes = new();
 		public IMapleList[] AllItemLists;
 		public BoardItemsCollection Items;
 		public MapleLinesCollection Lines;
@@ -95,7 +93,9 @@ namespace HaCreator.Collections {
 		}
 
 		public void Clear() {
-			foreach (var itemList in AllItemLists) itemList.Clear();
+			foreach (var itemList in AllItemLists) {
+				itemList.Clear();
+			}
 		}
 
 		public void Remove(BoardItem item) {
@@ -234,16 +234,25 @@ namespace HaCreator.Collections {
 		public int Count {
 			get {
 				var total = 0;
-				foreach (IList itemList in AllItemLists) total += itemList.Count;
+				foreach (IList itemList in AllItemLists) {
+					total += itemList.Count;
+				}
+
 				return total;
 			}
 		}
 
 		public BoardItem this[int index] {
 			get {
-				if (index < 0) throw new Exception("invalid index");
+				if (index < 0) {
+					throw new Exception("invalid index");
+				}
+
 				foreach (IList list in AllItemLists) {
-					if (index < list.Count) return (BoardItem) list[index];
+					if (index < list.Count) {
+						return (BoardItem) list[index];
+					}
+
 					index -= list.Count;
 				}
 

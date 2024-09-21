@@ -17,10 +17,9 @@ namespace HaCreator.Collections {
 		private FootholdAnchor firstAnchor;
 		private FootholdLine currLine;
 		private FootholdAnchor currAnchor;
-		private HashSet<FootholdLine> visited = new HashSet<FootholdLine>();
+		private HashSet<FootholdLine> visited = new();
 
-		private Stack<Tuple<FootholdLine, FootholdAnchor>> stashedLines =
-			new Stack<Tuple<FootholdLine, FootholdAnchor>>();
+		private Stack<Tuple<FootholdLine, FootholdAnchor>> stashedLines = new();
 
 		public FootholdEnumerator(FootholdLine startLine, FootholdAnchor startAnchor) {
 			firstLine = startLine;

@@ -113,7 +113,9 @@ namespace HaCreator.GUI {
 			var dialog = new OpenFileDialog();
 			dialog.Title = "Select XML to load...";
 			dialog.Filter = "eXtensible Markup Language file (*.xml)|*.xml";
-			if (dialog.ShowDialog() != DialogResult.OK) return;
+			if (dialog.ShowDialog() != DialogResult.OK) {
+				return;
+			}
 
 			XMLBox.Text = dialog.FileName;
 			loadButton.Enabled = true;
@@ -123,7 +125,9 @@ namespace HaCreator.GUI {
 			var dialog = new OpenFileDialog();
 			dialog.Title = "Select Map to load...";
 			dialog.Filter = "WZ Image Files (*.img)|*.img";
-			if (dialog.ShowDialog() != DialogResult.OK) return;
+			if (dialog.ShowDialog() != DialogResult.OK) {
+				return;
+			}
 
 			IMGBox.Text = dialog.FileName;
 			loadButton.Enabled = true;
@@ -155,6 +159,7 @@ namespace HaCreator.GUI {
 					Show();
 					return;
 				}
+
 				var mapid_str = mapImage.Name.Replace(".img", "").Replace(".xml", "");
 				int.TryParse(mapid_str, out mapid);
 			} else if (XMLSelect.Checked) {
@@ -248,7 +253,9 @@ namespace HaCreator.GUI {
 		private void Load_KeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Escape) {
 				Close();
-			} else if (e.KeyCode == Keys.Enter) LoadButton_Click(null, null);
+			} else if (e.KeyCode == Keys.Enter) {
+				LoadButton_Click(null, null);
+			}
 		}
 
 		private void IMGBox_TextChanged(object sender, EventArgs e) {
