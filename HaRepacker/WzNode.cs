@@ -15,7 +15,6 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
 	public class WzNode : TreeViewItem {
-		public static ContextMenuManager ContextMenuManager = null;
 
 		private bool isWzObjectAddedManually;
 		public static Brush NewObjectForeColor = Brushes.Red;
@@ -61,15 +60,6 @@ namespace HaRepacker {
 				Items.SortDescriptions.Clear();
 				Items.SortDescriptions.Add(TreeViewMS.Sort);
 			}
-
-			PreviewMouseRightButtonDown += (sender, e) => {
-				if (!(sender is WzNode node)) {
-					return;
-				}
-
-				node.IsSelected = true;
-				node.ContextMenu = ContextMenuManager.CreateMenu(this, SourceObject);
-			};
 			// Childs
 			ParseChilds(SourceObject);
 		}
@@ -378,15 +368,15 @@ namespace HaRepacker {
 			}
 		}
 
-		public T ParentOfType<T>(DependencyObject element) where T : DependencyObject {
+		public static T? ParentOfType<T>(DependencyObject? element) where T : DependencyObject {
 			if (element == null) {
-				return default;
+				return null;
 			}
 
 			return GetParents(element).OfType<T>().FirstOrDefault();
 		}
 
-		public IEnumerable<DependencyObject> GetParents(DependencyObject element) {
+		public static IEnumerable<DependencyObject> GetParents(DependencyObject element) {
 			if (element == null) {
 				throw new ArgumentNullException("element");
 			}
@@ -396,7 +386,7 @@ namespace HaRepacker {
 			}
 		}
 
-		private DependencyObject GetParent(DependencyObject element) {
+		private static DependencyObject GetParent(DependencyObject element) {
 			var parent = VisualTreeHelper.GetParent(element);
 			if (parent != null) {
 				return parent;

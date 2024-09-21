@@ -60,11 +60,17 @@ namespace HaRepacker {
 			SelectedItemChanged += DataTree_AfterSelect;
 			KeyDown += Tree_KeyDown;
 			TextInput += Tree_TextInput;
+
+			PreviewMouseRightButtonDown += (sender, e) => {
+				ContextMenu = new ContextMenuManager(this).CreateMenu();
+				e.Handled = true;
+			};
+            
 			if (IsSelectionChangeActiveProperty == null) {
 				return;
 			}
 			SelectedItemChanged += (sender, e) => {
-				if (!(SelectedItem is WzNode node)) {
+				if (SelectedItem is not WzNode node) {
 					return;
 				}
 

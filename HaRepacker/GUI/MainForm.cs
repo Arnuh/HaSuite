@@ -120,8 +120,6 @@ namespace HaRepacker.GUI {
 				}
 			}
 
-			WzNode.ContextMenuManager = new ContextMenuManager(MainPanel);
-
 			// Focus on the tab control
 			tabControl_MainPanels.Focus();
 
