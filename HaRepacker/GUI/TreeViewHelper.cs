@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
+using TreeView = System.Windows.Controls.TreeView;
 
 namespace HaRepacker.GUI {
 	public class TreeViewHelper {
@@ -35,6 +36,19 @@ namespace HaRepacker.GUI {
 					item.Focus();
 				}
 			}
+		}
+
+		public static WzNode GetTopLevelNode(TreeViewItem item) {
+			var parent = item.Parent;
+			while (parent is TreeViewItem tvi) {
+				if (tvi.Parent is TreeView) {
+					break;
+				}
+
+				parent = tvi.Parent;
+			}
+
+			return parent as WzNode;
 		}
 	}
 }

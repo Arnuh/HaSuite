@@ -314,14 +314,5 @@ namespace HaRepacker {
 			}
 			return false;
 		}
-
-		public static ItemsControl GetSelectedTreeViewItemParent(TreeViewItem item) {
-			var parent = VisualTreeHelper.GetParent(item);
-			while (!(parent is TreeViewItem || parent is TreeView)) {
-				parent = VisualTreeHelper.GetParent(parent);
-			}
-
-			return parent as ItemsControl;
-		}
 	}
 }

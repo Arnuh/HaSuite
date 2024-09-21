@@ -7,6 +7,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using MapleLib.WzLib;
 using Brush = System.Windows.Media.Brush;
@@ -328,7 +329,7 @@ namespace HaRepacker {
 
 		public WzNode TopLevelNode {
 			get {
-				var parent = TreeViewMS.GetSelectedTreeViewItemParent(this);
+				var parent = TreeViewHelper.GetTopLevelNode(this);
 				return parent as WzNode;
 			}
 		}
