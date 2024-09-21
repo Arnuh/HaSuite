@@ -7,12 +7,15 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using HaRepacker.Converters;
 using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Properties;
 using MapleLib.WzLib;
 using ContextMenu = System.Windows.Controls.ContextMenu;
+using Image = System.Windows.Controls.Image;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HaRepacker {
@@ -64,20 +67,28 @@ namespace HaRepacker {
 		}
 
 		private void CreateItems() {
-			SaveFile = new MenuItem() {Header = "Save", Icon = Resources.disk};
+			SaveFile = new MenuItem() {Header = "Save", Icon = new Image {
+				Source = Resources.disk.ToWpfBitmap()
+			}};
 			SaveFile.Click += delegate {
 				foreach (var node in GetNodes()) {
 					new SaveForm(parentPanel, node).ShowDialog();
 				}
 			};
 			Rename = new MenuItem() {
-				Header = "Rename", Icon = Resources.rename
+				Header = "Rename", Icon = new Image {
+					Source = Resources.rename.ToWpfBitmap()
+				}
 			};
 			Rename.Click += delegate { parentPanel.PromptRenameWzTreeNode(GetNodes()[0]); };
-			Remove = new MenuItem() {Header = "Remove", Icon = Resources.delete};
+			Remove = new MenuItem() {Header = "Remove", Icon = new Image {
+				Source = Resources.delete.ToWpfBitmap()
+			}};
 			Remove.Click += delegate { parentPanel.PromptRemoveSelectedTreeNodes(); };
 
-			Unload = new MenuItem() {Header = "Unload", Icon = Resources.delete};
+			Unload = new MenuItem() {Header = "Unload", Icon = new Image {
+				Source = Resources.delete.ToWpfBitmap()
+			}};
 			Unload.Click += delegate {
 				if (!Warning.Warn(Resources.MainUnloadFile)) {
 					return;
@@ -88,7 +99,9 @@ namespace HaRepacker {
 				}
 			};
 			Reload = new MenuItem() {
-				Header = "Reload", Icon = Resources.arrow_refresh
+				Header = "Reload", Icon = new Image {
+					Source = Resources.arrow_refresh.ToWpfBitmap()
+				}
 			};
 			Reload.Click += delegate {
 				if (!Warning.Warn("Are you sure you want to reload this file?")) {
@@ -100,14 +113,18 @@ namespace HaRepacker {
 					parentPanel.MainForm.ReloadWzFile(node.Tag as WzFile);
 				}
 			};
-			CollapseAllChildNode = new MenuItem() {Header = "Collapse All", Icon = Resources.collapse};
+			CollapseAllChildNode = new MenuItem() {Header = "Collapse All", Icon = new Image {
+				Source = Resources.collapse.ToWpfBitmap()
+			}};
 			CollapseAllChildNode.Click += delegate {
 				foreach (var node in GetNodes()) {
 					node.CollapseAll();
 				}
 			};
 			ExpandAllChildNode = new MenuItem() {
-				Header = "Expand all", Icon = Resources.expand
+				Header = "Expand all", Icon = new Image {
+					Source = Resources.expand.ToWpfBitmap()
+				}
 			};
 			ExpandAllChildNode.Click += delegate {
 				foreach (var node in GetNodes()) {
