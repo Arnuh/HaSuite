@@ -79,7 +79,7 @@ namespace MapleLib.WzLib.WzProperties {
 		private WzRawDataProperty(WzRawDataProperty copy) {
 			name = copy.name;
 			bytes = new byte[copy.length];
-			copy.bytes.CopyTo(bytes, 0);
+			copy.GetBytes(false).CopyTo(bytes, 0);
 			length = copy.length;
 		}
 
