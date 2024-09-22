@@ -288,7 +288,7 @@ namespace HaRepacker {
 
 			IsSearching = true;
 			foreach (var t in Items) {
-				if (SearchTreeView((TreeViewItem) t, SearchTerm.ToLower())) {
+				if (SearchTreeView((WzNode) t, SearchTerm.ToLower())) {
 					break;
 				}
 			}
@@ -296,15 +296,15 @@ namespace HaRepacker {
 			IsSearching = false;
 		}
 
-		private bool SearchTreeView(TreeViewItem node, string searchterm) {
-			foreach (TreeViewItem subnode in node.Items) {
+		private bool SearchTreeView(WzNode node, string searchterm) {
+			foreach (WzNode subnode in node.Items) {
 				if (subnode.IsExpanded) {
 					if (SearchTreeView(subnode, searchterm)) {
 						return true;
 					}
 				}
 
-				if (!subnode.Header.ToString().ToLower().StartsWith(searchterm)) {
+				if (!subnode.Text.ToLower().StartsWith(searchterm)) {
 					continue;
 				}
 
