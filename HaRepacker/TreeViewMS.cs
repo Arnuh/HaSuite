@@ -216,6 +216,8 @@ namespace HaRepacker {
 						} else {
 							header.IsInEditMode = true;
 						}
+					} else {
+						_mainPanel.PromptRenameWzTreeNode(SelectedNode);
 					}
 
 					break;
