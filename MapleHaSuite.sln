@@ -27,6 +27,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{070F4724
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest_WzFile", "UnitTest_WzFile\UnitTest_WzFile.csproj", "{9DB71E0B-537F-4E44-86C1-56833208E66C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{1CD047C3-16A6-4FBE-9F8D-383C190F43E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanvasHelper", "CanvasHelper\CanvasHelper.csproj", "{DE14C140-BCE9-4870-91B4-5AB64661DFB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -65,6 +69,8 @@ Global
 		{9DB71E0B-537F-4E44-86C1-56833208E66C}.Debug|x64.Build.0 = Debug|x64
 		{9DB71E0B-537F-4E44-86C1-56833208E66C}.Release|x64.ActiveCfg = Release|x64
 		{9DB71E0B-537F-4E44-86C1-56833208E66C}.Release|x64.Build.0 = Release|x64
+		{DE14C140-BCE9-4870-91B4-5AB64661DFB8}.Release|x64.ActiveCfg = Release|x64
+		{DE14C140-BCE9-4870-91B4-5AB64661DFB8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{C6C9444D-E0A9-421D-9400-F35D0B8797AD} = {1ECDADB2-6E72-49AF-A3C3-751256F2C2D8}
 		{8B4E439A-CF0E-4A45-A789-54D94CA6403A} = {1F77FE4A-DBAC-49C4-A707-D395CA9D45F3}
 		{9DB71E0B-537F-4E44-86C1-56833208E66C} = {070F4724-9E5B-46C2-9054-CB6E0C54F2A2}
+		{DE14C140-BCE9-4870-91B4-5AB64661DFB8} = {1CD047C3-16A6-4FBE-9F8D-383C190F43E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {11BE1FD9-3FE8-45F8-87B4-4906D2AA2A59}

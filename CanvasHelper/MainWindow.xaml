@@ -1,0 +1,45 @@
+﻿<Window x:Class="CanvasHelper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="CanvasHelper" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0, 20, 0, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="InputFolder" Grid.Column="0" Margin="20,0,20,0" ToolTip="Input Folder" />
+            <Button x:Name="InputFolderButton" Click="BrowseFolder" Content="..." Grid.Column="1" Margin="20,0,20,0" />
+        </Grid>
+        <Grid Grid.Row="1" Margin="0, 20, 0, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="500" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="OutputFolder" Grid.Column="0" Margin="20,0,20,0" ToolTip="Output Folder" />
+            <Button x:Name="OutputFolderButton" Click="BrowseFolder" Content="..." Grid.Column="1" Margin="20,0,20,0" />
+        </Grid>
+        <Grid Grid.Row="2" Margin="0, 20, 0, 0">
+            <Button Click="FixCanvas" Content="Fix Canvas'" MaxWidth="100" />
+        </Grid>
+        <Grid Grid.Row="3" Margin="0, 20, 0, 0">
+            <TextBlock x:Name="Status" MaxWidth="500" Text="Select Input and Output" TextWrapping="Wrap" />
+        </Grid>
+    </Grid>
+</Window>
