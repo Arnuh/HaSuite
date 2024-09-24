@@ -15,6 +15,7 @@ A collection of WZ-related tools for MapleStory, with a focus on GMS v95 and low
 ## Project contents
 * HaCreator - MapleStory level editor
 * HaRepacker - MapleStory .wz file editor
+* CanvasHelper - Generate wz files with Canvas outlinks fixed
 * HaSharedLibrary - A shared library between HaRepacker & HaCreator for mostly GUI
 * MapleLib - A shared library between HaRepacker & HaCreator for the WZ files.
 * squish-1.11\apng - (Unused for now, might consider .NET Core implementation of SIMD for images in future releases) [info](https://sjbrown.co.uk/?code=squish)
