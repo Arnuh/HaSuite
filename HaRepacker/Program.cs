@@ -4,19 +4,15 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-using System;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
-using System.Reflection;
 using System.Security.Principal;
-using System.Threading;
-using System.Windows.Forms;
+using Config.Net;
 using HaRepacker.GUI;
-using HaRepacker.Properties;
 using MapleLib;
-using MapleLib.Configuration;
 using Microsoft.Win32;
+using ConfigurationManager = MapleLib.Configuration.ConfigurationManager;
 using Resources = HaRepacker.Properties.Resources;
 
 namespace HaRepacker {
@@ -30,6 +26,10 @@ namespace HaRepacker {
 
 		public static NamedPipeServerStream pipe;
 		public static Thread pipeThread;
+
+		private static Config _config;
+
+		public static Config Config => _config;
 
 		private static ConfigurationManager _ConfigurationManager; // default for VS UI designer
 
@@ -129,7 +129,6 @@ namespace HaRepacker {
 			return our_folder;
 		}
 
-
 		public static bool IsUserAdministrator() {
 			//bool value to hold our return value
 			bool isAdmin;
@@ -146,6 +145,10 @@ namespace HaRepacker {
 		}
 
 		public static bool PrepareApplication(bool from_internal) {
+			_config = new ConfigurationBuilder<Config>()
+				.UseJsonFile(Path.Combine(ConfigurationManager.GetNewLocalFolderPath(), "PheRepacker.json"))
+				.Build();
+			
 			_ConfigurationManager = new ConfigurationManager();
 
 			var loaded = _ConfigurationManager.Load();

@@ -66,6 +66,16 @@ namespace MapleLib.Configuration {
 			return our_folder;
 		}
 
+		public static string GetNewLocalFolderPath() {
+			var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			var ourFolder = Path.Combine(appdata, "HaSuite");
+			if (!Directory.Exists(ourFolder)) {
+				Directory.CreateDirectory(ourFolder);
+			}
+
+			return ourFolder;
+		}
+
 		/// <summary>
 		/// Load application setting from user application data 
 		/// </summary>

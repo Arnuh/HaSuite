@@ -1,4 +1,5 @@
-﻿using MapleLib.WzLib.Serialization;
+﻿using System.Windows.Forms;
+using MapleLib.WzLib.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -28,7 +29,7 @@ namespace MapleLib.Configuration {
 
 		[JsonProperty(PropertyName = "QuickEdit")]
 		public bool QuickEdit;
-
+		
 		[JsonProperty(PropertyName = "SuppressWarnings")]
 		public bool SuppressWarnings;
 
