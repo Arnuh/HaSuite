@@ -988,6 +988,23 @@ namespace MapleLib.WzLib {
 			Dispose();
 		}
 
+		public WzObject? GetFromPath(string path) {
+			var split = path.Split(new char[] {'\\', '/'}, StringSplitOptions.RemoveEmptyEntries);
+			if (split.Length == 0) {
+				return null;
+			}
+
+			if (!split[0].ToLower().EndsWith(".img")) {
+				return GetObjectFromPath(path);
+			}
+
+			var img = wzDir.GetImageByName(split[0]);
+			if (split.Length == 1) {
+				return img;
+			}
+			return img?.GetFromPath(string.Join('/', split.Skip(1)));
+		}
+
 		public List<string> ListWzEntries = new List<string>();
 
 		public bool LoadListWz(string file) {

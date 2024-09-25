@@ -19,6 +19,7 @@ using HaRepacker.GUI.Input;
 using HaSharedLibrary.GUI;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
+using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.Spine;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
@@ -26,6 +27,7 @@ using MapleLib.WzLib.WzStructure.Data;
 using static MapleLib.Configuration.UserSettings;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
+using Clipboard = System.Windows.Clipboard;
 using Control = System.Windows.Forms.Control;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
@@ -33,6 +35,7 @@ using Image = System.Drawing.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using Point = System.Drawing.Point;
+using TextDataFormat = System.Windows.TextDataFormat;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels {
@@ -55,7 +58,6 @@ namespace HaRepacker.GUI.Panels {
 		public TreeViewMS DataTree => _dataTree;
 
 		// Etc
-		private static readonly List<WzObject> clipboard = new List<WzObject>();
 		private readonly UndoRedoManager undoRedoMan;
 
 		private bool isSelectingWzMapFieldLimit;
@@ -1172,31 +1174,6 @@ namespace HaRepacker.GUI.Panels {
 		#region Copy & Paste
 
 		/// <summary>
-		/// Clones a WZ object
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private WzObject CloneWzObject(WzObject obj) {
-			if (obj is WzDirectory) {
-				Warning.Error(Properties.Resources.MainCopyDirError);
-				return null;
-			}
-
-			if (obj is WzImage image) {
-				return image.DeepClone();
-			}
-
-			if (obj is WzImageProperty property) {
-				return property.DeepClone();
-			}
-
-			ErrorLogger.Log(ErrorLevel.MissingFeature,
-				"The current WZ object type cannot be cloned " + obj + " " + obj.FullPath);
-			return null;
-		}
-
-		/// <summary>
 		/// Flag to determine if a copy task is currently active.
 		/// </summary>
 		private bool pasteTaskActive;
@@ -1209,27 +1186,7 @@ namespace HaRepacker.GUI.Panels {
 				return;
 			}
 
-			foreach (var obj in clipboard)
-				//this causes minor weirdness with png's in copied nodes but otherwise memory is not free'd 
-				obj.Dispose();
-
-			clipboard.Clear();
-
-			foreach (WzNode node in DataTree.SelectedNodes) {
-				var wzObj = (WzObject) node.Tag;
-				var clone = CloneWzObject(wzObj);
-				if (clone == null) continue;
-				if (clone is WzImage image) {
-					// Decrypt any List.wz entries so that we paste them as decrypted
-					// Otherwise we need to know the key to decrypt them on paste
-					ListWzContainerImpl.MarkListWzProperty(image, false);
-				} else if (clone is WzImageProperty prop) {
-					// No parent image so we need to grab it from source
-					ListWzContainerImpl.MarkListWzProperty(prop, false, ((WzImageProperty) wzObj).ParentImage.wzKey);
-				} // Can't copy directories atm so they don't need handling
-
-				clipboard.Add(clone);
-			}
+			Program.Config.CopyMode.DoCopy(this, DataTree.SelectedNodes);
 		}
 
 		/// <summary>
@@ -1241,39 +1198,8 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			pasteTaskActive = true;
-			var parent = DataTree.SelectedNode;
 			try {
-				var parentObj = (WzObject) parent.Tag;
-
-				if (parent.Tag is WzImage && parent.Nodes.Count == 0) {
-					TreeViewMS.ParseOnDataTreeSelectedItem(parent); // only parse the main node.
-				}
-
-				if (parentObj is WzFile file) {
-					parentObj = file.WzDirectory;
-				}
-
-				var handler = MainForm.CreateDefaultDuplicateHandler();
-				
-				foreach (var obj in clipboard) {
-					if (((!(obj is WzDirectory) && !(obj is WzImage)) || !(parentObj is WzDirectory)) &&
-					    (!(obj is WzImageProperty) || !(parentObj is IPropertyContainer))) {
-						continue;
-					}
-
-					var clone = CloneWzObject(obj);
-					if (clone == null) {
-						continue;
-					}
-
-					if (clone is WzImage image) {
-						// Cloning also clones wz key
-						// But they could now be different, update it
-						image.wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(parentObj.WzFileParent.MapleVersion));
-					}
-
-					_mainForm.AddObjectWithNode(handler, parent, clone);
-				}
+				Program.Config.CopyMode.DoPaste(this, DataTree.SelectedNodes);
 			} finally {
 				pasteTaskActive = false;
 			}
