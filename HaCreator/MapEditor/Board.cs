@@ -263,7 +263,7 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public void Dispose() {
+		public void Dispose(bool gc = true) {
 			lock (parent) {
 				parent.Boards.Remove(this);
 				boardItems.Clear();
@@ -273,6 +273,9 @@ namespace HaCreator.MapEditor {
 
 			// This must be called when MultiBoard is unlocked, to prevent BackupManager deadlocking
 			parent.OnBoardRemoved(this);
+			if (!gc) {
+				return;
+			}
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 		}

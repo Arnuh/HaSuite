@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -369,25 +370,21 @@ namespace HaCreator.GUI {
 			if (!InitializeWzFiles(wzPath, fileVersion)) {
 				return;
 			}
-
+			
 			var mb = new MultiBoard();
-			var mapBoard = new Board(
-				new Point(),
-				new Point(),
-				mb,
-				false,
-				null,
-				ItemTypes.None,
-				ItemTypes.None);
 
+			var count = Program.InfoManager.Maps.Keys.Count;
+
+			var fieldsChecked = 0;
 			foreach (var mapid in Program.InfoManager.Maps.Keys) {
+				fieldsChecked++;
 				var mapImage = WzInfoTools.FindMapImage(mapid, Program.WzManager);
 				if (mapImage == null) {
 					continue;
 				}
 
-				UpdateUI_CurrentLoading(mapImage.Name);
-
+				UpdateUI_CurrentLoading($"{mapImage.Name} {fieldsChecked} / {count}");
+				
 				mapImage.ParseImage();
 				if (mapImage["info"]["link"] != null) {
 					mapImage.UnparseImage();
@@ -395,7 +392,9 @@ namespace HaCreator.GUI {
 				}
 
 				MapLoader.VerifyMapPropsKnown(mapImage, true);
-				var info = new MapInfo(mapImage, null, null, null);
+				new MapInfo(mapImage, null, null, null);
+
+				var mapBoard = new Board(new Point(), new Point(), mb, false, null, ItemTypes.None, ItemTypes.None);
 				try {
 					mapBoard.InitMapLayers();
 
@@ -411,9 +410,6 @@ namespace HaCreator.GUI {
 					MapLoader.LoadBackgrounds(mapImage, mapBoard);
 					MapLoader.LoadMisc(mapImage, mapBoard);
 
-					//MapLoader.LoadBackgrounds(mapImage, board);
-					//MapLoader.LoadMisc(mapImage, board);
-
 					// Check background to ensure that its correct
 					var allBackgrounds = new List<BackgroundInstance>();
 					allBackgrounds.AddRange(mapBoard.BoardItems.BackBackgrounds);
@@ -425,24 +421,26 @@ namespace HaCreator.GUI {
 								var error = string.Format(
 									"Negative CX/ CY moving background object. CX='{0}', CY={1}, Type={2}, {3}{4}",
 									bg.cx, bg.cy, bg.type.ToString(), Environment.NewLine,
-									mapImage /*overrides, see WzImage.ToString*/);
+									mapImage);
 								ErrorLogger.Log(ErrorLevel.IncorrectStructure, error);
 							}
 						}
 					}
-
-					allBackgrounds.Clear();
+					//allBackgrounds.Clear();
 				} catch (Exception exp) {
 					var error = string.Format("Exception occured loading {0}{1}{2}{3}", Environment.NewLine,
-						mapImage /*overrides, see WzImage.ToString*/, Environment.NewLine, exp);
+						mapImage, Environment.NewLine, exp);
 					ErrorLogger.Log(ErrorLevel.Crash, error);
 				} finally {
-					mapBoard.Dispose();
+					mapBoard.Dispose(false);
 
-					mapBoard.BoardItems.BackBackgrounds.Clear();
-					mapBoard.BoardItems.FrontBackgrounds.Clear();
-
+					//mapBoard.BoardItems.BackBackgrounds.Clear();
+					//mapBoard.BoardItems.FrontBackgrounds.Clear();
 					mapImage.UnparseImage(); // To preserve memory, since this is a very memory intensive test
+					if (fieldsChecked % 250 == 0) {
+						GC.Collect();
+						GC.WaitForPendingFinalizers();
+					}
 				}
 
 				if (ErrorLogger.NumberOfErrorsPresent() > 200) {
@@ -451,7 +449,6 @@ namespace HaCreator.GUI {
 			}
 
 			ErrorLogger.SaveToFile(OUTPUT_ERROR_FILENAME);
-
 
 			MessageBox.Show(string.Format("Check for map errors completed. See '{0}' for more information.",
 				OUTPUT_ERROR_FILENAME));
