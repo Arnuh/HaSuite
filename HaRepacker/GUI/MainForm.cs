@@ -113,10 +113,15 @@ namespace HaRepacker.GUI {
 					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
 					new ListEditor(wzPathToLoad, encVersion).Show();
 				} else {
-					var encVersion = WzTool.DetectMapleVersion(wzPathToLoad, out _);
-					SetWzEncryptionBoxSelectionByWzMapleVersion(encVersion);
+					var encryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
+					if (encryptionType != WzMapleVersion.AUTO) {
+						// Don't override unless it's auto
+						// I. think we still want to detect & override the selected version
+						encryptionType = WzTool.DetectMapleVersion(wzPathToLoad, out _);
+						SetWzEncryptionBoxSelectionByWzMapleVersion(encryptionType);
+					}
 
-					LoadWzFileCallback(wzPathToLoad);
+					LoadWzFileCallback(wzPathToLoad, encryptionType);
 				}
 			}
 
@@ -158,12 +163,16 @@ namespace HaRepacker.GUI {
 		}
 
 		private void LoadWzFileCallback(string path) {
+			var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
+
+			LoadWzFileCallback(path, wzEncryptionType);
+		}
+
+		private void LoadWzFileCallback(string path, WzMapleVersion wzEncryptionType) {
 			try {
-				var wzEncryptionType = WzEncryptionTypeHelper.GetWzMapleVersionByWzEncryptionBoxSelection(encryptionBox.SelectedIndex, true, true);
 				if (wzEncryptionType == WzMapleVersion.AUTO) {
 					wzEncryptionType = WzTool.DetectMapleVersionAt(path, out _);
 				}
-
 				var loadedWzFile = Program.WzFileManager.LoadWzFile(path, wzEncryptionType);
 				if (loadedWzFile == null) return;
 
