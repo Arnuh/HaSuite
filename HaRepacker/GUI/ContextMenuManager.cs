@@ -12,6 +12,7 @@ using HaRepacker.Converters;
 using HaRepacker.GUI;
 using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
+using HaRepacker.Helpers;
 using HaRepacker.Properties;
 using MapleLib.WzLib;
 using ContextMenu = System.Windows.Controls.ContextMenu;
@@ -332,6 +333,24 @@ namespace HaRepacker {
 			AddEtcMenu.Items.Add(FixLink);
 			AddEtcMenu.Items.Add(FixPixFormat);
 			AddEtcMenu.Items.Add(CheckListWzEntries);
+			var RetrieveSize = new MenuItem() {Header = "Get Size"};
+			RetrieveSize.Click += delegate {
+				var nodes = GetNodes();
+				long totalSize = 0;
+				var nodesChecked = 0;
+				foreach (var node in nodes) {
+					if (node.Tag is WzImage img) {
+						totalSize += img.BlockSize;
+						nodesChecked++;
+					}else if (node.Tag is WzDirectory dir) {
+						totalSize += dir.BlockSize;
+						nodesChecked++;
+					}
+				}
+
+				MessageBox.Show($"Counted {StringUtils.ToFileSize(totalSize, FileSizeUnits.MB)} MB from {nodesChecked} nodes");
+			};
+			AddEtcMenu.Items.Add(RetrieveSize);
 
 			//AddSortMenu = new MenuItem(){ Header = "Sort", Icon = Resources.sort, SortAllChildViewNode, SortPropertiesByName);
 
