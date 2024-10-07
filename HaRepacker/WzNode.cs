@@ -348,7 +348,7 @@ namespace HaRepacker {
 			var result = Text;
 
 			for (var i = GetParentItem(this); i != null; i = GetParentItem(i)) {
-				result = i.Text + "\\" + result;
+				result = i.Text + "/" + result;
 			}
 
 			return result;

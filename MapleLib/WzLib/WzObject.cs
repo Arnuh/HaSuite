@@ -114,7 +114,7 @@ namespace MapleLib.WzLib {
 				var currObj = this;
 				while (currObj.Parent != null) {
 					currObj = currObj.Parent;
-					result = currObj.Name + @"\" + result;
+					result = currObj.Name + "/" + result;
 				}
 
 				return result;

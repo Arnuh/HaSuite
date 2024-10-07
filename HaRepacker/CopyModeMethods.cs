@@ -33,7 +33,7 @@ namespace HaRepacker {
 				foreach (var node in selectedNodes) {
 					var obj = node.Tag as WzObject;
 					var wzFile = obj.WzFileParent;
-					var fixedPath = obj.FullPath.Replace($"{wzFile.Name}\\", "");
+					var fixedPath = obj.FullPath.Replace($"{wzFile.Name}/", "");
 					pathCopy.paths.Add($"{wzFile.FilePath},{fixedPath}");
 				}
 			} else if (mode.Equals(CopyMode.XmlClipboard)) {

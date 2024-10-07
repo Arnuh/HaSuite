@@ -19,8 +19,7 @@ namespace MapleLib.WzLib {
 		}
 
 		public static bool ListWzContains(List<string> ListWzEntries, string wzName, string wzEntry) {
-			wzEntry = wzEntry.Replace("\\", "/").ToLower();
-			wzEntry = wzEntry.Replace(".wz/", "/");
+			wzEntry = wzEntry.ToLower().Replace(".wz/", "/");
 			if (string.IsNullOrEmpty(wzName)) return ListWzEntries.Contains(wzEntry);
 			// Strips anything that isn't the base wz name
 			// Since I think.... those aren't needed

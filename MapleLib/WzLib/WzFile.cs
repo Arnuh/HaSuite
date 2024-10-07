@@ -989,7 +989,7 @@ namespace MapleLib.WzLib {
 		}
 
 		public WzObject? GetFromPath(string path) {
-			var split = path.Split(new char[] {'\\', '/'}, StringSplitOptions.RemoveEmptyEntries);
+			var split = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 			if (split.Length == 0) {
 				return null;
 			}
