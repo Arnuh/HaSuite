@@ -21,7 +21,7 @@ namespace HaCreator.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace HaCreator.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HaCreator.Properties.Resources", typeof(Resources).Assembly);
@@ -50,7 +50,7 @@ namespace HaCreator.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,7 +62,7 @@ namespace HaCreator.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The MapleStory directory {0} provided does not exist..
         /// </summary>
-        internal static string Initialization_Error_MSDirectoryNotExist {
+        public static string Initialization_Error_MSDirectoryNotExist {
             get {
                 return ResourceManager.GetString("Initialization_Error_MSDirectoryNotExist", resourceCulture);
             }
@@ -71,7 +71,7 @@ namespace HaCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap mapEditMenu {
+        public static System.Drawing.Bitmap mapEditMenu {
             get {
                 object obj = ResourceManager.GetObject("mapEditMenu", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -81,7 +81,7 @@ namespace HaCreator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap placeholder {
+        public static System.Drawing.Bitmap placeholder {
             get {
                 object obj = ResourceManager.GetObject("placeholder", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

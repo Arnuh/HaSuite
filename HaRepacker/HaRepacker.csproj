@@ -84,6 +84,10 @@
 	  <EmbeddedResource Update="GUI\Input\BitmapInputBox.zh-CHS.resx">
 	    <DependentUpon>BitmapInputBox.cs</DependentUpon>
 	  </EmbeddedResource>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
 	</ItemGroup>
 	
     <ItemGroup>
@@ -109,4 +113,12 @@
         <None Include="Resources\pasteFile.png"/>
         <Content Include="Resources\Pause.png"/>
     </ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 </Project>
