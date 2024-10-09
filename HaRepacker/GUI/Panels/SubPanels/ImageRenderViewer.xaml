@@ -943,7 +943,13 @@
 
 
         <Grid x:Name="grid_zoom" Grid.Row="1" VerticalAlignment="Bottom">
-            <Slider Name="ZoomSlider"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="35" />
+            </Grid.ColumnDefinitions>
+            <Slider Grid.Column="0" Name="ZoomSlider"
                     Margin="10,0,10,0"
                     Minimum="0.1"
                     Maximum="20"
@@ -952,6 +958,8 @@
                     SmallChange="0.05"
                     LargeChange="0.1"
                     ValueChanged="ZoomSlider_ValueChanged" />
+            <TextBox Grid.Column="1" Name="ZoomSliderText" Text="3" TextChanged="ZoomSliderText_OnTextChanged" />
+            <Button Grid.Column="3" Name="ZoomSliderReset" Content="Reset" Click="ZoomSliderReset_OnClick" />
         </Grid>
     </Grid>
 </UserControl>

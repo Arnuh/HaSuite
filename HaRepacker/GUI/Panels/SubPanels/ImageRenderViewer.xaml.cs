@@ -10,6 +10,7 @@ using static MapleLib.Configuration.UserSettings;
 using CheckBox = System.Windows.Controls.CheckBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Point = System.Windows.Point;
+using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaRepacker.GUI.Panels.SubPanels {
@@ -47,6 +48,7 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 				checkbox_border.IsChecked = Program.ConfigurationManager.UserSettings.EnableBorderDebugInformation;
 
 				ZoomSlider.Value = Program.ConfigurationManager.UserSettings.ImageZoomLevel;
+				ZoomSliderText.Text = ZoomSlider.Value.ToString();
 			} finally {
 				isLoading = false;
 			}
@@ -431,6 +433,8 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 			button_originEdit.IsEnabled = false;
 		}
 
+		private bool ProgramZoomEdit = false;
+
 		/// <summary>
 		/// Image zoom level on value changed
 		/// </summary>
@@ -441,8 +445,43 @@ namespace HaRepacker.GUI.Panels.SubPanels {
 				return;
 			}
 
+			if (ProgramZoomEdit) {
+				return;
+			}
+
 			var zoomSlider = (Slider) sender;
-			Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;
+			ProgramZoomEdit = true;
+			lock (ZoomSlider) {
+				Program.ConfigurationManager.UserSettings.ImageZoomLevel = zoomSlider.Value;
+				ZoomSliderText.Text = zoomSlider.Value.ToString();
+			}
+
+			ProgramZoomEdit = false;
+		}
+
+		private void ZoomSliderText_OnTextChanged(object sender, TextChangedEventArgs e) {
+			if (isLoading) {
+				return;
+			}
+
+			if (ProgramZoomEdit) {
+				return;
+			}
+
+			var zoom = (TextBox) sender;
+			ProgramZoomEdit = true;
+			lock (ZoomSlider) {
+				if (double.TryParse(zoom.Text, out var newZoom)) {
+					Program.ConfigurationManager.UserSettings.ImageZoomLevel = newZoom;
+					ZoomSlider.Value = newZoom;
+				}
+			}
+
+			ProgramZoomEdit = false;
+		}
+
+		private void ZoomSliderReset_OnClick(object sender, RoutedEventArgs e) {
+			ZoomSlider.Value = 3;
 		}
 
 		private Point _positionInBlock;
