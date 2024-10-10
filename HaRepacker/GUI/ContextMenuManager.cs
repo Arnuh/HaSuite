@@ -14,6 +14,7 @@ using HaRepacker.GUI.Input;
 using HaRepacker.GUI.Panels;
 using HaRepacker.Helpers;
 using HaRepacker.Properties;
+using MapleLib.Helpers;
 using MapleLib.WzLib;
 using ContextMenu = System.Windows.Controls.ContextMenu;
 using Image = System.Windows.Controls.Image;
@@ -405,6 +406,56 @@ namespace HaRepacker {
 			menu.Items.Add(ExpandAllChildNode);
 			menu.Items.Add(CollapseAllChildNode);
 			menu.Items.Add(AddEtcMenu);
+
+			var BatchMenu = new MenuItem() {
+				Header = "Batch"
+			};
+
+			var BatchDelete = new MenuItem() {
+				Header = "Delete", Icon = new Image {
+					Source = Resources.delete.ToWpfBitmap()
+				}
+			};
+			BatchDelete.Click += delegate {
+				if (!NameInputBox.Show(Resources.ContextMenu_BatchDelete_Title, 0, out var name)) {
+					return;
+				}
+
+				var inputNodes = GetNodes();
+
+				var nodesModified = RecursiveHelper.CheckAllNodes(Array.ConvertAll(inputNodes, item => (WzObject) item.Tag), obj => !obj.Name.Equals(name), obj => {
+					if (!obj.Name.Equals(name)) {
+						return false;
+					}
+
+					foreach (var node in inputNodes) {
+						var child = node.GetChildNode(obj);
+						if (child == null) {
+							continue;
+						}
+						
+						child.DeleteWzNode();
+						return true;
+					}
+
+					// Nodes will not be loaded in all cases, so if it's not loaded yet
+					// just delete the wz object and continue
+					if (obj is WzImageProperty property) {
+						var parent = property.ParentImage;
+						if (parent != null) {
+							parent.Changed = true;
+						}
+					}
+
+					obj.Remove();
+					return true;
+				});
+				MessageBox.Show(string.Format(Resources.ContextMenu_BatchDelete_Deleted, nodesModified));
+			};
+
+			BatchMenu.Items.Add(BatchDelete);
+
+			menu.Items.Add(BatchMenu);
 
 			/*if (Tag.GetType() == typeof(WzSubProperty)) {
 				menu.Items.Add(AddSortMenu);

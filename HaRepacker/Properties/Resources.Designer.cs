@@ -157,6 +157,24 @@ namespace HaRepacker.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleted {0} entries.
+        /// </summary>
+        public static string ContextMenu_BatchDelete_Deleted {
+            get {
+                return ResourceManager.GetString("ContextMenu_BatchDelete_Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch Delete.
+        /// </summary>
+        public static string ContextMenu_BatchDelete_Title {
+            get {
+                return ResourceManager.GetString("ContextMenu_BatchDelete_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap copyFile {

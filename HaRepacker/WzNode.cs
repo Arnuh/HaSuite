@@ -149,7 +149,7 @@ namespace HaRepacker {
 			Tag is WzImage ||
 			Tag is IPropertyContainer;
 
-		public static WzNode GetChildNode(WzNode parentNode, string name) {
+		public static WzNode? GetChildNode(WzNode parentNode, string name) {
 			foreach (WzNode node in parentNode.Items) {
 				if (node.Text == name) {
 					return node;
@@ -241,8 +241,14 @@ namespace HaRepacker {
 		/// Try parsing the WzImage if it have not been loaded
 		/// </summary>
 		private void TryParseImage(bool reparseImage = true) {
-			if (!(Tag is WzImage image)) return;
-			image.ParseImage();
+			if (Tag is not WzImage image) {
+				return;
+			}
+
+			if (!image.Parsed) {
+				image.ParseImage();
+			}
+
 			if (reparseImage) Reparse();
 		}
 
@@ -299,6 +305,28 @@ namespace HaRepacker {
 			Nodes.Add(node);
 			undoRedoMan?.AddUndoBatch(new List<UndoRedoAction>
 				{UndoRedoManager.ObjectAdded(this, node)});
+		}
+
+		public WzNode? GetChildNode(WzObject obj) {
+			var nodePath = GetFullPath().Split("/");
+			var objPath = obj.FullPath.Split("/");
+			var node = this;
+			for (var i = 0; i < objPath.Length; i++) {
+				if (node == null) {
+					return null;
+				}
+
+				if (i >= nodePath.Length) {
+					node = GetChildNode(node, objPath[i]);
+					continue;
+				}
+
+				if (!nodePath[i].Equals(objPath[i])) {
+					return null;
+				}
+			}
+
+			return node;
 		}
 
 		public string GetTypeName() {
