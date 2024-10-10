@@ -73,7 +73,33 @@ namespace MapleLib.WzLib {
 				MarkListWzProperty(prop, listWz);
 			}
 		}
-		
+
+		public static void RecursiveRemoveListWz(WzObject parentObj, WzObject obj) {
+			if (obj is WzImage image) {
+				// Decrypt any List.wz entries so that we paste them as decrypted
+				// Otherwise we need to know the key to decrypt them on paste
+				MarkListWzProperty(image, false);
+			} else if (obj is WzImageProperty prop) {
+				// No parent image so we need to grab it from source
+				WzMutableKey wzKey = null;
+				if (parentObj is WzImage img) {
+					wzKey = img.wzKey;
+				} else if (parentObj is WzImageProperty parentProp && parentProp.ParentImage != null) {
+					wzKey = parentProp.ParentImage.wzKey;
+				}
+
+				MarkListWzProperty(prop, false, wzKey);
+			} else if (obj is WzDirectory dir) {
+				foreach (var img in dir.WzImages) {
+					RecursiveRemoveListWz(dir, img);
+				}
+
+				foreach (var dirSub in dir.WzDirectories) {
+					RecursiveRemoveListWz(dir, dirSub);
+				}
+			}
+		}
+
 		public static void ConvertKey(WzImage image) {
 			foreach (var prop in image.WzProperties) {
 				ConvertKey(prop);

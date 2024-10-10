@@ -71,7 +71,7 @@ namespace HaRepacker {
 					}
 
 					foreach (var obj in clipboard) {
-						if (!CreateClone(obj, out var clone)) {
+						if (!CreateClone(parentObj, obj, out var clone)) {
 							continue;
 						}
 
@@ -111,7 +111,7 @@ namespace HaRepacker {
 								parentObj = file.WzDirectory;
 							}
 
-							if (!CreateClone(obj, out var clone)) {
+							if (!CreateClone(parentObj, obj, out var clone)) {
 								continue;
 							}
 
@@ -120,7 +120,27 @@ namespace HaRepacker {
 					}
 				}
 			} else if (mode.Equals(CopyMode.XmlClipboard)) {
-				// hmm
+				var deserializer = new WzXmlDeserializer(false, WzMapleVersion.GMS);
+				var objects = deserializer.ParseXMLString(Clipboard.GetText());
+				foreach (var parent in selectedNodes) {
+					var parentObj = (WzObject) parent.Tag;
+
+					if (parent.Tag is WzImage && parent.Nodes.Count == 0) {
+						TreeViewMS.ParseOnDataTreeSelectedItem(parent); // only parse the main node.
+					}
+
+					if (parentObj is WzFile file) {
+						parentObj = file.WzDirectory;
+					}
+
+					foreach (var obj in objects) {
+						if (!CreateClone(parentObj, obj, out var clone)) {
+							continue;
+						}
+
+						PasteObject(panel, clone, parentObj, handler, parent);
+					}
+				}
 			}
 		}
 
@@ -130,35 +150,22 @@ namespace HaRepacker {
 				return;
 			}
 
-			var clone = CloneWzObject(obj);
-			if (clone == null) {
-				return;
-			}
-
-			if (clone is WzImage image) {
+			if (obj is WzImage image) {
 				// Cloning also clones wz key
 				// But they could now be different, update it
 				image.wzKey = WzKeyGenerator.GenerateWzKey(WzTool.GetIvByMapleVersion(parentObj.WzFileParent.MapleVersion));
 			}
 
-			panel.MainForm.AddObjectWithNode(handler, parent, clone);
+			panel.MainForm.AddObjectWithNode(handler, parent, obj);
 		}
 
-		private static bool CreateClone(WzObject wzObj, out WzObject? clone) {
+		private static bool CreateClone(WzObject parentObj, WzObject wzObj, out WzObject? clone) {
 			clone = CloneWzObject(wzObj);
 			if (clone == null) {
 				return false;
 			}
 
-			if (clone is WzImage image) {
-				// Decrypt any List.wz entries so that we paste them as decrypted
-				// Otherwise we need to know the key to decrypt them on paste
-				ListWzContainerImpl.MarkListWzProperty(image, false);
-			} else if (clone is WzImageProperty prop) {
-				// No parent image so we need to grab it from source
-				ListWzContainerImpl.MarkListWzProperty(prop, false, ((WzImageProperty) wzObj).ParentImage.wzKey);
-			} // Can't copy directories atm so they don't need handling
-
+			ListWzContainerImpl.RecursiveRemoveListWz(parentObj, clone);
 			return true;
 		}
 

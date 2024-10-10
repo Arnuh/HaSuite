@@ -591,7 +591,7 @@ namespace MapleLib.WzLib {
 		}
 
 		public WzDirectory DeepClone() {
-			var result = (WzDirectory) MemberwiseClone();
+			var result = new WzDirectory(Name);
 			result.WzDirectories.Clear();
 			result.WzImages.Clear();
 			foreach (var dir in WzDirectories)

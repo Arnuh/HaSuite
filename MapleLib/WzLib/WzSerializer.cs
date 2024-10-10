@@ -814,13 +814,13 @@ namespace MapleLib.WzLib.Serialization {
 				tw.Write(depth + "<string name=\"" + XmlUtil.SanitizeText(stringProp.Name) + "\" value=\"" + str +
 				         "\"/>" + lineBreak);
 			} else if (prop is WzSubProperty subProp) {
-				tw.Write(depth + "<imgdir name=\"" + XmlUtil.SanitizeText(subProp.Name) + "\">" + lineBreak);
+				tw.Write(depth + "<subprop name=\"" + XmlUtil.SanitizeText(subProp.Name) + "\">" + lineBreak);
 				var newDepth = depth + indent;
 				foreach (var property in subProp.WzProperties) {
 					WritePropertyToXML(tw, newDepth, property);
 				}
 
-				tw.Write(depth + "</imgdir>" + lineBreak);
+				tw.Write(depth + "</subprop>" + lineBreak);
 			} else if (prop is WzShortProperty shortProp) {
 				tw.Write(string.Concat(depth, "<short name=\"", XmlUtil.SanitizeText(shortProp.Name), "\" value=\"",
 					shortProp.Value, "\"/>") + lineBreak);
@@ -868,19 +868,37 @@ namespace MapleLib.WzLib.Serialization {
 
 		public void Serialize(WzObject obj, SerializationContext context) {
 			var tw = context.Writer;
-			if (obj is WzImage) {
-				tw.Write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + lineBreak);
-				tw.Write("<imgdir name=\"" + XmlUtil.SanitizeText(obj.Name) + "\">" + lineBreak);
-				if (obj is IPropertyContainer prop) {
-					foreach (var property in prop.WzProperties) {
-						WritePropertyToXML(tw, indent, property);
-					}
-				}
-
-				tw.Write("</imgdir>" + lineBreak);
+			if (obj is WzImage img) {
+				SerializeImg(img, context);
+			} else if (obj is WzDirectory dir) {
+				SerializeDir(dir, context);
 			} else if (obj is WzImageProperty prop) {
 				WritePropertyToXML(tw, "", prop);
 			}
+		}
+
+		private void SerializeImg(WzImage img, SerializationContext context) {
+			var tw = context.Writer;
+			tw.Write("<img name=\"" + XmlUtil.SanitizeText(img.Name) + "\">" + lineBreak);
+			foreach (var property in img.WzProperties) {
+				WritePropertyToXML(tw, indent, property);
+			}
+
+			tw.Write("</img>" + lineBreak);
+		}
+
+		private void SerializeDir(WzDirectory dir, SerializationContext context) {
+			var tw = context.Writer;
+			tw.Write("<dir name=\"" + XmlUtil.SanitizeText(dir.Name) + "\">" + lineBreak);
+			foreach (var subdir in dir.WzDirectories) {
+				SerializeDir(subdir, context);
+			}
+
+			foreach (var img in dir.WzImages) {
+				SerializeImg(img, context);
+			}
+
+			tw.Write("</dir>" + lineBreak);
 		}
 	}
 
@@ -1065,28 +1083,58 @@ namespace MapleLib.WzLib.Serialization {
 		#region Public Functions
 
 		public List<WzObject> ParseXML(string path) {
-			var result = new List<WzObject>();
 			var doc = new XmlDocument();
 			doc.Load(path);
-			var mainElement = (XmlElement) doc.ChildNodes[1];
+			return ParseXML(doc);
+		}
+
+		public List<WzObject> ParseXMLString(string xml) {
+			var doc = new XmlDocument();
+			// No good way exists to parse xml that has multiple root elements or something
+			doc.LoadXml($"<fakeparent>{xml}</fakeparent>");
+			return ParseXML(doc);
+		}
+
+		public List<WzObject> ParseXML(XmlDocument doc) {
 			curr = 0;
-			if (mainElement.Name == "xmldump") {
-				total = CountImgs(mainElement);
-				foreach (XmlElement subelement in mainElement) {
-					if (subelement.Name == "wzdir") {
-						result.Add(ParseXMLWzDir(subelement));
-					} else if (subelement.Name == "wzimg") {
-						result.Add(ParseXMLWzImg(subelement));
-					} else {
-						throw new InvalidDataException("unknown XML prop " + subelement.Name);
-					}
-				}
-			} else if (mainElement.Name == "imgdir") {
-				total = 1;
-				result.Add(ParseXMLWzImg(mainElement));
-				curr++;
+			total = 0;
+			var result = new List<WzObject>();
+			XmlNode nodeList;
+			if (doc.ChildNodes[0].Name == "fakeparent") {
+				nodeList = doc.ChildNodes[0];
 			} else {
-				throw new InvalidDataException("unknown main XML prop " + mainElement.Name);
+				nodeList = doc;
+			}
+
+			foreach (XmlNode entry in nodeList) {
+				if (entry is not XmlElement elem) {
+					continue;
+				}
+
+				if (elem.Name == "xmldump") {
+					total += CountImgs(elem);
+					foreach (XmlElement subelement in elem) {
+						if (subelement.Name is "wzdir" or "dir") {
+							result.Add(ParseXMLWzDir(subelement));
+						} else if (subelement.Name is "wzimg" or "img") {
+							result.Add(ParseXMLWzImg(subelement));
+						} else {
+							throw new InvalidDataException("unknown XML prop " + subelement.Name);
+						}
+					}
+				} else if (elem.Name is "imgdir" or "img") {
+					total++;
+					result.Add(ParseXMLWzImg(elem));
+					curr++;
+				} else if (elem.Name is "wzdir" or "dir") {
+					total++;
+					result.Add(ParseXMLWzDir(elem));
+					curr++;
+				} else {
+					total++;
+					result.Add(ParsePropertyFromXMLElement(elem));
+					curr++;
+				}
 			}
 
 			return result;
@@ -1099,11 +1147,11 @@ namespace MapleLib.WzLib.Serialization {
 		internal int CountImgs(XmlElement element) {
 			// Count the number of "wzimg" elements and the number of "wzdir" elements
 			var wzimgCount = element.Cast<XmlElement>()
-				.Count(e => e.Name == "wzimg");
+				.Count(e => e.Name is "wzimg" or "img");
 
 			// Recursively count the number of "wzimg" elements in each "wzdir" element
 			var wzimgInWzdirCount = element.Cast<XmlElement>()
-				.Where(e => e.Name == "wzdir")
+				.Where(e => e.Name is "wzdir" or "dir")
 				.Sum(e => CountImgs(e));
 
 			// Return the total number of "wzimg" elements
@@ -1114,9 +1162,9 @@ namespace MapleLib.WzLib.Serialization {
 		internal WzDirectory ParseXMLWzDir(XmlElement dirElement) {
 			var result = new WzDirectory(dirElement.GetAttribute("name"));
 			foreach (XmlElement subelement in dirElement) {
-				if (subelement.Name == "wzdir") {
+				if (subelement.Name is "wzdir" or "dir") {
 					result.AddDirectory(ParseXMLWzDir(subelement));
-				} else if (subelement.Name == "wzimg") {
+				} else if (subelement.Name is "wzimg" or "img") {
 					result.AddImage(ParseXMLWzImg(subelement));
 				} else {
 					throw new InvalidDataException("unknown XML prop " + subelement.Name);
@@ -1150,6 +1198,7 @@ namespace MapleLib.WzLib.Serialization {
 		internal WzImageProperty ParsePropertyFromXMLElement(XmlElement element) {
 			switch (element.Name) {
 				case "imgdir":
+				case "subprop":
 					var sub = new WzSubProperty(element.GetAttribute("name"));
 					foreach (XmlElement subelement in element)
 						sub.AddProperty(ParsePropertyFromXMLElement(subelement));
