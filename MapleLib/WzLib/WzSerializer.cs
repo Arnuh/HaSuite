@@ -1006,25 +1006,25 @@ namespace MapleLib.WzLib.Serialization {
 			}
 
 			curr++;
-			tw.Write(depth + "<wzimg name=\"" + XmlUtil.SanitizeText(img.Name) + "\">" + lineBreak);
+			tw.Write(depth + "<img name=\"" + XmlUtil.SanitizeText(img.Name) + "\">" + lineBreak);
 			var newDepth = depth + indent;
 			foreach (var property in img.WzProperties) {
 				WritePropertyToXML(tw, newDepth, property);
 			}
 
-			tw.Write(depth + "</wzimg>");
+			tw.Write(depth + "</img>");
 			if (!parsed) {
 				img.UnparseImage();
 			}
 		}
 
 		internal void DumpDirectoryToXML(TextWriter tw, string depth, WzDirectory dir, string exportFilePath) {
-			tw.Write(depth + "<wzdir name=\"" + XmlUtil.SanitizeText(dir.Name) + "\">" + lineBreak);
+			tw.Write(depth + "<dir name=\"" + XmlUtil.SanitizeText(dir.Name) + "\">" + lineBreak);
 			foreach (var subdir in dir.WzDirectories)
 				DumpDirectoryToXML(tw, depth + indent, subdir, exportFilePath);
 			foreach (var img in dir.WzImages) DumpImageToXML(tw, depth + indent, img, exportFilePath);
 
-			tw.Write(depth + "</wzdir>" + lineBreak);
+			tw.Write(depth + "</dir>" + lineBreak);
 		}
 
 		/// <summary>
@@ -1090,8 +1090,15 @@ namespace MapleLib.WzLib.Serialization {
 
 		public List<WzObject> ParseXMLString(string xml) {
 			var doc = new XmlDocument();
-			// No good way exists to parse xml that has multiple root elements or something
-			doc.LoadXml($"<fakeparent>{xml}</fakeparent>");
+			if (xml.StartsWith("<?xml")) {
+				// Pasting XML New
+				// XML Classic doesn't work, lacks distinction between img, doc, and subprop in xml form atm
+				doc.LoadXml(xml);
+			} else {
+				// No good way exists to parse xml that has multiple root elements or something
+				doc.LoadXml($"<fakeparent>{xml}</fakeparent>");
+			}
+
 			return ParseXML(doc);
 		}
 
