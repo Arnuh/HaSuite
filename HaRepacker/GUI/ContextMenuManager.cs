@@ -346,6 +346,15 @@ namespace HaRepacker {
 					}else if (node.Tag is WzDirectory dir) {
 						totalSize += dir.BlockSize;
 						nodesChecked++;
+					} else if (node.Tag is WzFile file) {
+						nodesChecked++;
+						foreach (var i in file.WzDirectory.WzImages) {
+							totalSize += i.BlockSize;
+						}
+
+						foreach (var i in file.WzDirectory.WzDirectories) {
+							totalSize += i.BlockSize;
+						}
 					}
 				}
 
