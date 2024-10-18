@@ -6,6 +6,7 @@ using HaSharedLibrary.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using Point = System.Drawing.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -46,7 +47,8 @@ namespace HaCreator.MapEditor.MonoGame {
 			Initialize();
 			DragEnter += (sender, e) => _multiBoard.Device_DragEnter(sender, e);
 			DragDrop += (sender, e) => _multiBoard.Device_DragDrop(sender, e);
-			KeyDown += (sender, e) => _multiBoard.Ribbon_KeyDown(sender, e);
+			PreviewKeyDown += (sender, e) => _multiBoard.Device_PreviewKeyDownEventArgs(sender, e);
+			KeyDown += (sender, e) => _multiBoard.Device_KeyDownEventArgs(sender, e);
 			MouseClick += (sender, e) => _multiBoard.Device_MouseClick(sender, e);
 			MouseDoubleClick += (sender, e) => _multiBoard.Device_MouseDoubleClick(sender, e);
 			MouseDown += (sender, e) => _multiBoard.Device_MouseDown(sender, e);

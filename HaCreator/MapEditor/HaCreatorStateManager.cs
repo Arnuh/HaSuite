@@ -34,7 +34,7 @@ using MapleLib.WzLib.Serialization;
 using MapleLib.WzLib.WzStructure.Data;
 using SystemWinCtl = System.Windows.Controls;
 using Application = System.Windows.Forms.Application;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -104,7 +104,7 @@ namespace HaCreator.MapEditor {
 			this.ribbon.NewPlatformClicked += ribbon_NewPlatformClicked;
 			this.ribbon.UserObjsClicked += Ribbon_UserObjsClicked;
 			this.ribbon.ExportClicked += Ribbon_ExportClicked;
-			this.ribbon.RibbonKeyDown += Ribbon_KeyDown;
+			this.ribbon.RibbonKeyDown += multiBoard.Device_OnKeyDown;
 			this.ribbon.MapPhysicsClicked += Ribbon_EditMapPhysicsClicked;
 			this.ribbon.AltBackgroundToggled += Ribbon_AltBackgroundToggled;
 			this.ribbon.FhSideToggled += Ribbon_FhSideToggled;
@@ -896,10 +896,6 @@ namespace HaCreator.MapEditor {
 		private void Ribbon_FhSideToggled(bool pressed) {
 			UserSettings.displayFHSide = pressed;
 		}
-
-		private void Ribbon_KeyDown(object sender, KeyEventArgs e) {
-			multiBoard.Ribbon_KeyDown(sender, e);
-		}	
 
 		#endregion
 

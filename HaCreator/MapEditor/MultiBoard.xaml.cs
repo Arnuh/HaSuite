@@ -639,36 +639,49 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		public void Ribbon_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+		public void Device_PreviewKeyDownEventArgs(object? sender, PreviewKeyDownEventArgs e) {
+			switch (e.KeyCode) {
+				case Keys.Left:
+				case Keys.Right:
+				case Keys.Up:
+				case Keys.Down:
+					e.IsInputKey = true;
+					break;
+			}
+		}
+
+		public void Device_KeyDownEventArgs(object? sender, System.Windows.Forms.KeyEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
 
 			lock (this) {
-				if (ShortcutKeyPressed != null) {
-					var ctrl = (Control.ModifierKeys & Keys.Control) ==
-					           Keys.Control;
-					var alt = (Control.ModifierKeys & Keys.Alt) ==
-					          Keys.Alt;
-					var shift = (Control.ModifierKeys & Keys.Shift) ==
-					            Keys.Shift;
-					var filteredKeys = e.KeyData;
+				if (ShortcutKeyPressed == null) {
+					return;
+				}
 
-					if (ctrl && (filteredKeys & Keys.Control) != 0) {
-						filteredKeys = filteredKeys ^ Keys.Control;
-					}
+				var ctrl = (Control.ModifierKeys & Keys.Control) ==
+				           Keys.Control;
+				var alt = (Control.ModifierKeys & Keys.Alt) ==
+				          Keys.Alt;
+				var shift = (Control.ModifierKeys & Keys.Shift) ==
+				            Keys.Shift;
+				var filteredKeys = e.KeyData;
 
-					if (alt && (filteredKeys & Keys.Alt) != 0) {
-						filteredKeys = filteredKeys ^ Keys.Alt;
-					}
+				if (ctrl && (filteredKeys & Keys.Control) != 0) {
+					filteredKeys = filteredKeys ^ Keys.Control;
+				}
 
-					if (shift && (filteredKeys & Keys.Shift) != 0) {
-						filteredKeys = filteredKeys ^ Keys.Shift;
-					}
+				if (alt && (filteredKeys & Keys.Alt) != 0) {
+					filteredKeys = filteredKeys ^ Keys.Alt;
+				}
 
-					lock (this) {
-						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, KeyInterop.KeyFromVirtualKey((int) filteredKeys));
-					}
+				if (shift && (filteredKeys & Keys.Shift) != 0) {
+					filteredKeys = filteredKeys ^ Keys.Shift;
+				}
+
+				lock (this) {
+					ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, KeyInterop.KeyFromVirtualKey((int) filteredKeys));
 				}
 			}
 		}
@@ -678,24 +691,28 @@ namespace HaCreator.MapEditor {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public void Device_OnKeyDown(object sender, KeyEventArgs e) {
+		public void Device_OnKeyDown(object? sender, KeyEventArgs e) {
 			if (selectedBoard == null) {
 				return;
 			}
 
 			lock (this) {
-				if (ShortcutKeyPressed != null) {
-					var ctrl = (Keyboard.Modifiers & ModifierKeys.Control) ==
-					           ModifierKeys.Control;
-					var alt = (Keyboard.Modifiers & ModifierKeys.Alt) ==
-					          ModifierKeys.Alt;
-					var shift = (Keyboard.Modifiers & ModifierKeys.Shift) ==
-					            ModifierKeys.Shift;
-
-					lock (this) {
-						ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, e.Key);
-					}
+				if (ShortcutKeyPressed == null) {
+					return;
 				}
+
+				var ctrl = (Keyboard.Modifiers & ModifierKeys.Control) ==
+				           ModifierKeys.Control;
+				var alt = (Keyboard.Modifiers & ModifierKeys.Alt) ==
+				          ModifierKeys.Alt;
+				var shift = (Keyboard.Modifiers & ModifierKeys.Shift) ==
+				            ModifierKeys.Shift;
+
+				lock (this) {
+					ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, e.Key);
+				}
+
+				e.Handled = true;
 			}
 		}
 

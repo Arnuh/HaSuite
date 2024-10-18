@@ -18,7 +18,7 @@ using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaSharedLibrary.Render.DX;
 using CheckBox = System.Windows.Controls.CheckBox;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace HaCreator.GUI {
@@ -592,9 +592,7 @@ namespace HaCreator.GUI {
 		protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) {
 			base.OnPreviewKeyDown(e);
 			if (e.Key != Key.Down && e.Key != Key.Up && RibbonKeyDown != null) {
-				RibbonKeyDown.Invoke(this,
-					new KeyEventArgs(
-						(Keys) KeyInterop.VirtualKeyFromKey(e.Key)));
+				RibbonKeyDown.Invoke(this, e);
 			}
 		}
 
