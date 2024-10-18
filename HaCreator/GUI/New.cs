@@ -51,7 +51,7 @@ namespace HaCreator.GUI {
 			var w = int.Parse(newWidth.Text);
 			var h = int.Parse(newHeight.Text);
 
-			MapLoader.CreateMap("", "<Untitled>", -1, true, "", MapLoader.CreateStandardMapMenu(rightClickHandler),
+			MapLoader.CreateMap(CreateReason.New, "", "<Untitled>", -1, "", MapLoader.CreateStandardMapMenu(rightClickHandler),
 				new XNA.Point(w, h), new XNA.Point(w / 2, h / 2), Tabs, multiBoard);
 			DialogResult = DialogResult.OK;
 			Close();
@@ -107,7 +107,7 @@ namespace HaCreator.GUI {
 			var cloneStreetName = WzInfoTools.GetMapStreetName(strMapProp);
 			var cloneCategoryName = WzInfoTools.GetMapCategoryName(strMapProp);
 
-			MapLoader.CreateMapFromImage(-1 /*mapid*/, mapImage.DeepClone(), cloneMapName, cloneStreetName,
+			MapLoader.CreateMapFromImage(CreateReason.Clone, -1 /*mapid*/, mapImage.DeepClone(), cloneMapName, cloneStreetName,
 				cloneCategoryName, (WzSubProperty) strMapProp.DeepClone(), Tabs, multiBoard, rightClickHandler);
 
 			Close();

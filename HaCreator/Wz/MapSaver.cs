@@ -57,7 +57,7 @@ namespace HaCreator.Wz {
 				var mapId = image.Name.Replace(".img", string.Empty);
 
 				WzDirectory parent;
-				if (board.IsNewMapDesign) {
+				if (board.CreateReason == CreateReason.New) {
 					parent = WzInfoTools.FindMapDirectoryParent(mapId, Program.WzManager);
 				} else {
 					WzObject mapImage = WzInfoTools.FindMapImage(mapId, Program.WzManager);

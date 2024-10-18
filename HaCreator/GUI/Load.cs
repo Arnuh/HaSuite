@@ -221,7 +221,7 @@ namespace HaCreator.GUI {
 				}
 			}
 
-			MapLoader.CreateMapFromImage(mapid, mapImage, mapName, streetName, categoryName, strMapProp, Tabs,
+			MapLoader.CreateMapFromImage(CreateReason.Load, mapid, mapImage, mapName, streetName, categoryName, strMapProp, Tabs,
 				multiBoard, rightClickHandler);
 
 			DialogResult = DialogResult.OK;

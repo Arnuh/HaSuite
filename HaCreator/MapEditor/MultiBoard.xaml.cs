@@ -148,9 +148,9 @@ namespace HaCreator.MapEditor {
 		/// <param name="menu"></param>
 		/// <param name="bIsNewMapDesign">Determines if this board is a new map design or editing an existing map.</param>
 		/// <returns></returns>
-		public Board CreateBoard(Point mapSize, Point centerPoint, ContextMenu menu, bool bIsNewMapDesign) {
+		public Board CreateBoard(Point mapSize, Point centerPoint, ContextMenu menu, CreateReason createReason) {
 			lock (this) {
-				var newBoard = new Board(mapSize, centerPoint, this, bIsNewMapDesign, menu, ApplicationSettings.theoreticalVisibleTypes,
+				var newBoard = new Board(mapSize, centerPoint, this, createReason, menu, ApplicationSettings.theoreticalVisibleTypes,
 					ApplicationSettings.theoreticalEditedTypes);
 				boards.Add(newBoard);
 				newBoard.InitMapLayers();

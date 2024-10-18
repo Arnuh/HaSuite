@@ -39,7 +39,6 @@ namespace HaCreator.MapEditor {
 		private MultiBoard parent;
 		private readonly Mouse mouse;
 		private MapInfo mapInfo = new();
-		private bool bIsNewMapDesign; // determines if this board is a new map design or editing an existing map.
 		private Bitmap miniMap;
 		private System.Drawing.Point miniMapPos;
 		private Texture2D miniMapTexture;
@@ -86,13 +85,13 @@ namespace HaCreator.MapEditor {
 		/// <param name="menu"></param>
 		/// <param name="visibleTypes"></param>
 		/// <param name="editedTypes"></param>
-		public Board(Point mapSize, Point centerPoint, MultiBoard parent, bool bIsNewMapDesign, ContextMenu menu,
+		public Board(Point mapSize, Point centerPoint, MultiBoard parent, CreateReason createReason, ContextMenu menu,
 			ItemTypes visibleTypes, ItemTypes editedTypes) {
 			uid = Interlocked.Increment(ref uidCounter);
 			MapSize = mapSize;
 			this.centerPoint = centerPoint;
 			this.parent = parent;
-			this.bIsNewMapDesign = bIsNewMapDesign;
+			CreateReason = createReason;
 			this.visibleTypes = visibleTypes;
 			this.editedTypes = editedTypes;
 			this.menu = menu;
@@ -309,10 +308,7 @@ namespace HaCreator.MapEditor {
 			}
 		}
 
-		/// <summary>
-		/// Determines if this board is a new map design or editing an existing map.
-		/// </summary>
-		public bool IsNewMapDesign => bIsNewMapDesign;
+		public CreateReason CreateReason { get; }
 
 		public Bitmap MiniMap {
 			get => miniMap;

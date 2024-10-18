@@ -442,7 +442,7 @@ namespace HaCreator.MapEditor {
 			CloseMapTab(sender, e);
 
 			var mapImage = FieldSelector.GetMapLoadData(mapId, out var strMapProp, out var mapName, out var streetName, out var categoryName);
-			MapLoader.CreateMapFromImage(mapId, mapImage, mapName, streetName, categoryName, strMapProp, tabs,
+			MapLoader.CreateMapFromImage(selectedBoard.CreateReason, mapId, mapImage, mapName, streetName, categoryName, strMapProp, tabs,
 				multiBoard, MakeRightClickHandler());
 		}
 

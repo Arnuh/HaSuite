@@ -394,7 +394,7 @@ namespace HaCreator.GUI {
 				MapLoader.VerifyMapPropsKnown(mapImage, true);
 				new MapInfo(mapImage, null, null, null);
 
-				var mapBoard = new Board(new Point(), new Point(), mb, false, null, ItemTypes.None, ItemTypes.None);
+				var mapBoard = new Board(new Point(), new Point(), mb, CreateReason.Debug, null, ItemTypes.None, ItemTypes.None);
 				try {
 					mapBoard.InitMapLayers();
 
