@@ -350,29 +350,48 @@
                             <TranslateTransform />
                         </TransformGroup>
                     </Grid.RenderTransform>
-
-                    <Grid Margin="0,0,0,5">
-                        <TextBox x:Name="findBox" Text="" FontSize="15" Margin="5,5,120,0" Height="27"
-                                 KeyDown="findBox_KeyDown"
-                                 TextChanged="findBox_TextChanged" />
-
-                        <StackPanel Margin="0,5,5,0" Orientation="Horizontal" HorizontalAlignment="Right"
-                                    VerticalAlignment="Center">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="25" />
+                            <ColumnDefinition Width="5" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <TextBox x:Name="findBox" Text="" FontSize="15" Width="Auto" Height="25" Margin="5, 0, 0, 0"
+                                     KeyDown="findBox_KeyDown"
+                                     TextChanged="findBox_TextChanged" />
+                        </Grid>
+                        <Grid Grid.Column="2">
                             <Button x:Name="button_nextSearch" Background="White" Foreground="Black"
                                     FontFamily="Segoe MDL2 Assets" Content="&#xE721;"
-                                    Width="27" Height="27"
+                                    Width="25" Height="25"
                                     Click="button_nextSearch_Click" />
-
+                        </Grid>
+                        <Grid Grid.Column="4">
                             <Button x:Name="button_allSearch" Background="White" Foreground="Black"
                                     FontFamily="Segoe MDL2 Assets" Content="&#xE71D;"
-                                    Width="27" Height="27" Margin="16,0,7,0"
+                                    Width="25" Height="25"
                                     Click="button_allSearch_Click" />
-
+                        </Grid>
+                        <Grid Grid.Column="6">
+                            <Button x:Name="button_searchSetting" Background="White" Foreground="Black"
+                                    FontFamily="Segoe MDL2 Assets" Content="&#59155;"
+                                    Width="25" Height="25"
+                                    Click="button_searchSetting_Click" />
+                        </Grid>
+                        <Grid Grid.Column="8">
                             <Button x:Name="button_closeSearch" Background="White" Foreground="Black"
                                     FontFamily="Segoe MDL2 Assets" Content="&#xE711;"
-                                    Width="27" Height="27"
+                                    Width="25" Height="25"
                                     Click="button_closeSearch_Click" />
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

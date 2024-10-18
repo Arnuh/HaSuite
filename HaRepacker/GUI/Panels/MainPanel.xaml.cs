@@ -1543,6 +1543,10 @@ namespace HaRepacker.GUI.Panels {
 			sbb.Begin();
 		}
 
+		private void button_searchSetting_Click(object sender, RoutedEventArgs e) {
+			new SearchOptionsForm().ShowDialog();
+		}
+
 		private void SearchWzProperties(IPropertyContainer parent) {
 			foreach (var prop in parent.WzProperties) {
 				if (0 <= prop.Name.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase) ||
