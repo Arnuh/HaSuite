@@ -115,6 +115,7 @@ namespace HaCreator.CustomControls {
 			}
 
 			// Clear 
+			mapNamesBox.ClearSelected();
 			mapNamesBox.Items.Clear();
 			// AddRange does Begin/End Update for a smooth UI experience.
 			if (tosearch == string.Empty) {

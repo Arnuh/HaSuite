@@ -178,6 +178,7 @@ namespace HaCreator.GUI {
 				}
 			} else if (WZSelect.Checked) {
 				if (mapBrowser.SelectedItem == null) {
+					ww.EndWait();
 					return; // racing event
 				}
 
