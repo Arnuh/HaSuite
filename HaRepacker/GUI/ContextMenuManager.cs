@@ -16,6 +16,7 @@ using HaRepacker.Helpers;
 using HaRepacker.Properties;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 using ContextMenu = System.Windows.Controls.ContextMenu;
 using Image = System.Windows.Controls.Image;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -304,11 +305,11 @@ namespace HaRepacker {
 				parentPanel.AddWzVectorPropertyToSelectedIndex(nodes[0]);
 			};
 			FixLink = new MenuItem() {Header = "Fix linked image for old MapleStory ver."};
-			FixLink.Click += delegate { parentPanel.FixLinkForOldMS_Click(); };
+			FixLink.Click += delegate { FixLinkForOldMS_Click(GetNodes()); };
 			FixPixFormat = new MenuItem() {Header = "Fix wrong pixel formats"};
-			FixPixFormat.Click += delegate { parentPanel.FixAllIncorrectPixelFormats(); };
+			FixPixFormat.Click += delegate { FixAllIncorrectPixelFormats_Click(GetNodes()); };
 			CheckListWzEntries = new MenuItem() {Header = "Check List.wz entries"};
-			CheckListWzEntries.Click += delegate { parentPanel.CheckListWzEntries(); };
+			CheckListWzEntries.Click += delegate { CheckListWzEntries_Click(GetNodes()); };
 			AddDirsSubMenu = new MenuItem() {
 				Header = "Add"
 			};
@@ -437,13 +438,7 @@ namespace HaRepacker {
 						return false;
 					}
 
-					foreach (var node in inputNodes) {
-						var child = node.GetChildNode(obj);
-						if (child == null) {
-							continue;
-						}
-						
-						child.DeleteWzNode();
+					if (RemoveNode(inputNodes, obj)) {
 						return true;
 					}
 
@@ -476,6 +471,108 @@ namespace HaRepacker {
 
 		private WzNode[] GetNodes() {
 			return _treeViewMs.SelectedNodes.ToArray();
+		}
+
+		private static void FixAllIncorrectPixelFormats_Click(WzNode[] selectedNodes) {
+			var nodes = RecursiveHelper.CheckAllNodes(Array.ConvertAll(selectedNodes, item => (WzObject) item.Tag), _ => true, obj => {
+				if (obj is not WzCanvasProperty canvas) {
+					return false;
+				}
+
+				var pngProp = canvas.PngProperty;
+				if (pngProp.PixFormat != (int) WzPngProperty.CanvasPixFormat.Argb8888 || !pngProp.IsArgb4444Compatible()) {
+					return false;
+				}
+
+				pngProp.ConvertPixFormat((int) WzPngProperty.CanvasPixFormat.Argb4444);
+				canvas.ParentImage.Changed = true;
+				return true;
+			});
+			MessageBox.Show($"Done.\r\nFixed {nodes} images");
+		}
+
+		private static void CheckListWzEntries_Click(WzNode[] selectedNodes) {
+			foreach (var node in selectedNodes) {
+				if (node.Tag is WzImage or WzDirectory or WzFile) {
+					continue;
+				}
+
+				MessageBox.Show("Please select a WzFile, WzDirectory or WzImage node to check for List.wz entries");
+				return;
+			}
+
+			var nodes = RecursiveHelper.CheckAllNodes(Array.ConvertAll(selectedNodes, item => (WzObject) item.Tag), obj => obj is WzDirectory or WzFile, obj => {
+				if (obj is not WzImage img) {
+					return false;
+				}
+
+				ListWzContainerImpl.MarkListWzProperty(img);
+				return true;
+			});
+			MessageBox.Show($"Done.\r\nChecked {nodes} properties");
+		}
+
+		/// <summary>
+		/// Fix the '_inlink' and '_outlink' image property for compatibility to old MapleStory ver.
+		/// </summary>
+		private static void FixLinkForOldMS_Click(WzNode[] selectedNodes) {
+			var inputNodes = selectedNodes;
+
+			var nodesModified = RecursiveHelper.CheckAllNodes(Array.ConvertAll(selectedNodes, item => (WzObject) item.Tag), _ => true, obj => {
+				if (obj.Name.Equals("_hash")) {
+					if (!RemoveNode(inputNodes, obj)) {
+						obj.Remove();
+					}
+
+					return true;
+				}
+
+				if (obj is not WzCanvasProperty selectedWzCanvas) {
+					return false;
+				}
+
+				var linkedTarget = selectedWzCanvas.GetLinkedWzImageProperty();
+				// Check if the linked wz prop is changed
+				// if it is, that means inlink/outlink exists & the resulting link
+				// exists and is found.
+				if (selectedWzCanvas == linkedTarget) {
+					return false;
+				}
+
+				var inlink = selectedWzCanvas[WzCanvasProperty.InlinkPropertyName];
+				if (inlink != null) { // if its an inlink property, remove that before updating base image.
+					if (!RemoveNode(inputNodes, inlink)) {
+						inlink.Remove();
+					}
+				}
+
+				var outlink = selectedWzCanvas[WzCanvasProperty.OutlinkPropertyName];
+				if (outlink != null) { // if its an outlink property, remove that before updating base image.
+					if (!RemoveNode(inputNodes, outlink)) {
+						outlink.Remove();
+					}
+				}
+
+				selectedWzCanvas.PngProperty.SetImage(linkedTarget.GetBitmap());
+
+				selectedWzCanvas.ParentImage.Changed = true;
+				return true;
+			});
+			MessageBox.Show($"Done.\r\nUpdated {nodesModified} nodes");
+		}
+
+		private static bool RemoveNode(WzNode[] inputNodes, WzObject obj) {
+			foreach (var node in inputNodes) {
+				var child = node.GetChildNode(obj);
+				if (child == null) {
+					continue;
+				}
+
+				child.DeleteWzNode();
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
