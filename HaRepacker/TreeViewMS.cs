@@ -97,8 +97,8 @@ namespace HaRepacker {
 
 					IsSelectionChangeActiveProperty.SetValue(this, true, null);
 					// select all nodes between m_firstNode and m_lastNode
-					var firstParent = m_firstNode.Parent as TreeViewItem;
-					var lastParent = m_lastNode.Parent as TreeViewItem;
+					var firstParent = m_firstNode.Parent as ItemsControl ?? this;
+					var lastParent = m_lastNode.Parent as ItemsControl ?? this;
 					if (firstParent == lastParent) {
 						SelectBetween(firstParent, m_firstNode, m_lastNode);
 					} else {
@@ -131,7 +131,7 @@ namespace HaRepacker {
 			};
 		}
 
-		private void SelectBetween(TreeViewItem firstParent, WzNode firstNode, WzNode lastNode) {
+		private void SelectBetween(ItemsControl firstParent, WzNode firstNode, WzNode lastNode) {
 			var start = firstParent.Items.IndexOf(firstNode);
 			var end = firstParent.Items.IndexOf(lastNode);
 			if (start > end) {
