@@ -50,5 +50,16 @@ namespace HaRepacker.GUI {
 
 			return parent as WzNode;
 		}
+
+		public static void Expand(WzNode node) {
+			if (!node.IsExpanded) {
+				node.IsExpanded = true;
+			}
+
+			var parent = node.Parent;
+			if (parent is WzNode p) {
+				Expand(p);
+			}
+		}
 	}
 }

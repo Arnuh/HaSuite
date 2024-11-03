@@ -1488,7 +1488,7 @@ namespace HaRepacker.GUI.Panels {
 						}
 
 						var node = (WzNode) prop.HRTag;
-						//if (node.Style == null) node.Style = new ElementStyle();
+						TreeViewHelper.Expand(node);
 						node.Background = Brushes.Yellow;
 						coloredNode = node;
 						node.Focus();
@@ -1517,7 +1517,7 @@ namespace HaRepacker.GUI.Panels {
 					if (listSearchResults) {
 						searchResultsList.Add(subnode.GetFullPath().Replace(";", @"\"));
 					} else if (currentidx == searchidx) {
-						//if (subnode.Style == null) subnode.Style = new ElementStyle();
+						TreeViewHelper.Expand(subnode);
 						subnode.Background = Brushes.Yellow;
 						coloredNode = subnode;
 						subnode.Focus();
@@ -1612,6 +1612,7 @@ namespace HaRepacker.GUI.Panels {
 			}
 
 			if (node != null) {
+				TreeViewHelper.Expand(node);
 				node.IsSelected = true;
 				node.Focus();
 				TreeViewHelper.BringIntoView(node);
@@ -1669,6 +1670,7 @@ namespace HaRepacker.GUI.Panels {
 			if (!finished) {
 				MessageBox.Show(Properties.Resources.MainTreeEnd);
 				searchidx = 0;
+				TreeViewHelper.Expand(DataTree.SelectedNode);
 				DataTree.SelectedNode.Focus();
 				TreeViewHelper.BringIntoView(DataTree.SelectedNode);
 			}

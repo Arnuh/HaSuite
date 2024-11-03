@@ -310,6 +310,7 @@ namespace HaRepacker {
 					continue;
 				}
 
+				TreeViewHelper.Expand(subnode);
 				subnode.IsSelected = true;
 				TreeViewHelper.BringIntoView(subnode);
 				return true;
