@@ -1,111 +1,296 @@
-﻿/* Copyright (C) 2015 haha01haha01
+﻿/*  MapleLib - A general-purpose MapleStory library
+ * Copyright (C) 2009, 2010, 2015 Snow and haha01haha01
 
-* This Source Code Form is subject to the terms of the Mozilla Public
-* License, v. 2.0. If a copy of the MPL was not distributed with this
-* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ * This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+ * This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-using System.Drawing;
-using HaSharedLibrary.Render.DX;
-using MapleLib.WzLib.WzStructure.Data;
+ * You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
+
+using System.IO;
+using System.Reflection;
 using Newtonsoft.Json;
-using XNA = Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace HaCreator {
-	public static class UserSettings {
-		public static bool ShowErrorsMessage = true;
+	public class WzSettingsManager {
+		private readonly string settingFilePath;
 
-		public static RenderResolution
-			SimulateResolution =
-				RenderResolution.Res_1024x768; // combo box selection. 800x600, 1024x768, 1280x720, 1920x1080
+		private readonly Type userSettingsType;
+		private readonly Type appSettingsType;
 
-		public static bool ClipText = false;
-		public static Color TabColor = Color.LightSteelBlue;
-		public static int LineWidth = 1;
-		public static int DotWidth = 3;
-		public static XNA.Color SelectSquare = new(0, 0, 255, 255);
-		public static XNA.Color SelectSquareFill = new(0, 0, 200, 200);
-		public static XNA.Color SelectedColor = new(0, 0, 255, 250);
-		public static XNA.Color VRColor = new(0, 0, 255, 255);
-		public static XNA.Color FootholdColor = XNA.Color.Red;
-		public static XNA.Color FootholdSideColor = XNA.Color.LimeGreen;
-		public static XNA.Color RopeColor = XNA.Color.Green;
-		public static XNA.Color ChairColor = XNA.Color.Orange;
-		public static XNA.Color ToolTipColor = XNA.Color.SkyBlue;
-		public static XNA.Color ToolTipFill = new(0, 0, 255, 100);
-		public static XNA.Color ToolTipSelectedFill = new(0, 0, 255, 150);
-		public static XNA.Color ToolTipCharFill = new(0, 255, 0, 100);
-		public static XNA.Color ToolTipCharSelectedFill = new(0, 255, 0, 150);
-		public static XNA.Color ToolTipBindingLine = XNA.Color.Magenta;
-		public static XNA.Color MiscColor = XNA.Color.Brown;
-		public static XNA.Color MiscFill = new(150, 75, 0, 100);
-		public static XNA.Color MiscSelectedFill = new(150, 75, 0, 150);
-		public static XNA.Color OriginColor = XNA.Color.LightGreen;
-		public static XNA.Color MinimapBoundColor = XNA.Color.DarkOrange;
-		public static int NonActiveAlpha = 63;
-		public static int Mobrx0Offset = 200;
-		public static int Mobrx1Offset = 200;
-		public static int Npcrx0Offset = 20;
-		public static int Npcrx1Offset = 20;
-		public static int defaultMobTime = 0;
-		public static int defaultReactorTime = 0;
-		public static float SnapDistance = 10;
-		public static float SignificantDistance = 10;
-		public static int ScrollDistance = 90;
-		public static double ScrollFactor = 1;
-		public static double ScrollBase = 1.05;
-		public static double ScrollExponentFactor = 1;
-		public static int zShift = 1;
-		public static int HiddenLifeR = 127;
-		public static string FontName = "Arial";
-		public static int FontSize = 13;
-		public static FontStyle FontStyle = FontStyle.Regular;
-		public static int dotDescriptionBoxSize = 100;
-		public static int ImageViewerHeight = 100;
-		public static int ImageViewerWidth = 100;
+		private const string USER_SETTING_JSON = "UserSettings";
+		private const string APP_SETTING_JSON = "ApplicationSettings";
 
-		public static bool useMiniMap = true;
-		public static bool useSnapping = true;
-		public static bool emulateParallax = true;
-		public static bool suppressWarnings = false;
-		public static bool FixFootholdMispositions = true;
-		public static bool InverseUpDown = true;
-		public static bool BackupEnabled = true;
-		public static int BackupIdleTime = 5000;
-		public static int BackupMaxTime = 60000;
-		public static bool altBackground = false;
-		public static XNA.Color altBackgroundColor = XNA.Color.Black;
-		public static bool displayFHSide = true;
-		public static bool AutoRegenerateMinimap = false;
-	}
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="wzPath"></param>
+		/// <param name="userSettingsType"></param>
+		/// <param name="appSettingsType"></param>
+		public WzSettingsManager(string wzPath, Type userSettingsType, Type appSettingsType) {
+			settingFilePath = wzPath;
+			this.userSettingsType = userSettingsType;
+			this.appSettingsType = appSettingsType;
+		}
 
-	public static class ApplicationSettings {
-		public static int MapleVersionIndex = 3;
-		public static string MapleFoldersList = ""; // list of maplestory folder seperated by ','
-		public static int MapleFolderIndex = 0;
+		#region Loading
 
-		public static ItemTypes
-			theoreticalVisibleTypes =
-				ItemTypes.All; // These two are marked theoretical because the visible\edited types in effect (Board.VisibleTypes\EditedTypes)
+		/// <summary>
+		/// Load UserSettings and ApplicationSettings
+		/// </summary>
+		public void LoadSettings() {
+			if (File.Exists(settingFilePath)) {
+				var strJsonConfig = File.ReadAllText(settingFilePath);
 
-		public static ItemTypes
-			theoreticalEditedTypes =
-				ItemTypes.All ^ ItemTypes.Backgrounds; // are subject to the current mode of operation
+				try {
+					var mainJson = (JObject) JsonConvert.DeserializeObject(strJsonConfig);
 
-		public static Size LastMapSize = new(800, 800);
-		public static int lastRadioIndex = 3;
-		public static bool randomTiles = true;
-		public static bool InfoMode = false;
-		public static int lastDefaultLayer = 0;
-		public static bool lastAllLayers = true;
-		public static string LastImgPath = "";
-		public static string LastXmlPath = "";
+					LoadSettingsJson((JObject) mainJson[USER_SETTING_JSON], userSettingsType);
+					LoadSettingsJson((JObject) mainJson[APP_SETTING_JSON], appSettingsType);
+				} catch {
+					// its fine if loading isnt possible
+					// fallback to default
+				}
+			}
+			// do nothing, default setting is in the value as specified in WzSettings.cs
+		}
 
+		/// <summary>
+		/// Load settings json
+		/// </summary>
+		/// <param name="json"></param>
+		/// <param name="settingsHolderType"></param>
+		private void LoadSettingsJson(JObject json, Type settingsHolderType) {
+			foreach (var fieldInfo in settingsHolderType.GetFields(BindingFlags.Public | BindingFlags.Static)) {
+				var fieldName = fieldInfo.Name;
+				var jsonHoldingObject = (JObject) json[fieldName];
 
-		#region API Key
+				LoadField(fieldInfo, jsonHoldingObject);
+			}
+		}
 
-		[JsonProperty(PropertyName = "OpenAI_ApiKey")]
-		public static string OpenAI_ApiKey = "";
+		/// <summary>
+		/// Loads the individual field into object
+		/// </summary>
+		/// <param name="fieldInfo"></param>
+		/// <param name="jsonHoldingObject"></param>
+		/// <exception cref="Exception"></exception>
+		private void LoadField(FieldInfo fieldInfo, JObject jsonHoldingObject) {
+			if (jsonHoldingObject == null) {
+				// does nothing to this field if json does not contain anything
+				// fallback to default as specified in WzSettings.json
+			} else if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum") {
+				fieldInfo.SetValue(null, (int) jsonHoldingObject["value"]);
+			} else {
+				var fieldType = (string) jsonHoldingObject["type"];
+
+				switch (fieldType) {
+					case "Microsoft.Xna.Framework.Color": {
+						var value = (uint) jsonHoldingObject["value"];
+						var xnaColor = new Color(value);
+
+						fieldInfo.SetValue(null, xnaColor);
+						break;
+					}
+					case "System.Drawing.Color": {
+						var value = (int) jsonHoldingObject["value"];
+						var color = System.Drawing.Color.FromArgb(value);
+
+						fieldInfo.SetValue(null, color);
+						break;
+					}
+					case "System.Int32": {
+						var value = (int) jsonHoldingObject["value"];
+
+						fieldInfo.SetValue(null, value);
+						break;
+					}
+					case "System.Double": {
+						var value = (double) jsonHoldingObject["value"];
+
+						fieldInfo.SetValue(null, value);
+						break;
+					}
+					case "System.Single": {
+						var value = (float) jsonHoldingObject["value"];
+
+						fieldInfo.SetValue(null, value);
+						break;
+					}
+					case "System.Drawing.Size": {
+						var valueHeight = (int) jsonHoldingObject["valueHeight"];
+						var valueWidth = (int) jsonHoldingObject["valueWidth"];
+
+						var size = new Size(valueHeight, valueWidth);
+
+						fieldInfo.SetValue(null, size);
+						break;
+					}
+					case "System.String": {
+						var value = (string) jsonHoldingObject["value"];
+
+						fieldInfo.SetValue(null, value);
+						break;
+					}
+					case "System.Drawing.Bitmap": {
+						var base64Image = (string) jsonHoldingObject["value"];
+						var byteImage = Convert.FromBase64String(base64Image);
+
+						Bitmap bmp;
+						using (var ms = new MemoryStream(byteImage)) {
+							bmp = new Bitmap(ms);
+						}
+
+						fieldInfo.SetValue(null, bmp);
+						break;
+					}
+					case "System.Boolean": {
+						var value = (bool) jsonHoldingObject["value"];
+
+						fieldInfo.SetValue(null, value);
+						break;
+					}
+					default: {
+						throw new Exception("Unsupported data type for WzSettings.");
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Saving
+
+		public void SaveSettings() {
+			var userSettingJson = SaveSettingsJson(userSettingsType);
+			var appSettingJson = SaveSettingsJson(appSettingsType);
+
+			var mainJson = new JObject();
+			mainJson.Add(USER_SETTING_JSON, userSettingJson);
+			mainJson.Add(APP_SETTING_JSON, appSettingJson);
+
+			var settingsExist = File.Exists(settingFilePath);
+			if (settingsExist) {
+				File.Delete(settingFilePath);
+			}
+
+			using (var file = File.CreateText(settingFilePath)) {
+				var serializer = new JsonSerializer();
+				serializer.Serialize(file, mainJson);
+			}
+		}
+
+		/// <summary>
+		/// Saves the settings image to json
+		/// </summary>
+		/// <param name="settingsHolderType"></param>
+		private JObject SaveSettingsJson(Type settingsHolderType) {
+			var jObjHolder = new JObject();
+
+			foreach (var fieldInfo in settingsHolderType.GetFields(BindingFlags.Public | BindingFlags.Static)) {
+				SaveField(fieldInfo, jObjHolder);
+			}
+
+			return jObjHolder;
+		}
+
+		/// <summary>
+		/// Saves the individual field into json object
+		/// </summary>
+		/// <param name="fieldInfo"></param>
+		/// <param name="jObjHolder"></param>
+		/// <exception cref="Exception"></exception>
+		private void SaveField(FieldInfo fieldInfo, JObject jObjHolder) {
+			var settingName = fieldInfo.Name;
+
+			var fieldJsonObject = new JObject();
+			jObjHolder.Add(settingName, fieldJsonObject);
+
+			fieldJsonObject.Add("type", fieldInfo.FieldType.FullName); // i.e System.Int
+
+			if (fieldInfo.FieldType.BaseType != null && fieldInfo.FieldType.BaseType.FullName == "System.Enum") {
+				fieldJsonObject.Add("value", (int) fieldInfo.GetValue(null));
+			} else {
+				switch (fieldInfo.FieldType.FullName) {
+					//case "Microsoft.Xna.Framework.Graphics.Color":
+					case "Microsoft.Xna.Framework.Color": {
+						var xnaColor =
+							(Color) fieldInfo.GetValue(null);
+						var uValue = xnaColor.PackedValue;
+
+						fieldJsonObject.Add("value", uValue);
+						break;
+					}
+					case "System.Drawing.Color": {
+						var argbColor = ((System.Drawing.Color) fieldInfo.GetValue(null)).ToArgb();
+
+						fieldJsonObject.Add("value", argbColor);
+						break;
+					}
+					case "System.Int32": {
+						var intVal = (int) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("value", intVal);
+						break;
+					}
+					case "System.Double": {
+						var dValue = (double) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("value", dValue);
+						break;
+					}
+					case "System.Single": {
+						var fValue = (float) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("value", fValue);
+						break;
+					}
+					case "System.Drawing.Size": {
+						var size = (Size) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("valueHeight", size.Height);
+						fieldJsonObject.Add("valueWidth", size.Width);
+						break;
+					}
+					case "System.String": {
+						var strValue = (string) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("value", strValue);
+						;
+						break;
+					}
+					case "System.Drawing.Bitmap": {
+						var bitmap = (Bitmap) fieldInfo.GetValue(null);
+
+						var converter = new ImageConverter();
+						var byteImage = (byte[]) converter.ConvertTo(bitmap, typeof(byte[]));
+						var base64Image = Convert.ToBase64String(byteImage, 0, byteImage.Length,
+							Base64FormattingOptions.None);
+
+						fieldJsonObject.Add("value", base64Image);
+						break;
+					}
+					case "System.Boolean": {
+						var bValue = (bool) fieldInfo.GetValue(null);
+
+						fieldJsonObject.Add("value", bValue);
+						break;
+					}
+					default: {
+						throw new Exception("Unsupported data type for WzSettings.");
+					}
+				}
+			}
+		}
 
 		#endregion
 	}
