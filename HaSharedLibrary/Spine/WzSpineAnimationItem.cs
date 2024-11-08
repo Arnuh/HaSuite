@@ -21,11 +21,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using MapleLib;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework.Graphics;
 using spine_2._1._25_netcore;
 
-namespace MapleLib.WzLib.Spine {
+namespace HaSharedLibrary.Spine {
 	public class WzSpineAnimationItem {
 		// Spine 
 
@@ -63,10 +65,10 @@ namespace MapleLib.WzLib.Spine {
 			if (skeletonData == null) return;
 
 			bool pma;
-			if (wzSpineAtlasPropertyNode.parent is WzImageProperty imgProperty) {
+			if (wzSpineAtlasPropertyNode.Parent is WzImageProperty imgProperty) {
 				pma = imgProperty["PMA"].ReadValue(0) > 0;
 			} else {
-				pma = ((WzImage) wzSpineAtlasPropertyNode.parent)["PMA"].ReadValue(0) > 0;
+				pma = ((WzImage) wzSpineAtlasPropertyNode.Parent)["PMA"].ReadValue(0) > 0;
 			}
 
 			SkeletonData = skeletonData;

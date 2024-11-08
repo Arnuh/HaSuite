@@ -24,7 +24,7 @@ SOFTWARE.
 using System;
 using System.Linq;
 using HaRepacker.Utils;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

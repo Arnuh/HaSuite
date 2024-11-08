@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Deterministic>false</Deterministic>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWPF>true</UseWPF>
@@ -13,21 +13,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NAudio" Version="2.2.1" />
-	  <PackageReference Include="NAudio.Asio" Version="2.2.1" />
-	  <PackageReference Include="NAudio.Core" Version="2.2.1" />
-	  <PackageReference Include="NAudio.Midi" Version="2.2.1" />
-	  <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-	  <PackageReference Include="NAudio.WinForms" Version="2.2.1" />
-	  <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
+		<PackageReference Include="NAudio" Version="2.2.1"/>
+		<PackageReference Include="NAudio.Asio" Version="2.2.1"/>
+		<PackageReference Include="NAudio.Core" Version="2.2.1"/>
+		<PackageReference Include="NAudio.Midi" Version="2.2.1"/>
+		<PackageReference Include="NAudio.Wasapi" Version="2.2.1"/>
+		<PackageReference Include="NAudio.WinForms" Version="2.2.1"/>
+		<PackageReference Include="NAudio.WinMM" Version="2.2.1"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MapleLib\MapleLib.csproj" />
+		<ProjectReference Include="..\MapleLib\MapleLib.csproj"/>
+		<ProjectReference Include="..\spine-runtimes-2.1.25\spine-2.1.25-netcore\spine-2.1.25-netcore.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <FrameworkReference Include="Microsoft.WindowsDesktop.App.Wpf" />
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.Wpf"/>
 	</ItemGroup>
 
 </Project>

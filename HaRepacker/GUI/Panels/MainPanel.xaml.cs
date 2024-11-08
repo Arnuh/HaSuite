@@ -20,7 +20,7 @@ using HaSharedLibrary.GUI;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
 using MapleLib.WzLib.Serialization;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using MapleLib.WzLib.Util;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;

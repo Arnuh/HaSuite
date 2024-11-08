@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -22,15 +22,12 @@
     <ItemGroup>
 		<PackageReference Include="Config.Net" Version="5.2.0"/>
       <PackageReference Include="lz4net" Version="1.0.15.93" />
+		<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.2.1105"/>
       <PackageReference Include="NAudio" Version="2.2.1" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="SharpDX" Version="4.2.0" />
       <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
       <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-    </ItemGroup>
-	
-    <ItemGroup>
-      <ProjectReference Include="..\spine-runtimes-2.1.25\spine-2.1.25-netcore\spine-2.1.25-netcore.csproj" />
     </ItemGroup>
 
 </Project>

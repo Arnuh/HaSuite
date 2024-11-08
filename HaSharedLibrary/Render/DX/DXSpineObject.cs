@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Runtime.CompilerServices;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using spine_2._1._25_netcore.spine_xna;

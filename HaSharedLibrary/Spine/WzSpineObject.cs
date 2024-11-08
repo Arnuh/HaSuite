@@ -1,6 +1,6 @@
 ﻿using spine_2._1._25_netcore;
 
-namespace MapleLib.WzLib.Spine {
+namespace HaSharedLibrary.Spine {
 	/// <summary>
 	/// 
 	/// </summary>

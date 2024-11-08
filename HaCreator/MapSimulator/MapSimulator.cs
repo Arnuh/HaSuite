@@ -19,7 +19,7 @@ using HaSharedLibrary.Render;
 using HaSharedLibrary.Render.DX;
 using HaSharedLibrary.Util;
 using MapleLib.WzLib;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework;

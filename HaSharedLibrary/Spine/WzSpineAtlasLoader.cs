@@ -21,13 +21,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using spine_2._1._25_netcore;
 
-namespace MapleLib.WzLib.Spine {
+namespace HaSharedLibrary.Spine {
 	public class WzSpineAtlasLoader {
 		/// <summary>
 		/// Loads skeleton 

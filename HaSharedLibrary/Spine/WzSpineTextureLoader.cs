@@ -21,11 +21,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using Microsoft.Xna.Framework.Graphics;
 using spine_2._1._25_netcore;
+using Point = Microsoft.Xna.Framework.Point;
 
-namespace MapleLib.WzLib.Spine {
+namespace HaSharedLibrary.Spine {
 	public class WzSpineTextureLoader : TextureLoader {
 		public WzObject ParentNode { get; private set; }
 		private readonly GraphicsDevice graphicsDevice;
@@ -66,9 +68,12 @@ namespace MapleLib.WzLib.Spine {
 				var pngProperty = linkImgProperty.PngProperty;
 
 				var tex = new Texture2D(graphicsDevice, pngProperty.Width, pngProperty.Height, false,
-					linkImgProperty.PngProperty.GetXNASurfaceFormat());
+					GetXNASurfaceFormat(linkImgProperty.PngProperty.PixFormat));
 
-				pngProperty.ParsePng(true, tex);
+				pngProperty.ParsePng(true);
+				var textureRect = new Microsoft.Xna.Framework.Rectangle(Point.Zero, new Point(pngProperty.Width, pngProperty.Height));
+				var rawBytes = pngProperty.GetRawImage(true);
+				tex.SetData(0, 0, textureRect, rawBytes, 0, rawBytes.Length);
 
 				page.rendererObject = tex;
 				page.width = pngProperty.Width;
@@ -82,6 +87,22 @@ namespace MapleLib.WzLib.Spine {
 		/// <param name="texture"></param>
 		public void Unload(object texture) {
 			(texture as Texture2D)?.Dispose();
+		}
+
+		/// <summary>
+		/// Wz PNG format to Microsoft.Xna.Framework.Graphics.SurfaceFormat
+		/// https://github.com/Kagamia/WzComparerR2/search?q=wzlibextension
+		/// </summary>
+		/// <returns></returns>
+		private SurfaceFormat GetXNASurfaceFormat(int PixFormat) {
+			return PixFormat switch {
+				1 => SurfaceFormat.Bgra4444,
+				2 or 3 => SurfaceFormat.Bgra32,
+				513 or 517 => SurfaceFormat.Bgr565,
+				1026 => SurfaceFormat.Dxt3,
+				2050 => SurfaceFormat.Dxt5,
+				_ => SurfaceFormat.Bgra32
+			};
 		}
 	}
 }

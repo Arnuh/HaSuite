@@ -13,7 +13,7 @@ using HaCreator.Properties;
 using HaSharedLibrary.Wz;
 using MapleLib.Helpers;
 using MapleLib.WzLib;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;

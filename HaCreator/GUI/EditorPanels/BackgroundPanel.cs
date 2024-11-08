@@ -9,7 +9,7 @@ using HaCreator.CustomControls;
 using HaCreator.MapEditor;
 using HaCreator.MapEditor.Info;
 using HaSharedLibrary.GUI;
-using MapleLib.WzLib.Spine;
+using HaSharedLibrary.Spine;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 

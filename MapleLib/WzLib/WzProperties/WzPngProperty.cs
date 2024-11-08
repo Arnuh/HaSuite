@@ -14,18 +14,14 @@
  * You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using MapleLib.Helpers;
 using MapleLib.WzLib.Util;
-using Microsoft.Xna.Framework.Graphics;
-using Point = Microsoft.Xna.Framework.Point;
 
 namespace MapleLib.WzLib.WzProperties {
 	/// <summary>
@@ -145,24 +141,6 @@ namespace MapleLib.WzLib.WzProperties {
 		public int MagLevel {
 			get => magLevel;
 			set => magLevel = value;
-		}
-
-		/// <summary>
-		/// Wz PNG format to Microsoft.Xna.Framework.Graphics.SurfaceFormat
-		/// https://github.com/Kagamia/WzComparerR2/search?q=wzlibextension
-		/// </summary>
-		/// <returns></returns>
-		public SurfaceFormat GetXNASurfaceFormat() {
-			switch (PixFormat) {
-				case 1: return SurfaceFormat.Bgra4444;
-				case 2:
-				case 3: return SurfaceFormat.Bgra32;
-				case 513:
-				case 517: return SurfaceFormat.Bgr565;
-				case 1026: return SurfaceFormat.Dxt3;
-				case 2050: return SurfaceFormat.Dxt5;
-				default: return SurfaceFormat.Bgra32;
-			}
 		}
 
 		/// <summary>
@@ -415,7 +393,7 @@ namespace MapleLib.WzLib.WzProperties {
 		/// Reads the wz, decompresses the image, and returns the raw image bytes
 		/// </summary>
 		/// <returns></returns>
-		internal byte[] GetRawImage(bool saveInMemory) {
+		public byte[] GetRawImage(bool saveInMemory) {
 			var rawImageBytes = GetCompressedBytes(saveInMemory);
 
 			var decBuf = GetRawImageArray();
@@ -511,7 +489,7 @@ namespace MapleLib.WzLib.WzProperties {
 			}
 		}
 
-		public void ParsePng(bool saveInMemory, Texture2D texture2d = null) {
+		public void ParsePng(bool saveInMemory) {
 			var rawBytes = GetRawImage(saveInMemory);
 			if (rawBytes == null) {
 				png = null;
@@ -570,12 +548,7 @@ namespace MapleLib.WzLib.WzProperties {
 						ErrorLogger.Log(ErrorLevel.MissingFeature, $"Unknown PNG format {pixFormat} {magLevel}");
 						break;
 				}
-
-				if (texture2d != null) {
-					var textureRect = new Microsoft.Xna.Framework.Rectangle(Point.Zero, new Point(width, height));
-					texture2d.SetData(0, 0, textureRect, rawBytes, 0, rawBytes.Length);
-				}
-
+				
 				png = bmp;
 			} catch (InvalidDataException) {
 				png = null;
